@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Tech Solutions — Super Admin Hub</title>
+    <link rel="icon" type="image/png" href="GLOBAL.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gtsdark: '#020617',
+                        gtscard: '#0f172a',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .page-fade { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .glow-card:hover { box-shadow: 0 0 25px rgba(14, 165, 233, 0.15); border-color: rgba(56, 189, 248, 0.4); }
+    </style>
+</head>
+<body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-slate-950">
+
+    <!-- EN-TÊTE ADMIN -->
+    <header class="w-full border-b border-slate-800 bg-slate-900/85 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12 rounded-xl overflow-hidden bg-white/5 flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
+                    <img src="GLOBAL.png" alt="Global Tech Solutions" class="w-full h-full object-cover rounded-xl" onerror="this.parentElement.style.display='none'">
+                </div>
+                <div>
+                    <h1 class="text-sm md:text-base font-black tracking-wider uppercase text-slate-100">Super Admin Hub</h1>
+                    <p class="text-[9px] md:text-[10px] font-mono text-rose-400 tracking-widest uppercase font-bold">Sécurité Centrale • GTS</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="hidden md:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-bold">
+                    <i class="fa-solid fa-shield-halved"></i> Mode Superviseur
+                </span>
+                <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all border border-slate-700">
+                    <i class="fa-solid fa-house mr-1.5"></i> Portail Public
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="flex-1 max-w-7xl mx-auto px-6 py-12 space-y-12 page-fade w-full">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-6">
+            <div>
+                <h2 class="text-2xl md:text-3xl font-black text-slate-100">Tableau de Bord Centralisé</h2>
+                <p class="text-xs md:text-sm text-slate-400 mt-1">Sélectionnez le pôle dont vous souhaitez piloter l'administration opérationnelle.</p>
+            </div>
+            <div class="text-xs font-mono text-sky-400 bg-sky-500/10 border border-sky-500/20 px-3.5 py-2 rounded-xl">
+                Statut Supabase : <span class="text-emerald-400 font-bold">● Connecté (Centralisé)</span>
+            </div>
+        </div>
+
+        <!-- GRILLE DES CONSOLES ADMIN -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- ADMIN PÔLE 1 : TRANSVISION -->
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="h-14 w-14 rounded-2xl overflow-hidden bg-white/5 flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
+                            <img src="VISION.png" alt="TransVision" class="w-full h-full object-cover rounded-xl" onerror="this.style.display='none'">
+                        </div>
+                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-sky-400 font-bold uppercase">Pôle 1 • Télématique</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-slate-100">TransVision Admin</h3>
+                        <p class="text-xs font-mono text-sky-400 italic mt-0.5">Supervision Flotte & Recettes</p>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Accès au suivi GPS en temps réel (Teltonika & ST-901), audit des recettes journalières, gestion des balises MBM01 et commandes de coupure moteur à distance.
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                    <span class="text-[10px] text-slate-500 font-mono text-slate-400">Routes / Télématique</span>
+                    <a href="transvision/admin.html" class="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-slate-950 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md">
+                        Ouvrir le Back-office <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ADMIN PÔLE 2 : LEKA FLY -->
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="h-14 w-14 rounded-2xl overflow-hidden bg-white/5 flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
+                            <img src="lekafly.jpg" alt="Leka Fly" class="w-full h-full object-cover rounded-xl" onerror="this.style.display='none'">
+                        </div>
+                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-indigo-400 font-bold uppercase">Pôle 2 • Logistique Aéro</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-slate-100">Leka Fly Admin</h3>
+                        <p class="text-xs font-mono text-indigo-400 italic mt-0.5">Gestion Pré-enregistrement Bagages</p>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Supervision des collectes urbaines, validation des check-ins déportés (48h avant vol) et traitement agrégé en bloc (Batch) pour N'djili.
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                    <span class="text-[10px] text-slate-500 font-mono text-slate-400">Transit & Sûreté</span>
+                    <a href="lekafly/admin.html" class="inline-flex items-center gap-2 bg-indigo-500/10 hover:bg-indigo-500 hover:text-slate-950 text-indigo-400 border border-indigo-500/30 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all">
+                        Ouvrir le Back-office <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ADMIN PÔLE 3 : MATT CLEAN'APP -->
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="h-14 w-14 rounded-2xl overflow-hidden bg-white/5 flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
+                            <img src="cleanapp.jpg" alt="Matt Clean'App" class="w-full h-full object-cover rounded-xl" onerror="this.style.display='none'">
+                        </div>
+                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-emerald-400 font-bold uppercase">Pôle 3 • Salubrité</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-slate-100">Matt Clean'App Admin</h3>
+                        <p class="text-xs font-mono text-emerald-400 italic mt-0.5">Supervision des Interventions</p>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Validation des prestations de nettoyage (habitat, véhicules, plomberie), arbitrage de qualité par preuves visuelles « Avant/Après » et répartition des équipes terrain.
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                    <span class="text-[10px] text-slate-500 font-mono text-slate-400">Services à la demande</span>
+                    <a href="mattcleanaap/admin.html" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md">
+                        Ouvrir le Back-office <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ADMIN PÔLE 4 : EYANOMARKET -->
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="h-14 w-14 rounded-2xl overflow-hidden bg-white/5 flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
+                            <img src="LOGO.png" alt="Eyanomarket" class="w-full h-full object-cover rounded-xl" onerror="this.style.display='none'">
+                        </div>
+                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-amber-400 font-bold uppercase">Pôle 4 • Commerce Essentiel</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-slate-100">Eyanomarket Admin</h3>
+                        <p class="text-xs font-mono text-amber-400 italic mt-0.5">Gestion Marketplace & Stocks</p>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Contrôle des flux d'approvisionnement urgent (gaz, eau, pharmacie), gestion des marchands partenaires géolocalisés et suivi des commandes en temps réel.
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                    <span class="text-[10px] text-slate-500 font-mono text-slate-400">Marketplace de proximité</span>
+                    <a href="eyanomarket/admin.html" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md">
+                        Ouvrir le Back-office <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- PIED DE PAGE -->
+    <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-8 mt-16 text-center text-xs text-slate-500 space-y-2">
+        <p><b>Global Tech Solutions SARL</b> — Console d'Administration Centralisée.</p>
+        <p class="text-[10px] font-mono">Accès restreint aux gestionnaires habilités.</p>
+    </footer>
+</body>
+</html>
