@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TransVision Protect — Sécurité & Télématique Antivol</title>
+    
+    <link rel="icon" type="image/png" href="logo%20192x192.png">
+    <link rel="apple-touch-icon" href="logo%20192x192.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#020617">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        .blur-transition { transition: filter 0.4s ease, opacity 0.4s ease; }
+        #map-container, #map-history-container { height: 100%; min-height: 420px; width: 100%; border-radius: 1rem; z-index: 10; }
+        .leaflet-tile { filter: none !important; }
+        .leaflet-container { background: #e5e3df !important; }
+        
+        .tv-marker-container { pointer-events: auto; }
+        .tv-car-wrapper { position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+        .tv-pulse-halo {
+            position: absolute; width: 52px; height: 52px; border-radius: 50%;
+            background: rgba(14, 165, 233, 0.28); border: 1px solid rgba(56, 189, 248, 0.5);
+            animation: pulseRadar 2s infinite ease-out; pointer-events: none;
+        }
+        @keyframes pulseRadar { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(1.6); opacity: 0; } }
+        .tv-car-body {
+            position: relative; width: 32px; height: 32px; transform-origin: center center;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) hue-rotate(120deg); cursor: pointer; }
+
+        @media print {
+            body { background: white !important; color: black !important; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen relative overflow-x-hidden">
+
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <img src="VISION.png" alt="Fond d'écran TransVision" class="w-full h-full object-cover object-center opacity-25 select-none scale-105" onerror="this.style.display='none'">
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/70 to-slate-950/90"></div>
+    </div>
+
+    <!-- BANNIÈRE PWA -->
+    <div id="pwa-install-banner" class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-slate-900/95 backdrop-blur border border-emerald-500/50 text-slate-100 p-3 rounded-2xl shadow-2xl flex items-center gap-3 z-[100] w-[90%] max-w-sm hidden no-print">
+        <div class="w-10 h-10 rounded-xl overflow-hidden shadow-md flex items-center justify-center bg-slate-950 flex-shrink-0">
+            <img src="logo%20192x192.png" alt="Logo" class="w-full h-full object-contain scale-[2.05]" onerror="this.style.display='none'">
+        </div>
+        <div class="flex-1">
+            <p class="text-[11px] font-black text-emerald-400">Installer TransVision Protect</p>
+            <p class="text-[9px] text-slate-400">by Global Tech Solutions</p>
+        </div>
+        <button id="btn-install-pwa" class="bg-emerald-500 text-slate-950 font-black text-[10px] px-3 py-2 rounded-xl">Installer</button>
+        <button onclick="document.getElementById('pwa-install-banner').classList.add('hidden')" class="text-slate-500 px-2"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="relative z-10 max-w-md mx-auto min-h-screen shadow-2xl overflow-hidden flex flex-col border-x border-slate-800/70 pb-20 bg-slate-900/70 backdrop-blur-xl" id="zone-flotte">
+        
+        <!-- 1. AUTHENTIFICATION -->
+        <div id="page-auth" class="p-6 space-y-5 flex-1 flex flex-col justify-between no-print overflow-y-auto">
+            <div class="space-y-4 mt-1">
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto mb-3 rounded-2xl overflow-hidden shadow-2xl shadow-emerald-500/25 flex items-center justify-center bg-slate-950 border border-emerald-500/30">
+                        <img src="logo%20192x192.png" alt="Logo TransVision" class="w-full h-full object-contain scale-[2.05]" onerror="this.style.display='none'">
+                    </div>
+                    <h2 class="text-xl font-black tracking-wide">TransVision Protect</h2>
+                    <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">by Global Tech Solutions</p>
+                    <p class="text-[9px] text-slate-300 mt-0.5 italic">Suivi Satellite, Antivol & Flotte Personnelle</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-1 bg-slate-950/80 backdrop-blur p-1 rounded-xl border border-slate-800">
+                    <button id="tab-btn-login" onclick="basculerVueAuth('login')" class="py-2 text-xs font-black rounded-lg transition-all bg-emerald-500 text-slate-950">Connexion</button>
+                    <button id="tab-btn-register" onclick="basculerVueAuth('register')" class="py-2 text-xs font-black rounded-lg transition-all text-slate-400 hover:text-slate-200">Nouveau Compte</button>
+                </div>
+
+                <!-- FORMULAIRE CONNEXION -->
+                <div id="form-connexion" class="bg-slate-950/85 backdrop-blur p-5 rounded-2xl border border-slate-800/80 space-y-4 shadow-xl">
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Téléphone Enregistré</label>
+                        <input type="tel" id="login-tel" class="w-full bg-slate-900 border border-slate-800 focus:border-emerald-500 focus:outline-none rounded-xl p-3 text-xs text-slate-200 font-mono font-bold" placeholder="0810000000">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Code PIN Sécurité</label>
+                        <input type="password" id="login-pin" class="w-full bg-slate-900 border border-slate-800 focus:border-emerald-500 focus:outline-none rounded-xl p-3 text-xs text-slate-200 font-mono" placeholder="4 chiffres">
+                    </div>
+                    <button onclick="executerConnexionPartenaire()" id="btn-login-text" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3 rounded-xl text-xs uppercase shadow-lg shadow-emerald-500/10 transition-colors">
+                        Accéder à mes Véhicules
+                    </button>
+                </div>
+
+                <!-- FORMULAIRE INSCRIPTION -->
+                <div id="form-inscription" class="bg-slate-950/85 backdrop-blur p-4 rounded-2xl border border-slate-800/80 space-y-3 shadow-xl hidden">
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Nom Complet</label>
+                        <input type="text" id="ins-nom" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200" placeholder="Ex: Jean Mukendi">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Téléphone RDC</label>
+                        <input type="tel" id="ins-tel" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 font-mono" placeholder="Ex: 0812345678">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Commune</label>
+                            <input type="text" id="ins-commune" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:border-emerald-500 outline-none" placeholder="Ex: Ngaliema">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Quartier</label>
+                            <input type="text" id="ins-quartier" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:border-emerald-500 outline-none" placeholder="Ex: Ma Campagne">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Créer un Code PIN</label>
+                        <input type="password" id="ins-pin" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 font-mono" placeholder="4 chiffres secrets">
+                    </div>
+                    <button onclick="inscrireNouveauPartenaire()" class="w-full bg-emerald-500 text-slate-950 font-black py-3 rounded-xl text-xs uppercase mt-3 shadow-lg">Créer Mon Compte</button>
+                </div>
+            </div>
+            <div class="text-center py-2 text-[9px] font-mono text-slate-400 border-t border-slate-800/80">
+                TransVision v33.7 — Antivol & Flotte Personnelle
+            </div>
+        </div>
+
+        <!-- 2. APPLICATION PRINCIPALE -->
+        <div id="app-proprietaire" class="flex-1 flex flex-col hidden relative">
+            <header class="p-4 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur sticky top-0 z-30 no-print">
+                <div class="flex justify-between items-center mb-3">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 id="lbl-nom-partenaire" class="text-sm font-black text-slate-100">Chargement...</h1>
+                            <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold">PROTÉGÉ</span>
+                        </div>
+                        <p class="text-[8px] text-slate-400 font-mono truncate max-w-[220px]" id="lbl-adresse-partenaire">Kinshasa, RDC</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-xl overflow-hidden shadow border border-slate-800 bg-slate-950 flex-shrink-0">
+                        <img src="logo%20192x192.png" alt="Logo" class="w-full h-full object-contain scale-[2.05]" onerror="this.style.display='none'">
+                    </div>
+                </div>
+
+                <div class="bg-slate-950 p-2.5 rounded-2xl border border-slate-800 flex items-center justify-between shadow-md">
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" id="statut-serveur-voyant"></span>
+                            <span class="text-[10px] font-black uppercase text-emerald-400 tracking-wider" id="statut-serveur-texte">Suivi Satellite Actif</span>
+                        </div>
+                        <p class="text-[9px] text-slate-400 mt-0.5" id="last-update-text">Liaison satellite établie...</p>
+                    </div>
+                    <div class="text-right flex flex-col items-end">
+                        <span id="timer-compte-rebours" class="text-xs font-mono font-black text-emerald-400 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded-lg shadow-inner">ACTIF</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ONGLET 1 : GPS LIVE -->
+            <div id="onglet-flotte" class="p-2 flex-1 flex flex-col blur-transition class-onglet no-print min-h-[calc(100vh-170px)] space-y-2">
+                <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-3 space-y-2 shadow-2xl backdrop-blur">
+                    <div class="flex justify-between items-center text-xs">
+                        <div class="flex items-center gap-2 truncate max-w-[240px]">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span id="hud-avenue-live" class="truncate font-sans font-black text-slate-100">Localisation de l'avenue...</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded-xl border border-slate-800">
+                            <i class="fa-solid fa-gauge-high text-sky-400 text-xs"></i>
+                            <span class="text-xs font-mono font-black text-emerald-400" id="hud-vitesse-live">0 km/h</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-center text-[10px] font-mono border-t border-slate-800/80 pt-2">
+                        <div class="bg-slate-950/80 p-2 rounded-xl border border-slate-800">
+                            <span class="text-[8px] text-slate-400 block uppercase font-bold">Roulé Aujourd'hui</span>
+                            <span class="font-black text-slate-100 text-xs" id="hud-km-jour">0.0 km</span>
+                        </div>
+                        <div class="bg-slate-950/80 p-2 rounded-xl border border-slate-800">
+                            <span class="text-[8px] text-slate-400 block uppercase font-bold">État Coupe-Circuit</span>
+                            <span class="font-black text-emerald-400 text-xs" id="hud-moteur-statut">Démarrage Autorisé</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950 p-2 rounded-2xl border border-slate-800 flex-1 flex flex-col space-y-2 shadow-md">
+                    <div class="flex justify-between items-center px-1">
+                        <h2 class="text-[10px] font-bold text-slate-300 uppercase tracking-widest flex items-center gap-1.5">
+                            <i class="fa-solid fa-satellite-dish text-sky-400"></i> Carte en Direct
+                        </h2>
+                        <div class="flex gap-2 items-center">
+                            <button onclick="remettreCompteurZeroManuel()" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 px-2 py-1 rounded-lg text-[9px] font-bold uppercase transition-all shadow-sm">
+                                <i class="fa-solid fa-rotate-left"></i> RAZ km
+                            </button>
+                            <select id="select-vehicule-map" onchange="centrerSurVehicule(this.value)" class="bg-slate-900 border border-slate-700 rounded-lg text-[10px] text-emerald-400 font-bold px-2 py-1 outline-none truncate max-w-[130px]"></select>
+                        </div>
+                    </div>
+                    <div id="map-container" class="shadow-inner flex-1 w-full border border-slate-800 rounded-xl overflow-hidden"></div>
+                </div>
+            </div>
+
+            <!-- ONGLET 2 : HISTORIQUE DES TRAJETS -->
+            <div id="onglet-historique" class="p-3 space-y-3 class-onglet hidden no-print pb-32">
+                <div class="bg-slate-950/90 backdrop-blur p-4 rounded-2xl border border-slate-800 space-y-3 shadow-xl">
+                    <div class="border-b border-slate-800 pb-2">
+                        <h3 class="text-xs font-black text-slate-100 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-sky-400"></i> Historique des Déplacements
+                        </h3>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Véhicule Cible</label>
+                            <select id="hist-select-vehicule" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-emerald-400 font-bold outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Date</label>
+                            <input type="date" id="hist-date-picker" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-1.5 text-xs text-slate-200 outline-none">
+                        </div>
+                    </div>
+
+                    <button onclick="chargerHistoriqueDate()" class="w-full bg-sky-500 hover:bg-sky-600 text-slate-950 font-black py-2.5 rounded-xl text-xs uppercase shadow-md transition-colors flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass"></i> Afficher le Trajet
+                    </button>
+                </div>
+
+                <div id="hist-stats-card" class="bg-slate-950/80 p-3 rounded-2xl border border-slate-800 grid grid-cols-3 gap-2 text-center text-xs hidden">
+                    <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-850">
+                        <span class="text-[8px] text-slate-400 block uppercase font-bold">Total Parcouru</span>
+                        <span class="font-black text-sky-400" id="hist-total-km">0.0 km</span>
+                    </div>
+                    <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-850">
+                        <span class="text-[8px] text-slate-400 block uppercase font-bold">Vitesse Max</span>
+                        <span class="font-black text-emerald-400" id="hist-max-speed">0 km/h</span>
+                    </div>
+                    <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-850">
+                        <span class="text-[8px] text-slate-400 block uppercase font-bold">Points Relevés</span>
+                        <span class="font-black text-indigo-400" id="hist-total-points">0</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950 p-2 rounded-2xl border border-slate-800 flex flex-col space-y-2 shadow-md">
+                    <div id="map-history-container" class="shadow-inner w-full border border-slate-800 rounded-xl overflow-hidden min-h-[300px]"></div>
+                </div>
+            </div>
+
+            <!-- ONGLET 3 : FUSION ANTIVOL & ENTRETIEN -->
+            <div id="onglet-controle-entretien" class="p-4 space-y-4 class-onglet hidden no-print pb-32">
+                <div class="border-b border-slate-800 pb-2">
+                    <h2 class="text-xs font-black text-slate-100 uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-rose-400"></i> Antivol & Entretien Préventif
+                    </h2>
+                    <p class="text-[9px] text-slate-400 mt-0.5">Commandes coupe-circuit et suivi kilométrique des pièces d'usure.</p>
+                </div>
+
+                <div id="combo-vehicules-list" class="space-y-4"></div>
+            </div>
+
+            <!-- ONGLET 4 : GESTION DE LA FLOTTE -->
+            <div id="onglet-flotte-gestion" class="p-4 space-y-4 class-onglet hidden no-print pb-32">
+                <div class="border-b border-slate-800 pb-2">
+                    <h2 class="text-xs font-black text-slate-100 uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-car-tunnel text-indigo-400"></i> Gestion de la Flotte
+                    </h2>
+                    <p class="text-[9px] text-slate-400 mt-0.5">Associez vos traceurs SinoTrack ST-901L et gérez vos véhicules.</p>
+                </div>
+
+                <div class="bg-slate-950/85 backdrop-blur p-4 rounded-2xl border border-slate-800 space-y-3 shadow-xl">
+                    <h3 class="text-xs font-black text-indigo-400 uppercase tracking-wider flex items-center gap-2 border-b border-slate-850 pb-2">
+                        <i class="fa-solid fa-plus-circle"></i> Ajouter un Véhicule
+                    </h3>
+                    <div>
+                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Plaque d'immatriculation</label>
+                        <input type="text" id="add-plaque" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 font-mono outline-none focus:border-indigo-500" placeholder="Ex: KIN 4082AE">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Modèle</label>
+                            <input type="text" id="add-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 outline-none focus:border-indigo-500" placeholder="Ex: Toyota IST">
+                        </div>
+                        <div>
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Kilométrage Compteur</label>
+                            <input type="number" id="add-km-odometre" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 font-mono outline-none focus:border-indigo-500" placeholder="Ex: 125000">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">N° IMEI Traceur (15 chiffres)</label>
+                        <input type="text" id="add-imei" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 font-mono outline-none focus:border-indigo-500" placeholder="Ex: 0357445101350102">
+                    </div>
+                    <button onclick="enregistrerVehiculeSaisi()" class="w-full bg-indigo-500 hover:bg-indigo-600 text-slate-950 font-black py-2.5 rounded-xl text-xs uppercase shadow-md transition-colors">
+                        Enregistrer dans la Flotte
+                    </button>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Véhicules sous Surveillance</h3>
+                    <div id="flotte-cards-container" class="space-y-2"></div>
+                </div>
+            </div>
+
+            <!-- ONGLET 5 : PROFIL & COMPTE -->
+            <div id="onglet-profil" class="p-4 space-y-4 class-onglet hidden no-print pb-32">
+                <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Informations du Compte</h2>
+
+                <div class="bg-slate-950/80 backdrop-blur p-4 rounded-2xl border border-slate-800 space-y-3 shadow-xl">
+                    <h3 class="text-xs font-black uppercase text-indigo-400 flex items-center gap-2 border-b border-slate-800 pb-2">
+                        <i class="fa-solid fa-address-card"></i> Coordonnées & Sécurité
+                    </h3>
+                    
+                    <div>
+                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Nom Complet</label>
+                        <input type="text" id="prof-nom" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 outline-none focus:border-indigo-500" placeholder="Nom Complet">
+                    </div>
+
+                    <div>
+                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Téléphone de Contact</label>
+                        <input type="tel" id="prof-tel" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 font-mono outline-none focus:border-indigo-500" placeholder="Téléphone">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Commune</label>
+                            <input type="text" id="prof-commune" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 outline-none focus:border-indigo-500" placeholder="Commune">
+                        </div>
+                        <div>
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Quartier</label>
+                            <input type="text" id="prof-quartier" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 outline-none focus:border-indigo-500" placeholder="Quartier">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Nouveau Code PIN</label>
+                        <input type="password" id="prof-pin-new" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 font-mono outline-none focus:border-indigo-500" placeholder="Laisser vide si inchangé">
+                    </div>
+
+                    <!-- BANNIÈRE DE RETOUR VISUEL DIRECT -->
+                    <div id="prof-msg-feedback" class="hidden p-3 rounded-xl text-center text-xs font-bold transition-all"></div>
+
+                    <button id="btn-maj-profil" onclick="majIdentifiantsEtAdresse()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-black py-2.5 rounded-xl text-xs uppercase transition-colors">
+                        Mettre à Jour mes Informations
+                    </button>
+                </div>
+
+                <div class="bg-slate-950/80 backdrop-blur p-4 rounded-2xl border border-slate-800 space-y-3 shadow-md">
+                    <a href="#" id="lien-whatsapp-support" target="_blank" class="w-full bg-green-500/10 border border-green-500/30 hover:bg-green-500/20 text-green-400 font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition-colors">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Support Technique d'Urgence
+                    </a>
+                    <button onclick="declencherDeconnexion()" class="w-full bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 text-rose-400 font-black py-3 rounded-xl text-xs uppercase flex items-center justify-center gap-2 transition-colors">
+                        <i class="fa-solid fa-power-off"></i> Se Déconnecter
+                    </button>
+                </div>
+            </div>
+
+            <!-- BARRE DE NAVIGATION (5 ONGLETS) -->
+            <nav class="fixed bottom-0 max-w-md w-full inset-x-0 mx-auto bg-slate-950/95 backdrop-blur border-t border-slate-800 h-16 flex justify-around items-center z-40 no-print px-1">
+                <button onclick="changerOnglet('onglet-flotte', this)" class="flex flex-col items-center justify-center gap-1 text-emerald-400 btn-nav flex-1"><i class="fa-solid fa-location-crosshairs text-sm"></i><span class="text-[8px] font-bold">Live</span></button>
+                <button onclick="changerOnglet('onglet-historique', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-clock-rotate-left text-sm"></i><span class="text-[8px] font-bold">Trajets</span></button>
+                <button onclick="changerOnglet('onglet-controle-entretien', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-wrench text-sm"></i><span class="text-[8px] font-bold">Contrôle</span></button>
+                <button onclick="changerOnglet('onglet-flotte-gestion', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-car text-sm"></i><span class="text-[8px] font-bold">Flotte</span></button>
+                <button onclick="changerOnglet('onglet-profil', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-user text-sm"></i><span class="text-[8px] font-bold">Compte</span></button>
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        function chargerConfigurationsAdmin() {
+            const numWhatsApp = localStorage.getItem('tv_whatsapp') || "243810000000";
+            const lienWa = document.getElementById('lien-whatsapp-support');
+            if(lienWa) lienWa.href = `https://wa.me/${numWhatsApp.replace(/[^0-9]/g, '')}`;
+        }
+
+        const supabaseUrl = 'https://vbriworyscymnmtzzdny.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZicml3b3J5c2N5bW5tdHp6ZG55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNzQwNTEsImV4cCI6MjEwMzk1MDA1MX0.VBZupVKj0srae0NT5BNZ0OeaIv9pAl2bl5L-Rd8ocJk';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        // Connexion Socket.IO sécurisée évitant le blocage de contenu mixte sur Vercel
+        let socket = { emit: () => {}, on: () => {} };
+        if (window.location.protocol === 'http:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            try {
+                socket = io("http://134.209.116.89:3000", { transports: ['websocket', 'polling'], reconnection: true });
+            } catch(e) {}
+        }
+
+        const syncChannel = supabaseClient.channel('tv_sync_channel');
+
+        let partenaireProfil = null; 
+        let client = { nom: "Chargement...", tel: "", commune: "", quartier: "", vehicules: [] };
+        let map = null; 
+        let busMarker = null;
+        let polylineTrace = null;
+        let tracePositions = [];
+        let dernierPointId = null;
+        let dernierTimestampTraite = 0;
+
+        let mapHistory = null;
+        let polylineHistory = null;
+        let markersHistory = [];
+
+        let dernierGeocodageTs = 0;
+        let cacheAdresse = "";
+
+        async function detecterNomAvenue(lat, lng) {
+            const now = Date.now();
+            if (now - dernierGeocodageTs < 12000 && cacheAdresse) {
+                return cacheAdresse;
+            }
+            try {
+                const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
+                    headers: { 'Accept-Language': 'fr' }
+                });
+                if (resp.ok) {
+                    const data = await resp.json();
+                    dernierGeocodageTs = now;
+                    const addr = data.address || {};
+                    const voie = addr.road || addr.pedestrian || addr.street || addr.neighbourhood || "Avenue de circulation";
+                    const quartier = addr.suburb || addr.quarter || "";
+                    const commune = addr.city_district || addr.county || "Kinshasa";
+                    
+                    let nomAvenue = voie;
+                    if (quartier && quartier !== voie) nomAvenue += ` • ${quartier}`;
+                    if (commune) nomAvenue += ` (${commune})`;
+                    
+                    cacheAdresse = nomAvenue;
+                    return nomAvenue;
+                }
+            } catch(e) {}
+            return cacheAdresse || "Kinshasa, RDC";
+        }
+
+        function calculerDistanceGPS(lat1, lon1, lat2, lon2) {
+            const R = 6371; 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        }
+
+        function calculerCap(lat1, lon1, lat2, lon2) {
+            const y = Math.sin((lon2 - lon1) * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180);
+            const x = Math.cos(lat1 * Math.PI / 180) * Math.sin(lat2 * Math.PI / 180) -
+                      Math.sin(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.cos((lon2 - lon1) * Math.PI / 180);
+            return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+        }
+
+        function interpolerAngle(depart, arrivee) {
+            let diff = (arrivee - depart) % 360;
+            if (diff < -180) diff += 360;
+            if (diff > 180) diff -= 360;
+            return depart + diff;
+        }
+
+        function animerDeplacementMarker(marker, startPos, endPos, startAngle, targetAngle, dureeMs = 1200) {
+            const debut = performance.now();
+            const angleFinal = interpolerAngle(startAngle, targetAngle);
+
+            function frame(maintenant) {
+                const ecoule = maintenant - debut;
+                const ratio = Math.min(ecoule / dureeMs, 1.0);
+                const ease = ratio < 0.5 ? 2 * ratio * ratio : -1 + (4 - 2 * ratio) * ratio;
+                
+                const curLat = startPos.lat + (endPos.lat - startPos.lat) * ease;
+                const curLng = startPos.lng + (endPos.lng - startPos.lng) * ease;
+                const curAngle = startAngle + (angleFinal - startAngle) * ease;
+                
+                marker.setLatLng([curLat, curLng]);
+                
+                const carBody = marker.getElement()?.querySelector('.tv-car-body');
+                if (carBody) {
+                    carBody.style.transform = `rotate(${curAngle}deg)`;
+                }
+                
+                if (ratio < 1.0) {
+                    requestAnimationFrame(frame);
+                }
+            }
+            requestAnimationFrame(frame);
+        }
+
+        function creerIconeVehiculeDynamique(cap = 0) {
+            return L.divIcon({
+                className: 'tv-marker-container',
+                html: `
+                    <div class="tv-car-wrapper">
+                        <div class="tv-pulse-halo"></div>
+                        <div class="tv-car-body" style="transform: rotate(${cap}deg);">
+                            <svg viewBox="0 0 40 40" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <ellipse cx="20" cy="21" rx="11" ry="16" fill="rgba(0,0,0,0.3)"/>
+                                <rect x="11" y="6" width="18" height="28" rx="6" fill="#0284c7" stroke="#38bdf8" stroke-width="1.5"/>
+                                <rect x="13" y="12" width="14" height="15" rx="3" fill="#0f172a"/>
+                                <path d="M13 13 C15 9, 25 9, 27 13 Z" fill="#38bdf8" opacity="0.9"/>
+                                <path d="M14 26 C16 28, 24 28, 26 26 Z" fill="#38bdf8" opacity="0.7"/>
+                                <circle cx="13.5" cy="7" r="1.5" fill="#fef08a"/>
+                                <circle cx="26.5" cy="7" r="1.5" fill="#fef08a"/>
+                                <rect x="12" y="32" width="3" height="1.5" rx="0.5" fill="#f43f5e"/>
+                                <rect x="25" y="32" width="3" height="1.5" rx="0.5" fill="#f43f5e"/>
+                            </svg>
+                        </div>
+                    </div>
+                `,
+                iconSize: [44, 44],
+                iconAnchor: [22, 22]
+            });
+        }
+
+        function getKinshasaDateStr() {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function marquerServeurEnLigne() {
+            const voyant = document.getElementById('statut-serveur-voyant');
+            const texte = document.getElementById('statut-serveur-texte');
+            if (voyant) voyant.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping";
+            if (texte) texte.textContent = "Suivi Satellite Actif";
+        }
+
+        function diffuserEtatAdmin(v) {
+            if (!window.supabase) return;
+            syncChannel.send({
+                type: 'broadcast',
+                event: 'sync_state',
+                payload: {
+                    imei: v.imei,
+                    plaque: v.plaque,
+                    kmJour: v.kmJour,
+                    lat: v.lat,
+                    lng: v.lng,
+                    dernierCap: v.dernierCap,
+                    moteurCoupe: v.moteurCoupe
+                }
+            });
+        }
+
+        function activerSynchronisationCloud() {
+            if (!window.supabase) return;
+            syncChannel.on('broadcast', { event: 'compte_supprime' }, ({ payload }) => {
+                const telSauve = localStorage.getItem('tv_partenaire_tel');
+                if (payload.tel === telSauve) {
+                    alert("⚠️ Votre compte a été suspendu par l'Administrateur.");
+                    declencherDeconnexion();
+                }
+            })
+            .subscribe();
+        }
+
+        function activerFluxRealtimePush() {
+            if (!window.supabase) return;
+            supabaseClient
+                .channel('tv_gps_realtime_channel')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'transvision_positions_gps' }, (payload) => {
+                    const row = payload.new;
+                    if (row) {
+                        marquerServeurEnLigne();
+                        traiterNouvellePosition({
+                            imei: String(row.imei).trim(),
+                            lat: parseFloat(row.latitude),
+                            lng: parseFloat(row.longitude),
+                            vitesse: parseFloat(row.speed || row.vitesse || 0),
+                            timestamp: new Date(row.created_at || Date.now()).getTime()
+                        });
+                    }
+                })
+                .subscribe();
+        }
+
+        function remettreCompteurZeroManuel() {
+            if (confirm("Remettre le compteur kilométrique du jour à zéro ?")) {
+                const v = client.vehicules[0];
+                if (v) {
+                    const ts = Date.now();
+                    localStorage.setItem('tv_reset_ts_' + v.imei, ts);
+                    v.kmJour = 0;
+                    tracePositions = [[v.lat, v.lng]];
+                    if (polylineTrace) polylineTrace.setLatLngs(tracePositions);
+                    genererToutesLesVues();
+                    alert("✅ Compteur remis à 0.0 km.");
+                }
+            }
+        }
+
+        // CHARGEMENT DES COORDONNÉES RÉELLES DEPUIS SUPABASE
+        async function chargerDernieresPositions() {
+            try {
+                const txtStatut = document.getElementById('last-update-text');
+                txtStatut.textContent = "Interrogation des coordonnées...";
+                
+                if (!window.supabase) return;
+
+                const customConfig = JSON.parse(localStorage.getItem('tv_vehicules_custom') || '{}');
+                const clesVehicules = Object.keys(customConfig);
+                
+                if (clesVehicules.length === 0) {
+                    client.vehicules = [];
+                    tracePositions = [];
+                    if (busMarker && map) map.removeLayer(busMarker);
+                    if (polylineTrace && map) map.removeLayer(polylineTrace);
+                    majSelecteursVehicules();
+                    genererToutesLesVues();
+                    txtStatut.textContent = "Aucun véhicule assigné. Rendez-vous dans Flotte.";
+                    document.getElementById('hud-avenue-live').textContent = "Aucun véhicule";
+                    return;
+                }
+
+                client.vehicules = [];
+
+                for (let imeiClean of clesVehicules) {
+                    let cfg = customConfig[imeiClean] || {};
+                    let v = {
+                        plaque: cfg.plaque || `ST901-${imeiClean.slice(-4)}`, 
+                        type: cfg.type || "Véhicule Personnel", 
+                        imei: imeiClean,
+                        lat: -4.3215, 
+                        lng: 15.3115, 
+                        vitesse: 0,
+                        dateDernierPoint: null,
+                        moteurCoupe: cfg.moteurCoupe || false, 
+                        kmJour: 0,
+                        kmOdometre: parseInt(cfg.kmOdometre) || 120000,
+                        dernierCap: 0
+                    };
+
+                    const { data: latestData } = await supabaseClient
+                        .from('transvision_positions_gps')
+                        .select('*')
+                        .eq('imei', imeiClean)
+                        .order('created_at', { ascending: false })
+                        .limit(1);
+
+                    if (latestData && latestData.length > 0) {
+                        v.lat = parseFloat(latestData[0].latitude);
+                        v.lng = parseFloat(latestData[0].longitude);
+                        v.vitesse = parseFloat(latestData[0].speed || latestData[0].vitesse || 0);
+                        v.dateDernierPoint = latestData[0].created_at;
+                    }
+
+                    const debutAujourdhui = new Date();
+                    debutAujourdhui.setHours(0, 0, 0, 0);
+
+                    const { data: pointsAujourdhui } = await supabaseClient
+                        .from('transvision_positions_gps')
+                        .select('latitude, longitude, speed, created_at')
+                        .eq('imei', imeiClean)
+                        .gte('created_at', debutAujourdhui.toISOString())
+                        .order('created_at', { ascending: true });
+
+                    let totalRouléAujourdhui = 0;
+                    if (pointsAujourdhui && pointsAujourdhui.length > 1) {
+                        for (let i = 1; i < pointsAujourdhui.length; i++) {
+                            const d = calculerDistanceGPS(
+                                parseFloat(pointsAujourdhui[i-1].latitude), parseFloat(pointsAujourdhui[i-1].longitude),
+                                parseFloat(pointsAujourdhui[i].latitude), parseFloat(pointsAujourdhui[i].longitude)
+                            );
+                            if (d > 0.015) {
+                                totalRouléAujourdhui += d;
+                            }
+                        }
+                    }
+                    
+                    v.kmJour = totalRouléAujourdhui;
+                    client.vehicules.push(v);
+                }
+
+                if (client.vehicules.length > 0) {
+                    const premier = client.vehicules[0];
+                    tracePositions = [[premier.lat, premier.lng]];
+                    
+                    const timeTxt = premier.dateDernierPoint ? new Date(premier.dateDernierPoint).toLocaleTimeString() : 'En attente';
+                    txtStatut.textContent = `Dernier relevé satellite : ${timeTxt}`;
+                    marquerServeurEnLigne();
+                }
+
+                majSelecteursVehicules();
+                initMapEtCentrer(0);
+                genererToutesLesVues();
+            } catch (err) {
+                console.error("Erreur chargement:", err);
+            }
+        }
+
+        function traiterNouvellePosition(data) {
+            const imeiClean = String(data.imei).trim();
+            const resetTs = parseInt(localStorage.getItem('tv_reset_ts_' + imeiClean) || '0');
+            if (data.timestamp && data.timestamp < resetTs) return;
+            if (data.timestamp && data.timestamp < dernierTimestampTraite) return;
+            dernierTimestampTraite = data.timestamp || Date.now();
+
+            const now = new Date();
+            document.getElementById('last-update-text').textContent = `Signal en direct : ${now.toLocaleTimeString()}`;
+            marquerServeurEnLigne();
+
+            let v = client.vehicules.find(item => item.imei === imeiClean);
+            if (!v) return;
+
+            const distDelta = calculerDistanceGPS(v.lat, v.lng, data.lat, data.lng);
+            
+            if (distDelta > 0.020 || (distDelta > 0.005 && data.vitesse > 3)) {
+                v.kmJour += distDelta;
+                v.kmOdometre += distDelta;
+
+                const nouveauCap = calculerCap(v.lat, v.lng, data.lat, data.lng);
+                const ancienCap = v.dernierCap || 0;
+                v.dernierCap = nouveauCap;
+
+                const anciennePosition = { lat: v.lat, lng: v.lng };
+                v.lat = data.lat; 
+                v.lng = data.lng;
+                v.vitesse = data.vitesse || 0;
+
+                diffuserEtatAdmin(v); 
+
+                const selectMap = document.getElementById('select-vehicule-map');
+                if (selectMap && selectMap.value == client.vehicules.indexOf(v) && map && busMarker) {
+                    animerDeplacementMarker(busMarker, anciennePosition, { lat: data.lat, lng: data.lng }, ancienCap, nouveauCap, 1200);
+                }
+            } else {
+                v.lat = data.lat; 
+                v.lng = data.lng;
+                v.vitesse = data.vitesse || 0;
+            }
+
+            const vehiculeIndex = client.vehicules.indexOf(v);
+            const selectMap = document.getElementById('select-vehicule-map');
+            if (selectMap && selectMap.value == vehiculeIndex) {
+                const targetPoint = [data.lat, data.lng];
+                tracePositions.push(targetPoint);
+                
+                detecterNomAvenue(data.lat, data.lng).then(avenue => {
+                    const elAv = document.getElementById('hud-avenue-live');
+                    if(elAv) elAv.textContent = avenue;
+                });
+
+                const vitTxt = (v.vitesse > 0) ? `${Math.round(v.vitesse)} km/h` : 'À l\'arrêt (Stationné)';
+                
+                document.getElementById('hud-vitesse-live').textContent = vitTxt;
+                document.getElementById('hud-km-jour').textContent = `${v.kmJour.toFixed(1)} km`;
+                document.getElementById('hud-moteur-statut').textContent = v.moteurCoupe ? "🔴 Moteur Coupé" : "🟢 Autorisé";
+                document.getElementById('hud-moteur-statut').className = v.moteurCoupe ? "font-black text-rose-400 text-xs" : "font-black text-emerald-400 text-xs";
+
+                if (map) {
+                    if (busMarker) {
+                        busMarker.getPopup().setContent(`
+                            <b>${v.plaque}</b> (${v.type})<br>
+                            Statut : <b>${vitTxt}</b><br>
+                            Roulé aujourd'hui : <b>${v.kmJour.toFixed(1)} km</b><br>
+                            Relais : <b>${v.moteurCoupe ? '<span style="color:#f43f5e;">Coupé</span>' : '<span style="color:#10b981;">Autorisé</span>'}</b>
+                        `);
+                    } else {
+                        initMapEtCentrer(0);
+                    }
+                    map.panTo([data.lat, data.lng], { animate: true, duration: 1.0 });
+                }
+            }
+
+            genererVueControleEntretien();
+        }
+
+        async function sonderPositionsCloudEnContinu() {
+            try {
+                if (!window.supabase) return;
+                const { data } = await supabaseClient
+                    .from('transvision_positions_gps')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(1);
+
+                if (data && data.length > 0) {
+                    const latest = data[0];
+                    const pointKey = latest.id ? latest.id : (latest.latitude + '_' + latest.longitude + '_' + latest.created_at);
+                    if (pointKey !== dernierPointId) {
+                        dernierPointId = pointKey;
+                        traiterNouvellePosition({
+                            imei: String(latest.imei).trim(),
+                            lat: parseFloat(latest.latitude),
+                            lng: parseFloat(latest.longitude),
+                            vitesse: parseFloat(latest.speed || latest.vitesse || 0),
+                            timestamp: new Date(latest.created_at || Date.now()).getTime()
+                        });
+                    }
+                }
+            } catch(e) {}
+        }
+        setInterval(sonderPositionsCloudEnContinu, 3000);
+
+        function majSelecteursVehicules() {
+            const selMap = document.getElementById('select-vehicule-map');
+            const selHist = document.getElementById('hist-select-vehicule');
+            
+            if (selMap) selMap.innerHTML = "";
+            if (selHist) selHist.innerHTML = "";
+
+            if(client.vehicules.length === 0) { 
+                if (selMap) selMap.insertAdjacentHTML('beforeend', `<option value="none">Aucun véhicule</option>`);
+                if (selHist) selHist.insertAdjacentHTML('beforeend', `<option value="none">Aucun véhicule</option>`);
+                return; 
+            }
+
+            client.vehicules.forEach((v, i) => {
+                const opt = `<option value="${i}">${v.plaque}</option>`;
+                if (selMap) selMap.insertAdjacentHTML('beforeend', opt);
+                if (selHist) selHist.insertAdjacentHTML('beforeend', opt);
+            });
+        }
+
+        function genererToutesLesVues() {
+            const nomActuel = (partenaireProfil && partenaireProfil.nom) ? partenaireProfil.nom : (localStorage.getItem('tv_partenaire_nom') || client.nom);
+            const telActuel = (partenaireProfil && partenaireProfil.tel) ? partenaireProfil.tel : (localStorage.getItem('tv_partenaire_tel') || client.tel);
+            const com = (partenaireProfil && partenaireProfil.commune) ? partenaireProfil.commune : (localStorage.getItem('tv_partenaire_commune') || "Kinshasa");
+            const qtr = (partenaireProfil && partenaireProfil.quartier) ? partenaireProfil.quartier : (localStorage.getItem('tv_partenaire_quartier') || "RDC");
+
+            document.getElementById('lbl-nom-partenaire').textContent = nomActuel;
+            document.getElementById('lbl-adresse-partenaire').textContent = `${com} • ${qtr}`;
+            
+            document.getElementById('prof-nom').value = nomActuel;
+            document.getElementById('prof-tel').value = telActuel;
+            document.getElementById('prof-commune').value = com;
+            document.getElementById('prof-quartier').value = qtr;
+            
+            majSelecteursVehicules();
+            genererVueControleEntretien();
+            genererVueFlotte();
+        }
+
+        function changerOnglet(idOnglet, boutonActif) {
+            document.querySelectorAll('.class-onglet').forEach(ong => ong.classList.add('hidden'));
+            document.getElementById(idOnglet).classList.remove('hidden');
+            document.querySelectorAll('.btn-nav').forEach(btn => { btn.classList.remove('text-emerald-400'); btn.classList.add('text-slate-500'); });
+            if(boutonActif) { boutonActif.classList.remove('text-slate-500'); boutonActif.classList.add('text-emerald-400'); }
+            
+            setTimeout(() => {
+                if (idOnglet === 'onglet-flotte') {
+                    const sel = document.getElementById('select-vehicule-map');
+                    initMapEtCentrer(sel && sel.value !== "none" ? parseInt(sel.value) : 0);
+                    if (map) map.invalidateSize();
+                } else if (idOnglet === 'onglet-historique') {
+                    initMapHistorique();
+                    if (mapHistory) mapHistory.invalidateSize();
+                } else if (idOnglet === 'onglet-controle-entretien') {
+                    genererVueControleEntretien();
+                } else if (idOnglet === 'onglet-flotte-gestion') {
+                    genererVueFlotte();
+                }
+            }, 100);
+        }
+
+        function initMapEtCentrer(index) {
+            const mapContainer = document.getElementById('map-container');
+            if (!mapContainer || mapContainer.offsetParent === null) return;
+            
+            let lat = -4.3215; let lng = 15.3115; 
+            const v = client.vehicules[index];
+            if(v) { 
+                lat = v.lat; 
+                lng = v.lng; 
+                if (tracePositions.length === 0) tracePositions = [[lat, lng]];
+                
+                detecterNomAvenue(lat, lng).then(avenue => {
+                    const elAv = document.getElementById('hud-avenue-live');
+                    if(elAv) elAv.textContent = avenue;
+                });
+                
+                const vitTxt = (v.vitesse > 0) ? `${Math.round(v.vitesse)} km/h` : 'À l\'arrêt (Stationné)';
+                
+                document.getElementById('hud-vitesse-live').textContent = vitTxt;
+                document.getElementById('hud-km-jour').textContent = `${v.kmJour.toFixed(1)} km`;
+                document.getElementById('hud-moteur-statut').textContent = v.moteurCoupe ? "🔴 Moteur Coupé" : "🟢 Autorisé";
+                document.getElementById('hud-moteur-statut').className = v.moteurCoupe ? "font-black text-rose-400 text-xs" : "font-black text-emerald-400 text-xs";
+            }
+            
+            if(!map) {
+                map = L.map('map-container').setView([lat, lng], 17);
+                
+                L.tileLayer('https://{s}.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}', {
+                    maxZoom: 20,
+                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                    attribution: '&copy; Google Maps'
+                }).addTo(map);
+            }
+            
+            if(busMarker) map.removeLayer(busMarker);
+            
+            const popupTxt = v ? `
+                <b>${v.plaque}</b> (${v.type})<br>
+                Statut : <b>${(v.vitesse > 0) ? Math.round(v.vitesse) + ' km/h' : "À l'arrêt"}</b><br>
+                Roulé aujourd'hui : <b>${v.kmJour.toFixed(1)} km</b><br>
+                Relais : <b>${v.moteurCoupe ? 'Coupé' : 'Autorisé'}</b>
+            ` : "En attente...";
+            
+            busMarker = L.marker([lat, lng], {
+                icon: creerIconeVehiculeDynamique(v ? v.dernierCap : 0)
+            }).addTo(map).bindPopup(popupTxt).openPopup();
+            
+            if (polylineTrace) map.removeLayer(polylineTrace);
+            if(tracePositions.length > 1) {
+                polylineTrace = L.polyline(tracePositions, { 
+                    color: '#1a73e8', 
+                    weight: 6, 
+                    opacity: 0.9, 
+                    lineJoin: 'round' 
+                }).addTo(map);
+            }
+
+            map.setView([lat, lng], 17);
+            setTimeout(() => { map.invalidateSize(); }, 200);
+        }
+        
+        function centrerSurVehicule(indexStr) { 
+            if (indexStr !== "none") initMapEtCentrer(parseInt(indexStr)); 
+        }
+
+        // HISTORIQUE / REPLAY
+        function initMapHistorique() {
+            const histContainer = document.getElementById('map-history-container');
+            if (!histContainer || histContainer.offsetParent === null) return;
+
+            if (!mapHistory) {
+                mapHistory = L.map('map-history-container').setView([-4.3215, 15.3115], 13);
+                L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                    maxZoom: 19,
+                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                    attribution: '&copy; Google Maps'
+                }).addTo(mapHistory);
+            }
+        }
+
+        async function chargerHistoriqueDate() {
+            const selectVehicule = document.getElementById('hist-select-vehicule');
+            const dateInput = document.getElementById('hist-date-picker').value;
+
+            if (!dateInput) {
+                alert("Veuillez sélectionner une date.");
+                return;
+            }
+
+            const vehiculeIdx = parseInt(selectVehicule.value);
+            const vehicule = client.vehicules[vehiculeIdx];
+            if (!vehicule) {
+                alert("Aucun véhicule sélectionné.");
+                return;
+            }
+
+            const btn = event.currentTarget;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Recherche...`;
+
+            try {
+                const debutJour = new Date(`${dateInput}T00:00:00.000Z`).toISOString();
+                const finJour = new Date(`${dateInput}T23:59:59.999Z`).toISOString();
+
+                const { data, error } = await supabaseClient
+                    .from('transvision_positions_gps')
+                    .select('*')
+                    .eq('imei', vehicule.imei)
+                    .gte('created_at', debutJour)
+                    .lte('created_at', finJour)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    alert(`Aucun déplacement enregistré le ${dateInput} pour ${vehicule.plaque}.`);
+                    document.getElementById('hist-stats-card').classList.add('hidden');
+                    btn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Afficher le Trajet`;
+                    return;
+                }
+
+                let points = [];
+                let kmTotal = 0;
+                let maxSpeed = 0;
+
+                for (let i = 0; i < data.length; i++) {
+                    const p = data[i];
+                    const lat = parseFloat(p.latitude);
+                    const lng = parseFloat(p.longitude);
+                    const vit = parseFloat(p.speed || 0);
+
+                    points.push([lat, lng]);
+                    if (vit > maxSpeed) maxSpeed = vit;
+
+                    if (i > 0) {
+                        kmTotal += calculerDistanceGPS(points[i-1][0], points[i-1][1], lat, lng);
+                    }
+                }
+
+                document.getElementById('hist-total-km').textContent = `${kmTotal.toFixed(1)} km`;
+                document.getElementById('hist-max-speed').textContent = `${Math.round(maxSpeed)} km/h`;
+                document.getElementById('hist-total-points').textContent = data.length;
+                document.getElementById('hist-stats-card').classList.remove('hidden');
+
+                initMapHistorique();
+
+                if (polylineHistory) mapHistory.removeLayer(polylineHistory);
+                markersHistory.forEach(m => mapHistory.removeLayer(m));
+                markersHistory = [];
+
+                polylineHistory = L.polyline(points, {
+                    color: '#0284c7',
+                    weight: 5,
+                    opacity: 0.85,
+                    lineJoin: 'round'
+                }).addTo(mapHistory);
+
+                const startMarker = L.circleMarker(points[0], { radius: 7, fillColor: '#10b981', color: '#ffffff', weight: 2, fillOpacity: 1 })
+                    .addTo(mapHistory)
+                    .bindPopup(`<b>Départ :</b> ${new Date(data[0].created_at).toLocaleTimeString()}`);
+                markersHistory.push(startMarker);
+
+                const endMarker = L.circleMarker(points[points.length - 1], { radius: 7, fillColor: '#f43f5e', color: '#ffffff', weight: 2, fillOpacity: 1 })
+                    .addTo(mapHistory)
+                    .bindPopup(`<b>Arrivée :</b> ${new Date(data[data.length - 1].created_at).toLocaleTimeString()}`);
+                markersHistory.push(endMarker);
+
+                mapHistory.fitBounds(polylineHistory.getBounds(), { padding: [30, 30] });
+
+            } catch(e) {
+                alert("Erreur lors du chargement de l'historique.");
+            } finally {
+                btn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Afficher le Trajet`;
+            }
+        }
+
+        // FUSION ANTIVOL & ENTRETIEN
+        function genererVueControleEntretien() {
+            const container = document.getElementById('combo-vehicules-list');
+            if (!container) return;
+            container.innerHTML = "";
+
+            if (client.vehicules.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">Aucun véhicule configuré dans la flotte.</p>`;
+                return;
+            }
+
+            client.vehicules.forEach((v, index) => {
+                const configEntretien = JSON.parse(localStorage.getItem(`tv_maint_${v.imei}`) || JSON.stringify({
+                    kmVidangeDerniere: v.kmOdometre - 3200,
+                    intervalleVidange: 5000,
+                    kmFreinsDerniers: v.kmOdometre - 11000,
+                    intervalleFreins: 15000,
+                    kmFiltresDerniers: v.kmOdometre - 6000,
+                    intervalleFiltres: 10000
+                }));
+
+                const kmParcourusVidange = v.kmOdometre - configEntretien.kmVidangeDerniere;
+                const kmRestantVidange = configEntretien.intervalleVidange - kmParcourusVidange;
+                const pctVidange = Math.max(0, Math.min(100, Math.round((kmRestantVidange / configEntretien.intervalleVidange) * 100)));
+                const couleurVidange = kmRestantVidange <= 0 ? 'bg-rose-500' : (kmRestantVidange <= 800 ? 'bg-amber-400' : 'bg-emerald-500');
+
+                const kmParcourusFreins = v.kmOdometre - configEntretien.kmFreinsDerniers;
+                const kmRestantFreins = configEntretien.intervalleFreins - kmParcourusFreins;
+                const pctFreins = Math.max(0, Math.min(100, Math.round((kmRestantFreins / configEntretien.intervalleFreins) * 100)));
+                const couleurFreins = kmRestantFreins <= 0 ? 'bg-rose-500' : (kmRestantFreins <= 1500 ? 'bg-amber-400' : 'bg-emerald-500');
+
+                const kmParcourusFiltres = v.kmOdometre - configEntretien.kmFiltresDerniers;
+                const kmRestantFiltres = configEntretien.intervalleFiltres - kmParcourusFiltres;
+                const pctFiltres = Math.max(0, Math.min(100, Math.round((kmRestantFiltres / configEntretien.intervalleFiltres) * 100)));
+                const couleurFiltres = kmRestantFiltres <= 0 ? 'bg-rose-500' : (kmRestantFiltres <= 1000 ? 'bg-amber-400' : 'bg-emerald-500');
+
+                const carteHTML = `
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+                            <div>
+                                <h3 class="font-black text-slate-100 text-sm">${v.plaque} <span class="text-[9px] text-slate-400 font-normal">(${v.type})</span></h3>
+                                <p class="text-[9px] font-mono text-slate-500">IMEI : ${v.imei}</p>
+                            </div>
+                            <span class="text-[10px] font-mono font-bold bg-slate-900 border border-slate-800 px-2 py-1 rounded-lg text-emerald-400">
+                                ${Math.round(v.kmOdometre).toLocaleString()} km
+                            </span>
+                        </div>
+
+                        <!-- BLOC ANTIVOL / COUPE-CIRCUIT -->
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-850 space-y-2.5">
+                            <div class="flex justify-between items-center text-[10px] font-mono">
+                                <span class="text-slate-400 uppercase font-bold flex items-center gap-1.5">
+                                    <i class="fa-solid fa-power-off text-rose-400"></i> Relais Coupe-Circuit :
+                                </span>
+                                <span class="${v.moteurCoupe ? 'text-rose-400 font-black animate-pulse' : 'text-emerald-400 font-black'}">
+                                    ${v.moteurCoupe ? '🔴 MOTEUR BLOQUÉ' : '🟢 DÉMARRAGE AUTORISÉ'}
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 pt-1">
+                                <button onclick="actionnerMoteur(${index}, true)" class="w-full bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 font-black py-2.5 rounded-xl text-[10px] uppercase transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
+                                    <i class="fa-solid fa-power-off"></i> Couper Moteur
+                                </button>
+                                
+                                <button onclick="actionnerMoteur(${index}, false)" class="w-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 font-black py-2.5 rounded-xl text-[10px] uppercase transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
+                                    <i class="fa-solid fa-key"></i> Débloquer
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- BLOC ENTRETIEN -->
+                        <div class="space-y-2">
+                            <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-wrench text-amber-400"></i> Échéances d'Entretien
+                            </span>
+
+                            <!-- VIDANGE -->
+                            <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-850 space-y-1">
+                                <div class="flex justify-between text-xs font-bold">
+                                    <span class="flex items-center gap-1.5 text-slate-200">
+                                        <i class="fa-solid fa-oil-can text-amber-400"></i> Vidange Moteur
+                                    </span>
+                                    <span class="${kmRestantVidange <= 0 ? 'text-rose-400 animate-pulse font-black' : (kmRestantVidange <= 800 ? 'text-amber-400' : 'text-emerald-400')} font-mono text-[10px]">
+                                        ${kmRestantVidange <= 0 ? 'DÉPASSÉE !' : `reste ${kmRestantVidange.toLocaleString()} km`}
+                                    </span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                                    <div class="${couleurVidange} h-full transition-all duration-500" style="width: ${pctVidange}%"></div>
+                                </div>
+                                <div class="flex justify-between text-[8px] text-slate-400 font-mono pt-0.5">
+                                    <span>Cycle : ${configEntretien.intervalleVidange.toLocaleString()} km</span>
+                                    <button onclick="reinitialiserEntretien('${v.imei}', 'vidange')" class="text-sky-400 hover:underline font-bold">Vidange effectuée</button>
+                                </div>
+                            </div>
+
+                            <!-- FREINS -->
+                            <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-850 space-y-1">
+                                <div class="flex justify-between text-xs font-bold">
+                                    <span class="flex items-center gap-1.5 text-slate-200">
+                                        <i class="fa-solid fa-compact-disc text-rose-400"></i> Plaquettes de Frein
+                                    </span>
+                                    <span class="${kmRestantFreins <= 0 ? 'text-rose-400 animate-pulse font-black' : (kmRestantFreins <= 1500 ? 'text-amber-400' : 'text-emerald-400')} font-mono text-[10px]">
+                                        ${kmRestantFreins <= 0 ? 'À REMPLACER !' : `reste ${kmRestantFreins.toLocaleString()} km`}
+                                    </span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                                    <div class="${couleurFreins} h-full transition-all duration-500" style="width: ${pctFreins}%"></div>
+                                </div>
+                                <div class="flex justify-between text-[8px] text-slate-400 font-mono pt-0.5">
+                                    <span>Cycle : ${configEntretien.intervalleFreins.toLocaleString()} km</span>
+                                    <button onclick="reinitialiserEntretien('${v.imei}', 'freins')" class="text-sky-400 hover:underline font-bold">Freins remplacés</button>
+                                </div>
+                            </div>
+
+                            <!-- FILTRES -->
+                            <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-850 space-y-1">
+                                <div class="flex justify-between text-xs font-bold">
+                                    <span class="flex items-center gap-1.5 text-slate-200">
+                                        <i class="fa-solid fa-filter text-sky-400"></i> Filtres Air & Carburant
+                                    </span>
+                                    <span class="${kmRestantFiltres <= 0 ? 'text-rose-400 animate-pulse font-black' : (kmRestantFiltres <= 1000 ? 'text-amber-400' : 'text-emerald-400')} font-mono text-[10px]">
+                                        ${kmRestantFiltres <= 0 ? 'À CHANGER !' : `reste ${kmRestantFiltres.toLocaleString()} km`}
+                                    </span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                                    <div class="${couleurFiltres} h-full transition-all duration-500" style="width: ${pctFiltres}%"></div>
+                                </div>
+                                <div class="flex justify-between text-[8px] text-slate-400 font-mono pt-0.5">
+                                    <span>Cycle : ${configEntretien.intervalleFiltres.toLocaleString()} km</span>
+                                    <button onclick="reinitialiserEntretien('${v.imei}', 'filtres')" class="text-sky-400 hover:underline font-bold">Filtres changés</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', carteHTML);
+            });
+        }
+
+        function reinitialiserEntretien(imei, type) {
+            const v = client.vehicules.find(item => item.imei === imei);
+            if (!v) return;
+
+            if (confirm(`Confirmez-vous l'opération [${type.toUpperCase()}] sur ${v.plaque} ?`)) {
+                let conf = JSON.parse(localStorage.getItem(`tv_maint_${imei}`) || '{}');
+                if (type === 'vidange') conf.kmVidangeDerniere = Math.round(v.kmOdometre);
+                if (type === 'freins') conf.kmFreinsDerniers = Math.round(v.kmOdometre);
+                if (type === 'filtres') conf.kmFiltresDerniers = Math.round(v.kmOdometre);
+
+                localStorage.setItem(`tv_maint_${imei}`, JSON.stringify(conf));
+                genererVueControleEntretien();
+                alert(`✅ Entretien validé pour ${v.plaque}.`);
+            }
+        }
+
+        function actionnerMoteur(index, couper) {
+            const v = client.vehicules[index];
+            if (!v) return;
+
+            const actionTxt = couper ? "COUPER" : "RÉTABLIR";
+            const confirmMsg = couper 
+                ? `⚠️ ALERTE ANTIVOL\n\nCouper le moteur du véhicule ${v.plaque} ?\nLe contact électrique de la pompe sera interrompu.`
+                : `🔑 DÉBLOCAGE\n\nRéactiver le véhicule ${v.plaque} ?\nLe démarrage avec la clé sera à nouveau possible.`;
+
+            if (confirm(confirmMsg)) {
+                v.moteurCoupe = couper;
+
+                const customConfig = JSON.parse(localStorage.getItem('tv_vehicules_custom') || '{}');
+                if (!customConfig[v.imei]) customConfig[v.imei] = {};
+                customConfig[v.imei].moteurCoupe = couper;
+                localStorage.setItem('tv_vehicules_custom', JSON.stringify(customConfig));
+
+                socket.emit('commande_moteur', { imei: v.imei, couper: couper });
+
+                try {
+                    if (window.supabase) {
+                        supabaseClient.from('tv_vehicules').upsert({
+                            imei: v.imei,
+                            moteur_coupe: couper,
+                            updated_at: new Date().toISOString()
+                        }, { onConflict: 'imei' }).then();
+                        diffuserEtatAdmin(v);
+                    }
+                } catch(e) {}
+
+                const smsCode = couper ? "RELAY,1#" : "RELAY,0#";
+                alert(`📡 Ordre ${actionTxt} envoyé au boîtier SinoTrack !\n\n(En cas d'absence de data GSM : envoyez ${smsCode} par SMS).`);
+                
+                genererVueControleEntretien();
+                if (map && busMarker) initMapEtCentrer(index);
+            }
+        }
+
+        // GESTION FLOTTE
+        function genererVueFlotte() {
+            const container = document.getElementById('flotte-cards-container');
+            if (!container) return;
+            container.innerHTML = "";
+
+            if (client.vehicules.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-4 bg-slate-950 rounded-xl border border-slate-800">Aucun véhicule enregistré pour le moment.</p>`;
+                return;
+            }
+
+            client.vehicules.forEach((v) => {
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex justify-between items-center shadow-md">
+                        <div>
+                            <h4 class="font-black text-slate-100 text-xs">${v.plaque}</h4>
+                            <p class="text-[9px] text-slate-400">${v.type}</p>
+                            <p class="text-[9px] font-mono text-emerald-400">IMEI: ${v.imei}</p>
+                        </div>
+                        <div class="text-right space-y-1">
+                            <span class="text-[10px] font-mono text-slate-300 font-bold block">${Math.round(v.kmOdometre).toLocaleString()} km</span>
+                            <button onclick="supprimerVehiculeFlotte('${v.imei}')" class="text-rose-400 hover:text-rose-300 text-[10px] font-bold">
+                                <i class="fa-solid fa-trash-can mr-1"></i> Retirer
+                            </button>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        function enregistrerVehiculeSaisi() {
+            const plaque = document.getElementById('add-plaque').value.trim();
+            const imei = document.getElementById('add-imei').value.trim();
+            const type = document.getElementById('add-type').value.trim() || "Véhicule Personnel";
+            const odo = parseInt(document.getElementById('add-km-odometre').value) || 120000;
+
+            if (!plaque || !imei) { alert("Veuillez renseigner la plaque et le numéro IMEI."); return; }
+            
+            const imeiClean = String(imei).trim();
+
+            const customConfig = JSON.parse(localStorage.getItem('tv_vehicules_custom') || '{}');
+            customConfig[imeiClean] = {
+                plaque: plaque, type: type, imei: imeiClean, kmOdometre: odo, moteurCoupe: false
+            };
+            localStorage.setItem('tv_vehicules_custom', JSON.stringify(customConfig));
+
+            localStorage.setItem(`tv_maint_${imeiClean}`, JSON.stringify({
+                kmVidangeDerniere: odo,
+                intervalleVidange: 5000,
+                kmFreinsDerniers: odo,
+                intervalleFreins: 15000,
+                kmFiltresDerniers: odo,
+                intervalleFiltres: 10000
+            }));
+
+            let vehiculeExistant = client.vehicules.find(v => v.imei === imeiClean);
+            if (vehiculeExistant) {
+                vehiculeExistant.plaque = plaque;
+                vehiculeExistant.type = type;
+                vehiculeExistant.kmOdometre = odo;
+            } else {
+                const nv = { 
+                    plaque: plaque, type: type, imei: imeiClean, 
+                    lat: -4.32, lng: 15.31, vitesse: 0, moteurCoupe: false, kmJour: 0, kmOdometre: odo, dernierCap: 0
+                };
+                client.vehicules.push(nv);
+            }
+            
+            try {
+                if(window.supabase) {
+                    supabaseClient.from('tv_vehicules').upsert({
+                        imei: imeiClean, plaque: plaque,
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'imei' }).then();
+                }
+            } catch(e) {}
+
+            document.getElementById('add-plaque').value = ""; 
+            document.getElementById('add-imei').value = ""; 
+            document.getElementById('add-type').value = "";
+            document.getElementById('add-km-odometre').value = "";
+            
+            alert(`✅ Véhicule ${plaque} ajouté à la flotte.`);
+            majSelecteursVehicules();
+            genererVueFlotte();
+            genererVueControleEntretien();
+        }
+
+        function supprimerVehiculeFlotte(imeiClean) {
+            if (confirm("Supprimer ce véhicule de votre flotte ?")) {
+                const customConfig = JSON.parse(localStorage.getItem('tv_vehicules_custom') || '{}');
+                delete customConfig[imeiClean];
+                localStorage.setItem('tv_vehicules_custom', JSON.stringify(customConfig));
+
+                client.vehicules = client.vehicules.filter(v => v.imei !== imeiClean);
+                majSelecteursVehicules();
+                genererVueFlotte();
+                genererVueControleEntretien();
+            }
+        }
+
+        // AFFICHAGE DU RETOUR VISUEL SUR LA PAGE
+        function afficherFeedbackCompte(type, message) {
+            const fb = document.getElementById('prof-msg-feedback');
+            if (!fb) return;
+            fb.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-400', 'border-emerald-500/30', 'bg-rose-500/20', 'text-rose-400', 'border-rose-500/30');
+            
+            if (type === 'success') {
+                fb.className = "p-3 rounded-xl text-center text-xs font-bold transition-all bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+            } else {
+                fb.className = "p-3 rounded-xl text-center text-xs font-bold transition-all bg-rose-500/20 text-rose-400 border border-rose-500/30";
+            }
+            fb.innerHTML = message;
+            
+            setTimeout(() => {
+                if (type === 'success') fb.classList.add('hidden');
+            }, 6000);
+        }
+
+        // MISE À JOUR SÉCURISÉE DU PROFIL
+        async function majIdentifiantsEtAdresse() {
+            const btn = document.getElementById('btn-maj-profil');
+            const ancienTel = (partenaireProfil && partenaireProfil.tel) || localStorage.getItem('tv_partenaire_tel');
+            const newNom = document.getElementById('prof-nom').value.trim();
+            const newTel = document.getElementById('prof-tel').value.trim();
+            const newCommune = document.getElementById('prof-commune').value.trim();
+            const newQuartier = document.getElementById('prof-quartier').value.trim();
+            const newPin = document.getElementById('prof-pin-new').value.trim();
+
+            if (!ancienTel) {
+                afficherFeedbackCompte('error', "❌ Session expirée. Veuillez vous reconnecter.");
+                return;
+            }
+            if (!newNom) { afficherFeedbackCompte('error', "❌ Le nom ne peut pas être vide."); return; }
+            if (!newTel) { afficherFeedbackCompte('error', "❌ Le téléphone ne peut pas être vide."); return; }
+
+            // Animation du bouton
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Enregistrement en cours...`;
+            btn.disabled = true;
+
+            const adresseComplete = `${newCommune || 'Kinshasa'} • ${newQuartier || 'RDC'}`;
+
+            // 1. Sauvegarde locale immédiate
+            localStorage.setItem('tv_partenaire_nom', newNom);
+            localStorage.setItem('tv_partenaire_tel', newTel);
+            localStorage.setItem('tv_partenaire_commune', newCommune);
+            localStorage.setItem('tv_partenaire_quartier', newQuartier);
+            localStorage.setItem('tv_partenaire_adresse', adresseComplete);
+
+            // 2. Objet pour Supabase
+            let updates = {
+                nom: newNom,
+                tel: newTel,
+                adresse: adresseComplete,
+                commune: newCommune,
+                quartier: newQuartier
+            };
+
+            if (newPin && newPin.length >= 4) {
+                updates.pin = newPin;
+            }
+
+            try {
+                if (window.supabase) {
+                    let { error } = await supabaseClient
+                        .from('tv_partenaires')
+                        .update(updates)
+                        .eq('tel', ancienTel);
+
+                    // Si les colonnes spécifiques n'existent pas encore dans Supabase
+                    if (error) {
+                        console.warn("Repli de sauvegarde :", error.message);
+                        let fallbackUpdates = {
+                            nom: newNom,
+                            tel: newTel,
+                            adresse: adresseComplete
+                        };
+                        if (newPin && newPin.length >= 4) fallbackUpdates.pin = newPin;
+
+                        const { error: errRepli } = await supabaseClient
+                            .from('tv_partenaires')
+                            .update(fallbackUpdates)
+                            .eq('tel', ancienTel);
+
+                        if (errRepli) throw errRepli;
+                    }
+                }
+
+                // 3. Mise à jour de l'état en mémoire
+                if (!partenaireProfil) partenaireProfil = {};
+                partenaireProfil.nom = newNom;
+                partenaireProfil.tel = newTel;
+                partenaireProfil.commune = newCommune;
+                partenaireProfil.quartier = newQuartier;
+                partenaireProfil.adresse = adresseComplete;
+
+                document.getElementById('lbl-nom-partenaire').textContent = newNom;
+                document.getElementById('lbl-adresse-partenaire').textContent = adresseComplete;
+
+                afficherFeedbackCompte('success', "✅ Informations mises à jour avec succès !");
+                document.getElementById('prof-pin-new').value = "";
+                genererToutesLesVues();
+            } catch(e) {
+                console.error("Détail de l'erreur :", e);
+                afficherFeedbackCompte('error', "❌ Erreur base de données : " + (e.message || "Vérifiez vos permissions."));
+            } finally {
+                btn.innerHTML = `Mettre à Jour mes Informations`;
+                btn.disabled = false;
+            }
+        }
+
+        function basculerVueAuth(mode) {
+            if(mode === 'login') {
+                document.getElementById('form-connexion').classList.remove('hidden'); 
+                document.getElementById('form-inscription').classList.add('hidden');
+                document.getElementById('tab-btn-login').className = "py-2 text-xs font-black rounded-lg transition-all bg-emerald-500 text-slate-950";
+                document.getElementById('tab-btn-register').className = "py-2 text-xs font-black rounded-lg transition-all text-slate-400 hover:text-slate-200";
+            } else {
+                document.getElementById('form-connexion').classList.add('hidden'); 
+                document.getElementById('form-inscription').classList.remove('hidden');
+                document.getElementById('tab-btn-register').className = "py-2 text-xs font-black rounded-lg transition-all bg-emerald-500 text-slate-950";
+                document.getElementById('tab-btn-login').className = "py-2 text-xs font-black rounded-lg transition-all text-slate-400 hover:text-slate-200";
+            }
+        }
+        
+        function naviguerVers(id) { 
+            document.getElementById('page-auth').classList.add('hidden'); 
+            document.getElementById('app-proprietaire').classList.add('hidden'); 
+            document.getElementById(id).classList.remove('hidden'); 
+        }
+
+        async function inscrireNouveauPartenaire() {
+            const nom = document.getElementById('ins-nom').value.trim();
+            const tel = document.getElementById('ins-tel').value.trim();
+            const commune = document.getElementById('ins-commune').value.trim();
+            const quartier = document.getElementById('ins-quartier').value.trim();
+            const pin = document.getElementById('ins-pin').value.trim();
+
+            if(!nom || !tel || !commune || !quartier || !pin) { 
+                alert("Veuillez renseigner tous les champs requis."); 
+                return; 
+            }
+
+            try {
+                const dateExpiration = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+
+                let { error } = await supabaseClient.from('tv_partenaires').insert([{
+                    nom: nom, 
+                    tel: tel, 
+                    commune: commune,
+                    quartier: quartier,
+                    adresse: `${commune} • ${quartier}`,
+                    pin: pin, 
+                    type_contrat: 'particulier_antivol', 
+                    date_expiration: dateExpiration.toISOString()
+                }]);
+
+                if (error) {
+                    const resFallback = await supabaseClient.from('tv_partenaires').insert([{
+                        nom: nom, 
+                        tel: tel, 
+                        adresse: `${commune} • ${quartier}`,
+                        pin: pin, 
+                        type_contrat: 'particulier_antivol', 
+                        date_expiration: dateExpiration.toISOString()
+                    }]);
+                    if (resFallback.error) throw resFallback.error;
+                }
+                
+                localStorage.setItem('tv_partenaire_nom', nom);
+                localStorage.setItem('tv_partenaire_commune', commune);
+                localStorage.setItem('tv_partenaire_quartier', quartier);
+
+                alert("✅ Inscription réussie. Connectez-vous avec votre numéro et votre PIN.");
+                document.getElementById('login-tel').value = tel;
+                document.getElementById('login-pin').value = pin;
+                basculerVueAuth('login');
+            } catch (err) {
+                alert("❌ Erreur lors de l'inscription : " + (err.message || "vérifiez vos accès."));
+            }
+        }
+
+        async function executerConnexionPartenaire() { 
+            const telInput = document.getElementById('login-tel').value.trim();
+            const pinInput = document.getElementById('login-pin').value.trim();
+            const btn = document.getElementById('btn-login-text');
+            btn.textContent = "Vérification...";
+
+            try {
+                const { data, error } = await supabaseClient.from('tv_partenaires').select('*').eq('tel', telInput).eq('pin', pinInput).single();
+                
+                if (data) {
+                    localStorage.setItem('tv_partenaire_tel', data.tel);
+                    if(data.nom) localStorage.setItem('tv_partenaire_nom', data.nom);
+                    if(data.commune) {
+                        localStorage.setItem('tv_partenaire_commune', data.commune);
+                    } else if (data.adresse && data.adresse.includes(' • ')) {
+                        const parts = data.adresse.split(' • ');
+                        localStorage.setItem('tv_partenaire_commune', parts[0] || 'Kinshasa');
+                        localStorage.setItem('tv_partenaire_quartier', parts[1] || 'RDC');
+                    }
+                    if(data.quartier) localStorage.setItem('tv_partenaire_quartier', data.quartier);
+                    lancerEspaceFlotte(data);
+                } else {
+                    alert("❌ Téléphone ou Code PIN incorrect."); 
+                    btn.textContent = "Accéder à mes Véhicules"; 
+                }
+            } catch (err) { 
+                alert("❌ Téléphone ou Code PIN incorrect."); 
+                btn.textContent = "Accéder à mes Véhicules"; 
+            }
+        }
+
+        function lancerEspaceFlotte(donneesPartenaire) {
+            partenaireProfil = donneesPartenaire;
+            naviguerVers('app-proprietaire'); 
+            
+            activerSynchronisationCloud();
+            document.getElementById('hist-date-picker').value = getKinshasaDateStr();
+
+            chargerDernieresPositions().then(() => { 
+                genererToutesLesVues(); 
+                changerOnglet('onglet-flotte', document.querySelectorAll('.btn-nav')[0]); 
+                activerFluxRealtimePush();
+            });
+        }
+
+        function declencherDeconnexion() { 
+            localStorage.removeItem('tv_partenaire_tel');
+            localStorage.removeItem('tv_vehicules_custom');
+            client.vehicules = [];
+            tracePositions = [];
+            partenaireProfil = null;
+            if (busMarker && map) map.removeLayer(busMarker);
+            if (polylineTrace && map) map.removeLayer(polylineTrace);
+            naviguerVers('page-auth'); 
+            document.getElementById('btn-login-text').textContent = "Accéder à mes Véhicules";
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            chargerConfigurationsAdmin();
+            
+            document.getElementById('login-tel').value = "";
+            document.getElementById('login-pin').value = "";
+            
+            const telSauve = localStorage.getItem('tv_partenaire_tel');
+            if (telSauve) {
+                try {
+                    const { data, error } = await supabaseClient.from('tv_partenaires').select('*').eq('tel', telSauve).single();
+                    if (data) { 
+                        lancerEspaceFlotte(data); 
+                    } else { 
+                        declencherDeconnexion(); 
+                    }
+                } catch (err) { 
+                    declencherDeconnexion(); 
+                }
+            } else {
+                naviguerVers('page-auth');
+            }
+        });
+    </script>
+</body>
+</html>

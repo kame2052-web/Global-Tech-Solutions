@@ -1,0 +1,2215 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <!-- Déclaration PWA -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#0a192f">
+    <link rel="apple-touch-icon" href="./icon-192x192.png">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MATT Clean'App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { 800: '#0a192f', 900: '#020c1b' },
+                        aqua: '#00b4d8',
+                        mattOrange: '#f77f00',
+                        whatsapp: '#25d366'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { -webkit-tap-highlight-color: transparent; }
+        .watermark-bg::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('matt.jpg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            background-size: 35%;
+            opacity: 0.03;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-navy-900 text-slate-100 min-h-screen watermark-bg font-sans flex flex-col justify-between select-none">
+
+    <div id="toast-container" class="fixed top-4 inset-x-4 z-[9999] flex flex-col gap-2 max-w-sm mx-auto pointer-events-none"></div>
+
+    <header class="bg-navy-800/95 border-b border-aqua/30 px-4 py-3 md:px-8 flex justify-between items-center sticky top-0 z-40 backdrop-blur-md shadow-lg w-full">
+        <div class="flex items-center gap-2.5 cursor-pointer" onclick="showView('view-gateway')">
+            <div class="w-11 h-11 bg-white rounded-2xl shadow-md border border-aqua/30 p-1 flex items-center justify-center flex-shrink-0">
+                <img src="cleanapp.jpg" alt="Logo" class="w-full h-full object-contain" onerror="this.src='cleanapp.png'">
+            </div>
+            <div class="flex flex-col">
+                <span class="text-lg md:text-xl font-black text-white leading-tight tracking-wide">MATT Clean'App</span>
+                <span class="text-[8px] md:text-[9px] text-aqua uppercase font-bold tracking-widest">by Global Tech Solutions</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <!-- Bouton d'installation PWA intégré dans l'en-tête -->
+            <button id="btn-install-pwa" class="hidden px-3 py-1.5 rounded-xl bg-aqua hover:bg-sky-400 text-navy-900 text-xs font-black transition shadow flex items-center gap-1.5">
+                📲 Installer
+            </button>
+            <button onclick="refreshApplicationData()" id="btn-app-refresh" class="hidden px-3.5 py-1.5 rounded-xl bg-sky-600/80 hover:bg-sky-600 text-white text-xs font-bold transition shadow flex items-center gap-1.5">
+                <span id="global-refresh-icon" class="inline-block transition-transform">🔄</span> Actualiser
+            </button>
+            <button onclick="logoutCurrentSession()" id="btn-header-logout" class="hidden px-3.5 py-1.5 rounded-xl bg-red-600/80 hover:bg-red-600 text-white text-xs font-bold transition shadow flex items-center gap-1.5">
+                🚪 Déconnexion
+            </button>
+        </div>
+    </header>
+
+    <main class="w-full px-2 py-3 sm:px-6 sm:py-5 flex-grow flex flex-col justify-start">
+
+        <div id="view-gateway" class="w-full max-w-4xl mx-auto space-y-8 animate-fade-in my-auto py-8">
+            <div class="text-center space-y-4">
+                <div class="inline-block w-28 h-28 md:w-32 md:h-32 bg-white rounded-3xl p-2 shadow-2xl border-2 border-aqua/40">
+                    <img src="cleanapp.jpg" alt="Logo Clean'App" class="w-full h-full object-contain" onerror="this.src='cleanapp.png'">
+                </div>
+                <div class="space-y-2 max-w-md mx-auto">
+                    <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">
+                        Bienvenue dans <span class="text-aqua">MATT Clean'App</span>
+                    </h1>
+                    <p class="text-slate-300 text-sm md:text-base font-medium leading-relaxed">
+                        Votre plateforme d'assainissement et nettoyage pro.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto pt-2">
+                <div onclick="goToAuth('client')" class="bg-white text-slate-800 rounded-3xl p-6 shadow-2xl border-2 border-transparent hover:border-aqua active:scale-95 transition-all flex items-center justify-between cursor-pointer group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-sky-100 text-aqua flex items-center justify-center text-3xl font-black shadow-inner group-hover:bg-aqua group-hover:text-white transition-all">🛒</div>
+                        <div>
+                            <h2 class="text-xl font-black text-navy-800 group-hover:text-aqua transition-all">Client</h2>
+                            <p class="text-xs text-slate-500 font-semibold mt-0.5">Commander une prestation</p>
+                        </div>
+                    </div>
+                    <span class="w-9 h-9 rounded-full bg-navy-800 text-white flex items-center justify-center font-bold text-sm group-hover:bg-aqua group-hover:text-navy-900 transition-all">➔</span>
+                </div>
+
+                <div onclick="goToAuth('partner')" class="bg-white text-slate-800 rounded-3xl p-6 shadow-2xl border-2 border-transparent hover:border-mattOrange active:scale-95 transition-all flex items-center justify-between cursor-pointer group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-orange-100 text-mattOrange flex items-center justify-center text-3xl font-black shadow-inner group-hover:bg-mattOrange group-hover:text-white transition-all">🤝</div>
+                        <div>
+                            <h2 class="text-xl font-black text-navy-800 group-hover:text-mattOrange transition-all">Partenaire</h2>
+                            <p class="text-xs text-slate-500 font-semibold mt-0.5">Accès prestataire agréé</p>
+                        </div>
+                    </div>
+                    <span class="w-9 h-9 rounded-full bg-mattOrange text-white flex items-center justify-center font-bold text-sm group-hover:bg-orange-600 transition-all">➔</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-client-auth" class="bg-white text-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl hidden animate-fade-in max-w-md mx-auto w-full my-auto">
+            <div class="flex items-center justify-end border-b pb-2 mb-4">
+                <button onclick="showView('view-gateway')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 font-bold flex items-center justify-center">✕</button>
+            </div>
+
+            <div class="flex border-b border-slate-200 mb-5 text-xs">
+                <button onclick="switchAuthTab('client', 'login')" id="tab-client-login" class="flex-1 py-2 font-black border-b-2 border-aqua text-aqua">Se Connecter</button>
+                <button onclick="switchAuthTab('client', 'register')" id="tab-client-register" class="flex-1 py-2 font-bold border-b-2 border-transparent text-slate-400">Créer un compte</button>
+            </div>
+
+            <div id="form-client-login" class="space-y-3.5">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Numéro de Téléphone</label>
+                    <input type="tel" id="auth-client-login-phone" placeholder="0825556633" class="w-full px-3.5 py-3 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-aqua focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Mot de passe</label>
+                    <div class="relative">
+                        <input type="password" id="auth-client-login-pass" placeholder="••••••••" class="w-full px-3.5 py-3 pr-10 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-aqua focus:outline-none">
+                        <button type="button" onclick="togglePasswordVisibility('auth-client-login-pass', 'eye-client-login')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400">
+                            <span id="eye-client-login">👁️</span>
+                        </button>
+                    </div>
+                </div>
+                <button onclick="loginClient()" class="w-full py-3.5 bg-navy-800 active:bg-navy-900 text-white font-black text-xs rounded-xl uppercase tracking-wider shadow mt-2">Connexion</button>
+            </div>
+
+            <div id="form-client-register" class="space-y-3.5 hidden">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Nom complet</label>
+                    <input type="text" id="auth-client-reg-name" placeholder="Nom complet" class="w-full px-3.5 py-3 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Numéro de Téléphone</label>
+                    <input type="tel" id="auth-client-reg-phone" placeholder="Numéro de téléphone" class="w-full px-3.5 py-3 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Mot de passe</label>
+                    <div class="relative">
+                        <input type="password" id="auth-client-reg-pass" placeholder="••••••••" class="w-full px-3.5 py-3 pr-10 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800">
+                        <button type="button" onclick="togglePasswordVisibility('auth-client-reg-pass', 'eye-client-reg')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400">
+                            <span id="eye-client-reg">👁️</span>
+                        </button>
+                    </div>
+                </div>
+                <button onclick="registerClient()" class="w-full py-3.5 bg-aqua text-navy-900 font-black text-xs rounded-xl uppercase tracking-wider shadow mt-2">Créer mon compte</button>
+            </div>
+        </div>
+
+        <div id="view-partner-auth" class="bg-white text-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl hidden animate-fade-in max-w-md mx-auto w-full my-auto">
+            <div class="flex items-center justify-end border-b pb-2 mb-4">
+                <button onclick="showView('view-gateway')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 font-bold flex items-center justify-center">✕</button>
+            </div>
+
+            <div class="flex border-b border-slate-200 mb-5 text-xs">
+                <button onclick="switchAuthTab('partner', 'login')" id="tab-partner-login" class="flex-1 py-2 font-black border-b-2 border-mattOrange text-mattOrange">Connexion</button>
+                <button onclick="switchAuthTab('partner', 'register')" id="tab-partner-register" class="flex-1 py-2 font-bold border-b-2 border-transparent text-slate-400">Devenir Partenaire</button>
+            </div>
+
+            <div id="form-partner-login" class="space-y-3.5">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Numéro de Téléphone</label>
+                    <input type="tel" id="auth-partner-login-phone" placeholder="0819998822" class="w-full px-3.5 py-3 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-mattOrange focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Mot de passe</label>
+                    <div class="relative">
+                        <input type="password" id="auth-partner-login-pass" placeholder="••••••••" class="w-full px-3.5 py-3 pr-10 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-mattOrange focus:outline-none">
+                        <button type="button" onclick="togglePasswordVisibility('auth-partner-login-pass', 'eye-partner-login')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400">
+                            <span id="eye-partner-login">👁️</span>
+                        </button>
+                    </div>
+                </div>
+                <button id="btn-login-partner-submit" onclick="loginPartner()" class="w-full py-3.5 bg-mattOrange active:bg-orange-600 text-white font-black text-xs rounded-xl uppercase tracking-wider shadow mt-2">
+                    Accéder à mon espace
+                </button>
+            </div>
+
+            <div id="form-partner-register" class="space-y-3 hidden max-h-[62vh] overflow-y-auto pr-1 custom-scrollbar">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Nom / Raison Sociale *</label>
+                    <input type="text" id="p-reg-name" placeholder="Ex: Lavage Pro Kin" class="w-full px-3 py-2 border rounded-xl text-xs font-bold">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Numéro de Téléphone *</label>
+                    <input type="tel" id="p-reg-phone" placeholder="Ex: 0819998822" class="w-full px-3 py-2 border rounded-xl text-xs font-bold font-mono">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Mot de passe *</label>
+                    <div class="relative">
+                        <input type="password" id="p-reg-pass" placeholder="••••••••" class="w-full px-3 py-2 pr-10 border rounded-xl text-xs font-bold">
+                        <button type="button" onclick="togglePasswordVisibility('p-reg-pass', 'eye-p-reg')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400">
+                            <span id="eye-p-reg">👁️</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Question Secrète *</label>
+                    <select id="p-reg-secret-q" class="w-full px-3 py-2 border rounded-xl text-xs text-slate-800 font-bold bg-white"></select>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Réponse Secrète *</label>
+                    <input type="text" id="p-reg-secret-a" placeholder="Votre réponse" class="w-full px-3 py-2 border rounded-xl text-xs font-bold">
+                </div>
+                
+                <div>
+                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Commune Principale *</label>
+                    <select id="p-reg-commune" class="w-full px-3 py-2 border rounded-xl text-xs text-slate-800 font-bold bg-white"></select>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Adresse d'Exploitation / Siège *</label>
+                    <input type="text" id="p-reg-address" placeholder="Ex: Av. Flambeau N°45, Q/ Matonge" class="w-full px-3 py-2 border rounded-xl text-xs font-medium">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Spécialité Principale *</label>
+                    <select id="p-reg-specialty" class="w-full px-3 py-2 border rounded-xl text-xs text-slate-800 font-bold bg-white">
+                        <option value="Multiservices Complet (Toutes prestations)">Multiservices Complet (Toutes prestations)</option>
+                        <option value="Polyvalent Auto et Maison">Polyvalent (Auto et Maison)</option>
+                        <option value="Lavage auto & Engins">Lavage auto & Engins</option>
+                        <option value="Maison (Canapés, Vitres, Tapis)">Maison (Canapés, Vitres, Tapis)</option>
+                        <option value="Assainissement & Traitement 3D">Assainissement & Traitement 3D</option>
+                        <option value="Vidange fosse septique">Vidange fosse septique & Immondices</option>
+                    </select>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-2xl border border-dashed border-slate-300 space-y-1.5">
+                    <label class="text-[10px] font-black text-navy-800 block uppercase">📁 Pièce d'Identité ou Justificatif *</label>
+                    <span class="text-[9px] text-slate-500 block">Carte d'électeur, Passeport ou Permis (Photo/PDF).</span>
+                    <input type="file" id="p-reg-doc" accept="image/*,application/pdf" class="w-full text-[11px] text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:bg-navy-800 file:text-white hover:file:bg-navy-900 cursor-pointer">
+                </div>
+                <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200 text-[10px] text-amber-800 font-medium leading-tight">
+                    ℹ️ Votre dossier sera soumis à la Direction MATT pour examen avant activation officielle.
+                </div>
+                <button onclick="registerPartner()" id="btn-submit-partner-reg" class="w-full py-3.5 bg-navy-800 text-white font-bold text-xs rounded-xl uppercase tracking-wide shadow mt-1">
+                    Soumettre mon dossier d'agrément
+                </button>
+            </div>
+        </div>
+
+        <div id="view-client-app" class="w-full min-h-[calc(100vh-140px)] bg-white text-slate-800 rounded-3xl p-4 md:p-6 shadow-2xl hidden animate-fade-in flex flex-col justify-between space-y-4">
+            <div id="client-home-grid" class="space-y-5 flex-grow flex flex-col justify-between">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3.5 w-full max-w-xl mx-auto p-2">
+                    <button type="button" onclick="openFullscreenClientAxis('axis-auto')" class="relative p-3 rounded-3xl border-2 border-slate-200 bg-white hover:border-aqua transition active:scale-95 flex flex-col items-center justify-center gap-1.5 shadow-sm aspect-square">
+                        <span class="text-3xl sm:text-4xl">🚗</span>
+                        <span class="text-[11px] font-black text-navy-800 uppercase block leading-tight">Automobile</span>
+                        <span id="badge-count-auto" class="absolute top-2 right-2 px-1.5 py-0.2 rounded-full text-[8px] font-black bg-slate-100 text-slate-700 border">0</span>
+                    </button>
+
+                    <button type="button" onclick="openFullscreenClientAxis('axis-maison')" class="relative p-3 rounded-3xl border-2 border-slate-200 bg-white hover:border-aqua transition active:scale-95 flex flex-col items-center justify-center gap-1.5 shadow-sm aspect-square">
+                        <span class="text-3xl sm:text-4xl">🏡</span>
+                        <span class="text-[11px] font-black text-navy-800 uppercase block leading-tight">Maison</span>
+                        <span id="badge-count-maison" class="absolute top-2 right-2 px-1.5 py-0.2 rounded-full text-[8px] font-black bg-slate-100 text-slate-700 border">0</span>
+                    </button>
+
+                    <button type="button" onclick="openFullscreenClientAxis('axis-env')" class="relative p-3 rounded-3xl border-2 border-slate-200 bg-white hover:border-aqua transition active:scale-95 flex flex-col items-center justify-center gap-1.5 shadow-sm aspect-square">
+                        <span class="text-3xl sm:text-4xl">🌱</span>
+                        <span class="text-[11px] font-black text-navy-800 uppercase block leading-tight">3D & Vidange</span>
+                        <span id="badge-count-env" class="absolute top-2 right-2 px-1.5 py-0.2 rounded-full text-[8px] font-black bg-slate-100 text-slate-700 border">0</span>
+                    </button>
+
+                    <button type="button" onclick="openFullscreenClientAxis('axis-logistics')" class="relative p-3 rounded-3xl border-2 border-slate-200 bg-white hover:border-aqua transition active:scale-95 flex flex-col items-center justify-center gap-1.5 shadow-sm aspect-square">
+                        <span class="text-3xl sm:text-4xl">⚡</span>
+                        <span class="text-[11px] font-black text-navy-800 uppercase block leading-tight">Logistique</span>
+                    </button>
+
+                    <button type="button" onclick="openFullscreenClientAxis('axis-tracking')" class="relative p-3 rounded-3xl border-2 border-slate-200 bg-white hover:border-mattOrange transition active:scale-95 flex flex-col items-center justify-center gap-1.5 shadow-sm group aspect-square">
+                        <span class="text-3xl sm:text-4xl">📋</span>
+                        <span class="text-[11px] font-black text-navy-800 uppercase block leading-tight">Mes Commandes</span>
+                    </button>
+
+                    <button type="button" onclick="openFullscreenClientAxis('axis-contact')" class="relative p-3 rounded-3xl border-2 border-slate-200 bg-white hover:border-mattOrange transition active:scale-95 flex flex-col items-center justify-center gap-1.5 shadow-sm group aspect-square">
+                        <span class="text-3xl sm:text-4xl">📞</span>
+                        <span class="text-[11px] font-black text-navy-800 uppercase block leading-tight">Contact</span>
+                    </button>
+                </div>
+
+                <div class="bg-navy-900 text-white p-4 sm:p-5 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xl border border-aqua/30 w-full max-w-xl mx-auto">
+                    <div class="space-y-0.5 text-center sm:text-left">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase block">Total Panier Estimé :</span>
+                        <div class="text-2xl sm:text-3xl font-black text-mattOrange font-mono"><span id="prix-total-affichage">0</span> CDF</div>
+                        <div id="cart-summary-badges" class="flex flex-wrap gap-1.5 pt-0.5 text-[9px]"></div>
+                    </div>
+                    <button id="btn-valider-commande" onclick="passerCommande()" class="w-full sm:w-auto px-7 py-3 bg-mattOrange hover:bg-orange-600 text-white font-black text-xs rounded-xl uppercase tracking-wider shadow transition">
+                        Valider la Commande 🚀
+                    </button>
+                </div>
+            </div>
+
+            <div id="client-fullscreen-axis" class="hidden space-y-4 animate-fade-in flex-grow flex flex-col justify-start">
+                <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-2xl border border-slate-200 flex-nowrap overflow-hidden">
+                    <button type="button" onclick="closeFullscreenClientAxis()" class="w-8 h-8 flex-shrink-0 bg-navy-800 hover:bg-navy-900 text-white text-base font-black rounded-xl flex items-center justify-center shadow transition active:scale-95">
+                        ←
+                    </button>
+                    <span id="client-axis-fullscreen-title" class="text-[10px] sm:text-xs font-black text-navy-800 uppercase tracking-tight truncate flex-1 min-w-0"></span>
+                </div>
+
+                <div id="axis-auto" class="client-axis-view hidden border rounded-2xl p-4 bg-white shadow-sm space-y-3">
+                    <div id="vehicle-catalog" class="grid grid-cols-1 md:grid-cols-2 gap-2.5"></div>
+                </div>
+
+                <div id="axis-maison" class="client-axis-view hidden border rounded-2xl p-4 bg-white shadow-sm space-y-3">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 text-xs font-bold">
+                        <div><label class="text-[10px] text-slate-500 uppercase block mb-1">Tapis (m²)</label><input type="number" id="m2-tapis" placeholder="0" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                        <div><label class="text-[10px] text-slate-500 uppercase block mb-1">Moquette (m²)</label><input type="number" id="m2-moquette" placeholder="0" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                        <div><label class="text-[10px] text-slate-500 uppercase block mb-1">Vitres (m²)</label><input type="number" id="m2-vitres" placeholder="0" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                        <div><label class="text-[10px] text-slate-500 uppercase block mb-1">Baies (m²)</label><input type="number" id="m2-baies" placeholder="0" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                        <div><label class="text-[10px] text-slate-500 uppercase block mb-1">Carreaux (m²)</label><input type="number" id="m2-carreaux" placeholder="0" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                        <div><label class="text-[10px] text-slate-500 uppercase block mb-1">Panneaux (pce)</label><input type="number" id="qty-panneaux" placeholder="0" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                    </div>
+
+                    <div class="border-t pt-3 space-y-1.5">
+                        <span class="text-[10px] font-black text-navy-800 uppercase block">🛋️ Salons, Canapés & Matelas :</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs font-bold">
+                            <div><label class="text-[10px] text-slate-500 uppercase block mb-1">Textile</label><input type="number" id="qty-canape-textile" placeholder="Places" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                            <div><label class="text-[10px] text-slate-500 uppercase block mb-1">Lin</label><input type="number" id="qty-canape-lin" placeholder="Places" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                            <div><label class="text-[10px] text-slate-500 uppercase block mb-1">Velours</label><input type="number" id="qty-canape-velours" placeholder="Places" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                            <div><label class="text-[10px] text-slate-500 uppercase block mb-1">Cuir</label><input type="number" id="qty-canape-cuir" placeholder="Places" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                            <div class="col-span-2 sm:col-span-1"><label class="text-[10px] text-slate-500 uppercase block mb-1">Matelas</label><input type="number" id="qty-matelas" placeholder="Unités" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="axis-env" class="client-axis-view hidden border rounded-2xl p-4 bg-white shadow-sm space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-bold">
+                        <div><label class="text-[10px] text-slate-500 uppercase block mb-1">Désinfection (pièces)</label><input type="number" id="qty-desinfection" placeholder="0" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                        <div><label class="text-[10px] text-slate-500 uppercase block mb-1">Désinsectisation (pièces)</label><input type="number" id="qty-desinsectisation" placeholder="0" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                        <div><label class="text-[10px] text-slate-500 uppercase block mb-1">Dératisation (pièces)</label><input type="number" id="qty-deratisation" placeholder="0" class="w-full p-2 border rounded-xl" oninput="calculerTotal()"></div>
+                    </div>
+                    <div class="border-t pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-bold">
+                        <div class="bg-orange-50/60 p-2.5 rounded-xl border border-orange-200">
+                            <label class="text-[10px] font-black text-mattOrange uppercase block mb-1">🗑️ Évacuation Immondices (m³)</label>
+                            <input type="number" id="vol-immondices" placeholder="Volume en m³" class="w-full p-2 bg-white border rounded-xl font-bold" oninput="calculerTotal()">
+                        </div>
+                        <div class="bg-sky-50/60 p-2.5 rounded-xl border border-sky-200">
+                            <label class="text-[11px] font-black text-navy-800 uppercase block mb-1">🪠 Vidange Fosse Septique (m³)</label>
+                            <input type="number" id="vol-fosse" placeholder="Volume en m³" class="w-full p-2 bg-white border rounded-xl font-bold" oninput="calculerTotal()">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="axis-logistics" class="client-axis-view hidden bg-slate-50 border rounded-2xl p-4 space-y-3 text-xs">
+                    <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
+                        <span class="text-[10px] font-black text-navy-800 uppercase block">👤 Demandeur :</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Nom complet :</label>
+                                <input type="text" id="client-name-input" placeholder="Ex: Jean Mukendi" class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold text-xs">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Téléphone :</label>
+                                <input type="tel" id="client-phone-input" placeholder="Ex: 0825556633" class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold text-xs" onchange="detectClientOrders();">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div class="bg-white p-2.5 rounded-xl border">
+                            <label class="text-[10px] font-black text-slate-600 uppercase block mb-1">🔌 Électricité :</label>
+                            <select id="client-elec" class="w-full p-2 border rounded-lg text-xs font-bold bg-slate-50">
+                                <option value="SNEL disponible sur place">SNEL disponible sur place</option>
+                                <option value="Groupe électrogène client disponible">Groupe électrogène disponible</option>
+                                <option value="Pas d'électricité (Prévoir groupe mobile)">Pas d'électricité (Prévoir groupe)</option>
+                            </select>
+                        </div>
+                        <div class="bg-white p-2.5 rounded-xl border">
+                            <label class="text-[10px] font-black text-slate-600 uppercase block mb-1">🚰 Eau :</label>
+                            <select id="client-water" class="w-full p-2 border rounded-lg text-xs font-bold bg-slate-50">
+                                <option value="REGIDESO fonctionnelle sur place">REGIDESO fonctionnelle sur place</option>
+                                <option value="Citerne / Forage disponible sur place">Citerne / Forage disponible</option>
+                                <option value="Pas d'eau (Prévoir citerne mobile)">Pas d'eau (Prévoir citerne)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Commune :</label>
+                            <select id="client-commune" class="w-full p-2 border rounded-xl bg-white font-bold text-xs" onchange="onClientCommuneChange()"></select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Quartier :</label>
+                            <input type="text" id="client-quartier-input" placeholder="Ex: Lubudi" class="w-full p-2 border rounded-xl font-medium text-xs">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Avenue & N° :</label>
+                            <input type="text" id="client-avenue-input" placeholder="Ex: Av. Kimbondo N° 12" class="w-full p-2 border rounded-xl font-medium text-xs">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Point de repère :</label>
+                            <input type="text" id="client-ref-input" placeholder="Ex: Pharmacie Principale" class="w-full p-2 border rounded-xl font-medium text-xs">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Date souhaitée :</label>
+                            <input type="date" id="client-date-input" class="w-full p-2 border rounded-xl text-xs font-bold">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Heure souhaitée :</label>
+                            <input type="time" id="client-time-input" class="w-full p-2 border rounded-xl text-xs font-bold">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="axis-tracking" class="client-axis-view hidden space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <span class="text-xs font-black uppercase text-navy-800">Mes Commandes</span>
+                        <button onclick="detectClientOrders()" class="text-xs text-sky-600 font-bold hover:underline">Actualiser 🔄</button>
+                    </div>
+                    <div id="client-orders-tracking-list" class="space-y-2.5"></div>
+                </div>
+
+                <div id="axis-contact" class="client-axis-view hidden space-y-3">
+                    <div id="cnt-buttons-container" class="grid grid-cols-3 gap-2 text-center mt-4">
+                        <button type="button" onclick="switchContactTab('cnt-about')" class="p-4 rounded-2xl border-2 border-slate-200 bg-white text-slate-600 font-bold text-xs flex flex-col items-center gap-2 shadow-sm hover:border-aqua transition">
+                            <span class="text-3xl">🏢</span>
+                            <span class="text-[10px] uppercase">À Propos</span>
+                        </button>
+                        <button type="button" onclick="switchContactTab('cnt-support')" class="p-4 rounded-2xl border-2 border-slate-200 bg-white text-slate-600 font-bold text-xs flex flex-col items-center gap-2 shadow-sm hover:border-aqua transition">
+                            <span class="text-3xl">🛠️</span>
+                            <span class="text-[10px] uppercase">Assistance</span>
+                        </button>
+                        <button type="button" onclick="switchContactTab('cnt-cgu')" class="p-4 rounded-2xl border-2 border-slate-200 bg-white text-slate-600 font-bold text-xs flex flex-col items-center gap-2 shadow-sm hover:border-aqua transition">
+                            <span class="text-3xl">📜</span>
+                            <span class="text-[10px] uppercase">CGU</span>
+                        </button>
+                    </div>
+
+                    <div id="cnt-about" class="contact-subview hidden border rounded-2xl p-4 bg-slate-50 space-y-2 text-xs">
+                        <button onclick="resetContactView()" class="mb-4 px-3 py-1.5 bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg uppercase tracking-wider hover:bg-slate-300 transition w-max">
+                            ← Retour aux options
+                        </button>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-white rounded-xl border p-1 flex-shrink-0">
+                                <img src="matt.jpg" alt="MATT" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-black text-navy-800 text-sm">MASTER TOUCH TRADING (MATT SARL)</h3>
+                                <span class="text-[10px] text-slate-500">RCCM CD/KIN/RCCM/24-B-04106 • NIF A2441433N</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed text-[11px]">Plateforme technologique d'assainissement et de nettoyage professionnel à Kinshasa, développée en partenariat avec Global Tech Solutions.</p>
+                    </div>
+
+                    <div id="cnt-support" class="contact-subview hidden grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <button onclick="resetContactView()" class="sm:col-span-2 mb-2 px-3 py-1.5 bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg uppercase tracking-wider hover:bg-slate-300 transition w-max">
+                            ← Retour aux options
+                        </button>
+                        <a href="https://wa.me/243980000338" target="_blank" class="p-3.5 bg-green-50 border border-green-200 rounded-2xl flex items-center gap-3 hover:bg-green-100 transition">
+                            <span class="text-2xl">💬</span>
+                            <div>
+                                <span class="text-[9px] text-green-700 uppercase font-black block">Assistance WhatsApp</span>
+                                <b class="text-slate-800 text-xs font-bold">+243 980 000 338</b>
+                            </div>
+                        </a>
+                        <a href="tel:+243980000338" class="p-3.5 bg-sky-50 border border-sky-200 rounded-2xl flex items-center gap-3 hover:bg-sky-100 transition">
+                            <span class="text-2xl">📞</span>
+                            <div>
+                                <span class="text-[9px] text-sky-700 uppercase font-black block">Ligne Téléphonique</span>
+                                <b class="text-slate-800 text-xs font-bold">+243 980 000 338</b>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div id="cnt-cgu" class="contact-subview hidden border rounded-2xl p-4 bg-white space-y-2 text-xs">
+                        <button onclick="resetContactView()" class="mb-4 px-3 py-1.5 bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg uppercase tracking-wider hover:bg-slate-300 transition w-max">
+                            ← Retour aux options
+                        </button>
+                        <div id="cgu-display-client" class="space-y-2 max-h-60 overflow-y-auto pr-1 custom-scrollbar text-slate-600 leading-relaxed text-[11px]">
+                            <p class="text-slate-400 italic">Chargement des CGU...</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="view-partner-app" class="w-full min-h-[calc(100vh-140px)] bg-white text-slate-800 rounded-3xl p-4 md:p-6 shadow-2xl hidden animate-fade-in flex flex-col justify-between space-y-4">
+
+            <div id="partner-home-column" class="flex-grow flex flex-col justify-center py-2">
+                <div class="grid grid-cols-2 gap-3.5 w-full max-w-md mx-auto p-2">
+                    
+                    <button type="button" onclick="openFullscreenPartnerTab('partner-tab-missions')" class="p-4 rounded-3xl border-2 border-slate-200 bg-white hover:border-mattOrange text-slate-700 font-bold flex flex-col items-center justify-center gap-2 text-xs transition active:scale-95 shadow-sm aspect-video">
+                        <span class="text-3xl">🚨</span>
+                        <span class="font-black text-navy-800 uppercase text-[11px] leading-tight">Missions</span>
+                    </button>
+
+                    <button type="button" onclick="openFullscreenPartnerTab('partner-tab-ca')" class="p-4 rounded-3xl border-2 border-slate-200 bg-white hover:border-mattOrange text-slate-700 font-bold flex flex-col items-center justify-center gap-2 text-xs transition active:scale-95 shadow-sm aspect-video">
+                        <span class="text-3xl">📊</span>
+                        <span class="font-black text-navy-800 uppercase text-[11px] leading-tight">Chiffre d'Affaires</span>
+                    </button>
+
+                    <button type="button" onclick="openFullscreenPartnerTab('partner-tab-wallet')" class="p-4 rounded-3xl border-2 border-slate-200 bg-white hover:border-mattOrange text-slate-700 font-bold flex flex-col items-center justify-center gap-2 text-xs transition active:scale-95 shadow-sm aspect-video">
+                        <span class="text-3xl">💳</span>
+                        <span class="font-black text-navy-800 uppercase text-[11px] leading-tight">Portefeuille</span>
+                    </button>
+
+                    <button type="button" onclick="openFullscreenPartnerTab('partner-tab-courses')" class="p-4 rounded-3xl border-2 border-slate-200 bg-white hover:border-mattOrange text-slate-700 font-bold flex flex-col items-center justify-center gap-2 text-xs transition active:scale-95 shadow-sm aspect-video">
+                        <span class="text-3xl">📑</span>
+                        <span class="font-black text-navy-800 uppercase text-[11px] leading-tight">Mes Courses</span>
+                    </button>
+
+                    <button type="button" onclick="openFullscreenPartnerTab('partner-tab-profil')" class="p-4 rounded-3xl border-2 border-slate-200 bg-white hover:border-mattOrange text-slate-700 font-bold flex flex-col items-center justify-center gap-2 text-xs transition active:scale-95 shadow-sm aspect-video">
+                        <span class="text-3xl">⚙️</span>
+                        <span class="font-black text-navy-800 uppercase text-[11px] leading-tight">Profil & Accès</span>
+                    </button>
+
+                    <button type="button" onclick="openFullscreenPartnerTab('partner-tab-info-support')" class="p-4 rounded-3xl border-2 border-slate-200 bg-white hover:border-mattOrange text-slate-700 font-bold flex flex-col items-center justify-center gap-2 text-xs transition active:scale-95 shadow-sm aspect-video">
+                        <span class="text-3xl">📜</span>
+                        <span class="font-black text-navy-800 uppercase text-[11px] leading-tight">Infos & Support</span>
+                    </button>
+
+                </div>
+            </div>
+
+            <div id="partner-fullscreen-tab" class="hidden space-y-4 animate-fade-in flex-grow flex flex-col justify-start">
+                <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-2xl border border-slate-200 flex-nowrap overflow-hidden">
+                    <button type="button" onclick="closeFullscreenPartnerTab()" class="w-8 h-8 flex-shrink-0 bg-navy-800 hover:bg-navy-900 text-white text-base font-black rounded-xl flex items-center justify-center shadow transition active:scale-95">
+                        ←
+                    </button>
+                    <span id="partner-tab-fullscreen-title" class="text-[10px] sm:text-xs font-black text-navy-800 uppercase tracking-tight truncate flex-1 min-w-0"></span>
+                </div>
+
+                <div id="partner-tab-missions" class="partner-subview hidden space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-black uppercase text-navy-800 tracking-wider">Missions Disponibles</span>
+                        <button id="btn-refresh-missions" onclick="loadPartnerMissions()" class="px-3 py-1.5 bg-sky-50 text-sky-700 hover:bg-sky-100 rounded-xl text-xs font-black transition flex items-center gap-1.5 border border-sky-200">
+                            <span id="refresh-icon" class="inline-block transition-transform">🔄</span> Actualiser
+                        </button>
+                    </div>
+                    <div id="partner-missions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[160px]"></div>
+                </div>
+
+                <div id="partner-tab-ca" class="partner-subview hidden space-y-4">
+                    <div id="ca-buttons-container" class="grid grid-cols-2 gap-3 text-center mt-4 max-w-md mx-auto">
+                        <button type="button" onclick="switchCaSubTab('ca-sub-calc')" class="p-5 rounded-3xl border-2 border-slate-200 bg-white text-slate-600 font-bold text-xs flex flex-col items-center gap-2 shadow-sm hover:border-mattOrange hover:text-mattOrange transition">
+                            <span class="text-3xl">📈</span>
+                            <span class="text-[11px] uppercase">Calculer CA</span>
+                        </button>
+                        <button type="button" onclick="switchCaSubTab('ca-sub-details')" class="p-5 rounded-3xl border-2 border-slate-200 bg-white text-slate-600 font-bold text-xs flex flex-col items-center gap-2 shadow-sm hover:border-mattOrange hover:text-mattOrange transition">
+                            <span class="text-3xl">📑</span>
+                            <span class="text-[11px] uppercase">Détails Prestations</span>
+                        </button>
+                    </div>
+
+                    <div id="ca-sub-calc" class="ca-subview hidden space-y-4">
+                        <button onclick="resetCaView()" class="mb-2 px-3 py-1.5 bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg uppercase tracking-wider hover:bg-slate-300 transition w-max">
+                            ← Retour aux options
+                        </button>
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-wrap items-end gap-3 text-xs">
+                            <div>
+                                <label class="text-[10px] font-black text-slate-600 uppercase block mb-1">DATE DE DÉBUT :</label>
+                                <input type="date" id="ca-date-start" class="px-3 py-2 bg-white border rounded-xl font-bold text-slate-800">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black text-slate-600 uppercase block mb-1">DATE DE FIN :</label>
+                                <input type="date" id="ca-date-end" class="px-3 py-2 bg-white border rounded-xl font-bold text-slate-800">
+                            </div>
+                            <button onclick="filtrerChiffreAffaires()" class="px-5 py-2.5 bg-navy-800 hover:bg-navy-900 text-white font-black rounded-xl uppercase text-xs tracking-wider transition shadow">
+                                Calculer le CA
+                            </button>
+                            <button onclick="resetFiltreCA()" class="text-sky-600 font-bold hover:underline py-2 text-xs">
+                                Réinitialiser
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="bg-white border-2 border-slate-100 rounded-2xl p-5 shadow-xs">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider block">COURSES EFFECTUÉES</span>
+                                <div class="text-2xl font-black text-navy-800 mt-1" id="ca-stat-count">0</div>
+                            </div>
+                            <div class="bg-white border-2 border-slate-100 rounded-2xl p-5 shadow-xs">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider block">CA TOTAL BRUT</span>
+                                <div class="text-2xl font-black text-sky-600 font-mono mt-1" id="ca-stat-brut">0 CDF</div>
+                            </div>
+                            <div class="bg-white border-2 border-slate-100 rounded-2xl p-5 shadow-xs">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider block">COMMISSIONS DÉDUITES</span>
+                                <div class="text-2xl font-black text-red-500 font-mono mt-1" id="ca-stat-com">0 CDF</div>
+                            </div>
+                            <div class="bg-green-50 border-2 border-green-300 rounded-2xl p-5 shadow-xs">
+                                <span class="text-[10px] font-black text-green-700 uppercase tracking-wider block">GAIN NET ENCAISSÉ</span>
+                                <div class="text-2xl font-black text-green-600 font-mono mt-1" id="ca-stat-net">0 CDF</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="ca-sub-details" class="ca-subview hidden space-y-3">
+                        <button onclick="resetCaView()" class="mb-2 px-3 py-1.5 bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg uppercase tracking-wider hover:bg-slate-300 transition w-max">
+                            ← Retour aux options
+                        </button>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-black text-navy-800 uppercase">Prestations de la Période</span>
+                            <span class="text-[11px] text-slate-400 font-medium" id="ca-period-label">Toutes dates</span>
+                        </div>
+
+                        <div class="overflow-x-auto border border-slate-200 rounded-2xl bg-white shadow-inner custom-scrollbar">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-500 border-b">
+                                        <th class="p-3 font-bold uppercase">ID</th>
+                                        <th class="p-3 font-bold uppercase">Date</th>
+                                        <th class="p-3 font-bold uppercase">Panier</th>
+                                        <th class="p-3 font-bold uppercase">Commune</th>
+                                        <th class="p-3 font-bold uppercase">Brut</th>
+                                        <th class="p-3 font-bold uppercase">Com.</th>
+                                        <th class="p-3 font-bold uppercase">Net</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ca-table-body" class="divide-y divide-slate-100 font-medium">
+                                    <tr><td colspan="7" class="p-8 text-center text-slate-400 font-medium">Aucune course enregistrée.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="partner-tab-wallet" class="partner-subview hidden space-y-5">
+                    <div class="bg-sky-50 border border-aqua/40 rounded-3xl p-6 text-center max-w-xl mx-auto relative">
+                        <button onclick="refreshPartnerWallet()" type="button" class="absolute top-3 right-3 text-xs bg-white border border-aqua/40 text-aqua hover:bg-sky-100 px-2.5 py-1 rounded-xl font-bold flex items-center gap-1 shadow-xs">
+                            🔄 Actualiser
+                        </button>
+                        <span class="text-[10px] text-slate-500 font-black uppercase tracking-wider block" id="partner-solde-label">Solde Commission Disponible</span>
+                        <div class="text-4xl font-black text-navy-800 mt-1" id="partner-wallet-balance">0 CDF</div>
+                    </div>
+
+                    <div class="border rounded-3xl p-6 space-y-4 text-xs max-w-xl mx-auto bg-slate-50">
+                        <span class="font-black text-navy-800 uppercase block text-sm">Recharger / Souscrire un Forfait</span>
+                        <select id="p-billing-mode-select" class="w-full p-3 border rounded-xl font-bold bg-white" onchange="adjustPartnerRechargeMode()">
+                            <option value="commission">Recharge Solde Commission (À la course)</option>
+                            <option value="journalier">Forfait Jour Illimité (15 000 CDF)</option>
+                            <option value="mensuel">Forfait Mois Illimité (150 000 CDF)</option>
+                        </select>
+
+                        <div class="bg-white p-4 rounded-2xl border space-y-2">
+                            <span class="font-black text-slate-700 block uppercase text-[10px] tracking-wider mb-1">
+                                COMPTES MOBILES OFFICIELS MATT SARL :
+                            </span>
+                            
+                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 whitespace-nowrap">
+                                <span class="font-bold text-slate-700 flex items-center gap-2"><span>📱</span> M-Pesa :</span>
+                                <b class="font-mono text-navy-800 text-xs sm:text-sm font-black">+243 980 000 338</b>
+                            </div>
+
+                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 whitespace-nowrap">
+                                <span class="font-bold text-slate-700 flex items-center gap-2"><span>📱</span> Orange Money :</span>
+                                <b class="font-mono text-navy-800 text-xs sm:text-sm font-black">+243 980 000 338</b>
+                            </div>
+
+                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 whitespace-nowrap">
+                                <span class="font-bold text-slate-700 flex items-center gap-2"><span>📱</span> Airtel Money :</span>
+                                <b class="font-mono text-navy-800 text-xs sm:text-sm font-black">+243 980 000 338</b>
+                            </div>
+                        </div>
+
+                        <input type="number" id="p-recharge-amount" placeholder="Montant déposé (CDF)" class="w-full p-3 border rounded-xl font-bold text-xs bg-white">
+                        <input type="text" id="p-recharge-ref" placeholder="Référence transaction (ex: TX12345)" class="w-full p-3 border rounded-xl font-mono text-xs bg-white">
+                        <button onclick="sendRechargeDeclaration()" class="w-full py-3.5 bg-mattOrange hover:bg-orange-600 text-white font-black rounded-xl uppercase text-xs transition shadow">
+                            Transmettre la Déclaration
+                        </button>
+                        <a href="https://wa.me/243980000338?text=Preuve%20de%20dépôt%20MATT" target="_blank" class="w-full py-3 bg-whatsapp hover:bg-green-600 text-white font-black rounded-xl text-center block text-xs transition shadow flex items-center justify-center gap-2">
+                            <span>📲</span> Envoyer la preuve sur WhatsApp
+                        </a>
+                    </div>
+                </div>
+
+                <div id="partner-tab-courses" class="partner-subview hidden space-y-4">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <span class="text-xs font-black uppercase text-navy-800">Courses Acceptées & Clôturées</span>
+                        <button onclick="clearCompletedCourses()" type="button" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg font-bold text-[10px] flex items-center gap-1">
+                            🗑️ Vider l'historique clôturé
+                        </button>
+                    </div>
+                    <div id="partner-accepted-courses-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+
+                <div id="partner-tab-profil" class="partner-subview hidden space-y-4 max-w-xl mx-auto">
+                    
+                    <div id="prof-buttons-container" class="grid grid-cols-2 gap-3 text-center mt-4">
+                        <button type="button" onclick="switchProfileSubTab('prof-sub-info')" class="p-6 rounded-3xl border-2 border-slate-200 bg-white text-slate-600 font-bold text-xs flex flex-col items-center gap-3 shadow-sm hover:border-mattOrange hover:text-mattOrange transition">
+                            <span class="text-4xl">👤</span>
+                            <span class="text-[12px] uppercase">Mon Profil</span>
+                        </button>
+                        <button type="button" onclick="switchProfileSubTab('prof-sub-sec')" class="p-6 rounded-3xl border-2 border-slate-200 bg-white text-slate-600 font-bold text-xs flex flex-col items-center gap-3 shadow-sm hover:border-mattOrange hover:text-mattOrange transition">
+                            <span class="text-4xl">🔒</span>
+                            <span class="text-[12px] uppercase">Sécurité</span>
+                        </button>
+                    </div>
+
+                    <div id="prof-sub-info" class="prof-subview hidden space-y-4 bg-slate-50 p-5 rounded-3xl border text-xs">
+                        <button onclick="resetProfileView()" class="mb-4 px-3 py-1.5 bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg uppercase tracking-wider hover:bg-slate-300 transition w-max">
+                            ← Retour aux options
+                        </button>
+                        
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Nom / Raison Sociale</label>
+                            <input type="text" id="partner-edit-name" class="w-full p-3 bg-white border rounded-xl font-bold">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Adresse d'exploitation</label>
+                            <input type="text" id="partner-edit-address" class="w-full p-3 bg-white border rounded-xl font-bold">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Axe d'activité (Spécialité)</label>
+                            <input type="text" id="partner-edit-specialty" class="w-full p-3 bg-slate-200 border border-slate-300 rounded-xl font-bold text-slate-500 cursor-not-allowed" readonly>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Date d'inscription</label>
+                            <input type="text" id="partner-edit-date" class="w-full p-3 bg-slate-200 border border-slate-300 rounded-xl font-bold text-slate-500 cursor-not-allowed" readonly>
+                        </div>
+                        <button onclick="savePartnerInfoUpdate()" class="w-full py-3.5 bg-navy-800 hover:bg-navy-900 text-white font-black rounded-xl uppercase text-xs transition mt-2 shadow">
+                            Mettre à jour mon profil
+                        </button>
+                    </div>
+
+                    <div id="prof-sub-sec" class="prof-subview hidden space-y-4 bg-slate-50 p-5 rounded-3xl border text-xs">
+                        <button onclick="resetProfileView()" class="mb-4 px-3 py-1.5 bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg uppercase tracking-wider hover:bg-slate-300 transition w-max">
+                            ← Retour aux options
+                        </button>
+
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Identifiant (Téléphone)</label>
+                            <input type="tel" id="partner-edit-phone" class="w-full p-3 bg-white border rounded-xl font-bold font-mono">
+                        </div>
+                        
+                        <div class="relative pt-2">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Ancien mot de passe *</label>
+                            <input type="password" id="partner-edit-old-pass" placeholder="Requis pour valider" class="w-full p-3 pr-10 bg-white border rounded-xl font-bold">
+                            <button type="button" onclick="togglePasswordVisibility('partner-edit-old-pass', 'eye-p-old')" class="absolute bottom-3 right-0 pr-3 flex items-center text-slate-400">
+                                <span id="eye-p-old">👁️</span>
+                            </button>
+                        </div>
+
+                        <div class="relative">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Nouveau mot de passe (facultatif)</label>
+                            <input type="password" id="partner-edit-new-pass" placeholder="Laisser vide si inchangé" class="w-full p-3 pr-10 bg-white border rounded-xl font-bold">
+                            <button type="button" onclick="togglePasswordVisibility('partner-edit-new-pass', 'eye-p-new')" class="absolute bottom-3 right-0 pr-3 flex items-center text-slate-400">
+                                <span id="eye-p-new">👁️</span>
+                            </button>
+                        </div>
+
+                        <div class="border-t border-slate-200 pt-3 mt-2 space-y-3">
+                            <span class="text-[10px] font-black text-navy-800 uppercase block">Récupération de compte</span>
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Question Secrète</label>
+                                <select id="partner-edit-secret-q" class="w-full p-3 bg-white border rounded-xl font-bold"></select>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Réponse Secrète</label>
+                                <input type="text" id="partner-edit-secret-a" placeholder="Votre réponse" class="w-full p-3 bg-white border rounded-xl font-bold">
+                            </div>
+                        </div>
+
+                        <button onclick="savePartnerSecurityUpdate()" class="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl uppercase text-xs transition mt-2 shadow">
+                            Mettre à jour la sécurité
+                        </button>
+                    </div>
+                </div>
+
+                <div id="partner-tab-info-support" class="partner-subview hidden space-y-4 text-xs">
+                    <div id="psup-buttons-container" class="grid grid-cols-2 gap-3 text-center mt-4 max-w-md mx-auto">
+                        <button type="button" onclick="switchPartnerSupportTab('psup-support')" class="p-5 rounded-3xl border-2 border-slate-200 bg-white text-slate-600 font-bold text-xs flex flex-col items-center gap-2 shadow-sm hover:border-mattOrange hover:text-mattOrange transition">
+                            <span class="text-3xl">🛠️</span>
+                            <span class="text-[11px] uppercase">Assistance</span>
+                        </button>
+                        <button type="button" onclick="switchPartnerSupportTab('psup-cgu')" class="p-5 rounded-3xl border-2 border-slate-200 bg-white text-slate-600 font-bold text-xs flex flex-col items-center gap-2 shadow-sm hover:border-mattOrange hover:text-mattOrange transition">
+                            <span class="text-3xl">📜</span>
+                            <span class="text-[11px] uppercase">CGU</span>
+                        </button>
+                    </div>
+
+                    <div id="psup-support" class="psup-subview hidden border rounded-2xl p-5 bg-slate-50 space-y-2">
+                        <button onclick="resetPsupView()" class="mb-3 px-3 py-1.5 bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg uppercase tracking-wider hover:bg-slate-300 transition w-max">
+                            ← Retour aux options
+                        </button>
+                        <h3 class="font-black text-navy-800 text-sm uppercase">Assistance Partenaire MATT SARL</h3>
+                        <p class="text-slate-600">Permanence technique et validation des forfaits :</p>
+                        <div class="flex flex-wrap gap-2 pt-1">
+                            <a href="https://wa.me/243980000338" target="_blank" class="px-4 py-2.5 bg-whatsapp text-white rounded-xl font-bold">WhatsApp Direct</a>
+                            <a href="tel:+243980000338" class="px-4 py-2.5 bg-sky-600 text-white rounded-xl font-bold">Appel Téléphonique</a>
+                        </div>
+                    </div>
+
+                    <div id="psup-cgu" class="psup-subview hidden border rounded-2xl p-5 bg-white space-y-2">
+                        <button onclick="resetPsupView()" class="mb-3 px-3 py-1.5 bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg uppercase tracking-wider hover:bg-slate-300 transition w-max">
+                            ← Retour aux options
+                        </button>
+                        <h3 class="font-black text-navy-800 text-sm uppercase">Conditions Générales d'Utilisation (CGU)</h3>
+                        <div id="cgu-display-partner" class="space-y-2 max-h-60 overflow-y-auto pr-1 custom-scrollbar text-slate-600 leading-relaxed text-[11px]">
+                            <p class="text-slate-400 italic">Chargement des CGU...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="border-t border-slate-800/80 bg-navy-800/80 py-4 text-center text-xs text-slate-400 mt-auto">
+        <div class="container mx-auto px-4 space-y-1">
+            <div class="flex flex-wrap justify-center items-center gap-x-4 gap-y-1 text-[11px] text-slate-300 font-semibold">
+                <span>Éditeur : <b>MATT SARL</b></span>
+                <span>RCCM : <b class="text-aqua font-mono">CD/KIN/RCCM/24-B-04106</b></span>
+                <span>NIF : <b class="text-aqua font-mono">A2441433N</b></span>
+                <span>Siège : <b>Kinshasa, RDC</b></span>
+            </div>
+            <p class="text-[9px] text-slate-500">© 2026 MATT SARL. Tous droits réservés. Plateforme technologique régie par le droit congolais.</p>
+        </div>
+    </footer>
+
+    <div id="modal-rating" class="fixed inset-0 bg-slate-955/70 backdrop-blur-sm z-[999] flex items-center justify-center p-4 hidden">
+        <div class="bg-white text-slate-900 w-full max-w-sm rounded-3xl p-6 space-y-4 relative text-xs shadow-2xl">
+            <button onclick="closeRatingModal()" class="absolute top-4 right-4 text-slate-400 font-bold text-lg">✕</button>
+            <h3 class="text-sm font-black text-navy-800">⭐ Noter la course #<span id="rating-order-id"></span></h3>
+            
+            <div class="flex justify-center gap-2 text-3xl cursor-pointer py-1" id="stars-service-container">
+                <span onclick="setRating('service', 1)">★</span>
+                <span onclick="setRating('service', 2)">★</span>
+                <span onclick="setRating('service', 3)">★</span>
+                <span onclick="setRating('service', 4)">★</span>
+                <span onclick="setRating('service', 5)">★</span>
+            </div>
+
+            <textarea id="rating-comment" rows="2" placeholder="Votre commentaire..." class="w-full p-3 border rounded-xl"></textarea>
+            <button onclick="submitOrderRating()" class="w-full py-3.5 bg-mattOrange text-white font-black rounded-xl uppercase">Enregistrer ma note</button>
+        </div>
+    </div>
+
+    <!-- Script principal de l'application -->
+    <script>
+        const SUPABASE_URL = "https://vbriworyscymnmtzzdny.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZicml3b3J5c2N5bW5tdHp6ZG55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNzQwNTEsImV4cCI6MjEwMzk1MDA1MX0.VBZupVKj0srae0NT5BNZ0OeaIv9pAl2bl5L-Rd8ocJk";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const communesKinshasa = [
+            { name: "Gombe", zone: "zone1", label: "Zone 1 - Résidentielle" },
+            { name: "Ngaliema", zone: "zone1", label: "Zone 1 - Résidentielle" },
+            { name: "Limete", zone: "zone1", label: "Zone 1 - Résidentielle" },
+            { name: "Kintambo", zone: "zone1", label: "Zone 1 - Résidentielle" },
+            { name: "Bandalungwa", zone: "zone2", label: "Zone 2 - Centrale" },
+            { name: "Kasa-Vubu", zone: "zone2", label: "Zone 2 - Centrale" },
+            { name: "Kalamu", zone: "zone2", label: "Zone 2 - Centrale" },
+            { name: "Lemba", zone: "zone2", label: "Zone 2 - Centrale" },
+            { name: "Lingwala", zone: "zone2", label: "Zone 2 - Centrale" },
+            { name: "Barumbu", zone: "zone2", label: "Zone 2 - Centrale" },
+            { name: "Kinshasa", zone: "zone2", label: "Zone 2 - Centrale" },
+            { name: "N'djili", zone: "zone3", label: "Zone 3 - Populaire" },
+            { name: "Masina", zone: "zone3", label: "Zone 3 - Populaire" },
+            { name: "Matete", zone: "zone3", label: "Zone 3 - Populaire" },
+            { name: "Bumbu", zone: "zone3", label: "Zone 3 - Populaire" },
+            { name: "Makala", zone: "zone3", label: "Zone 3 - Populaire" },
+            { name: "Ngaba", zone: "zone3", label: "Zone 3 - Populaire" },
+            { name: "Ngiri-Ngiri", zone: "zone3", label: "Zone 3 - Populaire" },
+            { name: "Kimbanseke", zone: "zone3", label: "Zone 3 - Populaire" },
+            { name: "Kisenso", zone: "zone3", label: "Zone 3 - Populaire" },
+            { name: "Selembao", zone: "zone3", label: "Zone 3 - Populaire" },
+            { name: "Mont-Ngafula", zone: "zone4", label: "Zone 4 - Périurbaine" },
+            { name: "Nsele", zone: "zone4", label: "Zone 4 - Périurbaine" },
+            { name: "Maluku", zone: "zone4", label: "Zone 4 - Périurbaine" }
+        ];
+
+        const grilleTarifaireParZone = {
+            'zone1': { moto: 10000, tricycle: 15000, berline: 20000, suv: 30000, 'poids-lourd': 55000, 'bus-207': 25000, 'bus-long': 40000, 'remorque': 35000, commission_rate: 15 },
+            'zone2': { moto: 8000, tricycle: 12000, berline: 15000, suv: 25000, 'poids-lourd': 45000, 'bus-207': 20000, 'bus-long': 35000, 'remorque': 30000, commission_rate: 15 },
+            'zone3': { moto: 7000, tricycle: 10000, berline: 12000, suv: 20000, 'poids-lourd': 40000, 'bus-207': 18000, 'bus-long': 30000, 'remorque': 25000, commission_rate: 15 },
+            'zone4': { moto: 8000, tricycle: 12000, berline: 15000, suv: 25000, 'poids-lourd': 45000, 'bus-207': 20000, 'bus-long': 35000, 'remorque': 30000, commission_rate: 15 }
+        };
+
+        const typesVehicules = [
+            { id: 'moto', label: 'Moto', hasOptions: false },
+            { id: 'tricycle', label: 'Tricycle', hasOptions: false },
+            { id: 'berline', label: 'Berline', hasOptions: true },
+            { id: 'suv', label: 'SUV / 4x4', hasOptions: true },
+            { id: 'poids-lourd', label: 'Poids lourds', hasOptions: true },
+            { id: 'bus-207', label: 'Minibus (207)', hasOptions: true },
+            { id: 'bus-long', label: 'Bus Long', hasOptions: true },
+            { id: 'remorque', label: 'Remorque', hasOptions: true }
+        ];
+
+        const vehicleOptionsPrices = {
+            'berline': { moteur: 5000, chassis: 4000, sieges: 7000 },
+            'suv': { moteur: 8000, chassis: 6000, sieges: 10000 },
+            'poids-lourd': { moteur: 15000, chassis: 12000, sieges: 15000 },
+            'bus-207': { moteur: 6000, chassis: 5000, sieges: 9000 },
+            'bus-long': { moteur: 10000, chassis: 8000, sieges: 12000 },
+            'remorque': { moteur: 5000, chassis: 6000, sieges: 5000 }
+        };
+
+        let currentActiveZone = "zone1";
+        let session = { role: null, user: null };
+        let clientVehiculeSelection = {};
+        let currentRatingOrderId = null;
+        let selectedRatingValue = 5;
+        let partnerAllOrders = [];
+
+        let secretQuestionsDB = JSON.parse(localStorage.getItem('matt_secret_questions_db')) || [
+            "Quel est le nom de votre ville natale ?",
+            "Quel est le nom de votre premier animal de compagnie ?",
+            "Quel est le nom de jeune fille de votre mère ?"
+        ];
+
+        function populateSecretQuestions() {
+            const sels = [document.getElementById('p-reg-secret-q'), document.getElementById('partner-edit-secret-q')];
+            sels.forEach(sel => {
+                if (sel) {
+                    sel.innerHTML = secretQuestionsDB.map(q => `<option value="${q}">${q}</option>`).join('');
+                }
+            });
+        }
+
+        function normalizePhoneNumber(phone) {
+            if (!phone) return "";
+            let p = String(phone).replace(/[\s\-\.\(\)]/g, "");
+            if (p.startsWith("+243")) p = "0" + p.slice(4);
+            else if (p.startsWith("00243")) p = "0" + p.slice(5);
+            else if (p.startsWith("243")) p = "0" + p.slice(3);
+            return p;
+        }
+
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            let bg = type === "error" ? "bg-red-600" : (type === "info" ? "bg-sky-600" : "bg-green-600");
+            toast.className = `${bg} text-white px-4 py-2.5 rounded-2xl shadow-2xl flex items-center justify-between gap-3 text-xs font-bold pointer-events-auto transition-all`;
+            toast.innerHTML = `<span>${message}</span><button onclick="this.parentElement.remove()" class="text-white font-black">✕</button>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+
+        function togglePasswordVisibility(inputId, eyeIconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(eyeIconId);
+            if (!input) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (icon) icon.innerText = '🙈';
+            } else {
+                input.type = 'password';
+                if (icon) icon.innerText = '👁️';
+            }
+        }
+
+        function showView(viewId) {
+            ['view-gateway', 'view-client-auth', 'view-partner-auth', 'view-client-app', 'view-partner-app'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(viewId);
+            if (target) target.classList.remove('hidden');
+
+            const btnLogout = document.getElementById('btn-header-logout');
+            const btnRefresh = document.getElementById('btn-app-refresh');
+            
+            const isLoggedIn = viewId === 'view-client-app' || viewId === 'view-partner-app';
+            
+            if (btnLogout) btnLogout.classList.toggle('hidden', !isLoggedIn);
+            if (btnRefresh) {
+                if (viewId === 'view-partner-app') btnRefresh.classList.remove('hidden');
+                else btnRefresh.classList.add('hidden');
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goToAuth(role) {
+            if (role === 'client') {
+                if (session.role === 'client') openClientApp();
+                else showView('view-client-auth');
+            }
+            if (role === 'partner') {
+                if (session.role === 'partner') openPartnerApp();
+                else showView('view-partner-auth');
+            }
+        }
+
+        function switchAuthTab(role, tab) {
+            const fLogin = document.getElementById(`form-${role}-login`);
+            const fReg = document.getElementById(`form-${role}-register`);
+            if (fLogin) fLogin.classList.toggle('hidden', tab !== 'login');
+            if (fReg) fReg.classList.toggle('hidden', tab === 'login');
+
+            const tLogin = document.getElementById(`tab-${role}-login`);
+            const tReg = document.getElementById(`tab-${role}-register`);
+            const colorClass = role === 'partner' ? 'border-mattOrange text-mattOrange' : 'border-aqua text-aqua';
+
+            if (tab === 'login') {
+                if (tLogin) tLogin.className = `flex-1 py-2 font-black border-b-2 ${colorClass}`;
+                if (tReg) tReg.className = 'flex-1 py-2 font-bold border-b-2 border-transparent text-slate-400';
+            } else {
+                if (tReg) tReg.className = `flex-1 py-2 font-black border-b-2 ${colorClass}`;
+                if (tLogin) tLogin.className = 'flex-1 py-2 font-bold border-b-2 border-transparent text-slate-400';
+            }
+        }
+
+        function onClientCommuneChange() {
+            const selectEl = document.getElementById('client-commune');
+            if (!selectEl) return;
+            const selectedName = selectEl.value;
+            const com = communesKinshasa.find(c => c.name === selectedName);
+            if (com) {
+                currentActiveZone = com.zone;
+            }
+            calculerTotal();
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        async function registerPartner() {
+            const btn = document.getElementById('btn-submit-partner-reg');
+            const name = document.getElementById('p-reg-name')?.value.trim() || '';
+            const rawPhone = document.getElementById('p-reg-phone')?.value.trim() || '';
+            const phone = normalizePhoneNumber(rawPhone);
+            const password = document.getElementById('p-reg-pass')?.value.trim() || '';
+            const secQ = document.getElementById('p-reg-secret-q')?.value || '';
+            const secA = document.getElementById('p-reg-secret-a')?.value.trim() || '';
+            const commune = document.getElementById('p-reg-commune')?.value || 'Gombe';
+            const address = document.getElementById('p-reg-address')?.value.trim() || '';
+            const specialty = document.getElementById('p-reg-specialty')?.value || 'Polyvalent Auto et Maison';
+            const fileInput = document.getElementById('p-reg-doc');
+
+            if (!name || !phone || !password || !address || !secQ || !secA) {
+                return showToast("Veuillez remplir tous les champs obligatoires (*).", "error");
+            }
+            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                return showToast("Veuillez joindre votre pièce d'identité ou justificatif d'activité.", "error");
+            }
+
+            let document_url = null;
+            try {
+                if (btn) { btn.disabled = true; btn.innerText = "Traitement en cours..."; }
+                document_url = await fileToBase64(fileInput.files[0]);
+            } catch (e) {
+                if (btn) { btn.disabled = false; btn.innerText = "Soumettre mon dossier d'agrément"; }
+                return showToast("Erreur lors de la lecture du document joint.", "error");
+            }
+
+            const payloadBase = {
+                name,
+                phone,
+                password,
+                secret_question: secQ,
+                secret_answer: secA,
+                commune,
+                address,
+                specialty,
+                wallet: 0,
+                status: 'En attente de validation'
+            };
+
+            let result = await db.from('partners').insert([{ ...payloadBase, document_url }]);
+
+            if (result.error && result.error.message.includes('document_url')) {
+                console.warn("Colonne 'document_url' introuvable. Envoi sans le document.");
+                result = await db.from('partners').insert([payloadBase]);
+                if (!result.error) {
+                    showToast("⚠️ Dossier transmis, mais pensez à créer la colonne 'document_url' dans Supabase !", "info");
+                }
+            }
+
+            if (btn) { btn.disabled = false; btn.innerText = "Soumettre mon dossier d'agrément"; }
+
+            if (result.error) {
+                if (result.error.message.includes('partners_phone_key') || result.error.code === '23505') {
+                    return showToast("Ce numéro de téléphone est déjà enregistré. Connectez-vous ou contactez la Direction.", "error");
+                }
+                return showToast("Erreur d'inscription : " + result.error.message, "error");
+            }
+
+            document.getElementById('p-reg-name').value = '';
+            document.getElementById('p-reg-phone').value = '';
+            document.getElementById('p-reg-pass').value = '';
+            document.getElementById('p-reg-secret-a').value = '';
+            document.getElementById('p-reg-address').value = '';
+            fileInput.value = '';
+
+            switchAuthTab('partner', 'login');
+            showToast("Dossier soumis avec succès ! Votre compte est en attente d'examen et validation.", "success");
+        }
+
+        async function loginPartner() {
+            const btn = document.getElementById('btn-login-partner-submit');
+            const raw = document.getElementById('auth-partner-login-phone')?.value.trim() || '';
+            const password = document.getElementById('auth-partner-login-pass')?.value.trim() || '';
+
+            if (!raw || !password) {
+                return showToast("Veuillez saisir votre numéro et mot de passe.", "error");
+            }
+
+            const phoneNorm = normalizePhoneNumber(raw);
+            const lastEight = phoneNorm.slice(-8);
+
+            try {
+                if (btn) { btn.disabled = true; btn.innerText = "Connexion..."; }
+
+                const { data, error } = await db.from('partners')
+                    .select('*')
+                    .eq('password', password);
+
+                if (btn) { btn.disabled = false; btn.innerText = "Accéder à mon espace"; }
+
+                if (error) {
+                    return showToast("Erreur de connexion : " + error.message, "error");
+                }
+
+                const partner = (data || []).find(p => {
+                    const pNorm = normalizePhoneNumber(p.phone);
+                    return pNorm === phoneNorm || (lastEight.length >= 7 && pNorm.includes(lastEight));
+                });
+
+                if (!partner) {
+                    return showToast("Identifiants incorrects ou compte introuvable.", "error");
+                }
+
+                if (partner.status === 'En attente de validation') {
+                    return showToast("Votre dossier est toujours en attente d'examen par la Direction MATT SARL.", "error");
+                }
+                if (partner.status === 'Suspendu') {
+                    return showToast("Votre compte prestataire est actuellement suspendu. Contactez la Direction.", "error");
+                }
+
+                session = { role: 'partner', user: partner };
+                localStorage.setItem('matt_partner_session', JSON.stringify(partner));
+                showToast(`Bienvenue ${partner.name}`);
+                openPartnerApp();
+
+            } catch (err) {
+                if (btn) { btn.disabled = false; btn.innerText = "Accéder à mon espace"; }
+                showToast("Erreur inattendue : " + (err.message || err), "error");
+            }
+        }
+
+        function openPartnerApp() {
+            showView('view-partner-app');
+            
+            if (document.getElementById('partner-edit-name')) document.getElementById('partner-edit-name').value = session.user.name || '';
+            if (document.getElementById('partner-edit-address')) document.getElementById('partner-edit-address').value = session.user.address || '';
+            if (document.getElementById('partner-edit-specialty')) document.getElementById('partner-edit-specialty').value = session.user.specialty || '';
+            
+            let regDate = "Date non disponible";
+            if (session.user.created_at) {
+                regDate = new Date(session.user.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+            }
+            if (document.getElementById('partner-edit-date')) document.getElementById('partner-edit-date').value = regDate;
+
+            if (document.getElementById('partner-edit-phone')) document.getElementById('partner-edit-phone').value = session.user.phone || '';
+            if (document.getElementById('partner-edit-secret-q') && session.user.secret_question) document.getElementById('partner-edit-secret-q').value = session.user.secret_question;
+            if (document.getElementById('partner-edit-secret-a')) document.getElementById('partner-edit-secret-a').value = session.user.secret_answer || '';
+
+            resetCaView();
+            resetPsupView();
+            resetProfileView();
+
+            loadPartnerMissions();
+            loadPartnerAcceptedCourses();
+            fetchPublishedCgu();
+        }
+
+        function openFullscreenClientAxis(viewId) {
+            const grid = document.getElementById('client-home-grid');
+            if (grid) grid.classList.add('hidden');
+            document.querySelectorAll('.client-axis-view').forEach(v => v.classList.add('hidden'));
+
+            const titles = {
+                'axis-auto': '🚗 Automobile',
+                'axis-maison': '🏡 Maison & Surfaces',
+                'axis-env': '🌱 3D & Vidange',
+                'axis-logistics': '⚡ Logistique & Demandeur',
+                'axis-tracking': '📋 Mes Commandes',
+                'axis-contact': '📞 Contact & Informations'
+            };
+
+            const titleEl = document.getElementById('client-axis-fullscreen-title');
+            if (titleEl) titleEl.innerText = titles[viewId] || 'Configuration';
+            
+            const target = document.getElementById(viewId);
+            if (target) target.classList.remove('hidden');
+
+            const fsAxis = document.getElementById('client-fullscreen-axis');
+            if (fsAxis) fsAxis.classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeFullscreenClientAxis() {
+            const fsAxis = document.getElementById('client-fullscreen-axis');
+            if (fsAxis) fsAxis.classList.add('hidden');
+
+            document.querySelectorAll('.client-axis-view').forEach(v => v.classList.add('hidden'));
+
+            const grid = document.getElementById('client-home-grid');
+            if (grid) grid.classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function switchContactTab(tabId) {
+            const cntBtns = document.getElementById('cnt-buttons-container');
+            if(cntBtns) cntBtns.classList.add('hidden');
+            
+            document.querySelectorAll('.contact-subview').forEach(el => el.classList.add('hidden'));
+            
+            const target = document.getElementById(tabId);
+            if (target) target.classList.remove('hidden');
+        }
+
+        function resetContactView() {
+            document.querySelectorAll('.contact-subview').forEach(el => el.classList.add('hidden'));
+            const cntBtns = document.getElementById('cnt-buttons-container');
+            if(cntBtns) cntBtns.classList.remove('hidden');
+        }
+
+        function switchCaSubTab(tabId) {
+            const caBtns = document.getElementById('ca-buttons-container');
+            if(caBtns) caBtns.classList.add('hidden');
+            
+            document.querySelectorAll('.ca-subview').forEach(el => el.classList.add('hidden'));
+            
+            const target = document.getElementById(tabId);
+            if (target) target.classList.remove('hidden');
+        }
+
+        function resetCaView() {
+            document.querySelectorAll('.ca-subview').forEach(el => el.classList.add('hidden'));
+            const caBtns = document.getElementById('ca-buttons-container');
+            if(caBtns) caBtns.classList.remove('hidden');
+        }
+
+        function switchPartnerSupportTab(tabId) {
+            const psupBtns = document.getElementById('psup-buttons-container');
+            if(psupBtns) psupBtns.classList.add('hidden');
+            
+            document.querySelectorAll('.psup-subview').forEach(el => el.classList.add('hidden'));
+            
+            const target = document.getElementById(tabId);
+            if (target) target.classList.remove('hidden');
+        }
+
+        function resetPsupView() {
+            document.querySelectorAll('.psup-subview').forEach(el => el.classList.add('hidden'));
+            const psupBtns = document.getElementById('psup-buttons-container');
+            if(psupBtns) psupBtns.classList.remove('hidden');
+        }
+
+        function switchProfileSubTab(tabId) {
+            const profBtns = document.getElementById('prof-buttons-container');
+            if(profBtns) profBtns.classList.add('hidden');
+            
+            document.querySelectorAll('.prof-subview').forEach(el => el.classList.add('hidden'));
+            
+            const target = document.getElementById(tabId);
+            if (target) target.classList.remove('hidden');
+        }
+
+        function resetProfileView() {
+            document.querySelectorAll('.prof-subview').forEach(el => el.classList.add('hidden'));
+            const profBtns = document.getElementById('prof-buttons-container');
+            if(profBtns) profBtns.classList.remove('hidden');
+        }
+
+        function openFullscreenPartnerTab(tabId) {
+            const homeCol = document.getElementById('partner-home-column');
+            if (homeCol) homeCol.classList.add('hidden');
+
+            document.querySelectorAll('.partner-subview').forEach(v => v.classList.add('hidden'));
+
+            const titles = {
+                'partner-tab-missions': '🚨 Missions Disponibles',
+                'partner-tab-ca': '📊 Chiffre d\'Affaires & Périodes',
+                'partner-tab-wallet': '💳 Portefeuille & Forfaits',
+                'partner-tab-courses': '📑 Mes Courses & Clôture',
+                'partner-tab-profil': '⚙️ Mon Profil & Sécurité',
+                'partner-tab-info-support': '📜 Infos & Support'
+            };
+
+            const titleEl = document.getElementById('partner-tab-fullscreen-title');
+            if (titleEl) titleEl.innerText = titles[tabId] || 'Module Partenaire';
+            
+            const target = document.getElementById(tabId);
+            if (target) target.classList.remove('hidden');
+
+            const fsTab = document.getElementById('partner-fullscreen-tab');
+            if (fsTab) fsTab.classList.remove('hidden');
+
+            if (tabId === 'partner-tab-ca') {
+                resetCaView();
+                renderPartnerCA();
+            } else if (tabId === 'partner-tab-wallet') {
+                refreshPartnerWallet();
+            } else if (tabId === 'partner-tab-missions') {
+                loadPartnerMissions();
+            } else if (tabId === 'partner-tab-courses') {
+                loadPartnerAcceptedCourses();
+            } else if (tabId === 'partner-tab-profil') {
+                resetProfileView();
+            } else if (tabId === 'partner-tab-info-support') {
+                resetPsupView();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeFullscreenPartnerTab() {
+            const fsTab = document.getElementById('partner-fullscreen-tab');
+            if (fsTab) fsTab.classList.add('hidden');
+
+            document.querySelectorAll('.partner-subview').forEach(v => v.classList.add('hidden'));
+
+            const homeCol = document.getElementById('partner-home-column');
+            if (homeCol) homeCol.classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function refreshApplicationData() {
+            const btn = document.getElementById('btn-app-refresh');
+            if (btn) btn.classList.add('animate-pulse');
+            
+            try {
+                if (session.role === 'partner') {
+                    await Promise.all([
+                        loadPartnerMissions(),
+                        loadPartnerAcceptedCourses(),
+                        refreshPartnerWallet()
+                    ]);
+                } else if (session.role === 'client') {
+                    await detectClientOrders();
+                }
+                await fetchPublishedCgu();
+            } catch (e) {
+                console.error("Erreur lors de l'actualisation", e);
+            }
+            
+            if (btn) btn.classList.remove('animate-pulse');
+            showToast("Application actualisée avec succès !", "success");
+        }
+
+        async function refreshPartnerWallet() {
+            if (!session.user) return;
+            const { data, error } = await db.from('partners').select('wallet, billing_mode').eq('id', session.user.id).single();
+            if (!error && data) {
+                session.user.wallet = data.wallet || 0;
+                session.user.billing_mode = data.billing_mode || 'commission';
+                const el = document.getElementById('partner-wallet-balance');
+                if (el) el.innerText = `${Number(data.wallet || 0).toLocaleString('fr-FR')} CDF`;
+            }
+        }
+
+        function updateVehicleCount(vid, delta) {
+            clientVehiculeSelection[vid] = Math.max(0, (clientVehiculeSelection[vid] || 0) + delta);
+            const qtyEl = document.getElementById(`qty-${vid}`);
+            if (qtyEl) qtyEl.innerText = clientVehiculeSelection[vid];
+            
+            const optionsBox = document.getElementById(`options-box-${vid}`);
+            if (optionsBox) {
+                if (clientVehiculeSelection[vid] > 0) {
+                    optionsBox.classList.remove('hidden');
+                } else {
+                    optionsBox.classList.add('hidden');
+                    if (document.getElementById(`opt-${vid}-moteur`)) document.getElementById(`opt-${vid}-moteur`).checked = false;
+                    if (document.getElementById(`opt-${vid}-chassis`)) document.getElementById(`opt-${vid}-chassis`).checked = false;
+                    if (document.getElementById(`opt-${vid}-sieges`)) document.getElementById(`opt-${vid}-sieges`).checked = false;
+                }
+            }
+            calculerTotal();
+        }
+
+        function calculerTotal() {
+            let total = 0;
+            const tarifsZone = grilleTarifaireParZone[currentActiveZone] || grilleTarifaireParZone['zone1'];
+
+            let countVehicules = 0;
+            typesVehicules.forEach(v => {
+                const count = clientVehiculeSelection[v.id] || 0;
+                if (count > 0) {
+                    total += count * (tarifsZone[v.id] || 15000);
+                    countVehicules += count;
+
+                    if (v.hasOptions) {
+                        const pOpt = vehicleOptionsPrices[v.id];
+                        if (document.getElementById(`opt-${v.id}-moteur`)?.checked) total += count * pOpt.moteur;
+                        if (document.getElementById(`opt-${v.id}-chassis`)?.checked) total += count * pOpt.chassis;
+                        if (document.getElementById(`opt-${v.id}-sieges`)?.checked) total += count * pOpt.sieges;
+                    }
+                }
+            });
+            const badgeAuto = document.getElementById('badge-count-auto');
+            if (badgeAuto) badgeAuto.innerText = countVehicules;
+
+            let countMaison = 0;
+            const mTapis = parseFloat(document.getElementById('m2-tapis')?.value) || 0;
+            const mMoq = parseFloat(document.getElementById('m2-moquette')?.value) || 0;
+            const mVit = parseFloat(document.getElementById('m2-vitres')?.value) || 0;
+            const mBaie = parseFloat(document.getElementById('m2-baies')?.value) || 0;
+            const mCarr = parseFloat(document.getElementById('m2-carreaux')?.value) || 0;
+            const qPan = parseFloat(document.getElementById('qty-panneaux')?.value) || 0;
+            const qCanText = parseFloat(document.getElementById('qty-canape-textile')?.value) || 0;
+            const qCanLin = parseFloat(document.getElementById('qty-canape-lin')?.value) || 0;
+            const qCanVel = parseFloat(document.getElementById('qty-canape-velours')?.value) || 0;
+            const qCanCuir = parseFloat(document.getElementById('qty-canape-cuir')?.value) || 0;
+            const qMat = parseFloat(document.getElementById('qty-matelas')?.value) || 0;
+
+            total += mTapis * 2000 + mMoq * 2000 + mVit * 1500 + mBaie * 3000 + mCarr * 1000 + qPan * 4000;
+            total += qCanText * 4500 + qCanLin * 6000 + qCanVel * 8000 + qCanCuir * 12000 + qMat * 5000;
+
+            countMaison = (mTapis > 0 ? 1 : 0) + (mMoq > 0 ? 1 : 0) + (mVit > 0 ? 1 : 0) + (mBaie > 0 ? 1 : 0) + (mCarr > 0 ? 1 : 0) + (qPan > 0 ? 1 : 0) + (qCanText > 0 ? 1 : 0) + (qCanLin > 0 ? 1 : 0) + (qCanVel > 0 ? 1 : 0) + (qCanCuir > 0 ? 1 : 0) + (qMat > 0 ? 1 : 0);
+            const badgeMaison = document.getElementById('badge-count-maison');
+            if (badgeMaison) badgeMaison.innerText = countMaison;
+
+            let countEnv = 0;
+            const qDesinf = parseFloat(document.getElementById('qty-desinfection')?.value) || 0;
+            const qDesins = parseFloat(document.getElementById('qty-desinsectisation')?.value) || 0;
+            const qDerat = parseFloat(document.getElementById('qty-deratisation')?.value) || 0;
+            const vImm = parseFloat(document.getElementById('vol-immondices')?.value) || 0;
+            const vFos = parseFloat(document.getElementById('vol-fosse')?.value) || 0;
+
+            total += qDesinf * 10000 + qDesins * 12000 + qDerat * 14000 + vImm * 15000;
+            total += vFos * (currentActiveZone === 'zone4' ? 50000 : 40000);
+
+            countEnv = (qDesinf > 0 ? 1 : 0) + (qDesins > 0 ? 1 : 0) + (qDerat > 0 ? 1 : 0) + (vImm > 0 ? 1 : 0) + (vFos > 0 ? 1 : 0);
+            const badgeEnv = document.getElementById('badge-count-env');
+            if (badgeEnv) badgeEnv.innerText = countEnv;
+
+            const totalAffichage = document.getElementById('prix-total-affichage');
+            if (totalAffichage) totalAffichage.innerText = total.toLocaleString('fr-FR');
+
+            const badgesContainer = document.getElementById('cart-summary-badges');
+            if (badgesContainer) {
+                let badges = [];
+                if (countVehicules > 0) badges.push(`<span class="bg-slate-800 px-2 py-0.5 rounded-md border border-slate-700">🚗 ${countVehicules} véhicule(s)</span>`);
+                if (countMaison > 0) badges.push(`<span class="bg-slate-800 px-2 py-0.5 rounded-md border border-slate-700">🏡 ${countMaison} maison</span>`);
+                if (countEnv > 0) badges.push(`<span class="bg-slate-800 px-2 py-0.5 rounded-md border border-slate-700">🌱 ${countEnv} 3D/Fosse</span>`);
+                badgesContainer.innerHTML = badges.join('');
+            }
+
+            return total;
+        }
+
+        function reinitialiserFormulaireCommande() {
+            typesVehicules.forEach(v => {
+                clientVehiculeSelection[v.id] = 0;
+                const qtyEl = document.getElementById(`qty-${v.id}`);
+                if (qtyEl) qtyEl.innerText = "0";
+
+                const optBox = document.getElementById(`options-box-${v.id}`);
+                if (optBox) optBox.classList.add('hidden');
+
+                if (document.getElementById(`opt-${v.id}-moteur`)) document.getElementById(`opt-${v.id}-moteur`).checked = false;
+                if (document.getElementById(`opt-${v.id}-chassis`)) document.getElementById(`opt-${v.id}-chassis`).checked = false;
+                if (document.getElementById(`opt-${v.id}-sieges`)) document.getElementById(`opt-${v.id}-sieges`).checked = false;
+            });
+
+            ['m2-tapis', 'm2-moquette', 'm2-vitres', 'm2-baies', 'm2-carreaux', 'qty-panneaux',
+             'qty-canape-textile', 'qty-canape-lin', 'qty-canape-velours', 'qty-canape-cuir', 'qty-matelas'
+            ].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+
+            ['qty-desinfection', 'qty-desinsectisation', 'qty-deratisation', 'vol-immondices', 'vol-fosse'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+
+            ['client-quartier-input', 'client-avenue-input', 'client-ref-input', 'client-date-input', 'client-time-input'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+
+            calculerTotal();
+        }
+
+        async function passerCommande() {
+            const btnValider = document.getElementById('btn-valider-commande');
+            const client_name = document.getElementById('client-name-input')?.value.trim() || '';
+            const raw_phone = document.getElementById('client-phone-input')?.value.trim() || '';
+            const client_phone = normalizePhoneNumber(raw_phone);
+            const commune = document.getElementById('client-commune')?.value || '';
+            const quartier = document.getElementById('client-quartier-input')?.value.trim() || '';
+            const avenue = document.getElementById('client-avenue-input')?.value.trim() || '';
+            const reference = document.getElementById('client-ref-input')?.value.trim() || '';
+            const date = document.getElementById('client-date-input')?.value || '';
+            const time = document.getElementById('client-time-input')?.value || '';
+            const elec = document.getElementById('client-elec')?.value || '';
+            const water = document.getElementById('client-water')?.value || '';
+            const total_amount = calculerTotal();
+
+            if (!client_name || !client_phone || !avenue || !date || !time) {
+                openFullscreenClientAxis('axis-logistics');
+                return showToast("Veuillez renseigner vos coordonnées et votre adresse dans la case 'Logistique'.", "error");
+            }
+            if (total_amount <= 0) return showToast("Votre panier est vide.", "error");
+
+            let details = [];
+            let axeParts = [];
+
+            let hasAuto = false;
+            typesVehicules.forEach(v => {
+                const count = clientVehiculeSelection[v.id] || 0;
+                if (count > 0) {
+                    hasAuto = true;
+                    let vDesc = `${count}x ${v.label}`;
+                    let vOpts = [];
+                    if (v.hasOptions) {
+                        if (document.getElementById(`opt-${v.id}-moteur`)?.checked) vOpts.push("Moteur+Rad.");
+                        if (document.getElementById(`opt-${v.id}-chassis`)?.checked) vOpts.push("Châssis");
+                        if (document.getElementById(`opt-${v.id}-sieges`)?.checked) vOpts.push("Sièges+Plafond");
+                    }
+                    if (vOpts.length > 0) vDesc += ` [${vOpts.join(' + ')}]`;
+                    details.push(vDesc);
+                }
+            });
+            if (hasAuto) axeParts.push('Automobile');
+
+            let hasMaison = false;
+            const mTapis = parseFloat(document.getElementById('m2-tapis')?.value) || 0;
+            if (mTapis > 0) { details.push(`Tapis (${mTapis} m²)`); hasMaison = true; }
+            const qCanText = parseFloat(document.getElementById('qty-canape-textile')?.value) || 0;
+            if (qCanText > 0) { details.push(`Canapé Textile (${qCanText} pl.)`); hasMaison = true; }
+            const qCanCuir = parseFloat(document.getElementById('qty-canape-cuir')?.value) || 0;
+            if (qCanCuir > 0) { details.push(`Canapé Cuir (${qCanCuir} pl.)`); hasMaison = true; }
+            const mVitres = parseFloat(document.getElementById('m2-vitres')?.value) || 0;
+            if (mVitres > 0) { details.push(`Vitres (${mVitres} m²)`); hasMaison = true; }
+            if (hasMaison) axeParts.push('Maison');
+
+            let hasEnv = false;
+            const fosse = parseFloat(document.getElementById('vol-fosse')?.value) || 0;
+            if (fosse > 0) { details.push(`Vidange fosse (${fosse} m³)`); hasEnv = true; }
+            const immondices = parseFloat(document.getElementById('vol-immondices')?.value) || 0;
+            if (immondices > 0) { details.push(`Immondices (${immondices} m³)`); hasEnv = true; }
+            const desinf = parseFloat(document.getElementById('qty-desinfection')?.value) || 0;
+            if (desinf > 0) { details.push(`3D Désinfection (${desinf} pces)`); hasEnv = true; }
+            if (hasEnv) axeParts.push('Environnement 3D & Vidange');
+
+            const commission = Math.floor(total_amount * 0.15);
+
+            if (btnValider) btnValider.disabled = true;
+
+            const { error } = await db.from('orders').insert([{
+                axe: axeParts.join(' / ') || 'Multi-Axes',
+                client_name,
+                client_phone,
+                description: details.join(' • ') || 'Prestation d\'assainissement sur mesure',
+                commune,
+                quartier: quartier || 'N/A',
+                avenue,
+                reference,
+                logistics: `Élec: ${elec} | Eau: ${water}`,
+                date,
+                time,
+                total_amount,
+                commission,
+                status: 'En attente'
+            }]);
+
+            if (btnValider) btnValider.disabled = false;
+
+            if (error) return showToast(error.message, "error");
+
+            reinitialiserFormulaireCommande();
+            showToast("Commande validée et transmise à la Direction !", "success");
+            openFullscreenClientAxis('axis-tracking');
+            detectClientOrders();
+        }
+
+        async function detectClientOrders() {
+            const raw = document.getElementById('client-phone-input')?.value.trim() || '';
+            const phone = normalizePhoneNumber(raw);
+            if (!phone) return;
+
+            const { data } = await db.from('orders').select('*').or(`client_phone.eq.${phone},client_phone.ilike.%${phone.slice(-8)}%`).order('id', { ascending: false });
+            const list = document.getElementById('client-orders-tracking-list');
+            if (!list) return;
+            list.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">Aucune commande enregistrée.</p>`;
+                return;
+            }
+
+            data.forEach(o => {
+                let badgeColor = o.status === 'En attente' ? 'bg-orange-100 text-orange-700' : (o.status === 'Annulée' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700');
+                list.innerHTML += `
+                    <div class="p-3.5 border rounded-2xl bg-slate-50 space-y-2 text-xs shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <b class="text-navy-800">#${o.id} - ${o.commune}</b>
+                                <span class="text-[10px] text-slate-500 block">${o.date} (${o.time})</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase ${badgeColor}">${o.status}</span>
+                                <div class="font-mono font-black text-navy-800 mt-0.5">${Number(o.total_amount).toLocaleString('fr-FR')} CDF</div>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 text-[11px]"><b>Détails :</b> ${o.description}</p>
+                        <p class="text-[10px] text-slate-500"><b>Lieu :</b> ${o.quartier ? o.quartier + ' - ' : ''}${o.avenue}</p>
+                        <p class="text-[10px] text-slate-500"><b>Logistique :</b> ${o.logistics || 'SNEL / REGIDESO'}</p>
+                        ${o.rating_service ? `<div class="text-[10px] text-mattOrange font-bold">Note attribuée : ${'⭐'.repeat(o.rating_service)}</div>` : ''}
+                        <div class="flex justify-end gap-1.5 pt-1">
+                            ${o.status === 'En attente' ? `<button onclick="cancelOrder(${o.id})" class="px-2.5 py-1 bg-orange-100 text-orange-800 rounded-lg text-[10px] font-bold">Annuler</button>` : ''}
+                            <button onclick="openRatingModal(${o.id})" class="px-2.5 py-1 bg-sky-100 text-sky-800 rounded-lg text-[10px] font-bold">⭐ Noter</button>
+                            <button onclick="deleteOrderClient(${o.id})" class="px-2.5 py-1 bg-red-100 text-red-700 rounded-lg text-[10px] font-bold">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function cancelOrder(orderId) {
+            await db.from('orders').update({ status: 'Annulée' }).eq('id', orderId);
+            showToast("Commande annulée.");
+            detectClientOrders();
+        }
+
+        async function deleteOrderClient(orderId) {
+            await db.from('orders').delete().eq('id', orderId);
+            showToast("Commande supprimée.");
+            detectClientOrders();
+        }
+
+        function openRatingModal(orderId) {
+            currentRatingOrderId = orderId;
+            const idEl = document.getElementById('rating-order-id');
+            if (idEl) idEl.innerText = orderId;
+            setRating('service', 5);
+            const modal = document.getElementById('modal-rating');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeRatingModal() {
+            const modal = document.getElementById('modal-rating');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function setRating(type, val) {
+            selectedRatingValue = val;
+            document.querySelectorAll('#stars-service-container span').forEach((s, idx) => {
+                s.className = idx < val ? 'text-mattOrange' : 'text-slate-300';
+            });
+        }
+
+        async function submitOrderRating() {
+            const comment = document.getElementById('rating-comment')?.value.trim() || '';
+            await db.from('orders').update({ rating_service: selectedRatingValue, comment }).eq('id', currentRatingOrderId);
+            showToast("Votre cotation est enregistrée !");
+            closeRatingModal();
+            detectClientOrders();
+        }
+
+        async function loadPartnerMissions() {
+            const btn = document.getElementById('btn-refresh-missions');
+            const icon = document.getElementById('refresh-icon');
+            if (icon) icon.classList.add('animate-spin');
+            if (btn) btn.disabled = true;
+
+            const { data, error } = await db.from('orders').select('*').eq('status', 'En attente').order('id', { ascending: false });
+            const container = document.getElementById('partner-missions-container');
+            if (container) container.innerHTML = '';
+
+            if (icon) icon.classList.remove('animate-spin');
+            if (btn) btn.disabled = false;
+
+            if (error) {
+                showToast("Erreur : " + error.message, "error");
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                if (container) container.innerHTML = `<p class="text-xs text-slate-400 text-center py-12 col-span-full font-medium">Aucune mission disponible dans votre secteur.</p>`;
+                return;
+            }
+
+            const pSpec = (session.user?.specialty || '').toLowerCase();
+
+            const missionsFiltrees = data.filter(o => {
+                const desc = (o.description || '').toLowerCase();
+                const axe = (o.axe || '').toLowerCase();
+
+                const hasAuto = axe.includes('auto') || desc.includes('berline') || desc.includes('suv') || desc.includes('moto') || desc.includes('bus') || desc.includes('remorque') || desc.includes('poids lourd');
+                const hasMaison = axe.includes('maison') || desc.includes('tapis') || desc.includes('canapé') || desc.includes('vitre') || desc.includes('carreaux') || desc.includes('moquette') || desc.includes('matelas') || desc.includes('panneau');
+                const has3D = axe.includes('3d') || desc.includes('désinfection') || desc.includes('dératisation') || desc.includes('désinsectisation');
+                const hasVidange = desc.includes('fosse') || desc.includes('immondices') || desc.includes('vidange');
+
+                if (pSpec.includes('complet') || pSpec.includes('toutes')) {
+                    return true;
+                }
+                if (pSpec.includes('polyvalent')) {
+                    return hasAuto || hasMaison;
+                }
+                if (pSpec.includes('3d') || pSpec.includes('traitement') || pSpec.includes('assainissement')) {
+                    return has3D;
+                }
+                if (pSpec.includes('vidange') || pSpec.includes('immondices')) {
+                    return hasVidange;
+                }
+                if (pSpec.includes('auto') || pSpec.includes('lavage')) {
+                    return hasAuto;
+                }
+                if (pSpec.includes('maison')) {
+                    return hasMaison;
+                }
+
+                return false;
+            });
+
+            if (missionsFiltrees.length === 0) {
+                if (container) container.innerHTML = `<p class="text-xs text-slate-400 text-center py-12 col-span-full font-medium">Aucune mission disponible pour votre spécialité (${session.user?.specialty || 'Général'}).</p>`;
+                return;
+            }
+
+            missionsFiltrees.forEach(o => {
+                if (container) {
+                    container.innerHTML += `
+                        <div class="p-4 border border-slate-200 hover:border-aqua rounded-2xl bg-white space-y-3 text-xs shadow-sm transition">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <b class="text-navy-800 uppercase text-sm font-black">${o.commune}</b>
+                                    <span class="text-[10px] text-slate-500 block font-medium">${o.date} à ${o.time}</span>
+                                </div>
+                                <div class="text-right font-mono">
+                                    <span class="font-black text-navy-800 text-base">${Number(o.total_amount).toLocaleString('fr-FR')} CDF</span>
+                                    <span class="block text-[10px] text-mattOrange font-bold">Commission : ${Number(o.commission).toLocaleString('fr-FR')} CDF</span>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border text-[11px] text-slate-700 space-y-1">
+                                <div><b>Prestations :</b> ${o.description}</div>
+                                <div><b>Quartier :</b> ${o.quartier || 'N/A'}</div>
+                                <div><b>Logistique :</b> <span class="text-aqua font-black">${o.logistics || 'SNEL / REGIDESO'}</span></div>
+                                <div><b>Repère :</b> ${o.reference || 'Aucun'}</div>
+                            </div>
+                            <button onclick="accepterMission(${o.id}, ${o.commission})" class="w-full py-2.5 bg-mattOrange active:bg-orange-600 text-white rounded-xl font-black uppercase text-xs shadow transition">
+                                Accepter la course (${Number(o.commission).toLocaleString('fr-FR')} CDF)
+                            </button>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        async function loadPartnerAcceptedCourses() {
+            if (!session.user || !session.user.id) return;
+            
+            let ordersLoaded = [];
+
+            try {
+                const { data, error } = await db.from('orders')
+                    .select('*')
+                    .eq('partner_id', session.user.id)
+                    .order('id', { ascending: false });
+
+                if (!error && data) {
+                    ordersLoaded = data;
+                }
+            } catch (e) {
+                console.warn("Erreur chargement courses partenaire:", e);
+            }
+
+            partnerAllOrders = ordersLoaded;
+
+            renderAcceptedCoursesList();
+            renderPartnerCA();
+        }
+
+        function renderAcceptedCoursesList() {
+            const container = document.getElementById('partner-accepted-courses-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const visibleOrders = partnerAllOrders.filter(o => !o.partner_cleared);
+
+            if (visibleOrders.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-8 col-span-full">Aucune mission dans votre liste.</p>`;
+                return;
+            }
+
+            visibleOrders.forEach(o => {
+                container.innerHTML += `
+                    <div class="p-4 border rounded-2xl bg-white shadow-sm space-y-2 text-xs">
+                        <div class="flex justify-between font-bold">
+                            <span>#${o.id} - ${o.commune}</span>
+                            <span class="text-navy-800 font-mono">${Number(o.total_amount).toLocaleString('fr-FR')} CDF</span>
+                        </div>
+                        <div class="text-[11px] text-slate-600">
+                            <b>Client :</b> ${o.client_name} • <a href="tel:${o.client_phone}" class="text-aqua font-bold font-mono underline">${o.client_phone}</a><br>
+                            <b>Adresse :</b> ${o.quartier ? o.quartier + ' - ' : ''}${o.avenue} (Repère : ${o.reference || 'N/A'})<br>
+                            <b>Conditions :</b> ${o.logistics || 'SNEL / REGIDESO'}
+                        </div>
+                        ${o.status === 'Acceptée' ? `
+                            <button onclick="cloturerMission(${o.id})" class="w-full py-2.5 bg-green-600 active:bg-green-700 text-white rounded-xl font-bold text-xs mt-1">
+                                ✅ Clôturer cette mission (Terminée)
+                            </button>
+                        ` : `
+                            <div class="flex justify-between items-center pt-1 border-t">
+                                <span class="text-green-600 font-bold text-xs">Mission clôturée ✔</span>
+                                <button onclick="deleteSinglePartnerCourse(${o.id})" class="text-slate-400 hover:text-red-500 font-bold text-[10px] px-2 py-0.5 rounded bg-slate-50 border">
+                                    Retirer ✕
+                                </button>
+                            </div>
+                        `}
+                    </div>
+                `;
+            });
+        }
+
+        function clearCompletedCourses() {
+            let count = 0;
+            partnerAllOrders.forEach(o => {
+                if (o.status === 'Terminée') {
+                    o.partner_cleared = true;
+                    count++;
+                }
+            });
+
+            renderAcceptedCoursesList();
+            showToast(count > 0 ? `${count} course(s) clôturée(s) retirée(s) de l'affichage.` : "Aucune course clôturée à vider.", "info");
+        }
+
+        function deleteSinglePartnerCourse(orderId) {
+            const o = partnerAllOrders.find(x => x.id === orderId);
+            if (o) o.partner_cleared = true;
+            renderAcceptedCoursesList();
+            showToast("Course retirée de votre affichage.");
+        }
+
+        function renderPartnerCA(filteredOrders = null) {
+            const orders = filteredOrders || partnerAllOrders.filter(o => o.status === 'Terminée');
+            let totalBrut = 0;
+            let totalCom = 0;
+
+            orders.forEach(o => {
+                totalBrut += Number(o.total_amount || 0);
+                totalCom += Number(o.commission || 0);
+            });
+
+            const net = totalBrut - totalCom;
+
+            const elCount = document.getElementById('ca-stat-count');
+            if (elCount) elCount.innerText = orders.length;
+
+            const elBrut = document.getElementById('ca-stat-brut');
+            if (elBrut) elBrut.innerText = `${totalBrut.toLocaleString('fr-FR')} CDF`;
+
+            const elCom = document.getElementById('ca-stat-com');
+            if (elCom) elCom.innerText = `${totalCom.toLocaleString('fr-FR')} CDF`;
+
+            const elNet = document.getElementById('ca-stat-net');
+            if (elNet) elNet.innerText = `${net.toLocaleString('fr-FR')} CDF`;
+
+            const tbody = document.getElementById('ca-table-body');
+            if (!tbody) return;
+
+            if (orders.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-slate-400 font-medium">
+                            Aucune course enregistrée pour cette période.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = orders.map(o => {
+                const com = Number(o.commission || 0);
+                const brut = Number(o.total_amount || 0);
+                const gain = brut - com;
+
+                return `
+                    <tr class="hover:bg-slate-50 border-b">
+                        <td class="p-3 font-mono font-bold">#${o.id}</td>
+                        <td class="p-3">${o.date || '-'}</td>
+                        <td class="p-3 font-bold">${o.description || '-'}</td>
+                        <td class="p-3">${o.commune}</td>
+                        <td class="p-3 font-mono font-bold text-sky-600">${brut.toLocaleString('fr-FR')} CDF</td>
+                        <td class="p-3 font-mono font-bold text-red-500">-${com.toLocaleString('fr-FR')} CDF</td>
+                        <td class="p-3 font-mono font-bold text-green-600">${gain.toLocaleString('fr-FR')} CDF</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filtrerChiffreAffaires() {
+            const start = document.getElementById('ca-date-start')?.value || '';
+            const end = document.getElementById('ca-date-end')?.value || '';
+
+            if (!start && !end) return renderPartnerCA();
+
+            const filtered = partnerAllOrders.filter(o => {
+                if (o.status !== 'Terminée') return false;
+                if (!o.date) return false;
+                if (start && o.date < start) return false;
+                if (end && o.date > end) return false;
+                return true;
+            });
+
+            const lbl = document.getElementById('ca-period-label');
+            if (lbl) lbl.innerText = `Du ${start || 'Début'} au ${end || 'Fin'}`;
+            renderPartnerCA(filtered);
+            showToast("Chiffre d'affaires recalculé.");
+        }
+
+        function resetFiltreCA() {
+            if (document.getElementById('ca-date-start')) document.getElementById('ca-date-start').value = '';
+            if (document.getElementById('ca-date-end')) document.getElementById('ca-date-end').value = '';
+            const lbl = document.getElementById('ca-period-label');
+            if (lbl) lbl.innerText = "Toutes dates";
+            renderPartnerCA();
+        }
+
+        async function accepterMission(orderId, commission) {
+            const mode = session.user.billing_mode || 'commission';
+            if (mode === 'commission' && session.user.wallet < commission) {
+                return showToast("Solde insuffisant pour couvrir la commission.", "error");
+            }
+
+            const newWallet = mode === 'commission' ? session.user.wallet - commission : session.user.wallet;
+            await db.from('partners').update({ wallet: newWallet }).eq('id', session.user.id);
+            await db.from('orders').update({ status: 'Acceptée', partner_id: session.user.id }).eq('id', orderId);
+
+            session.user.wallet = newWallet;
+            const wb = document.getElementById('partner-wallet-balance');
+            if (wb) wb.innerText = `${newWallet.toLocaleString('fr-FR')} CDF`;
+
+            showToast("Mission acceptée ! Coordonnées débloquées.");
+            loadPartnerMissions();
+            loadPartnerAcceptedCourses();
+        }
+
+        async function cloturerMission(orderId) {
+            await db.from('orders').update({ status: 'Terminée' }).eq('id', orderId);
+            showToast("Course terminée avec succès !");
+            loadPartnerAcceptedCourses();
+        }
+
+        async function sendRechargeDeclaration() {
+            const mode = document.getElementById('p-billing-mode-select')?.value || 'commission';
+            const amount = parseFloat(document.getElementById('p-recharge-amount')?.value);
+            const ref = document.getElementById('p-recharge-ref')?.value.trim() || '';
+            if (!amount || !ref) return showToast("Montant et référence requis.", "error");
+
+            await db.from('recharges').insert([{ partner_id: session.user.id, partner_name: session.user.name, mode, amount, ref, status: 'En attente' }]);
+            showToast("Déclaration transmise à la Direction !");
+            if (document.getElementById('p-recharge-amount')) document.getElementById('p-recharge-amount').value = '';
+            if (document.getElementById('p-recharge-ref')) document.getElementById('p-recharge-ref').value = '';
+        }
+
+        function adjustPartnerRechargeMode() {
+            const mode = document.getElementById('p-billing-mode-select')?.value;
+            const input = document.getElementById('p-recharge-amount');
+            if (input) input.value = mode === 'journalier' ? 15000 : (mode === 'mensuel' ? 150000 : '');
+        }
+
+        async function savePartnerInfoUpdate() {
+            if (!session.user) return;
+            const newName = document.getElementById('partner-edit-name')?.value.trim() || '';
+            const newAddress = document.getElementById('partner-edit-address')?.value.trim() || '';
+
+            if (!newName) return showToast("Le nom est requis.", "error");
+
+            const updatePayload = { name: newName, address: newAddress };
+            const { error } = await db.from('partners').update(updatePayload).eq('id', session.user.id);
+            
+            if (error) return showToast("Erreur: " + error.message, "error");
+
+            session.user.name = newName;
+            session.user.address = newAddress;
+            localStorage.setItem('matt_partner_session', JSON.stringify(session.user));
+            
+            showToast("Profil mis à jour avec succès !");
+            resetProfileView();
+        }
+
+        async function savePartnerSecurityUpdate() {
+            if (!session.user) return;
+            const rawPhone = document.getElementById('partner-edit-phone')?.value.trim() || '';
+            const newPhone = normalizePhoneNumber(rawPhone);
+            const oldPass = document.getElementById('partner-edit-old-pass')?.value.trim() || '';
+            const newPass = document.getElementById('partner-edit-new-pass')?.value.trim() || '';
+            const secretQ = document.getElementById('partner-edit-secret-q')?.value || '';
+            const secretA = document.getElementById('partner-edit-secret-a')?.value.trim() || '';
+
+            if (!newPhone) return showToast("Le téléphone est requis.", "error");
+            if (!oldPass) return showToast("L'ancien mot de passe est requis pour valider les modifications de sécurité.", "error");
+
+            const { data: checkUser } = await db.from('partners').select('*').eq('id', session.user.id).eq('password', oldPass).single();
+            if (!checkUser) return showToast("Ancien mot de passe erroné.", "error");
+
+            let updatePayload = { phone: newPhone, secret_question: secretQ, secret_answer: secretA };
+            if (newPass) updatePayload.password = newPass;
+
+            const { error } = await db.from('partners').update(updatePayload).eq('id', session.user.id);
+            
+            if (error) return showToast("Erreur: " + error.message, "error");
+
+            session.user.phone = newPhone;
+            session.user.secret_question = secretQ;
+            session.user.secret_answer = secretA;
+            if (newPass) session.user.password = newPass;
+
+            localStorage.setItem('matt_partner_session', JSON.stringify(session.user));
+            
+            const pOld = document.getElementById('partner-edit-old-pass');
+            if (pOld) pOld.value = '';
+            const pNew = document.getElementById('partner-edit-new-pass');
+            if (pNew) pNew.value = '';
+
+            showToast("Sécurité mise à jour avec succès !");
+            resetProfileView();
+        }
+
+        async function fetchPublishedCgu() {
+            const { data } = await db.from('system_settings').select('value').eq('key', 'cgu_content').single();
+            const text = data && data.value ? data.value.split('\n\n').map(p => {
+                const lines = p.split('\n');
+                return `<div class="space-y-0.5"><h4 class="font-black text-navy-800 uppercase">${lines[0]}</h4><p>${lines.slice(1).join('<br>') || ''}</p></div>`;
+            }).join('') : `<p class="text-slate-500">CGU en cours d'actualisation par la Direction.</p>`;
+
+            const cClient = document.getElementById('cgu-display-client');
+            const cPartner = document.getElementById('cgu-display-partner');
+            if (cClient) cClient.innerHTML = text;
+            if (cPartner) cPartner.innerHTML = text;
+        }
+
+        async function registerClient() {
+            const name = document.getElementById('auth-client-reg-name')?.value.trim() || '';
+            const rawPhone = document.getElementById('auth-client-reg-phone')?.value.trim() || '';
+            const phone = normalizePhoneNumber(rawPhone);
+            const password = document.getElementById('auth-client-reg-pass')?.value.trim() || '';
+            if (!name || !phone || !password) return showToast("Remplissez tous les champs.", "error");
+
+            const { data, error } = await db.from('clients').insert([{ name, phone, password }]).select();
+            if (error) return showToast(error.message, "error");
+
+            session = { role: 'client', user: data[0] };
+            localStorage.setItem('matt_client_session', JSON.stringify(data[0]));
+            showToast("Compte client créé avec succès !");
+            openClientApp();
+        }
+
+        async function loginClient() {
+            const raw = document.getElementById('auth-client-login-phone')?.value.trim() || '';
+            const phone = normalizePhoneNumber(raw);
+            const password = document.getElementById('auth-client-login-pass')?.value.trim() || '';
+            
+            const { data, error } = await db.from('clients')
+                .select('*')
+                .or(`phone.eq.${phone},phone.ilike.%${phone.slice(-8)}%`)
+                .eq('password', password)
+                .single();
+
+            if (error || !data) return showToast("Identifiants incorrects.", "error");
+
+            session = { role: 'client', user: data };
+            localStorage.setItem('matt_client_session', JSON.stringify(data));
+            showToast(`Bienvenue ${data.name}`);
+            openClientApp();
+        }
+
+        function openClientApp() {
+            showView('view-client-app');
+            const nameInp = document.getElementById('client-name-input');
+            if (nameInp && session.user) nameInp.value = session.user.name;
+
+            const phoneInp = document.getElementById('client-phone-input');
+            if (phoneInp && session.user) phoneInp.value = session.user.phone;
+
+            detectClientOrders();
+            onClientCommuneChange();
+            fetchPublishedCgu();
+        }
+
+        function logoutCurrentSession() {
+            session = { role: null, user: null };
+            localStorage.removeItem('matt_client_session');
+            localStorage.removeItem('matt_partner_session');
+            window.location.reload();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const selectClient = document.getElementById('client-commune');
+            const selectPartnerReg = document.getElementById('p-reg-commune');
+
+            communesKinshasa.forEach(c => {
+                if (selectClient) selectClient.insertAdjacentHTML('beforeend', `<option value="${c.name}">${c.name}</option>`);
+                if (selectPartnerReg) selectPartnerReg.insertAdjacentHTML('beforeend', `<option value="${c.name}">${c.name}</option>`);
+            });
+
+            populateSecretQuestions();
+
+            const vCat = document.getElementById('vehicle-catalog');
+            if (vCat) {
+                typesVehicules.forEach(v => {
+                    clientVehiculeSelection[v.id] = 0;
+                    const pOpt = vehicleOptionsPrices[v.id];
+
+                    let optionsHtml = '';
+                    if (v.hasOptions && pOpt) {
+                        optionsHtml = `
+                            <div id="options-box-${v.id}" class="hidden mt-2 p-2 bg-slate-50 rounded-xl border border-slate-200 text-[10px] space-y-1 transition-all">
+                                <span class="font-black text-navy-800 uppercase block">Options :</span>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-1">
+                                    <label class="flex items-center gap-1 p-1 bg-white rounded border cursor-pointer">
+                                        <input type="checkbox" id="opt-${v.id}-moteur" class="rounded text-mattOrange" onchange="calculerTotal()">
+                                        <span>Moteur (+${pOpt.moteur.toLocaleString('fr-FR')})</span>
+                                    </label>
+                                    <label class="flex items-center gap-1 p-1 bg-white rounded border cursor-pointer">
+                                        <input type="checkbox" id="opt-${v.id}-chassis" class="rounded text-mattOrange" onchange="calculerTotal()">
+                                        <span>Châssis (+${pOpt.chassis.toLocaleString('fr-FR')})</span>
+                                    </label>
+                                    <label class="flex items-center gap-1 p-1 bg-white rounded border cursor-pointer">
+                                        <input type="checkbox" id="opt-${v.id}-sieges" class="rounded text-mattOrange" onchange="calculerTotal()">
+                                        <span>Sièges (+${pOpt.sieges.toLocaleString('fr-FR')})</span>
+                                    </label>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    vCat.innerHTML += `
+                        <div class="border rounded-xl p-2.5 bg-white shadow-xs">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-bold text-slate-800">${v.label}</span>
+                                <div class="flex gap-2 items-center">
+                                    <button class="w-7 h-7 bg-slate-200 active:bg-slate-300 rounded-lg font-bold flex items-center justify-center text-sm" onclick="updateVehicleCount('${v.id}', -1)">-</button>
+                                    <span id="qty-${v.id}" class="w-4 text-center font-black text-navy-800 text-xs">0</span>
+                                    <button class="w-7 h-7 bg-slate-200 active:bg-slate-300 rounded-lg font-bold flex items-center justify-center text-sm" onclick="updateVehicleCount('${v.id}', 1)">+</button>
+                                </div>
+                            </div>
+                            ${optionsHtml}
+                        </div>
+                    `;
+                });
+            }
+
+            onClientCommuneChange();
+            fetchPublishedCgu();
+
+            const savedPartner = localStorage.getItem('matt_partner_session');
+            const savedClient = localStorage.getItem('matt_client_session');
+
+            if (savedPartner) {
+                try {
+                    session = { role: 'partner', user: JSON.parse(savedPartner) };
+                    openPartnerApp();
+                } catch(e) {}
+            } else if (savedClient) {
+                try {
+                    session = { role: 'client', user: JSON.parse(savedClient) };
+                    openClientApp();
+                } catch(e) {}
+            }
+        });
+    </script>
+
+    <!-- Script d'installation PWA -->
+    <script>
+        let deferredPrompt;
+        const installBtn = document.getElementById('btn-install-pwa');
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .catch(err => console.error('Erreur Service Worker', err));
+            });
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (installBtn) installBtn.classList.remove('hidden');
+        });
+
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                deferredPrompt.prompt();
+                await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                installBtn.classList.add('hidden');
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            if (installBtn) installBtn.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

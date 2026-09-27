@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eyano Market - Plateforme Unifiée</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        body { background-color: #0b0f19; font-family: 'Segoe UI', system-ui, sans-serif; position: relative; min-height: 100vh; margin: 0; padding: 0; }
+        
+        /* FILIGRANE LUXE PLEIN ÉCRAN */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                radial-gradient(circle at center, rgba(11, 15, 25, 0.25) 0%, #0b0f19 90%),
+                url('gtslogo.png') center center / cover no-repeat;
+            opacity: 0.06;
+            z-index: 0;
+            pointer-events: none;
+            filter: contrast(115%) brightness(110%);
+        }
+
+        .app-container { position: relative; z-index: 10; }
+        .sub-panel { display: none; }
+        .sub-panel.active { display: block; }
+        
+        .client-pub-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.6s ease-in-out; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0; z-index: 1; pointer-events: none; }
+        .client-pub-slide.active { opacity: 1; z-index: 10; pointer-events: auto; }
+        
+        footer.client-footer { 
+            height: 65px; 
+            background: #ffffff; 
+            border-top: 1px solid #f3f4f6; 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center; 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            z-index: 50; 
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
+            padding: 0 4px;
+        }
+
+        footer.client-footer button { 
+            background: none; 
+            border: none; 
+            color: #9ca3af; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            flex: 1; 
+            font-size: 9px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            padding: 4px 0; 
+            transition: all 0.2s ease-in-out; 
+        }
+
+        footer.client-footer button.active { color: #10b981; }
+        footer.client-footer button span.nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; display: block; }
+
+        /* STYLES PARTENAIRE */
+        #root-partner-view { background-color: #0b0f19; color: #f8fafc; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        #root-partner-view main { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; height: calc(100vh - 70px); width: 100vw; padding-bottom: 40px; }
+        #root-partner-view header { background: #111827; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; }
+        .partner-card { background: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 16px; margin-bottom: 15px; }
+        .partner-black-box { background: #070a13; border: 1px solid #1f2937; color: white; padding: 16px; border-radius: 12px; font-size: 13px; }
+        .partner-input-field { width: 100%; padding: 11px 12px; border: 1px solid #374151; background: #070a13; color: white; border-radius: 8px; margin-bottom: 10px; box-sizing: border-box; font-size: 13px; outline: none; }
+        .partner-grid-icon-card { background: #111827; border: 1px solid #1f2937; border-radius: 20px; padding: 20px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; transition: background 0.15s ease; }
+        .partner-grid-icon-card:active { background: #1f2937; border-color: #374151; }
+
+        footer.partner-footer { 
+            height: 65px; 
+            background: #111827; 
+            border-top: 1px solid #1f2937; 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center; 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            z-index: 50; 
+        }
+        footer.partner-footer button { 
+            background: none; 
+            border: none; 
+            color: #94a3b8; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            flex: 1; 
+            font-size: 10px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+        }
+        footer.partner-footer button.active { color: #10b981; }
+        footer.partner-footer button span.nav-icon { font-size: 18px; margin-bottom: 2px; display: block; }
+    </style>
+</head>
+<body>
+
+    <!-- MODALE CGU -->
+    <div id="modal-cgu-view" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[999999] flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-white rounded-3xl border border-gray-100 p-5 sm:p-6 w-full max-w-md h-[90vh] shadow-2xl flex flex-col justify-between text-left relative">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-3 flex-shrink-0">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">📜</span>
+                    <div>
+                        <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide">Conditions Générales (CGU)</h3>
+                        <span class="text-[9px] text-emerald-600 font-bold block">Eyano Market • GTS RDC</span>
+                    </div>
+                </div>
+                <button onclick="fermerModalCgu()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:text-gray-900 font-bold text-base flex items-center justify-center transition">✕</button>
+            </div>
+            <div id="cgu-info-content-body" class="flex-1 my-3 text-xs text-gray-700 leading-relaxed overflow-y-auto pr-2 whitespace-pre-line font-sans bg-gray-50 p-3.5 rounded-xl border border-gray-100">
+                Chargement des Conditions Générales d'Utilisation...
+            </div>
+            <div class="pt-2 border-t border-gray-100 flex-shrink-0">
+                <button onclick="fermerModalCgu()" class="w-full bg-emerald-600 text-white font-bold text-xs py-3 rounded-2xl shadow-lg hover:bg-emerald-700 transition">✓ J'ai lu et compris les CGU</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE INFO GTS -->
+    <div id="modal-gts-info" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[99999] flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-white rounded-3xl border border-gray-100 p-5 sm:p-6 w-full max-w-md h-[90vh] shadow-2xl flex flex-col justify-between text-left relative">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-3 flex-shrink-0">
+                <div class="flex items-center space-x-2">
+                    <img src="logo.png" alt="GTS" class="w-8 h-auto" onerror="this.style.display='none'">
+                    <div>
+                        <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide">Global Tech Solutions</h3>
+                        <span class="text-[9px] text-blue-600 font-bold block">À propos & Informations Officielles</span>
+                    </div>
+                </div>
+                <button onclick="fermerModalGtsInfo()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:text-gray-900 font-bold text-base flex items-center justify-center transition">✕</button>
+            </div>
+            <div id="gts-info-content-body" class="flex-1 my-3 text-xs text-gray-600 leading-relaxed overflow-y-auto pr-2 space-y-4">
+                Chargement des informations...
+            </div>
+            <div class="pt-2 border-t border-gray-100 flex-shrink-0">
+                <button onclick="fermerModalGtsInfo()" class="w-full bg-blue-600 text-white font-bold text-xs py-3 rounded-2xl shadow-lg hover:bg-blue-700 transition">Fermer la présentation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PORTAIL CENTRAL MULTI-RÔLES -->
+    <div id="master-auth-portal" class="fixed inset-0 bg-slate-950 z-[10000] flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm shadow-2xl text-center relative z-20">
+            
+            <div id="auth-role-selection-view" class="space-y-4">
+                <img src="logo.png" alt="Eyano Market" class="w-20 h-auto mx-auto mb-2 bg-white p-2 rounded-2xl shadow-md" onerror="this.style.display='none'">
+                <h2 class="text-xl font-black text-white tracking-tight">EYANO MARKET</h2>
+                <p class="text-xs text-slate-400">Sélectionnez votre espace d'accès pour continuer</p>
+                
+                <div class="space-y-3 pt-2">
+                    <button type="button" onclick="afficherFormulaireConnexionRole('client')" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs py-3.5 rounded-2xl shadow-lg transition flex items-center justify-center space-x-3 cursor-pointer">
+                        <span class="text-lg">🛒</span>
+                        <span>Espace Client (Acheteur)</span>
+                    </button>
+
+                    <button type="button" onclick="afficherFormulaireConnexionRole('partner')" class="w-full bg-slate-950 hover:bg-slate-800 text-emerald-400 border border-emerald-500/40 font-black text-xs py-3.5 rounded-2xl shadow-lg transition flex items-center justify-center space-x-3 cursor-pointer">
+                        <span class="text-lg">🏬</span>
+                        <span>Espace Partenaire (Vendeur)</span>
+                    </button>
+                </div>
+                
+                <div class="pt-4 border-t border-slate-800/80">
+                    <span class="text-[10px] text-slate-500 font-medium block">Global Tech Solutions (GTS) • RDC</span>
+                </div>
+            </div>
+
+            <!-- CONNEXION CLIENT -->
+            <div id="auth-client-login-view" class="hidden space-y-4">
+                <div class="flex items-center space-x-2 text-slate-400 font-bold text-xs cursor-pointer pb-2 border-b border-slate-800" onclick="retourChoixRoleCentral()">
+                    <span>← Changer d'espace</span>
+                </div>
+                <div class="text-center">
+                    <span class="text-3xl block mb-1">🛒</span>
+                    <h3 class="text-base font-black text-white">Connexion Client</h3>
+                    <p class="text-xs text-slate-400">Entrez votre numéro pour accéder au marché</p>
+                </div>
+                <input type="tel" id="login-client-phone" placeholder="Numéro de téléphone (Ex: 812345678)" class="w-full text-xs border border-slate-700 rounded-xl p-3 bg-slate-950 text-white outline-none font-bold text-center focus:ring-2 focus:ring-emerald-500">
+                <button type="button" onclick="executerAuthentificationClient()" class="w-full bg-emerald-500 text-white font-black text-xs py-3 rounded-xl shadow-md hover:bg-emerald-600 transition cursor-pointer">Accéder au Marché</button>
+                <p class="text-xs text-slate-400">Nouveau sur Eyano ? <span onclick="basculerSousVueClient('auth-client-register-view')" class="text-emerald-400 font-bold underline cursor-pointer">Créer un compte</span></p>
+            </div>
+
+            <!-- INSCRIPTION CLIENT -->
+            <div id="auth-client-register-view" class="hidden space-y-3">
+                <div class="flex items-center space-x-2 text-slate-400 font-bold text-xs cursor-pointer pb-2 border-b border-slate-800" onclick="basculerSousVueClient('auth-client-login-view')">
+                    <span>← Retour à la connexion</span>
+                </div>
+                <h3 class="text-base font-black text-white">Inscription Client</h3>
+                <p class="text-[11px] text-slate-400">Remplissez vos coordonnées de livraison</p>
+                
+                <input type="text" id="reg-client-name" placeholder="Nom complet" class="w-full text-xs border border-slate-700 rounded-xl p-2.5 bg-slate-950 text-white outline-none focus:border-emerald-500">
+                <input type="tel" id="reg-client-phone" placeholder="Téléphone (Ex: 812345678)" class="w-full text-xs border border-slate-700 rounded-xl p-2.5 bg-slate-950 text-white outline-none focus:border-emerald-500">
+                
+                <div class="grid grid-cols-3 gap-2">
+                    <input type="text" id="reg-client-avenue" placeholder="Avenue" class="col-span-2 text-xs border border-slate-700 rounded-xl p-2.5 bg-slate-950 text-white outline-none focus:border-emerald-500">
+                    <input type="text" id="reg-client-numero" placeholder="N°" class="col-span-1 text-xs border border-slate-700 rounded-xl p-2.5 bg-slate-950 text-white outline-none focus:border-emerald-500 font-bold text-center">
+                </div>
+
+                <button type="button" onclick="executerInscriptionClient()" class="w-full bg-emerald-600 text-white font-black text-xs py-3 rounded-xl shadow-md hover:bg-emerald-500 transition cursor-pointer">Valider l'inscription</button>
+            </div>
+
+            <!-- CONNEXION PARTENAIRE -->
+            <div id="auth-partner-login-view" class="hidden space-y-4">
+                <div class="flex items-center space-x-2 text-slate-400 font-bold text-xs cursor-pointer pb-2 border-b border-slate-800" onclick="retourChoixRoleCentral()">
+                    <span>← Changer d'espace</span>
+                </div>
+                <div class="text-center">
+                    <span class="text-3xl block mb-1">🏬</span>
+                    <h3 class="text-base font-black text-emerald-400">Espace Partenaire</h3>
+                    <p class="text-xs text-slate-400">Console d'exploitation commerciale</p>
+                </div>
+                <input type="text" id="partenaire-auth-user" placeholder="Identifiant unique" class="partner-input-field text-center">
+                <input type="password" id="partenaire-auth-pass" placeholder="Code secret" class="partner-input-field text-center">
+                <button type="button" onclick="executerAuthentificationPartenaireGts()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs w-full py-3 rounded-xl shadow-md transition cursor-pointer">Ouvrir la session commerciale</button>
+                <p class="text-center text-xs text-slate-400">Nouvel établissement ? <span onclick="basculerSousVuePartner('auth-partner-register-view')" class="text-emerald-500 font-bold cursor-pointer underline">Créer un compte</span></p>
+            </div>
+
+            <!-- INSCRIPTION PARTENAIRE -->
+            <div id="auth-partner-register-view" class="hidden space-y-3 text-left">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                    <span class="text-slate-400 font-bold text-xs cursor-pointer" onclick="basculerSousVuePartner('auth-partner-login-view')">← Retour à la connexion</span>
+                    <span class="text-slate-500 font-bold text-xs cursor-pointer" onclick="retourChoixRoleCentral()">Changer d'espace ✕</span>
+                </div>
+                <h3 class="text-emerald-500 font-black text-center text-sm mb-2">ENRÔLEMENT PARTENAIRE</h3>
+                
+                <input type="text" id="reg-name" placeholder="Nom officiel du commerce *" class="partner-input-field">
+                
+                <select id="register-sektor" class="partner-input-field font-bold">
+                    <option value="Gaz Domestique">🔥 Gaz Domestique</option>
+                    <option value="Eau">💧 Eau en Gros</option>
+                    <option value="Chambre Froide">🥩 Chambre Froide</option>
+                    <option value="Pharmacie">💊 Pharmacie & Santé</option>
+                </select>
+
+                <div>
+                    <label class="text-[10px] text-emerald-400 uppercase font-bold block mb-1">Marque(s) représentée(s) / Enseigne :</label>
+                    <input type="text" id="reg-brand-free" placeholder="Ex: COETE GAZ, SOGAZ, SWISSTA, RAMAF..." class="partner-input-field">
+                </div>
+
+                <input type="text" id="reg-identifiant" placeholder="Créer votre identifiant unique *" class="partner-input-field">
+                <div class="flex gap-2 mb-2.5">
+                    <span class="bg-slate-950 border border-slate-800 px-3 rounded-lg text-xs font-bold text-slate-400 flex items-center justify-center select-none">🇨🇩 +243</span>
+                    <input type="tel" id="reg-tel" placeholder="Ex: 812345678" class="partner-input-field mb-0 flex-1">
+                </div>
+                <input type="text" id="reg-adresse" placeholder="Commune d'exploitation" class="partner-input-field">
+                <input type="text" id="reg-quartier" placeholder="Quartier d'exploitation" class="partner-input-field">
+                
+                <div class="grid grid-cols-3 gap-2">
+                    <input type="text" id="reg-avenue" placeholder="Avenue" class="partner-input-field col-span-2">
+                    <input type="text" id="reg-numero" placeholder="N°" class="partner-input-field col-span-1 text-center font-bold">
+                </div>
+
+                <div class="border-2 border-dashed border-slate-700 bg-slate-950/40 rounded-xl p-2.5 text-center cursor-pointer mb-2" onclick="document.getElementById('legal-doc-file').click()">
+                    <span class="text-lg block">📁</span>
+                    <span class="text-[10px] font-bold text-emerald-400 block" id="legal-file-label">Joindre document officiel (RCCM, Patente...)</span>
+                    <input type="file" id="legal-doc-file" class="hidden" accept="image/*,application/pdf" onchange="detecterDocumentLegalPartenaire(this)">
+                </div>
+                <input type="password" id="reg-pass" placeholder="Créer un mot de passe d'accès *" class="partner-input-field">
+                
+                <div class="p-2.5 bg-emerald-950/40 border border-emerald-800 rounded-xl mb-2">
+                    <span class="text-[10px] font-bold text-emerald-400 block mb-1">🔐 Clé de Sécurité</span>
+                    <select id="reg-question" class="w-full p-1.5 text-xs border border-slate-700 rounded mb-1 bg-slate-900 text-white outline-none"></select>
+                    <input type="text" id="reg-reponse" placeholder="Votre réponse secrète" class="w-full p-2 text-xs border border-slate-700 bg-slate-900 rounded text-white outline-none font-bold">
+                </div>
+
+                <div class="flex items-start text-xs mb-3 text-slate-300 bg-slate-950/40 p-2.5 rounded-xl border border-slate-800">
+                    <input type="checkbox" id="chk-cgu-partenaire" class="mt-0.5 mr-2 h-4 w-4 rounded text-emerald-600 focus:ring-0 cursor-pointer">
+                    <label for="chk-cgu-partenaire" class="leading-snug text-[11px] cursor-pointer">
+                        J'accepte sans réserve les <span onclick="ouvrirModalCgu()" class="text-emerald-400 font-bold underline cursor-pointer">CGU</span> d'Eyano Market.
+                    </label>
+                </div>
+
+                <button type="button" onclick="executerInscriptionPartenaireSupabase()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs w-full py-3 rounded-xl shadow-md transition cursor-pointer">Soumettre l'enrôlement</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!--                               ESPACE CLIENT                               -->
+    <!-- ========================================================================= -->
+    <div id="root-client-view" class="hidden justify-center items-stretch min-h-screen">
+        <div class="app-container w-full max-w-md bg-white min-h-screen shadow-2xl flex flex-col justify-between border-x border-gray-100 pb-20 relative">
+            
+            <header class="bg-white border-b border-gray-100 p-4 sticky top-0 z-50 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-10 h-10 flex items-center justify-center relative">
+                            <img src="logo.png" alt="EM" class="w-9 h-auto object-contain" onerror="this.style.display='none'">
+                            <div class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border border-white"></div>
+                        </div>
+                        <div>
+                            <div class="text-xl font-black tracking-tight leading-none"><span class="text-emerald-500">EYANO</span><span class="text-blue-700 font-bold text-lg">MARKET</span></div>
+                            <span id="lbl-client-session-name" class="text-[8px] text-gray-400 block font-semibold tracking-wider leading-none">SESSION CLIENT</span>
+                        </div>
+                    </div>
+                    <select id="commune-selector" onchange="updateDeliveryFeeAll()" class="text-xs bg-gray-50 border border-gray-200 rounded-full px-3 py-1.5 font-medium text-gray-700 outline-none max-w-[180px]">
+                    </select>
+                </div>
+            </header>
+
+            <main class="flex-1 p-4 overflow-y-auto space-y-4">
+                
+                <!-- PANNEAU MARCHÉ : CARROUSEL AVEC SLIDE EYANO PERMANENT -->
+                <div id="panel-boutiques" class="sub-panel active space-y-6">
+                    <div id="client-carousel-wrapper" class="relative h-44 rounded-2xl shadow-lg overflow-hidden bg-slate-950 border border-slate-800 text-white">
+                        <div id="client-carousel-container" class="w-full h-full relative">
+                            <!-- Généré dynamiquement -->
+                        </div>
+                        <div id="carousel-dots-container" class="absolute bottom-2 left-0 right-0 flex justify-center space-x-1.5 z-20 pointer-events-auto"></div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-800 mb-3">Sélectionnez un service</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div onclick="enterSector('Gaz Domestique')" class="bg-orange-50 border border-orange-100 p-4 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-100 transition shadow-sm"><span class="text-3xl mb-1">🔥</span><span class="text-xs font-bold text-gray-800">Gaz Domestique</span></div>
+                            <div onclick="enterSector('Pharmacie')" class="bg-red-50 border border-red-100 p-4 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-red-100 transition shadow-sm"><span class="text-3xl mb-1">💊</span><span class="text-xs font-bold text-gray-800">Pharmacie & Santé</span></div>
+                            <div onclick="enterSector('Eau')" class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-blue-100 transition shadow-sm"><span class="text-3xl mb-1">💧</span><span class="text-xs font-bold text-gray-800">Eau en Gros</span></div>
+                            <div onclick="enterSector('Chambre Froide')" class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-emerald-100 transition shadow-sm"><span class="text-3xl mb-1">🥩</span><span class="text-xs font-bold text-gray-800">Chambre Froide / Vivres</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CHÂMBRE FROIDE -->
+                <div id="sector-cf-search" class="sub-panel space-y-4">
+                    <button onclick="backToClientHome()" class="text-xs text-blue-600 font-bold flex items-center space-x-1 py-1"><span>← Retour au marché</span></button>
+                    <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm space-y-3">
+                        <h3 class="text-xs font-black text-gray-700 uppercase">Chambre Froide</h3>
+                        <input type="text" id="cf-partner-search-input" oninput="rechercherPartenaireChambreFroideDynamique()" placeholder="Saisir le nom (ex: RAMAF...)" class="w-full text-xs border border-gray-300 rounded-lg p-2.5 bg-gray-50 outline-none font-bold">
+                        <div id="cf-partner-search-results" class="space-y-2 mt-2"></div>
+                    </div>
+                </div>
+
+                <!-- MARQUES GAZ & EAU -->
+                <div id="sector-brands" class="sub-panel space-y-4">
+                    <button onclick="backToClientHome()" class="text-xs text-blue-600 font-bold flex items-center space-x-1 py-1"><span>← Retour au marché</span></button>
+                    <div id="brands-list-grid" class="grid grid-cols-2 gap-3"></div>
+                </div>
+
+                <!-- CONFIGURATION DU PANIER -->
+                <div id="sector-commerce" class="sub-panel space-y-4">
+                    <button onclick="backToBrandsOrHome()" class="text-xs text-blue-600 font-bold flex items-center space-x-1 py-1"><span>← Retour aux marques</span></button>
+                    <div class="bg-white p-4 rounded-xl border border-gray-100 flex items-center justify-between shadow-sm">
+                        <div>
+                            <h3 id="commerce-title" class="text-base font-black text-gray-800">Configurez votre commande</h3>
+                            <span id="selected-brand-badge" class="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full mt-1">Acteur sélectionné</span>
+                        </div>
+                        <span id="brand-emoji" class="text-3xl">📦</span>
+                    </div>
+                    
+                    <div id="dynamic-capacities-list" class="space-y-2.5 max-h-96 overflow-y-auto"></div>
+
+                    <div class="pt-2 border-t border-dashed border-gray-200">
+                        <input type="text" id="txt-custom-capacity" oninput="calculateCartTotal()" placeholder="Précisez ici les détails supplémentaires..." class="w-full text-xs border border-gray-300 bg-white rounded-lg p-2.5 outline-none font-medium">
+                    </div>
+                    
+                    <div class="bg-gray-900 text-white rounded-xl p-4 space-y-3 shadow-md">
+                        <div class="space-y-1 text-xs">
+                            <div class="flex justify-between text-gray-300"><span>Estimation Panier :</span><span id="inv-subtotal" class="font-bold text-white">0.00 $</span></div>
+                            <div class="flex justify-between text-gray-300"><span>Frais de livraison :</span><span id="inv-delivery" class="font-bold text-white">3.50 $</span></div>
+                        </div>
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-800"><span class="text-sm font-black text-cyan-300">TOTAL À PAYER :</span><span id="inv-total" class="text-base font-black text-white">3.50 $</span></div>
+                        <button onclick="goToCheckoutAddress()" id="btn-submit-order" class="w-full bg-blue-600 text-white font-bold text-xs py-2.5 rounded-lg shadow-md mt-2 cursor-pointer">Passer la commande</button>
+                    </div>
+                </div>
+
+                <!-- PHARMACIE -->
+                <div id="sector-pharmacie" class="sub-panel space-y-4">
+                    <button onclick="backToClientHome()" class="text-xs text-blue-600 font-bold py-1"><span>← Retour au marché</span></button>
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+                        <input type="text" id="input-med-name" placeholder="Nom du médicament (ex: Paracétamol, Amoxicilline)... *" class="w-full text-xs border border-gray-300 bg-white rounded-lg px-2.5 py-2 outline-none font-bold">
+                        <input type="text" id="input-med-dosage" placeholder="Dosage / Grammage (ex: 500 mg, 1g, 250mg/5ml)..." class="w-full text-xs border border-gray-300 bg-white rounded-lg px-2.5 py-2 outline-none font-bold text-indigo-950">
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <select id="select-med-format" class="w-full text-xs border border-gray-300 bg-white rounded-lg p-2 font-bold text-gray-700">
+                                <option value="Plaquette">💊 Plaquette</option>
+                                <option value="Boîte">📦 Boîte</option>
+                                <option value="Flacon">🧴 Flacon</option>
+                                <option value="Ampoule">💉 Ampoule</option>
+                                <option value="Tube">🧪 Tube / Pommade</option>
+                                <option value="Sachet">🛍️ Sachet</option>
+                            </select>
+                            <input type="number" id="input-med-qty" value="1" min="1" class="w-full text-xs border border-gray-300 bg-white rounded-lg p-2 font-black text-center text-gray-800">
+                        </div>
+                        <button onclick="ajouterMedicamentPanier()" class="w-full bg-red-500 text-white text-xs py-2.5 rounded-lg font-bold shadow-sm hover:bg-red-600 transition cursor-pointer">＋ Ajouter à ma liste</button>
+                        <div id="medication-list-container" class="space-y-1.5"></div>
+                        <button id="btn-search-pharmacies" disabled onclick="passerAValidationPharmacie()" class="w-full bg-blue-600 text-white font-bold text-xs py-2.5 rounded-lg shadow mt-2 cursor-pointer">🔍 Valider la commande pharmacie</button>
+                    </div>
+                </div>
+
+                <!-- ORDONNANCE PHARMACIE -->
+                <div id="sector-pharmacie-prescription" class="sub-panel space-y-4">
+                    <button onclick="enterSector('Pharmacie')" class="text-xs text-blue-600 font-bold py-1"><span>← Revenir aux médicaments</span></button>
+                    <div class="bg-gradient-to-r from-red-600 to-rose-500 text-white rounded-xl p-4 space-y-3 shadow-md">
+                        <div class="space-y-1 text-xs"><div class="flex justify-between opacity-95"><span>Estimation Articles :</span><span id="ph-med-subtotal" class="font-bold text-white">0.00 $</span></div><div class="flex justify-between opacity-95"><span>Livraison :</span><span id="ph-med-delivery" class="font-bold text-white">0.00 $</span></div></div>
+                        <div class="flex justify-between items-center pt-2 border-t border-white/20"><span class="text-sm font-black text-white">TOTAL ESTIMÉ :</span><span id="ph-med-total" class="text-base font-black text-white">0.00 $</span></div>
+                    </div>
+                    <div class="border-2 border-dashed border-red-300 bg-white rounded-xl p-4 text-center">
+                        <label class="block cursor-pointer bg-red-50 text-red-700 font-bold text-xs py-2.5 rounded-lg">
+                            📸 Joindre l'Ordonnance (Optionnel)
+                            <input type="file" id="input-prescription-file" onchange="gererFichierOrdonnance(this)" class="hidden">
+                        </label>
+                    </div>
+                    <div id="upload-success-message" class="hidden bg-emerald-50 text-emerald-800 text-xs p-2.5 rounded-lg text-center font-bold">✓ Ordonnance jointe</div>
+                    <button id="btn-validate-medical-order" onclick="goToCheckoutAddress()" class="w-full bg-blue-600 text-white font-bold text-xs py-3 rounded-xl shadow-md cursor-pointer">Continuer vers l'adresse</button>
+                </div>
+
+                <!-- ADRESSE & VALIDATION -->
+                <div id="sector-checkout-address" class="sub-panel space-y-4">
+                    <button onclick="backToCommerceOrHome()" class="text-xs text-blue-600 font-bold flex items-center space-x-1 py-1"><span>← Revenir au panier</span></button>
+                    
+                    <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-3">
+                        <label class="text-xs font-black text-gray-800 block">Mode de Réception :</label>
+                        <select id="select-mode-reception" onchange="basculerModeReception(this.value)" class="w-full text-xs font-bold border border-gray-300 rounded-lg p-2.5 bg-gray-50 outline-none">
+                            <option value="Livraison">🚀 Livraison à domicile</option>
+                            <option value="Retrait">🚶 Retrait sur Place (0.00 $)</option>
+                        </select>
+                        <div id="address-form-block" class="space-y-3">
+                            <input type="text" id="final-cust-quartier" placeholder="Quartier *" class="w-full text-xs border border-gray-300 rounded-lg p-2.5 bg-gray-50 outline-none font-medium">
+                            <input type="text" id="final-cust-avenue" placeholder="Avenue *" class="w-full text-xs border border-gray-300 rounded-lg p-2.5 bg-gray-50 outline-none font-medium">
+                            <input type="text" id="final-cust-ref" placeholder="Repère / Référence de livraison *" class="w-full text-xs border border-gray-300 rounded-lg p-2.5 bg-gray-50 outline-none font-medium">
+                        </div>
+                        <div id="retrait-place-info" class="hidden p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs space-y-1">
+                            <span class="font-black block">📍 Adresse de retrait :</span>
+                            <p>Présentez-vous directement au dépôt partenaire muni de votre code PIN.</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-xl flex items-start space-x-2">
+                            <input type="checkbox" id="chk-cgu" onchange="toggleOrderValidationButton()" class="mt-0.5">
+                            <label for="chk-cgu" class="text-[11px] text-gray-600">J'accepte sans réserve les <span onclick="ouvrirModalCgu()" class="text-emerald-600 font-bold underline cursor-pointer">CGU</span> d'Eyano Market.</label>
+                        </div>
+                        <button id="btn-final-order-submit" disabled onclick="submitFinalAlgorithmicOrder()" class="w-full bg-emerald-600 disabled:bg-gray-300 text-white font-bold text-sm py-3 rounded-xl shadow-md cursor-pointer">🚀 Confirmer &amp; Envoyer la Commande</button>
+                    </div>
+                </div>
+
+                <!-- SUIVI CLIENT AVEC BOUTON NETTOYER HISTORIQUE -->
+                <div id="panel-suivi-commandes" class="sub-panel space-y-4">
+                    <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+                        <h3 class="text-sm font-black text-gray-800">📦 Mes Commandes</h3>
+                        <div class="flex items-center space-x-1.5">
+                            <button onclick="viderCommandesClotureesClient()" class="text-[10px] bg-red-50 text-red-600 border border-red-200 px-2 py-1 rounded-lg font-bold hover:bg-red-100 transition cursor-pointer">🗑️ Vider terminées</button>
+                            <button id="btn-client-refresh-suivi" onclick="forcerActualisationSuiviClient()" class="text-[10px] bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1 rounded-lg font-bold hover:bg-blue-100 transition cursor-pointer">🔄 Rafraîchir</button>
+                        </div>
+                    </div>
+                    <div id="container-liste-suivi-client" class="space-y-3"></div>
+                </div>
+
+                <!-- PROFIL CLIENT -->
+                <div id="panel-profil-client" class="sub-panel space-y-4">
+                    <div class="border-b border-gray-100 pb-2"><h3 class="text-sm font-black text-gray-800">👤 Mon Espace Profil</h3></div>
+                    <div class="bg-white border border-gray-200 p-5 rounded-2xl shadow-sm text-center space-y-4">
+                        <div class="w-16 h-16 bg-emerald-50 text-emerald-600 text-3xl flex items-center justify-center rounded-full mx-auto font-black shadow-inner">👤</div>
+                        <div class="space-y-1">
+                            <h4 id="profil-lbl-nom" class="text-sm font-black text-gray-800">Client Eyano</h4>
+                            <p id="profil-lbl-tel" class="text-xs font-mono text-gray-400">Non connecté</p>
+                        </div>
+                        <div class="pt-2 border-t border-gray-100">
+                            <button onclick="executerDeconnexionClient()" class="w-full bg-red-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-md transition hover:bg-red-600 cursor-pointer">🔌 Déconnexion</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="client-footer">
+                <button id="nav-btn-boutique" onclick="changerOngletClient('panel-boutiques', 'nav-btn-boutique')" class="active">
+                    <span class="nav-icon">🏠</span>
+                    <span>Marché</span>
+                </button>
+                <button id="nav-btn-suivi" onclick="changerOngletClient('panel-suivi-commandes', 'nav-btn-suivi')">
+                    <span class="nav-icon">📦</span>
+                    <span>Commande</span>
+                </button>
+                <button id="nav-btn-profil" onclick="changerOngletClient('panel-profil-client', 'nav-btn-profil')">
+                    <span class="nav-icon">👤</span>
+                    <span>Profil</span>
+                </button>
+                <button id="nav-btn-cgu" onclick="ouvrirModalCgu()" class="text-emerald-600">
+                    <span class="nav-icon">📜</span>
+                    <span>CGU</span>
+                </button>
+                <button id="nav-btn-gts" onclick="ouvrirModalGtsInfo()" class="text-blue-600">
+                    <span class="nav-icon">ℹ️</span>
+                    <span>GTS</span>
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!--                             ESPACE PARTENAIRE                             -->
+    <!-- ========================================================================= -->
+    <div id="root-partner-view" class="hidden">
+        <header>
+            <div class="flex items-center space-x-2">
+                <div class="w-9 h-9 bg-emerald-600 rounded-full flex items-center justify-center text-xs font-black text-white shadow" id="part-avatar-initial">E</div>
+                <div>
+                    <h2 class="text-xs font-black text-white leading-none" id="lbl-merchant-name">Chargement...</h2>
+                    <span id="mobile-merchant-id-lbl" class="text-[9px] text-gray-400 font-bold block mt-0.5">ID : -</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="bg-slate-950 text-emerald-400 text-xs font-mono font-black px-3 py-1 rounded-full border border-slate-800 shadow-inner" id="wallet-usd-label">0.00 $</span>
+                <button onclick="executerDeconnexionPartenaire()" class="bg-red-950/60 text-red-400 px-2.5 py-1 rounded-lg border border-red-900/50 text-xs font-bold cursor-pointer">🔌 Déconnexion</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="p-4 box-border w-full space-y-4">
+                <div id="page-accueil-partner" class="page-panel active space-y-4">
+                    <div id="grid-main-menu-partner" class="grid grid-cols-2 gap-3">
+                        <div onclick="ouvrirSousPagePartner('sub-commandes-partner')" class="partner-grid-icon-card"><span class="text-3xl mb-1">🛒</span><span class="text-xs font-bold text-slate-200">Commandes</span></div>
+                        <div onclick="ouvrirSousPagePartner('sub-portefeuille-partner')" class="partner-grid-icon-card"><span class="text-3xl mb-1">💳</span><span class="text-xs font-bold text-slate-200">Portefeuille</span></div>
+                        <div onclick="ouvrirSousPagePartner('sub-analyses-partner')" class="partner-grid-icon-card"><span class="text-3xl mb-1">📊</span><span class="text-xs font-bold text-slate-200">Analyse</span></div>
+                        <div onclick="ouvrirSousPagePartner('sub-catalogue-partner')" class="partner-grid-icon-card"><span class="text-3xl mb-1">📋</span><span class="text-xs font-bold text-slate-200">Catalogue</span></div>
+                    </div>
+
+                    <div class="pt-2">
+                        <!-- SOUS-PAGE COMMANDES PARTENAIRE -->
+                        <div id="sub-commandes-partner" class="sub-partner-panel hidden space-y-3">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                                <div class="flex items-center space-x-2 text-slate-400 font-bold text-xs cursor-pointer" onclick="retourAccueilGrillePartner()"><span>← Retour aux modules</span></div>
+                                <button id="btn-partner-refresh" onclick="forcerActualisationManuellePartenaire()" class="text-[10px] bg-slate-900 border border-slate-700 text-emerald-400 px-3 py-1.5 rounded-lg font-bold transition active:scale-95 cursor-pointer">🔄 Actualiser</button>
+                            </div>
+                            
+                            <div id="box-aucune-commande" class="partner-card text-center text-slate-400 italic text-xs py-6">
+                                Aucune commande active en attente pour votre secteur.
+                            </div>
+                            
+                            <div id="container-commandes-partenaire-liste" class="space-y-3"></div>
+                        </div>
+
+                        <!-- SOUS-PAGE CATALOGUE (TAUX PAR DÉFAUT : 2300 FC) -->
+                        <div id="sub-catalogue-partner" class="sub-partner-panel hidden space-y-3">
+                            <div class="flex items-center space-x-2 text-slate-400 font-bold text-xs pb-2 border-b border-slate-800 cursor-pointer" onclick="retourAccueilGrillePartner()"><span>← Retour aux modules</span></div>
+                            <div class="flex justify-between items-center bg-slate-900 p-2.5 rounded-xl border border-slate-800 text-xs gap-3">
+                                <div class="flex items-center space-x-2 flex-1">
+                                    <span class="text-slate-400 font-medium">Taux : 1 $ =</span>
+                                    <input type="number" id="taux" value="2300" class="w-24 p-1.5 bg-slate-950 border border-slate-700 text-white text-center rounded outline-none font-bold">
+                                    <span class="text-slate-400 font-medium">FC</span>
+                                </div>
+                                <button onclick="renderCatalogue(true)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-black text-[11px] px-4 py-2 rounded-lg shadow shrink-0 cursor-pointer">🔄 Appliquer</button>
+                            </div>
+                            <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
+                                <div class="flex space-x-2">
+                                    <input type="text" id="new-name" placeholder="Nom de l'article" class="partner-input-field flex-1 mb-0 p-2 text-xs">
+                                    <input type="number" id="new-usd" placeholder="Prix" class="partner-input-field w-16 mb-0 p-2 text-xs">
+                                    <button onclick="ajouterOuMettreAjourArticleCatalogue()" class="bg-emerald-600 text-white font-bold text-xs px-3 rounded-lg shadow cursor-pointer">＋</button>
+                                </div>
+                                <button onclick="document.getElementById('excel-import-file').click()" class="w-full bg-slate-950 text-indigo-400 border border-slate-800 text-[11px] py-1.5 rounded-lg font-bold cursor-pointer">📁 Importer Excel (.xlsx)</button>
+                                <input type="file" id="excel-import-file" class="hidden" accept=".xlsx, .xls" onchange="executerImportationCatalogueExcelPartenaire(this)">
+                            </div>
+                            <div class="table-responsive max-h-40 overflow-y-auto border border-slate-800 rounded-xl bg-slate-900">
+                                <table class="w-full text-left text-xs">
+                                    <thead><tr class="bg-slate-950 text-[10px] text-gray-400"><th>Désignation</th><th class="text-right">USD</th><th class="text-right">FC</th></tr></thead>
+                                    <tbody id="product-table-rows"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SOUS-PAGE PORTEFEUILLE -->
+                        <div id="sub-portefeuille-partner" class="sub-partner-panel hidden space-y-4">
+                            <div class="flex items-center space-x-2 text-slate-400 font-bold text-xs pb-2 border-b border-slate-800 cursor-pointer" onclick="retourAccueilGrillePartner()"><span>← Retour aux modules</span></div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl text-center shadow-sm">
+                                    <span class="text-[9px] text-gray-400 font-bold block uppercase">💼 Chiffre d'Affaires</span>
+                                    <h1 id="wallet-ca-label-top" class="text-base font-black text-white font-mono mt-0.5">0.00 $</h1>
+                                </div>
+                                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl text-center shadow-sm">
+                                    <span class="text-[9px] text-gray-400 font-bold block uppercase">💳 Solde Portefeuille</span>
+                                    <h1 id="wallet-caution-label-top" class="text-base font-black text-emerald-400 font-mono mt-0.5">0.00 $</h1>
+                                </div>
+                            </div>
+                            <div class="partner-card border-indigo-900 bg-indigo-950/20 p-3 space-y-2.5 rounded-xl shadow-md">
+                                <div class="border-b border-indigo-900 pb-1"><span class="text-[10px] font-black text-indigo-400 uppercase block tracking-wider">📜 Coordonnées Officielles GTS</span></div>
+                                <div class="space-y-1.5 text-xs font-mono text-slate-300">
+                                    <div class="flex justify-between"><span>📱 Vodacom M-Pesa :</span><span class="font-black text-white" id="part-momo-mpesa">Chargement...</span></div>
+                                    <div class="flex justify-between"><span>🍊 Orange Money :</span><span class="font-black text-white" id="part-momo-orange">Chargement...</span></div>
+                                    <div class="flex justify-between"><span>❤️ Airtel Money :</span><span class="font-black text-white" id="part-momo-airtel">Chargement...</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SOUS-PAGE ANALYSE (AVEC FILTRE DE DATES DU CA) -->
+                        <div id="sub-analyses-partner" class="sub-partner-panel hidden space-y-3">
+                            <div class="flex items-center space-x-2 text-slate-400 font-bold text-xs pb-2 border-b border-slate-800 cursor-pointer" onclick="retourAccueilGrillePartner()"><span>← Retour aux modules</span></div>
+                            
+                            <!-- MODULE FILTRAGE PAR INTERVALLE DE DATES -->
+                            <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl space-y-2">
+                                <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">📅 Période de Consultation du CA</span>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="text-[8px] text-slate-500 font-bold block mb-0.5">Du :</label>
+                                        <input type="date" id="partner-date-start" onchange="chargerAnalysesPartenaire()" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg p-1.5 text-xs font-bold outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="text-[8px] text-slate-500 font-bold block mb-0.5">Au :</label>
+                                        <input type="date" id="partner-date-end" onchange="chargerAnalysesPartenaire()" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg p-1.5 text-xs font-bold outline-none">
+                                    </div>
+                                </div>
+                                <button onclick="reinitialiserFiltresDatesAnalyses()" class="w-full bg-slate-950 hover:bg-slate-800 text-slate-400 font-bold text-[10px] py-1.5 rounded-lg border border-slate-800">Tout afficher (Global)</button>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-2">
+                                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl text-center">
+                                    <span class="text-[8px] text-gray-400 font-bold block uppercase">💼 CA Généré</span>
+                                    <h1 id="impact-ca-total" class="text-sm font-black text-emerald-400 font-mono mt-0.5">0.00 $</h1>
+                                </div>
+                                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl text-center">
+                                    <span class="text-[8px] text-gray-400 font-bold block uppercase">📦 Courses</span>
+                                    <h1 id="impact-volume-count" class="text-sm font-black text-white font-mono mt-0.5">0</h1>
+                                </div>
+                                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl text-center">
+                                    <span class="text-[8px] text-gray-400 font-bold block uppercase">⭐ Note</span>
+                                    <h1 id="impact-avg-rating" class="text-sm font-black text-amber-400 font-mono mt-0.5">5.0 / 5</h1>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between items-center pt-2">
+                                <span class="text-xs font-black text-slate-300 uppercase tracking-wide">Historique des Livraisons</span>
+                                <button id="btn-refresh-analyse" onclick="forcerActualisationAnalysesPartenaire()" class="text-[10px] bg-slate-900 border border-slate-700 text-blue-400 px-3 py-1.5 rounded-lg font-bold transition active:scale-95 cursor-pointer">🔄 Rafraîchir</button>
+                            </div>
+
+                            <div id="container-historique-analyse-partenaire" class="space-y-2 max-h-72 overflow-y-auto"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SCAN & CLÔTURE LIVRAISON PIN -->
+                <div id="page-scan-pin-partner" class="page-panel hidden space-y-3">
+                    <span class="text-slate-400 text-[10px] font-bold uppercase block tracking-wider">📦 Déverrouillage Livraison</span>
+                    <div class="partner-card bg-slate-900 border border-slate-800 p-4 space-y-3 shadow-inner">
+                        <span class="text-xs text-slate-400 block">Saisir le code PIN client à 4 chiffres :</span>
+                        <input type="text" id="input-delivery-verification-code" placeholder="PIN à 4 chiffres" maxlength="4" class="w-full text-center text-base border-2 border-slate-700 bg-slate-950 rounded-xl p-3 font-mono font-black text-white outline-none">
+                        <input type="button" onclick="executerClotureLivraisonPartenaireGlobal()" class="w-full bg-indigo-600 text-white font-black text-xs py-3.5 rounded-xl shadow-md cursor-pointer hover:bg-indigo-500 transition" value="📦 Valider la livraison">
+                    </div>
+                </div>
+
+                <!-- PROFIL & IDENTIFIANTS PARTENAIRE -->
+                <div id="page-profil-partner" class="page-panel hidden space-y-3">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                        <h3 class="text-slate-400 text-xs font-bold uppercase tracking-wider">👤 Paramètres &amp; Identifiants</h3>
+                        <button onclick="executerDeconnexionPartenaire()" class="bg-red-950/60 text-red-400 font-bold text-[11px] px-3 py-1 rounded-full border border-red-900/50 cursor-pointer">✕ Déconnexion</button>
+                    </div>
+                    <div class="partner-card bg-slate-900/60 border border-slate-800 p-4 space-y-3">
+                        <div class="p-3 bg-emerald-950/30 border border-emerald-900/50 rounded-xl space-y-2">
+                            <span class="text-[10px] font-black text-emerald-400 block uppercase">👔 Responsable Commercial</span>
+                            <div>
+                                <label class="text-[9px] text-slate-400 uppercase font-bold block mb-1">Nom & Prénom :</label>
+                                <input type="text" id="update-responsable-nom" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2 outline-none font-bold text-white" placeholder="Nom du gérant">
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-slate-400 uppercase font-bold block mb-1">Téléphone Direct :</label>
+                                <input type="tel" id="update-responsable-tel" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2 outline-none font-bold text-white" placeholder="+243 ...">
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-indigo-950/30 border border-indigo-900/50 rounded-xl space-y-2">
+                            <span class="text-[10px] font-black text-indigo-400 block uppercase">🔐 Sécurité &amp; Accès</span>
+                            <div>
+                                <label class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Identifiant de connexion :</label>
+                                <input type="text" id="update-identifiant" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 outline-none font-bold text-white">
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Nouveau mot de passe (optionnel) :</label>
+                                <input type="password" id="update-password" class="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2.5 outline-none font-bold text-white" placeholder="Laisser vide si inchangé">
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-amber-400 uppercase font-bold block mb-1">Mot de passe actuel (obligatoire pour valider) :</label>
+                                <input type="password" id="update-old-password" class="w-full text-xs bg-slate-950 border border-amber-800/60 rounded-lg p-2.5 outline-none font-bold text-white" placeholder="••••••••">
+                            </div>
+                        </div>
+
+                        <button onclick="sauvegarderProfilConfigurationPartenaire()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-3 rounded-xl shadow-md transition cursor-pointer">💾 Enregistrer les modifications</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- NAVIGATION BASSE PARTENAIRE -->
+        <footer class="partner-footer">
+            <button id="btn-nav-home-p" onclick="navPartnerMobile('page-accueil-partner', 'btn-nav-home-p')" class="active">
+                <span class="nav-icon">🏠</span>
+                <span>Accueil</span>
+            </button>
+            <button id="btn-nav-scan-p" onclick="navPartnerMobile('page-scan-pin-partner', 'btn-nav-scan-p')">
+                <span class="nav-icon">📥</span>
+                <span>Scanner</span>
+            </button>
+            <button id="btn-nav-profile-p" onclick="navPartnerMobile('page-profil-partner', 'btn-nav-profile-p')">
+                <span class="nav-icon">👤</span>
+                <span>Profil</span>
+            </button>
+            <button id="btn-nav-support-wa" onclick="ouvrirWhatsAppSupportTechnique()" class="text-emerald-400 hover:text-emerald-300">
+                <span class="nav-icon">💬</span>
+                <span>Support</span>
+            </button>
+        </footer>
+    </div>
+
+    <!-- SCRIPT JAVASCRIPT GLOBAL -->
+    <script>
+        const _supabase = supabase.createClient("https://ngsdxxgunrnzoqanfuhn.supabase.co", "sb_publishable_NXhDSDSp8emSPAiFs4wf8w_badTr5nC");
+
+        /* GLOBALES CLIENT (TAUX PAR DÉFAUT : 2300 FC) */
+        let currentSector = 'Gaz Domestique', medicationList = [], globalSubtotal = 0, formattedDetailsArticles = "";
+        let selectedBrand = ''; 
+        let tauxFrancCongolais = parseFloat(localStorage.getItem('eyano_taux_change') || 2300); 
+        let clientConnecteTelephone = localStorage.getItem('eyano_client_phone') || '';
+        let clientConnecteNom = localStorage.getItem('eyano_client_nom') || '';
+        let selectedQuantities = {};
+        let selectedUnits = {};
+        let grilleFraisCommunes = {};
+        const communesKinshasa = ["Bandalungwa", "Barumbu", "Bumbu", "Gombe", "Kalamu", "Kasa-Vubu", "Kimbanseke", "Kinshasa", "Kintambo", "Kisenso", "Lemba", "Limete", "Lingwala", "Makala", "Maluku", "Masina", "Matete", "Ngaba", "Ngaliema", "Ngiri-Ngiri", "Nsele", "Oualemba", "Selembao", "Mont-Ngafula"];
+        let pubTimerClient = null;
+
+        const databaseProduitsMobiles = {
+            "Gaz Domestique": {
+                "COETE GAZ": { "Bouteille 6 kg": { "prix": 28.00 }, "Bouteille 11 kg": { "prix": 40.00 }, "Bouteille 12 kg": { "prix": 45.00 }, "Bouteille 38 kg": { "prix": 90.00 } },
+                "SOGAZ": { "Bouteille 6 kg": { "prix": 28.00 }, "Bouteille 11 kg": { "prix": 40.00 }, "Bouteille 12 kg": { "prix": 45.00 }, "Bouteille 38 kg": { "prix": 90.00 } }
+            },
+            "Eau": {
+                "SWISSTA": { "Paquet 24 btles (375ml)": { "prix": 5000, "devise": "CDF" }, "Paquet 12 btles (750ml)": { "prix": 5500, "devise": "CDF" }, "Paquet 6 btles (1.5L)": { "prix": 5000, "devise": "CDF" }, "Bidon 18.9L": { "prix": 7000, "devise": "CDF" } }
+            },
+            "Chambre Froide": {
+                "RAMAF": { 
+                    "Mabumu (tripes)": { "prix_kg": 5000, "prix_carton": 45000, "devise": "CDF" }, 
+                    "Makoso (porc)": { "prix_kg": 6000, "prix_carton": 55000, "devise": "CDF" },
+                    "Cuisse de poulet": { "prix_kg": 7000, "prix_carton": 65000, "devise": "CDF" },
+                    "Poisson Tilapia": { "prix_kg": 9000, "prix_carton": 85000, "devise": "CDF" }
+                }
+            }
+        };
+
+        /* GLOBALES PARTENAIRE */
+        let monIdPartenaireSession = null, monSecteurSession = "", monNomEtablissement = "", monIdentifiantSession = "", mdpAttenduSession = "";
+        let stockLocalMarchand = [];
+
+        document.addEventListener("DOMContentLoaded", function() {
+            chargerSelecteurCommunes();
+            chargerPublicitesDynamiques();
+            alimenterQuestionsSecretesEnrolementPartenaire();
+
+            const activeMode = localStorage.getItem('eyano_active_mode');
+            const partnerSession = localStorage.getItem('eyano_partner_session_data');
+
+            if (activeMode === 'partner' && partnerSession) {
+                document.getElementById('master-auth-portal').style.display = 'none';
+                basculerVersModePartenaire();
+                chargerSessionPartenaireDirecte(JSON.parse(partnerSession));
+            } else if (activeMode === 'client' && clientConnecteTelephone) {
+                document.getElementById('master-auth-portal').style.display = 'none';
+                basculerVersModeClient();
+                document.getElementById('lbl-client-session-name').innerText = `SESSION : ${clientConnecteTelephone}`;
+                document.getElementById('profil-lbl-nom').innerText = clientConnecteNom;
+                document.getElementById('profil-lbl-tel').innerText = clientConnecteTelephone;
+                syncHistoriqueCommandesClient();
+                brancherEcouteurTempsReelClient();
+            } else {
+                retourChoixRoleCentral();
+            }
+        });
+
+        /* 1. PUBLICITÉS DYNAMIQUES AVEC SLIDE EYANO PERMANENT */
+        function echapperTexte(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        async function chargerPublicitesDynamiques() {
+            const container = document.getElementById('client-carousel-container');
+            const dotsContainer = document.getElementById('carousel-dots-container');
+            if (!container) return;
+
+            const slideEyanoPermanent = `
+                <div class="client-pub-slide active bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 flex flex-col justify-center items-center text-center p-6 w-full h-full">
+                    <div class="absolute -top-10 -right-10 w-36 h-36 bg-emerald-500/20 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute -bottom-10 -left-10 w-36 h-36 bg-cyan-500/20 rounded-full blur-2xl pointer-events-none"></div>
+                    <h2 class="text-base font-black text-white tracking-tight leading-snug">
+                        Bienvenue sur <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-300">EyanoMarket</span>
+                    </h2>
+                    <p class="text-xs font-semibold text-slate-300 mt-2 max-w-[280px] leading-relaxed">
+                        Vos commandes préparées avec soin et livrées à domicile.
+                    </p>
+                </div>`;
+
+            try {
+                const { data: pubs, error } = await _supabase
+                    .from('campagnes_pub')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                const activePubs = (pubs || []).filter(p => (p.statut || '').toLowerCase() === 'actif');
+
+                container.innerHTML = slideEyanoPermanent;
+                if (dotsContainer) dotsContainer.innerHTML = `<button onclick="changerSlideManuel(0)" class="w-4 h-2 rounded-full bg-emerald-400 transition-all"></button>`;
+
+                activePubs.forEach((pub, index) => {
+                    const slideIndex = index + 1;
+                    const nomSafe = echapperTexte(pub.nom_annonceur || 'Partenaire');
+                    const titreSafe = echapperTexte(pub.titre_pub || '');
+                    const rawUrl = pub.image_url || '';
+                    const safeImageUrl = encodeURI(rawUrl);
+                    const lien = pub.lien_cible && pub.lien_cible !== '#' ? `onclick="window.open('${pub.lien_cible}', '_blank')"` : '';
+
+                    container.innerHTML += `
+                        <div class="client-pub-slide bg-slate-900 w-full h-full flex flex-col justify-center items-center p-2 relative overflow-hidden">
+                            <div class="w-full h-full bg-white rounded-xl flex items-center justify-center p-2 relative shadow-inner">
+                                <img src="${safeImageUrl}" 
+                                     alt="${nomSafe}" 
+                                     class="max-w-full max-h-full object-contain cursor-pointer" 
+                                     onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" 
+                                     ${lien}>
+                                
+                                <div class="hidden flex-col items-center justify-center text-center p-4">
+                                    <span class="text-3xl mb-1">📢</span>
+                                    <span class="text-xs font-black text-slate-900 uppercase block">${nomSafe}</span>
+                                    <span class="text-[10px] text-emerald-600 font-bold mt-1">Partenaire Officiel Eyano</span>
+                                </div>
+                            </div>
+                            ${titreSafe ? `<div class="absolute bottom-3 left-4 right-4 bg-black/85 backdrop-blur-sm p-1 rounded-lg text-center text-[10px] font-bold text-white truncate border border-slate-700 shadow-md">${titreSafe}</div>` : ''}
+                        </div>`;
+
+                    if (dotsContainer) {
+                        dotsContainer.innerHTML += `<button onclick="changerSlideManuel(${slideIndex})" class="w-2 h-2 rounded-full bg-slate-600 transition-all"></button>`;
+                    }
+                });
+
+                if (pubTimerClient) clearInterval(pubTimerClient);
+                const totalSlides = activePubs.length + 1;
+
+                if (totalSlides > 1) {
+                    let currentSlide = 0;
+                    pubTimerClient = setInterval(() => {
+                        const slides = document.querySelectorAll('#client-carousel-container .client-pub-slide');
+                        const dots = document.querySelectorAll('#carousel-dots-container button');
+                        if (slides.length <= 1) return;
+                        
+                        slides[currentSlide].classList.remove('active');
+                        if(dots[currentSlide]) dots[currentSlide].className = 'w-2 h-2 rounded-full bg-slate-600 transition-all';
+                        
+                        currentSlide = (currentSlide + 1) % slides.length;
+                        
+                        slides[currentSlide].classList.add('active');
+                        if(dots[currentSlide]) dots[currentSlide].className = 'w-4 h-2 rounded-full bg-emerald-400 transition-all';
+                    }, 4000);
+                }
+            } catch (e) {
+                console.warn("Erreur chargement pubs :", e);
+                container.innerHTML = slideEyanoPermanent;
+            }
+        }
+
+        function changerSlideManuel(index) {
+            const slides = document.querySelectorAll('#client-carousel-container .client-pub-slide');
+            const dots = document.querySelectorAll('#carousel-dots-container button');
+            slides.forEach((s, idx) => {
+                s.classList.toggle('active', idx === index);
+                if(dots[idx]) dots[idx].className = idx === index ? 'w-4 h-2 rounded-full bg-emerald-400 transition-all' : 'w-2 h-2 rounded-full bg-slate-600 transition-all';
+            });
+        }
+
+        /* 2. AUTHENTIFICATION & NAVIGATION */
+        function retourChoixRoleCentral() {
+            document.getElementById('master-auth-portal').style.display = 'flex';
+            document.getElementById('auth-role-selection-view').classList.remove('hidden');
+            document.getElementById('auth-client-login-view').classList.add('hidden');
+            document.getElementById('auth-client-register-view').classList.add('hidden');
+            document.getElementById('auth-partner-login-view').classList.add('hidden');
+            document.getElementById('auth-partner-register-view').classList.add('hidden');
+        }
+
+        function afficherFormulaireConnexionRole(role) {
+            document.getElementById('auth-role-selection-view').classList.add('hidden');
+            document.getElementById('auth-client-login-view').classList.add('hidden');
+            document.getElementById('auth-client-register-view').classList.add('hidden');
+            document.getElementById('auth-partner-login-view').classList.add('hidden');
+            document.getElementById('auth-partner-register-view').classList.add('hidden');
+
+            if (role === 'client') {
+                document.getElementById('auth-client-login-view').classList.remove('hidden');
+            } else if (role === 'partner') {
+                document.getElementById('auth-partner-login-view').classList.remove('hidden');
+            }
+        }
+
+        function basculerSousVueClient(vueId) {
+            document.getElementById('auth-client-login-view').classList.toggle('hidden', vueId !== 'auth-client-login-view');
+            document.getElementById('auth-client-register-view').classList.toggle('hidden', vueId !== 'auth-client-register-view');
+        }
+
+        function basculerSousVuePartner(vueId) {
+            document.getElementById('auth-partner-login-view').classList.toggle('hidden', vueId !== 'auth-partner-login-view');
+            document.getElementById('auth-partner-register-view').classList.toggle('hidden', vueId !== 'auth-partner-register-view');
+        }
+
+        function basculerVersModePartenaire() {
+            localStorage.setItem('eyano_active_mode', 'partner');
+            document.getElementById('root-client-view').style.display = 'none';
+            document.getElementById('root-partner-view').style.display = 'flex';
+        }
+
+        function basculerVersModeClient() {
+            localStorage.setItem('eyano_active_mode', 'client');
+            document.getElementById('root-partner-view').style.display = 'none';
+            document.getElementById('root-client-view').style.display = 'flex';
+        }
+
+        function nettoyerTel(tel) {
+            if (!tel) return '';
+            let clean = tel.toString().replace(/\D/g, '');
+            if (clean.startsWith('243')) clean = clean.substring(3);
+            if (clean.startsWith('0')) clean = clean.substring(1);
+            return clean;
+        }
+
+        function executerAuthentificationClient() {
+            let tel = document.getElementById('login-client-phone').value.trim(); 
+            if(!tel) { alert("Veuillez saisir un numéro de téléphone."); return; }
+            if(tel.startsWith('0')) tel = tel.substring(1); 
+            clientConnecteTelephone = "+243" + tel;
+            clientConnecteNom = "Client " + tel;
+            localStorage.setItem('eyano_client_phone', clientConnecteTelephone);
+            localStorage.setItem('eyano_client_nom', clientConnecteNom);
+            localStorage.setItem('eyano_active_mode', 'client');
+            
+            document.getElementById('master-auth-portal').style.display = 'none';
+            basculerVersModeClient();
+            document.getElementById('lbl-client-session-name').innerText = `SESSION : ${clientConnecteTelephone}`;
+            document.getElementById('profil-lbl-nom').innerText = clientConnecteNom;
+            document.getElementById('profil-lbl-tel').innerText = clientConnecteTelephone;
+            syncHistoriqueCommandesClient();
+            brancherEcouteurTempsReelClient();
+        }
+
+        async function executerInscriptionClient() {
+            const nom = document.getElementById('reg-client-name').value.trim(); 
+            let tel = document.getElementById('reg-client-phone').value.trim();
+            if(!nom || !tel) { alert("Remplissez tous les champs obligatoires."); return; }
+            if(tel.startsWith('0')) tel = tel.substring(1); 
+            clientConnecteTelephone = "+243" + tel; 
+            clientConnecteNom = nom;
+
+            const { error } = await _supabase.from('clients').insert([{ nom_complet: nom, telephone: clientConnecteTelephone }]);
+            if(!error) {
+                localStorage.setItem('eyano_client_phone', clientConnecteTelephone);
+                localStorage.setItem('eyano_client_nom', clientConnecteNom);
+                localStorage.setItem('eyano_active_mode', 'client');
+                document.getElementById('master-auth-portal').style.display = 'none';
+                basculerVersModeClient();
+                document.getElementById('lbl-client-session-name').innerText = `SESSION : ${clientConnecteTelephone}`;
+                document.getElementById('profil-lbl-nom').innerText = clientConnecteNom;
+                document.getElementById('profil-lbl-tel').innerText = clientConnecteTelephone;
+                syncHistoriqueCommandesClient();
+                brancherEcouteurTempsReelClient();
+            } else {
+                alert("Erreur d'inscription : " + error.message);
+            }
+        }
+
+        /* 3. SYNCHRONISATION DES FRAIS DE LIVRAISON DEPUIS LE CLOUD */
+        async function chargerSelecteurCommunes() {
+            const selector = document.getElementById('commune-selector');
+            if(!selector) return;
+
+            try {
+                const { data } = await _supabase.from('configuration').select('frais_communes_json').limit(1).single();
+                if (data && data.frais_communes_json) {
+                    grilleFraisCommunes = typeof data.frais_communes_json === 'string' ? JSON.parse(data.frais_communes_json) : data.frais_communes_json;
+                }
+            } catch(e){}
+
+            const communeSelectionneeActuelle = selector.options && selector.selectedIndex >= 0 ? selector.options[selector.selectedIndex].getAttribute('data-name') : 'Gombe';
+
+            selector.innerHTML = '';
+            communesKinshasa.forEach(c => {
+                const tarif = (grilleFraisCommunes && grilleFraisCommunes[c] !== undefined) ? parseFloat(grilleFraisCommunes[c]) : parseFloat(localStorage.getItem(`frais_${c}`) || 3.50);
+                const isSelected = (c === communeSelectionneeActuelle) ? 'selected' : '';
+                selector.innerHTML += `<option value="${tarif.toFixed(2)}" data-name="${c}" ${isSelected}>📍 ${c} (${tarif.toFixed(2)} $)</option>`;
+            });
+
+            calculateCartTotal();
+        }
+
+        function updateDeliveryFeeAll() { calculateCartTotal(); }
+
+        function changerOngletClient(panelId, btnId) {
+            document.querySelectorAll('#root-client-view .sub-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('footer.client-footer button').forEach(b => b.classList.remove('active'));
+            if(document.getElementById(btnId)) document.getElementById(btnId).classList.add('active');
+            if(document.getElementById(panelId)) document.getElementById(panelId).classList.add('active');
+            if(panelId === 'panel-suivi-commandes') syncHistoriqueCommandesClient();
+        }
+
+        function enterSector(sectorType) { 
+            currentSector = sectorType; 
+            document.querySelectorAll('#root-client-view .sub-panel').forEach(p => p.classList.remove('active')); 
+            if(sectorType === 'Pharmacie') { document.getElementById('sector-pharmacie').classList.add('active'); return; }
+            if(sectorType === 'Chambre Froide') { document.getElementById('sector-cf-search').classList.add('active'); rechercherPartenaireChambreFroideDynamique(); return; }
+            renderBrandsScreen(); 
+        }
+
+        function backToClientHome() { 
+            document.querySelectorAll('#root-client-view .sub-panel').forEach(p => p.classList.remove('active')); 
+            document.getElementById('panel-boutiques').classList.add('active'); 
+        }
+
+        function backToBrandsOrHome() {
+            document.querySelectorAll('#root-client-view .sub-panel').forEach(p => p.classList.remove('active')); 
+            if(currentSector === 'Chambre Froide') document.getElementById('sector-cf-search').classList.add('active');
+            else document.getElementById('sector-brands').classList.add('active');
+        }
+
+        function backToCommerceOrHome() {
+            document.querySelectorAll('#root-client-view .sub-panel').forEach(p => p.classList.remove('active'));
+            if(currentSector === 'Pharmacie') {
+                document.getElementById('sector-pharmacie-prescription').classList.add('active');
+            } else {
+                document.getElementById('sector-commerce').classList.add('active');
+            }
+        }
+
+        function rechercherPartenaireChambreFroideDynamique() {
+            const container = document.getElementById('cf-partner-search-results');
+            if(!container) return;
+            container.innerHTML = `<div onclick="selectBrandAndProceed('RAMAF')" class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex justify-between items-center cursor-pointer"><div><span class="text-xs font-black text-gray-900 block">🥩 RAMAF</span><span class="text-[10px] text-emerald-700 font-bold">Vivres & Produits Surgelés</span></div><span class="text-xs font-bold text-emerald-600">Commander →</span></div>`;
+        }
+
+        function renderBrandsScreen() {
+            const container = document.getElementById('brands-list-grid'); 
+            if (!container) return; 
+            container.innerHTML = '';
+            const sectorDb = databaseProduitsMobiles[currentSector] || {};
+            const emoji = currentSector === 'Gaz Domestique' ? '🔥' : '💧';
+            Object.keys(sectorDb).forEach(marque => {
+                container.innerHTML += `<div onclick="selectBrandAndProceed('${marque}')" class="bg-white border border-slate-200 p-4 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer shadow-sm hover:border-emerald-500 transition"><span class="text-3xl mb-2">${emoji}</span><span class="text-xs font-black text-slate-800 uppercase block">${marque}</span></div>`;
+            });
+            document.querySelectorAll('#root-client-view .sub-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('sector-brands').classList.add('active');
+        }
+
+        function selectBrandAndProceed(brandName) {
+            selectedBrand = brandName;
+            document.getElementById('commerce-title').innerText = brandName;
+            document.querySelectorAll('#root-client-view .sub-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('sector-commerce').classList.add('active');
+            renderDynamicCapacities();
+        }
+
+        function renderDynamicCapacities() {
+            const container = document.getElementById('dynamic-capacities-list'); 
+            container.innerHTML = '';
+            selectedQuantities = {};
+            selectedUnits = {};
+            const sectorDb = databaseProduitsMobiles[currentSector] || {};
+            const brandDb = sectorDb[selectedBrand] || {};
+
+            Object.keys(brandDb).forEach(itemKey => {
+                const item = brandDb[itemKey];
+
+                if(currentSector === 'Chambre Froide' && item.prix_kg && item.prix_carton) {
+                    selectedUnits[itemKey] = 'kg';
+                    container.innerHTML += `
+                        <div class="p-3 bg-white border border-gray-200 rounded-xl space-y-2 shadow-sm">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-gray-800">${itemKey}</span>
+                                <div class="flex items-center space-x-1">
+                                    <select onchange="changerUniteProduitCF('${itemKey}', this.value)" class="text-[10px] font-bold border border-gray-300 rounded p-1 bg-gray-50 text-gray-700 outline-none">
+                                        <option value="kg">Au Kg (${item.prix_kg} FC)</option>
+                                        <option value="carton">Au Carton (${item.prix_carton} FC)</option>
+                                    </select>
+                                    <input type="number" min="0" value="0" onchange="updateCartQty('${itemKey}', this.value)" class="w-12 text-center text-xs font-bold border border-gray-300 rounded p-1">
+                                </div>
+                            </div>
+                        </div>`;
+                } else {
+                    let priceText = item.devise === 'CDF' ? `${item.prix} FC` : `${item.prix} $`;
+                    container.innerHTML += `
+                        <div class="p-3 bg-white border border-gray-200 rounded-xl flex justify-between items-center shadow-sm">
+                            <div>
+                                <span class="text-xs font-bold text-gray-800 block">${itemKey}</span>
+                                <span class="text-[10px] text-emerald-600 font-bold">${priceText}</span>
+                            </div>
+                            <input type="number" min="0" value="0" onchange="updateCartQty('${itemKey}', this.value)" class="w-14 text-center text-xs font-bold border border-gray-300 rounded-lg p-1.5">
+                        </div>`;
+                }
+            });
+            calculateCartTotal();
+        }
+
+        function changerUniteProduitCF(itemKey, unite) {
+            selectedUnits[itemKey] = unite;
+            calculateCartTotal();
+        }
+
+        function updateCartQty(itemKey, val) { 
+            const v = parseInt(val) || 0; 
+            if(v > 0) selectedQuantities[itemKey] = v; 
+            else delete selectedQuantities[itemKey]; 
+            calculateCartTotal(); 
+        }
+
+        function calculateCartTotal() {
+            globalSubtotal = 0;
+            let detailsArr = [];
+            const sectorDb = databaseProduitsMobiles[currentSector] || {};
+            const brandDb = sectorDb[selectedBrand] || {};
+
+            Object.keys(selectedQuantities).forEach(key => {
+                const qty = selectedQuantities[key];
+                const item = brandDb[key];
+                if(item) {
+                    let costUsd = 0;
+                    if(currentSector === 'Chambre Froide' && item.prix_kg) {
+                        const unit = selectedUnits[key] || 'kg';
+                        const priceCDF = unit === 'carton' ? item.prix_carton : item.prix_kg;
+                        costUsd = (priceCDF / tauxFrancCongolais);
+                        detailsArr.push(`${qty} ${unit} ${key}`);
+                    } else {
+                        costUsd = item.devise === 'CDF' ? (item.prix / tauxFrancCongolais) : item.prix;
+                        detailsArr.push(`${qty}x ${key}`);
+                    }
+                    globalSubtotal += (costUsd * qty);
+                }
+            });
+
+            const txtCustom = document.getElementById('txt-custom-capacity')?.value.trim();
+            if(txtCustom) detailsArr.push(`Note: ${txtCustom}`);
+            formattedDetailsArticles = detailsArr.join(', ') || "Articles variés";
+
+            const selCommune = document.getElementById('commune-selector');
+            const deliveryRate = selCommune ? (parseFloat(selCommune.value) || 3.50) : 3.50;
+            const modeRec = document.getElementById('select-mode-reception')?.value || 'Livraison';
+            const deliveryFee = modeRec === 'Retrait' ? 0 : deliveryRate;
+
+            document.getElementById('inv-subtotal').innerText = globalSubtotal.toFixed(2) + " $";
+            document.getElementById('inv-delivery').innerText = deliveryFee.toFixed(2) + " $";
+            document.getElementById('inv-total').innerText = (globalSubtotal + deliveryFee).toFixed(2) + " $";
+        }
+
+        function goToCheckoutAddress() { 
+            document.querySelectorAll('#root-client-view .sub-panel').forEach(p => p.classList.remove('active')); 
+            document.getElementById('sector-checkout-address').classList.add('active'); 
+        }
+
+        function toggleOrderValidationButton() { 
+            document.getElementById('btn-final-order-submit').disabled = !document.getElementById('chk-cgu').checked; 
+        }
+
+        function basculerModeReception(mode) {
+            document.getElementById('address-form-block').classList.toggle('hidden', mode === 'Retrait');
+            document.getElementById('retrait-place-info').classList.toggle('hidden', mode !== 'Retrait');
+            calculateCartTotal();
+        }
+
+        /* 4. SOUMISSION COMMANDE CLIENT */
+        async function submitFinalAlgorithmicOrder() {
+            const selCommune = document.getElementById('commune-selector');
+            const nomCommune = selCommune ? selCommune.options[selCommune.selectedIndex].getAttribute('data-name') : 'Gombe';
+            const deliveryRate = selCommune ? (parseFloat(selCommune.value) || 3.50) : 3.50;
+            const idCmd = "CMD-" + Math.floor(10000 + Math.random() * 90000);
+            const generatedPin = String(Math.floor(1000 + Math.random() * 9000));
+            const modeRec = document.getElementById('select-mode-reception')?.value || 'Livraison';
+            const deliveryFee = modeRec === 'Retrait' ? 0 : deliveryRate;
+
+            const quartierSaisi = document.getElementById('final-cust-quartier')?.value.trim() || 'Non précisé';
+            const avenueSaisie = document.getElementById('final-cust-avenue')?.value.trim() || 'Non précisé';
+            const repereSaisi = document.getElementById('final-cust-ref')?.value.trim() || (modeRec === 'Retrait' ? 'Retrait sur place au dépôt' : 'Non précisé');
+
+            const payload = {
+                id_commande: idCmd,
+                secteur: currentSector || 'Gaz Domestique',
+                nom_client: clientConnecteNom || 'Client Eyano',
+                telephone_client: clientConnecteTelephone || '+243810000000',
+                commune_livraison: nomCommune,
+                quartier: quartierSaisi,
+                avenue: avenueSaisie,
+                reference_lieu: repereSaisi,
+                mode_reception: modeRec,
+                montant_brut_usd: globalSubtotal,
+                frais_livraison_usd: deliveryFee,
+                commission_gts_usd: (globalSubtotal * 0.05),
+                gain_net_partenaire_usd: (globalSubtotal * 0.95),
+                montant_total_usd: (globalSubtotal + deliveryFee),
+                statut_commande: "En attente",
+                details_articles: formattedDetailsArticles || "Commande directe",
+                code_validation: generatedPin
+            };
+
+            const { error } = await _supabase.from('commandes').insert([payload]);
+
+            if(!error) {
+                alert(`✅ Commande #${idCmd} validée !\nVotre code PIN de livraison est : ${generatedPin}`);
+                changerOngletClient('panel-suivi-commandes', 'nav-btn-suivi');
+                syncHistoriqueCommandesClient();
+            } else {
+                alert("Erreur lors de l'enregistrement de la commande : " + error.message);
+            }
+        }
+
+        /* 5. SUIVI DU STATUT CLIENT AVEC SUPPRESSION DE COMMANDES */
+        function getCommandesMasqueesClient() {
+            try {
+                return JSON.parse(localStorage.getItem('eyano_client_hidden_orders') || '[]');
+            } catch(e) { return []; }
+        }
+
+        function masquerCommandeClotureeClient(idCmd) {
+            let hidden = getCommandesMasqueesClient();
+            if(!hidden.includes(idCmd)) hidden.push(idCmd);
+            localStorage.setItem('eyano_client_hidden_orders', JSON.stringify(hidden));
+            syncHistoriqueCommandesClient();
+        }
+
+        function viderCommandesClotureesClient() {
+            const hidden = getCommandesMasqueesClient();
+            const elementsLivrees = document.querySelectorAll('.client-order-card[data-livree="true"]');
+            
+            if (elementsLivrees.length === 0) {
+                alert("Aucune commande terminée à supprimer.");
+                return;
+            }
+
+            if(!confirm("Supprimer toutes les commandes terminées (livrées) de votre historique ?")) return;
+
+            elementsLivrees.forEach(el => {
+                const idCmd = el.getAttribute('data-id');
+                if(idCmd && !hidden.includes(idCmd)) hidden.push(idCmd);
+            });
+            localStorage.setItem('eyano_client_hidden_orders', JSON.stringify(hidden));
+            syncHistoriqueCommandesClient();
+        }
+
+        function brancherEcouteurTempsReelClient() {
+            _supabase.channel('suivi-client-flux')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'commandes' }, () => syncHistoriqueCommandesClient())
+                .subscribe();
+
+            _supabase.channel('config-frais-flux')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'configuration' }, () => chargerSelecteurCommunes())
+                .subscribe();
+
+            _supabase.channel('pubs-client-flux')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'campagnes_pub' }, () => chargerPublicitesDynamiques())
+                .subscribe();
+            
+            setInterval(() => {
+                if (document.getElementById('panel-suivi-commandes').classList.contains('active')) {
+                    syncHistoriqueCommandesClient();
+                }
+            }, 3000);
+        }
+
+        async function forcerActualisationSuiviClient() {
+            const btn = document.getElementById('btn-client-refresh-suivi');
+            if(btn) btn.innerText = "⏳ ...";
+            await syncHistoriqueCommandesClient();
+            if(btn) {
+                btn.innerText = "✅ À jour";
+                setTimeout(() => btn.innerText = "🔄 Rafraîchir", 1000);
+            }
+        }
+
+        async function syncHistoriqueCommandesClient() {
+            const container = document.getElementById('container-liste-suivi-client');
+            if(!container) return;
+
+            const telClean = nettoyerTel(clientConnecteTelephone);
+            const hiddenList = getCommandesMasqueesClient();
+
+            const { data: commandes, error } = await _supabase
+                .from('commandes')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if(error || !commandes || commandes.length === 0) {
+                container.innerHTML = `<div class="text-xs text-gray-400 italic text-center py-6">Aucune commande enregistrée.</div>`;
+                return;
+            }
+
+            const mesCommandes = commandes.filter(c => {
+                if(hiddenList.includes(c.id_commande)) return false;
+                if(!telClean) return true;
+                const cTel = nettoyerTel(c.telephone_client);
+                return cTel.endsWith(telClean) || telClean.endsWith(cTel) || cTel.slice(-8) === telClean.slice(-8);
+            });
+
+            if(mesCommandes.length === 0) {
+                container.innerHTML = `<div class="text-xs text-gray-400 italic text-center py-6">Aucune commande en cours.</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            mesCommandes.forEach(c => {
+                const statut = (c.statut_commande || 'En attente').toLowerCase().trim();
+                const estLivree = statut.includes('livr');
+                const estAcceptee = statut.includes('accept');
+
+                let partenaireTexte = `⏳ Recherche d'un partenaire disponible...`;
+                if(c.nom_partenaire) {
+                    partenaireTexte = `📍 Prise en charge par : <b>${c.nom_partenaire}</b>`;
+                }
+
+                let statutBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">⏳ En attente</span>`;
+                if(estLivree) {
+                    statutBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">✅ Livrée</span>`;
+                } else if(estAcceptee) {
+                    statutBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800">🚚 En cours de livraison</span>`;
+                }
+
+                let blocEvaluationHtml = '';
+                if (estLivree) {
+                    if (c.note_client) {
+                        blocEvaluationHtml = `
+                            <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-xl text-xs space-y-1">
+                                <span class="font-bold text-amber-900 block">⭐ Votre Évaluation : ${'⭐'.repeat(c.note_client)} (${c.note_client}/5)</span>
+                                ${c.avis_client ? `<p class="text-[11px] text-amber-800 italic">« ${c.avis_client} »</p>` : ''}
+                            </div>`;
+                    } else {
+                        blocEvaluationHtml = `
+                            <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl space-y-2 text-xs">
+                                <span class="font-black text-emerald-900 block uppercase tracking-wide">⭐ Évaluer la prestation du marchand :</span>
+                                <div class="flex items-center space-x-2">
+                                    <select id="eval-note-${c.id_commande}" class="p-1.5 bg-white border border-emerald-300 rounded text-xs font-bold text-gray-800 outline-none">
+                                        <option value="5">⭐⭐⭐⭐⭐ Excellent (5/5)</option>
+                                        <option value="4">⭐⭐⭐⭐ Très Bien (4/5)</option>
+                                        <option value="3">⭐⭐⭐ Correct (3/5)</option>
+                                        <option value="2">⭐⭐ Décevant (2/5)</option>
+                                        <option value="1">⭐ Médiocre (1/5)</option>
+                                    </select>
+                                </div>
+                                <input type="text" id="eval-avis-${c.id_commande}" placeholder="Un commentaire sur la livraison ? (Optionnel)" class="w-full p-2 bg-white border border-emerald-300 rounded-lg text-xs outline-none">
+                                <button onclick="soumettreEvaluationClient('${c.id_commande}')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2 rounded-lg shadow transition cursor-pointer">
+                                    Envoyer mon Avis
+                                </button>
+                            </div>`;
+                    }
+                }
+
+                container.innerHTML += `
+                    <div class="client-order-card bg-white border border-gray-200 p-4 rounded-2xl shadow-sm space-y-2.5" data-id="${c.id_commande}" data-livree="${estLivree}">
+                        <div class="flex justify-between items-start">
+                            <span class="text-blue-600 font-mono font-black text-xs">#${c.id_commande}</span>
+                            <div class="flex items-center space-x-2">
+                                ${statutBadge}
+                                ${estLivree ? `<button onclick="masquerCommandeClotureeClient('${c.id_commande}')" title="Supprimer de l'affichage" class="text-gray-400 hover:text-red-500 font-bold text-xs px-1 cursor-pointer">✕</button>` : ''}
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-800 font-bold">${c.details_articles || 'Commande'}</p>
+                        <div class="text-[11px] text-gray-600 bg-gray-50 p-2 rounded-lg border border-gray-100">${partenaireTexte}</div>
+                        
+                        ${!estLivree ? `
+                        <div class="flex justify-between items-center text-xs border-t border-gray-100 pt-2 font-semibold">
+                            <span>Secteur : <b class="text-gray-900">${c.secteur}</b></span>
+                            <span>🔐 PIN : <b class="font-mono text-indigo-600 text-sm">${c.code_validation || '----'}</b></span>
+                        </div>` : ''}
+
+                        ${blocEvaluationHtml}
+                    </div>`;
+            });
+        }
+
+        async function soumettreEvaluationClient(idCmd) {
+            const selectNote = document.getElementById(`eval-note-${idCmd}`);
+            const inputAvis = document.getElementById(`eval-avis-${idCmd}`);
+            const note = parseInt(selectNote?.value) || 5;
+            const avis = inputAvis?.value.trim() || '';
+
+            const { error } = await _supabase.from('commandes').update({
+                note_client: note,
+                avis_client: avis
+            }).eq('id_commande', idCmd);
+
+            if(!error) {
+                alert("⭐ Merci pour votre évaluation !");
+                syncHistoriqueCommandesClient();
+            } else {
+                alert("Erreur lors de l'enregistrement de l'avis : " + error.message);
+            }
+        }
+
+        /* 6. PARTENAIRE LOGIQUE : COMMANDES, CLÔTURE PIN & ANALYSES */
+        function alimenterQuestionsSecretesEnrolementPartenaire() {
+            const selectRegister = document.getElementById('reg-question');
+            const questions = ["Nom de jeune fille de votre mère ?", "Nom de votre premier animal de compagnie ?", "Ville de naissance de votre père ?", "Votre plat kinois préféré ?"];
+            if(selectRegister) {
+                selectRegister.innerHTML = '';
+                questions.forEach(q => selectRegister.innerHTML += `<option value="${q}">${q}</option>`);
+            }
+        }
+
+        function detecterDocumentLegalPartenaire(input) { 
+            if (input.files && input.files[0]) document.getElementById('legal-file-label').innerText = "✅ Joint : " + input.files[0].name.substring(0, 15); 
+        }
+
+        async function executerInscriptionPartenaireSupabase() {
+            if(!document.getElementById('chk-cgu-partenaire').checked) { 
+                alert("Veuillez accepter les CGU d'Eyano Market pour valider votre inscription."); 
+                return; 
+            }
+            
+            const name = document.getElementById('reg-name').value.trim();
+            const sektor = document.getElementById('register-sektor').value;
+            const brandFree = document.getElementById('reg-brand-free')?.value.trim() || '';
+            const id = document.getElementById('reg-identifiant').value.trim();
+            const tel = "+243" + document.getElementById('reg-tel').value.trim();
+            const commune = document.getElementById('reg-adresse')?.value.trim() || 'Kinshasa';
+            const quartier = document.getElementById('reg-quartier')?.value.trim() || '';
+            const avenue = document.getElementById('reg-avenue')?.value.trim() || '';
+            const numero = document.getElementById('reg-numero')?.value.trim() || '';
+            const pass = document.getElementById('reg-pass').value.trim();
+            const question = document.getElementById('reg-question')?.value || '';
+            const reponse = document.getElementById('reg-reponse')?.value.trim() || '';
+
+            if(!name || !id || !pass || !tel) { 
+                alert("⚠️ Veuillez remplir tous les champs obligatoires (Nom, Identifiant, Téléphone, Mot de passe)."); 
+                return; 
+            }
+
+            const payloadPartenaire = {
+                nom_etablissement: name, 
+                secteur: sektor, 
+                marque_representee: brandFree,
+                identifiant: id, 
+                telephone: tel,
+                commune_exploitation: commune,
+                quartier: quartier,
+                avenue: avenue,
+                numero: numero,
+                mot_de_passe: pass, 
+                question_secrete: question, 
+                reponse_secrete: reponse, 
+                solde_caution_usd: 25.00, 
+                taux_change: 2300,
+                statut: 'Actif'
+            };
+
+            const { data, error } = await _supabase
+                .from('partenaires')
+                .insert([payloadPartenaire])
+                .select();
+
+            if(!error && data && data.length > 0) {
+                alert("🎉 Compte partenaire créé avec succès (Forfait d'essai de 25.00 $ activé) !");
+                basculerVersModePartenaire();
+                document.getElementById('master-auth-portal').style.display = 'none';
+                chargerSessionPartenaireDirecte(data[0]);
+            } else {
+                alert("Erreur enrôlement : " + (error ? error.message : "Inconnue"));
+            }
+        }
+
+        async function executerAuthentificationPartenaireGts() {
+            const user = document.getElementById('partenaire-auth-user').value.trim();
+            const pass = document.getElementById('partenaire-auth-pass').value.trim();
+            const { data, error } = await _supabase.from('partenaires').select('*').eq('identifiant', user).single();
+            if(error || !data || data.mot_de_passe !== pass) { alert("Identifiants incorrects."); return; }
+            basculerVersModePartenaire();
+            document.getElementById('master-auth-portal').style.display = 'none';
+            chargerSessionPartenaireDirecte(data);
+        }
+
+        function chargerSessionPartenaireDirecte(data) {
+            monIdPartenaireSession = String(data.id_partenaire || data.identifiant || '');
+            monNomEtablissement = data.nom_etablissement || 'Partenaire';
+            monSecteurSession = data.secteur || "Gaz Domestique";
+            monIdentifiantSession = data.identifiant || '';
+            mdpAttenduSession = data.mot_de_passe || '';
+
+            const tauxEnregistre = parseFloat(data.taux_change) || 
+                                   parseFloat(localStorage.getItem('eyano_taux_' + monIdentifiantSession)) || 
+                                   parseFloat(localStorage.getItem('eyano_taux_change')) || 
+                                   2300;
+
+            tauxFrancCongolais = tauxEnregistre;
+            localStorage.setItem('eyano_taux_change', tauxEnregistre);
+            localStorage.setItem('eyano_taux_' + monIdentifiantSession, tauxEnregistre);
+
+            const inputTaux = document.getElementById('taux');
+            if (inputTaux) inputTaux.value = tauxEnregistre;
+
+            localStorage.setItem('eyano_partner_session_data', JSON.stringify(data));
+            document.getElementById('lbl-merchant-name').innerText = monNomEtablissement;
+            document.getElementById('mobile-merchant-id-lbl').innerText = "ID : " + monIdentifiantSession;
+            document.getElementById('wallet-usd-label').innerText = (parseFloat(data.solde_caution_usd) || 25.00).toFixed(2) + " $";
+            document.getElementById('wallet-caution-label-top').innerText = (parseFloat(data.solde_caution_usd) || 25.00).toFixed(2) + " $";
+
+            if(document.getElementById('update-identifiant')) document.getElementById('update-identifiant').value = monIdentifiantSession;
+            if(document.getElementById('update-responsable-nom')) document.getElementById('update-responsable-nom').value = data.responsable_nom || '';
+            if(document.getElementById('update-responsable-tel')) document.getElementById('update-responsable-tel').value = data.telephone || '';
+
+            _supabase.channel('flux-partenaire').on('postgres_changes', { event: '*', schema: 'public', table: 'commandes' }, () => {
+                chargerDerniereCommandeCommune();
+                chargerAnalysesPartenaire();
+            }).subscribe();
+            
+            setInterval(() => chargerDerniereCommandeCommune(), 3000);
+            chargerDerniereCommandeCommune();
+            chargerCoordonneesMomoPartenaire();
+            chargerAnalysesPartenaire();
+            renderCatalogue(false);
+        }
+
+        async function chargerCoordonneesMomoPartenaire() {
+            try {
+                const { data } = await _supabase.from('configuration').select('num_mpesa, num_orange, num_airtel').limit(1).single();
+                if(data) {
+                    if(data.num_mpesa && document.getElementById('part-momo-mpesa')) document.getElementById('part-momo-mpesa').innerText = data.num_mpesa;
+                    if(data.num_orange && document.getElementById('part-momo-orange')) document.getElementById('part-momo-orange').innerText = data.num_orange;
+                    if(data.num_airtel && document.getElementById('part-momo-airtel')) document.getElementById('part-momo-airtel').innerText = data.num_airtel;
+                }
+            } catch(e){}
+        }
+
+        async function forcerActualisationManuellePartenaire() {
+            const btn = document.getElementById('btn-partner-refresh');
+            if(btn) { btn.innerText = "⏳ Chargement..."; btn.classList.add('opacity-50'); }
+            await chargerDerniereCommandeCommune();
+            await chargerAnalysesPartenaire();
+            setTimeout(() => {
+                if(btn) {
+                    btn.innerText = "🔄 Actualisé !";
+                    btn.classList.remove('opacity-50');
+                    setTimeout(() => btn.innerText = "🔄 Actualiser", 1200);
+                }
+            }, 300);
+        }
+
+        async function chargerDerniereCommandeCommune() {
+            const container = document.getElementById('container-commandes-partenaire-liste');
+            const boxAucune = document.getElementById('box-aucune-commande');
+            if(!container) return;
+
+            let pStored = JSON.parse(localStorage.getItem('eyano_partner_session_data') || '{}');
+            const userIdentifiant = monIdentifiantSession || pStored.identifiant;
+            
+            if (userIdentifiant) {
+                let { data: pData } = await _supabase.from('partenaires').select('*').eq('identifiant', userIdentifiant).maybeSingle();
+                if (pData) {
+                    pStored = pData;
+                    localStorage.setItem('eyano_partner_session_data', JSON.stringify(pData));
+                    if(document.getElementById('wallet-usd-label')) document.getElementById('wallet-usd-label').innerText = (parseFloat(pData.solde_caution_usd) || 0).toFixed(2) + " $";
+                    if(document.getElementById('wallet-caution-label-top')) document.getElementById('wallet-caution-label-top').innerText = (parseFloat(pData.solde_caution_usd) || 0).toFixed(2) + " $";
+                }
+            }
+
+            const { data: commandes, error } = await _supabase.from('commandes').select('*').order('created_at', { ascending: false }).limit(30);
+
+            if(error || !commandes || commandes.length === 0) {
+                container.innerHTML = '';
+                if(boxAucune) boxAucune.classList.remove('hidden');
+                return;
+            }
+
+            const normaliser = (s) => (s || '').toLowerCase().trim();
+            const monSecteur = normaliser(monSecteurSession || 'Gaz');
+            const monId = String(monIdPartenaireSession || userIdentifiant || '');
+
+            const commandesFiltrees = commandes.filter(c => {
+                const sectCmd = normaliser(c.secteur);
+                const statut = normaliser(c.statut_commande);
+                
+                const memeSecteur = (monSecteur.includes('gaz') && sectCmd.includes('gaz')) || 
+                                    (monSecteur.includes('eau') && sectCmd.includes('eau')) ||
+                                    (monSecteur.includes('pharmacie') && sectCmd.includes('pharmacie')) ||
+                                    (monSecteur.includes('froide') && sectCmd.includes('froide')) ||
+                                    (sectCmd === monSecteur);
+
+                if (!memeSecteur) return false;
+                
+                const estActive = statut === 'en attente' || statut.includes('accept');
+                if (!estActive) return false;
+
+                const partIdCmd = String(c.id_partenaire || '').trim();
+                return (!partIdCmd && statut === 'en attente') || (partIdCmd === monId) || (partIdCmd === userIdentifiant);
+            });
+
+            if(commandesFiltrees.length === 0) {
+                container.innerHTML = '';
+                if(boxAucune) boxAucune.classList.remove('hidden');
+                return;
+            }
+
+            if(boxAucune) boxAucune.classList.add('hidden');
+            container.innerHTML = '';
+
+            const dateExp = pStored.date_expiration_forfait ? new Date(pStored.date_expiration_forfait) : null;
+            const passActif = (pStored.type_forfait === 'journalier' || pStored.type_forfait === 'mensuel') && dateExp && dateExp > new Date();
+            const soldePartenaire = parseFloat(pStored.solde_caution_usd || 0);
+
+            commandesFiltrees.forEach(c => {
+                const estAcceptee = normaliser(c.statut_commande).includes('accept');
+                const montantCourse = parseFloat(c.montant_total_usd || c.montant_brut_usd || 0);
+                const commissionGts = parseFloat(c.commission_gts_usd || (montantCourse * 0.05));
+                const estEligible = passActif || (soldePartenaire >= commissionGts && soldePartenaire > 0);
+
+                container.innerHTML += `
+                    <div class="partner-card border border-amber-500 bg-slate-900/50 p-4 space-y-3 rounded-2xl shadow-md">
+                        <div class="flex justify-between text-xs font-bold text-slate-300 border-b border-slate-800 pb-2">
+                            <span class="text-indigo-400 font-mono">#${c.id_commande}</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] ${estAcceptee ? 'bg-emerald-950 text-emerald-400 border border-emerald-800':'bg-amber-950 text-amber-400 border border-amber-800'}">${c.statut_commande}</span>
+                        </div>
+
+                        <!-- COORDONNÉES CLIENT -->
+                        <div class="partner-black-box bg-slate-950 p-3 text-xs space-y-1 rounded-xl">
+                            <span class="text-[9px] text-emerald-400 uppercase font-bold block border-b border-slate-800/60 pb-1 mb-1">👤 Client :</span>
+                            <div class="flex justify-between">
+                                <span>Nom :</span>
+                                <span class="font-bold ${estAcceptee ? 'text-white' : 'text-slate-500 italic'}">
+                                    ${estAcceptee ? (c.nom_client || 'Client Eyano') : '🔒 Masqué (Acceptez la mission)'}
+                                </span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Téléphone :</span>
+                                <span>
+                                    ${estAcceptee 
+                                        ? `<a href="tel:${c.telephone_client}" class="text-emerald-400 font-mono font-bold underline">📞 ${c.telephone_client || '-'}</a>` 
+                                        : '<span class="text-slate-500 italic">🔒 Masqué</span>'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- ARTICLES -->
+                        <div>
+                            <span class="text-[9px] text-slate-400 uppercase font-bold block mb-1">📦 Articles commandés :</span>
+                            <p class="text-xs font-black p-3 bg-slate-950 border border-slate-800 rounded-xl text-white shadow-inner">${c.details_articles || 'Commande'}</p>
+                        </div>
+
+                        <!-- FINANCES (TOUJOURS VISIBLES) -->
+                        <div class="partner-black-box bg-slate-950 p-3 text-xs space-y-1 rounded-xl">
+                            <span class="text-[9px] text-slate-400 uppercase font-bold block border-b border-slate-800/60 pb-1 mb-1">💰 Finances :</span>
+                            <div class="flex justify-between"><span>Montant total :</span><span class="text-white font-mono font-bold">${montantCourse.toFixed(2)} $</span></div>
+                            <div class="flex justify-between text-red-400"><span>Commission GTS :</span><span class="font-mono">-${commissionGts.toFixed(2)} $</span></div>
+                            <div class="flex justify-between text-emerald-400 font-black border-t border-slate-800/60 pt-1 mt-0.5"><span>Gain Net :</span><span class="font-mono">${(montantCourse - commissionGts).toFixed(2)} $</span></div>
+                        </div>
+
+                        <!-- DESTINATION (COMMUNE, QUARTIER ET REPÈRE TOUJOURS VISIBLES / AVENUE MASQUÉE) -->
+                        <div class="partner-black-box bg-slate-950 p-3 text-xs space-y-1 rounded-xl">
+                            <span class="text-[9px] text-slate-400 uppercase font-bold block border-b border-slate-800/60 pb-1 mb-1">📍 Destination :</span>
+                            <div class="flex justify-between"><span>Commune :</span><span class="text-white font-bold">${c.commune_livraison || 'Kinshasa'}</span></div>
+                            <div class="flex justify-between"><span>Quartier :</span><span class="text-slate-300 font-bold">${c.quartier || 'Non précisé'}</span></div>
+                            <div class="flex justify-between">
+                                <span>Avenue & N° :</span>
+                                <span class="font-bold ${estAcceptee ? 'text-slate-200' : 'text-slate-500 italic'}">
+                                    ${estAcceptee ? (c.avenue || 'Non précisé') : '🔒 Masquée (Acceptez la mission)'}
+                                </span>
+                            </div>
+                            <div class="flex justify-between text-cyan-400 border-t border-slate-800/60 pt-1 mt-0.5">
+                                <span>Repère / Référence :</span>
+                                <span class="font-bold text-cyan-300">${c.reference_lieu || 'Non précisé'}</span>
+                            </div>
+                        </div>
+
+                        <!-- ACTIONS -->
+                        <div class="pt-1">
+                            ${!estAcceptee ? `
+                                ${estEligible ? `
+                                    <button onclick="tenterAcceptationMission('${c.id_commande}', ${commissionGts})" class="w-full bg-emerald-600 hover:bg-emerald-500 font-bold text-xs py-2.5 rounded-xl text-white shadow cursor-pointer">
+                                        ✅ Accepter la mission
+                                    </button>
+                                ` : `
+                                    <button onclick="alert('⛔ Solde insuffisant (${soldePartenaire.toFixed(2)} $) pour supporter la commission (${commissionGts.toFixed(2)} $).\\n\\nVeuillez recharger votre portefeuille ou souscrire un Pass Journalier/Mensuel.');" class="w-full bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/40 font-bold text-xs py-2.5 rounded-xl shadow cursor-pointer">
+                                        ⚠️ Solde insuffisant (${soldePartenaire.toFixed(2)} $)
+                                    </button>
+                                `}
+                            ` : `
+                                <button onclick="navPartnerMobile('page-scan-pin-partner', 'btn-nav-scan-p')" class="w-full bg-indigo-600 hover:bg-indigo-500 font-bold text-xs py-2.5 rounded-xl text-white shadow cursor-pointer">
+                                    📦 Clôturer la livraison (Saisir PIN)
+                                </button>
+                            `}
+                        </div>
+                    </div>`;
+            });
+        }
+
+       /* ACCEPTATION DE LA MISSION AVEC DÉBIT SÉCURISÉ */
+async function tenterAcceptationMission(idCmd, commissionGts) {
+    let pStored = JSON.parse(localStorage.getItem('eyano_partner_session_data') || '{}');
+    const userIdentifiant = monIdentifiantSession || pStored.identifiant;
+
+    if (!userIdentifiant) {
+        alert("Erreur : session partenaire introuvable. Veuillez vous reconnecter.");
+        return;
+    }
+
+    // 1. Recherche directe par identifiant textuel unique
+    let { data: pData, error: errFetch } = await _supabase
+        .from('partenaires')
+        .select('*')
+        .eq('identifiant', userIdentifiant)
+        .maybeSingle();
+
+    // 2. Recherche de secours par ID numérique si nécessaire
+    if (!pData && pStored.id_partenaire && !isNaN(Number(pStored.id_partenaire))) {
+        const res = await _supabase
+            .from('partenaires')
+            .select('*')
+            .eq('id_partenaire', Number(pStored.id_partenaire))
+            .maybeSingle();
+        pData = res.data;
+    }
+
+    if (!pData) { 
+        alert("⚠️ Session expirée ou compte introuvable.\n\nVeuillez cliquer sur « Déconnexion » en haut à droite et vous reconnecter."); 
+        return; 
+    }
+
+    const dateExp = pData.date_expiration_forfait ? new Date(pData.date_expiration_forfait) : null;
+    const passActif = (pData.type_forfait === 'journalier' || pData.type_forfait === 'mensuel') && dateExp && dateExp > new Date();
+    const solde = parseFloat(pData.solde_caution_usd || 0);
+
+    let comMontant = parseFloat(commissionGts);
+    if (isNaN(comMontant) || comMontant < 0) {
+        comMontant = 0;
+    }
+
+    if (!passActif && solde < comMontant) {
+        alert(`⛔ Impossible d'accepter cette mission : votre solde (${solde.toFixed(2)} $) est inférieur à la commission requise (${comMontant.toFixed(2)} $).\n\nVeuillez recharger votre portefeuille ou souscrire un Pass.`);
+        chargerDerniereCommandeCommune();
+        return;
+    }
+
+    let nouveauSolde = solde;
+    if (!passActif && comMontant > 0) {
+        nouveauSolde = Math.max(0, solde - comMontant);
+        const { error: debitError } = await _supabase
+            .from('partenaires')
+            .update({ solde_caution_usd: nouveauSolde })
+            .eq('identifiant', pData.identifiant);
+
+        if (debitError) {
+            alert("Erreur lors du débit de la commission : " + debitError.message);
+            return;
+        }
+
+        pData.solde_caution_usd = nouveauSolde;
+        localStorage.setItem('eyano_partner_session_data', JSON.stringify(pData));
+        if (document.getElementById('wallet-usd-label')) {
+            document.getElementById('wallet-usd-label').innerText = nouveauSolde.toFixed(2) + " $";
+        }
+        if (document.getElementById('wallet-caution-label-top')) {
+            document.getElementById('wallet-caution-label-top').innerText = nouveauSolde.toFixed(2) + " $";
+        }
+    }
+
+    const nomMarchand = monNomEtablissement || pData.nom_etablissement || 'Partenaire';
+    const partnerIdToSave = String(pData.identifiant || userIdentifiant);
+
+    const { error: cmdError } = await _supabase.from('commandes').update({
+        statut_commande: 'Acceptée',
+        id_partenaire: partnerIdToSave,
+        nom_partenaire: nomMarchand
+    }).eq('id_commande', idCmd);
+
+    if (!cmdError) {
+        let messageConfirmation = `✅ Mission #${idCmd} acceptée !\nL'adresse exacte (Avenue) et le contact client sont déverrouillés.`;
+        if (!passActif && comMontant > 0) {
+            messageConfirmation += `\n\n💰 Commission prélevée : -${comMontant.toFixed(2)} $\n💳 Nouveau solde : ${nouveauSolde.toFixed(2)} $`;
+        }
+        alert(messageConfirmation);
+        chargerDerniereCommandeCommune();
+    } else {
+        alert("Erreur lors de l'acceptation : " + cmdError.message);
+    }
+}
+        /* CONFIRMATION DE LIVRAISON PAR CODE PIN */
+        async function executerClotureLivraisonPartenaireGlobal() {
+            const inputPin = document.getElementById('input-delivery-verification-code')?.value.trim();
+            if (!inputPin || inputPin.length !== 4) {
+                alert("⚠️ Veuillez saisir le code PIN à 4 chiffres fourni par le client.");
+                return;
+            }
+
+            const { data: cmdMatch, error: fetchErr } = await _supabase
+                .from('commandes')
+                .select('*')
+                .eq('code_validation', inputPin)
+                .limit(1);
+
+            if (fetchErr || !cmdMatch || cmdMatch.length === 0) { 
+                alert("❌ Code PIN introuvable. Vérifiez le code avec le client."); 
+                return; 
+            }
+
+            const commandeValidee = cmdMatch[0];
+            const statutActuel = (commandeValidee.statut_commande || '').toLowerCase().trim();
+
+            if (statutActuel.includes('livr')) {
+                alert("ℹ️ Cette commande a déjà été clôturée.");
+                return;
+            }
+
+            let pStored = JSON.parse(localStorage.getItem('eyano_partner_session_data') || '{}');
+            const userIdentifiant = monIdentifiantSession || pStored.identifiant || commandeValidee.id_partenaire || '';
+            const nomMarchand = monNomEtablissement || pStored.nom_etablissement || commandeValidee.nom_partenaire || 'Partenaire';
+            const idPartenaireFinal = String(pStored.id_partenaire || userIdentifiant || commandeValidee.id_partenaire || '');
+
+            const { error: updateCmdErr } = await _supabase.from('commandes').update({
+                statut_commande: 'Livrée',
+                id_partenaire: idPartenaireFinal,
+                nom_partenaire: nomMarchand
+            }).eq('id_commande', commandeValidee.id_commande);
+
+            if (updateCmdErr) {
+                alert("Erreur lors de la confirmation : " + updateCmdErr.message);
+                return;
+            }
+
+            alert(`🎉 Livraison de la commande #${commandeValidee.id_commande} confirmée avec succès !\nLa course est archivée dans votre onglet Analyse.`);
+            document.getElementById('input-delivery-verification-code').value = '';
+            
+            navPartnerMobile('page-accueil-partner', 'btn-nav-home-p');
+            chargerDerniereCommandeCommune();
+            chargerAnalysesPartenaire();
+        }
+
+        /* ANALYSES PARTENAIRE & HISTORIQUE DES LIVRAISONS PAR INTERVALLE DE DATES */
+        function reinitialiserFiltresDatesAnalyses() {
+            if(document.getElementById('partner-date-start')) document.getElementById('partner-date-start').value = '';
+            if(document.getElementById('partner-date-end')) document.getElementById('partner-date-end').value = '';
+            chargerAnalysesPartenaire();
+        }
+
+        async function forcerActualisationAnalysesPartenaire() {
+            const btn = document.getElementById('btn-refresh-analyse');
+            if(btn) btn.innerText = "⏳ ...";
+            await chargerAnalysesPartenaire();
+            if(btn) {
+                btn.innerText = "✅ À jour";
+                setTimeout(() => btn.innerText = "🔄 Rafraîchir", 1000);
+            }
+        }
+
+        async function chargerAnalysesPartenaire() {
+            const container = document.getElementById('container-historique-analyse-partenaire');
+            if(!container) return;
+
+            let pStored = JSON.parse(localStorage.getItem('eyano_partner_session_data') || '{}');
+            const userIdentifiant = monIdentifiantSession || pStored.identifiant;
+            const myNom = (monNomEtablissement || pStored.nom_etablissement || '').toLowerCase().trim();
+            const myIdPart = String(pStored.id_partenaire || userIdentifiant || '').trim();
+
+            const dateStartVal = document.getElementById('partner-date-start')?.value;
+            const dateEndVal = document.getElementById('partner-date-end')?.value;
+
+            const dateDebut = dateStartVal ? new Date(dateStartVal + 'T00:00:00') : null;
+            const dateFin = dateEndVal ? new Date(dateEndVal + 'T23:59:59') : null;
+
+            const { data: commandes, error } = await _supabase
+                .from('commandes')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if(error || !commandes || commandes.length === 0) {
+                container.innerHTML = `<div class="text-xs text-slate-500 italic text-center py-4">Aucune commande livrée pour le moment.</div>`;
+                if(document.getElementById('impact-volume-count')) document.getElementById('impact-volume-count').innerText = "0";
+                if(document.getElementById('impact-ca-total')) document.getElementById('impact-ca-total').innerText = "0.00 $";
+                if(document.getElementById('wallet-ca-label-top')) document.getElementById('wallet-ca-label-top').innerText = "0.00 $";
+                return;
+            }
+
+            const mesLivraisons = commandes.filter(c => {
+                const st = (c.statut_commande || '').toLowerCase().trim();
+                if (!st.includes('livr')) return false;
+
+                const cId = String(c.id_partenaire || '').trim();
+                const cNom = (c.nom_partenaire || '').toLowerCase().trim();
+
+                const matchId = (myIdPart && cId && myIdPart === cId) || (userIdentifiant && cId && userIdentifiant === cId);
+                const matchNom = (myNom && cNom && (cNom.includes(myNom) || myNom.includes(cNom)));
+                if (!matchId && !matchNom) return false;
+
+                if (dateDebut || dateFin) {
+                    const cDate = new Date(c.created_at || Date.now());
+                    if (dateDebut && cDate < dateDebut) return false;
+                    if (dateFin && cDate > dateFin) return false;
+                }
+
+                return true;
+            });
+
+            if (mesLivraisons.length === 0) {
+                container.innerHTML = `<div class="text-xs text-slate-500 italic text-center py-4">Aucune commande sur cette période.</div>`;
+                if(document.getElementById('impact-volume-count')) document.getElementById('impact-volume-count').innerText = "0";
+                if(document.getElementById('impact-ca-total')) document.getElementById('impact-ca-total').innerText = "0.00 $";
+                if(document.getElementById('wallet-ca-label-top')) document.getElementById('wallet-ca-label-top').innerText = "0.00 $";
+                return;
+            }
+
+            let totalNet = 0;
+            let totalBrutGenere = 0;
+            let cumulNotes = 0;
+            let countNotes = 0;
+
+            container.innerHTML = '';
+            mesLivraisons.forEach(c => {
+                const brut = parseFloat(c.montant_total_usd || c.montant_brut_usd || 0);
+                const com = parseFloat(c.commission_gts_usd || 0);
+                const net = brut - com;
+                totalNet += net;
+                totalBrutGenere += brut;
+
+                if (c.note_client) {
+                    cumulNotes += c.note_client;
+                    countNotes++;
+                }
+
+                const ratingHtml = c.note_client ? `<span class="text-amber-400 font-bold">${'⭐'.repeat(c.note_client)} (${c.note_client}/5)</span>` : '<span class="text-slate-500 text-[10px]">Non notée</span>';
+
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl space-y-1.5 text-xs">
+                        <div class="flex justify-between items-center text-slate-400 font-mono">
+                            <span class="text-indigo-400 font-bold">#${c.id_commande}</span>
+                            <span>${new Date(c.created_at || Date.now()).toLocaleDateString('fr-FR')}</span>
+                        </div>
+                        <p class="text-white font-bold truncate">${c.details_articles || 'Course'}</p>
+                        <div class="flex justify-between items-center text-[11px] pt-1 border-t border-slate-800/60">
+                            <span>Gain Net : <b class="text-emerald-400 font-mono font-bold">${net.toFixed(2)} $</b></span>
+                            <div>${ratingHtml}</div>
+                        </div>
+                        ${c.avis_client ? `<p class="text-[10px] text-slate-400 italic">« ${c.avis_client} »</p>` : ''}
+                    </div>`;
+            });
+
+            if(document.getElementById('impact-volume-count')) document.getElementById('impact-volume-count').innerText = mesLivraisons.length;
+            if(document.getElementById('impact-ca-total')) document.getElementById('impact-ca-total').innerText = totalBrutGenere.toFixed(2) + " $";
+            if(document.getElementById('wallet-ca-label-top')) document.getElementById('wallet-ca-label-top').innerText = totalNet.toFixed(2) + " $";
+            if(document.getElementById('impact-avg-rating')) {
+                const avg = countNotes > 0 ? (cumulNotes / countNotes).toFixed(1) : "5.0";
+                document.getElementById('impact-avg-rating').innerText = `${avg} / 5 (${countNotes} avis)`;
+            }
+        }
+
+        /* 7. SUPPORT TECHNIQUE WHATSAPP */
+        async function ouvrirWhatsAppSupportTechnique() {
+            let numWa = "+243813271112";
+            try {
+                const { data } = await _supabase.from('configuration').select('num_whatsapp').limit(1).single();
+                if(data && data.num_whatsapp) numWa = data.num_whatsapp;
+            } catch(e){}
+            const cleanWa = numWa.replace(/\D/g, '');
+            const msg = encodeURIComponent(`Bonjour l'équipe technique GTS, je suis le partenaire ${monNomEtablissement || ''} (ID: ${monIdentifiantSession || monIdPartenaireSession || ''}). J'ai besoin d'assistance.`);
+            window.open(`https://wa.me/${cleanWa}?text=${msg}`, '_blank');
+        }
+
+        function ouvrirSousPagePartner(id) {
+            document.querySelectorAll('.sub-partner-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById('grid-main-menu-partner').style.display = 'none';
+            document.getElementById(id).classList.remove('hidden');
+            if(id === 'sub-commandes-partner') chargerDerniereCommandeCommune();
+            if(id === 'sub-analyses-partner') chargerAnalysesPartenaire();
+            if(id === 'sub-catalogue-partner') {
+                const inputTaux = document.getElementById('taux');
+                if (inputTaux) inputTaux.value = tauxFrancCongolais;
+                renderCatalogue(false);
+            }
+        }
+
+        function retourAccueilGrillePartner() {
+            document.querySelectorAll('.sub-partner-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById('grid-main-menu-partner').style.display = 'grid';
+        }
+
+        function navPartnerMobile(panelId, btnId) {
+            document.querySelectorAll('#root-partner-view .page-panel').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('footer.partner-footer button').forEach(b => b.classList.remove('active'));
+            if(document.getElementById(btnId)) document.getElementById(btnId).classList.add('active');
+            if(document.getElementById(panelId)) document.getElementById(panelId).classList.remove('hidden');
+            if(panelId === 'page-accueil-partner') retourAccueilGrillePartner();
+        }
+
+        async function renderCatalogue(afficherSucces = false) {
+            const txInput = document.getElementById('taux');
+            const tx = parseFloat(txInput?.value) || tauxFrancCongolais || 2300;
+            
+            tauxFrancCongolais = tx;
+            localStorage.setItem('eyano_taux_change', tx);
+            if (monIdentifiantSession) {
+                localStorage.setItem('eyano_taux_' + monIdentifiantSession, tx);
+                
+                try {
+                    await _supabase.from('partenaires').update({ taux_change: tx }).eq('identifiant', monIdentifiantSession);
+                } catch(e) {}
+            }
+
+            const table = document.getElementById('product-table-rows');
+            if (table) {
+                table.innerHTML = '';
+                stockLocalMarchand.forEach(item => {
+                    table.innerHTML += `<tr>
+                        <td class="font-bold text-white">${item.designation}</td>
+                        <td class="text-right font-mono text-emerald-400 font-bold">${parseFloat(item.prix_usd).toFixed(2)} $</td>
+                        <td class="text-right font-mono text-slate-400">${(parseFloat(item.prix_usd) * tx).toLocaleString()} FC</td>
+                    </tr>`;
+                });
+            }
+            
+            if (afficherSucces) alert(`✅ Taux mémorisé : 1 $ = ${tx} FC`);
+        }
+
+        function ajouterOuMettreAjourArticleCatalogue() {
+            const name = document.getElementById('new-name')?.value.trim();
+            const usd = parseFloat(document.getElementById('new-usd')?.value);
+            if(!name || isNaN(usd)) return;
+            stockLocalMarchand.push({ designation: name, prix_usd: usd });
+            renderCatalogue(false);
+            document.getElementById('new-name').value = '';
+            document.getElementById('new-usd').value = '';
+        }
+
+        function executerImportationCatalogueExcelPartenaire(input) {
+            if (!input.files || !input.files[0]) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const workbook = XLSX.read(new Uint8Array(e.target.result), {type: 'array'});
+                const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+                stockLocalMarchand = json.map(r => ({ designation: r.Designation || r.Article || r.Nom || "Article", prix_usd: parseFloat(r.USD || r.Prix || 0) }));
+                renderCatalogue(false);
+                alert(`✅ ${stockLocalMarchand.length} article(s) importé(s) !`);
+            };
+            reader.readAsArrayBuffer(input.files[0]);
+        }
+
+        async function sauvegarderProfilConfigurationPartenaire() {
+            const respNom = document.getElementById('update-responsable-nom')?.value.trim();
+            const respTel = document.getElementById('update-responsable-tel')?.value.trim();
+            const newId = document.getElementById('update-identifiant')?.value.trim();
+            const newPass = document.getElementById('update-password')?.value.trim();
+            const oldPass = document.getElementById('update-old-password')?.value.trim();
+
+            if(!oldPass || oldPass !== mdpAttenduSession) { alert("Mot de passe actuel incorrect."); return; }
+
+            const payload = { responsable_nom: respNom, telephone: respTel };
+            if(newId) payload.identifiant = newId;
+            if(newPass) payload.mot_de_passe = newPass;
+
+            const pStored = JSON.parse(localStorage.getItem('eyano_partner_session_data') || '{}');
+            const targetUser = monIdentifiantSession || pStored.identifiant;
+
+            const { error } = await _supabase.from('partenaires').update(payload).eq('identifiant', targetUser);
+            if(!error) {
+                alert("✅ Profil mis à jour !");
+                if(payload.mot_de_passe) mdpAttenduSession = payload.mot_de_passe;
+                if(newId) monIdentifiantSession = newId;
+                document.getElementById('update-old-password').value = '';
+                document.getElementById('update-password').value = '';
+            } else {
+                alert("Erreur : " + error.message);
+            }
+        }
+
+        function executerDeconnexionClient() { localStorage.clear(); retourChoixRoleCentral(); }
+        function executerDeconnexionPartenaire() { localStorage.clear(); retourChoixRoleCentral(); }
+
+        /* CGU & GTS MODALES */
+        function fermerModalCgu() { document.getElementById('modal-cgu-view').classList.add('hidden'); }
+        async function ouvrirModalCgu() { 
+            document.getElementById('modal-cgu-view').classList.remove('hidden');
+            const { data } = await _supabase.from('configuration').select('cgu').limit(1).single();
+            document.getElementById('cgu-info-content-body').innerText = data?.cgu || "Conditions Générales d'Utilisation Eyano Market (GTS RDC).";
+        }
+        function fermerModalGtsInfo() { document.getElementById('modal-gts-info').classList.add('hidden'); }
+        async function ouvrirModalGtsInfo() { 
+            document.getElementById('modal-gts-info').classList.remove('hidden');
+            const { data } = await _supabase.from('configuration').select('presentation_gts').limit(1).single();
+            document.getElementById('gts-info-content-body').innerHTML = data?.presentation_gts || "Global Tech Solutions - Kinshasa, RDC.";
+        }
+
+        /* PHARMACIE UTILS */
+        function ajouterMedicamentPanier() {
+            const nom = document.getElementById('input-med-name').value.trim();
+            const dosage = document.getElementById('input-med-dosage')?.value.trim() || '';
+            const format = document.getElementById('select-med-format').value;
+            const qty = document.getElementById('input-med-qty').value;
+            
+            if(!nom) { 
+                alert("Veuillez saisir le nom du médicament."); 
+                return; 
+            }
+            
+            const dosageTexte = dosage ? ` [${dosage}]` : '';
+            medicationList.push(`${qty}x ${nom}${dosageTexte} (${format})`);
+            
+            document.getElementById('input-med-name').value = '';
+            if(document.getElementById('input-med-dosage')) document.getElementById('input-med-dosage').value = '';
+            
+            afficherListeMedicamentsPanier();
+        }
+
+        function retirerMedicamentPanier(idx) {
+            medicationList.splice(idx, 1);
+            afficherListeMedicamentsPanier();
+        }
+
+        function afficherListeMedicamentsPanier() {
+            const container = document.getElementById('medication-list-container');
+            const btnSearch = document.getElementById('btn-search-pharmacies');
+            if(!container) return;
+
+            if(medicationList.length === 0) {
+                container.innerHTML = '';
+                if(btnSearch) btnSearch.disabled = true;
+                return;
+            }
+
+            container.innerHTML = medicationList.map((m, idx) => `
+                <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-gray-200 text-xs shadow-xs">
+                    <span class="font-bold text-gray-800">${m}</span>
+                    <button onclick="retirerMedicamentPanier(${idx})" class="text-red-500 font-bold px-1.5 py-0.5 rounded hover:bg-red-50 text-sm cursor-pointer">✕</button>
+                </div>
+            `).join('');
+            
+            if(btnSearch) btnSearch.disabled = false;
+        }
+
+        function passerAValidationPharmacie() {
+            formattedDetailsArticles = medicationList.join(', ');
+            globalSubtotal = medicationList.length * 4.00;
+            const selCommune = document.getElementById('commune-selector');
+            const deliveryFee = selCommune ? (parseFloat(selCommune.value) || 3.50) : 3.50;
+            document.getElementById('ph-med-subtotal').innerText = globalSubtotal.toFixed(2) + " $";
+            document.getElementById('ph-med-delivery').innerText = deliveryFee.toFixed(2) + " $";
+            document.getElementById('ph-med-total').innerText = (globalSubtotal + deliveryFee).toFixed(2) + " $";
+            document.querySelectorAll('#root-client-view .sub-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('sector-pharmacie-prescription').classList.add('active');
+        }
+
+        function gererFichierOrdonnance(input) {
+            if (input.files && input.files[0]) document.getElementById('upload-success-message').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

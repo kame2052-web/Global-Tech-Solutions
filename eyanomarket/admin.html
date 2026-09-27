@@ -1,0 +1,2386 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTS Admin - Console Configuration Cloud v70.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { 
+            background-color: #f7f3ea; 
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            padding: 0; 
+            margin: 0; 
+            color: #1c1917; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            position: relative; 
+        }
+        
+        /* FILIGRANE LUXE */
+        body::before { 
+            content: ""; 
+            position: fixed; 
+            inset: 0; 
+            width: 100vw; 
+            height: 100vh;
+            background: 
+                radial-gradient(circle at center, rgba(247, 243, 234, 0.4) 0%, #f7f3ea 90%),
+                url('gtslogo.png') center center / cover no-repeat;
+            opacity: 0.04; 
+            z-index: 0; 
+            pointer-events: none; 
+        }
+        
+        main { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; height: calc(100vh - 70px); width: 100vw; padding-bottom: 40px; position: relative; z-index: 10; }
+        header { background: #fffdfa; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e8e1d5; box-shadow: 0 1px 3px rgba(0,0,0,0.02); position: relative; z-index: 20; }
+        .content-body { padding: 15px; box-sizing: border-box; width: 100%; }
+        
+        .auth-overlay { position: fixed; inset: 0; background: #1c1917; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .auth-card { background: #fffdfa; border: 1px solid #e8e1d5; padding: 32px 26px; border-radius: 20px; width: 92%; max-width: 360px; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.15); text-align: center; }
+        
+        .page-panel { display: none; }
+        .page-panel.active { display: block; }
+        
+        .card { background: #fffdfa; border: 1px solid #e8e1d5; border-radius: 16px; padding: 16px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .input-field { width: 100%; padding: 10px 12px; border: 1px solid #d6cbbe; background: #ffffff; color: #1c1917; border-radius: 10px; margin-bottom: 12px; box-sizing: border-box; font-size: 13px; outline: none; transition: border-color 0.2s; }
+        .input-field:focus { border-color: #2563eb; }
+        .select-field { width: 100%; padding: 10px 12px; border: 1px solid #d6cbbe; background: #ffffff; color: #1c1917; border-radius: 10px; margin-bottom: 12px; box-sizing: border-box; font-size: 13px; outline: none; }
+        
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; min-width: 450px; }
+        th, td { padding: 10px; border-bottom: 1px solid #e8e1d5; text-align: left; }
+        th { color: #78716c; text-transform: uppercase; font-size: 9px; background: #f2ece0; font-weight: 700; }
+
+        footer { 
+            height: 70px; 
+            background: #fffdfa; 
+            border-top: 1px solid #e8e1d5; 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center; 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            z-index: 50; 
+            padding-bottom: 5px; 
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.02);
+        }
+
+        footer button { 
+            background: none; 
+            border: none; 
+            color: #78716c; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            flex: 1; 
+            font-size: 11px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: color 0.2s; 
+        }
+
+        footer button.active { color: #2563eb; }
+        footer button span.nav-icon { font-size: 20px; line-height: 1; margin-bottom: 3px; display: block; }
+
+        .grid-icon-card { background: #fffdfa; border: 1px solid #e8e1d5; border-radius: 18px; padding: 18px 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .grid-icon-card:active { background: #f2ece0; border-color: #d6cbbe; transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+    <!-- MODALE DE MODIFICATION D'UNE CAMPAGNE PUB -->
+    <div id="modal-edit-pub-view" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[99999] flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-3xl border border-slate-200 p-5 sm:p-6 w-full max-w-md max-h-[92vh] shadow-2xl flex flex-col justify-between text-left relative overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3 flex-shrink-0">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">📢</span>
+                    <div>
+                        <h3 class="text-sm font-black text-slate-800 uppercase tracking-wide">Modifier la Campagne</h3>
+                        <span class="text-[10px] text-blue-600 font-bold block" id="lbl-edit-pub-id">ID : -</span>
+                    </div>
+                </div>
+                <button onclick="fermerModalModificationPub()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 font-bold text-base flex items-center justify-center transition">✕</button>
+            </div>
+
+            <div class="space-y-3 my-3">
+                <input type="hidden" id="edit-pub-id">
+                <input type="hidden" id="edit-pub-current-image-url">
+
+                <div>
+                    <label class="text-[10px] text-slate-500 font-bold block mb-1">Nom de l'Annonceur *</label>
+                    <input type="text" id="edit-pub-nom-annonceur" class="input-field mb-0">
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-slate-500 font-bold block mb-1">Titre / Message sur la bannière</label>
+                    <input type="text" id="edit-pub-titre" class="input-field mb-0">
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-slate-500 font-bold block mb-1">Lien Web / WhatsApp (URL Cible)</label>
+                    <input type="url" id="edit-pub-lien" class="input-field mb-0">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[10px] text-slate-500 font-bold block mb-1">Date début</label>
+                        <input type="date" id="edit-pub-date-debut" class="input-field mb-0">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-500 font-bold block mb-1">Date fin</label>
+                        <input type="date" id="edit-pub-date-fin" class="input-field mb-0">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-slate-500 font-bold block mb-1">Statut d'affichage</label>
+                    <select id="edit-pub-statut" class="select-field mb-0 font-bold">
+                        <option value="Actif">✅ Actif (Diffusée en direct)</option>
+                        <option value="Masqué">👁️ Masqué (Désactivée)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-slate-500 font-bold block mb-1">Aperçu visuel actuel :</label>
+                    <img id="edit-pub-preview-img" src="" class="w-full h-24 object-contain rounded-xl bg-slate-50 border border-slate-200 mb-2">
+                    <label class="text-[10px] text-amber-600 font-bold block mb-1">Remplacer la bannière (Optionnel) :</label>
+                    <input type="file" id="edit-pub-file-input" accept="image/*" class="input-field bg-slate-50 cursor-pointer mb-0">
+                </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 flex gap-2 flex-shrink-0">
+                <button type="button" onclick="fermerModalModificationPub()" class="w-1/3 bg-slate-100 text-slate-600 font-bold text-xs py-3 rounded-xl hover:bg-slate-200 transition">Annuler</button>
+                <button type="button" id="btn-save-edit-pub" onclick="executerMiseAJourPubliciteAdmin()" class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3 rounded-xl shadow transition">💾 Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="auth-container" class="auth-overlay">
+        <div class="auth-card">
+            <div id="auth-login" class="block">
+                <div class="text-center mb-6">
+                    <img src="logo.png" alt="GTS" class="w-16 h-auto mx-auto mb-2 bg-slate-50 p-2 rounded-2xl border border-slate-100" onerror="this.style.display='none'">
+                    <h2 class="text-blue-600 font-black text-base tracking-wide text-center">GTS CENTRAL MASTER</h2>
+                    <p class="text-[11px] text-slate-400 mb-2 text-center">Console de Contrôle Opérationnel</p>
+                </div>
+                <input type="text" id="admin-auth-user" placeholder="Identifiant Admin" class="input-field text-center" onkeydown="if(event.key === 'Enter') executerAuthentificationAdminGts()">
+                <input type="password" id="admin-auth-pass" placeholder="Mot de passe" class="input-field text-center" onkeydown="if(event.key === 'Enter') executerAuthentificationAdminGts()">
+                <button onclick="executerAuthentificationAdminGts()" class="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 rounded-xl font-black text-xs shadow-md transition mt-2 cursor-pointer">Ouvrir la Console</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP WRAPPER -->
+    <div id="app-layout-wrapper" style="display:none; flex-direction: column; height: 100vh;">
+        <header class="flex justify-between items-center">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-xs font-black text-white shadow-sm">G</div>
+                <div><h2 class="text-xs font-black text-slate-900 leading-none">GTS CENTRAL GROUP</h2><span class="text-[9px] text-slate-400 font-bold block mt-0.5" id="lbl-admin-role-badge">Rôle : Admin</span></div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="executerDeconnexionManuelleAdmin()" class="bg-red-50 text-red-600 border border-red-200 font-bold text-xs px-3 py-1.5 rounded-lg hover:bg-red-100 transition cursor-pointer">✕ Déconnexion</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="content-body">
+                
+                <!-- PAGE ACCUEIL -->
+                <div id="page-accueil" class="page-panel active space-y-4">
+                    <div id="grid-main-menu" class="grid grid-cols-2 gap-3">
+                        <div onclick="ouvrirSousPagePleinEcran('sub-suivi-routing')" class="grid-icon-card"><span class="text-2xl mb-1">🛒</span><span class="text-[11px] font-bold text-slate-700">Suivi &amp; Routage</span></div>
+                        <div onclick="ouvrirSousPagePleinEcran('sub-validation-recharge')" class="grid-icon-card"><span class="text-2xl mb-1">💳</span><span class="text-[11px] font-bold text-slate-700">Guichet Recharges</span></div>
+                        <div onclick="ouvrirSousPagePleinEcran('sub-moderation-commerce')" class="grid-icon-card"><span class="text-2xl mb-1">🏬</span><span class="text-[11px] font-bold text-slate-700">Partenaires</span></div>
+                        <div onclick="ouvrirSousPagePleinEcran('sub-moderation-clients')" class="grid-icon-card"><span class="text-2xl mb-1">👥</span><span class="text-[11px] font-bold text-slate-700">Gestion Clients</span></div>
+                        <div onclick="ouvrirSousPagePleinEcran('sub-avis-clients')" class="grid-icon-card col-span-2 py-3 border border-amber-200 bg-amber-50/60"><span class="text-xl mb-1">⭐</span><span class="text-[11px] font-black text-amber-800">Avis &amp; Retours Clients</span></div>
+                        <div onclick="ouvrirSousPagePleinEcran('sub-gestion-entreprises-pub')" class="grid-icon-card col-span-2 py-3 border border-blue-200 bg-blue-50/50"><span class="text-xl mb-1">📢</span><span class="text-[11px] font-bold text-blue-700">Gestion des Entreprises (Pub)</span></div>
+                        <div onclick="ouvrirSousPagePleinEcran('sub-secteurs-lignes')" class="grid-icon-card col-span-2 py-3 border border-slate-200"><span class="text-xl mb-1">📋</span><span class="text-[11px] font-bold text-slate-800">Secteurs &amp; Paramètres</span></div>
+                    </div>
+                </div>
+
+                <!-- SOUS-PAGE : AVIS & RETOURS CLIENTS -->
+                <div id="sub-avis-clients" class="hidden space-y-3">
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                        <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs cursor-pointer" onclick="retourAccueilGrille()"><span>← Retour à la console</span></div>
+                        <button onclick="chargerAvisClientsAdmin()" class="text-[10px] bg-white border border-slate-300 text-amber-600 px-3 py-1.5 rounded-lg font-bold hover:bg-slate-50 transition shadow-sm">🔄 Rafraîchir</button>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="bg-white border border-slate-200 p-3 rounded-xl text-center shadow-sm">
+                            <span class="text-[8px] text-slate-400 font-bold block uppercase">⭐ Note Moyenne</span>
+                            <h1 id="admin-avg-rating-lbl" class="text-sm font-black text-amber-600 font-mono mt-0.5">5.0 / 5</h1>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-3 rounded-xl text-center shadow-sm">
+                            <span class="text-[8px] text-slate-400 font-bold block uppercase">💬 Total Avis</span>
+                            <h1 id="admin-total-reviews-lbl" class="text-sm font-black text-slate-800 font-mono mt-0.5">0</h1>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-3 rounded-xl text-center shadow-sm">
+                            <span class="text-[8px] text-slate-400 font-bold block uppercase">🏆 Top 5 Étoiles</span>
+                            <h1 id="admin-5star-reviews-lbl" class="text-sm font-black text-emerald-600 font-mono mt-0.5">0</h1>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="filter-review-rating" onchange="filtrerAvisClientsAdmin()" class="select-field mb-0 text-xs font-bold">
+                            <option value="Tous">Toutes les notes (1 à 5)</option>
+                            <option value="5">⭐⭐⭐⭐⭐ (5 étoiles)</option>
+                            <option value="4">⭐⭐⭐⭐ (4 étoiles)</option>
+                            <option value="3">⭐⭐⭐ (3 étoiles)</option>
+                            <option value="2">⭐⭐ (2 étoiles)</option>
+                            <option value="1">⭐ (1 étoile)</option>
+                        </select>
+                        <select id="filter-review-sector" onchange="filtrerAvisClientsAdmin()" class="select-field mb-0 text-xs font-bold">
+                            <option value="Tous">Tous les secteurs</option>
+                            <option value="Gaz Domestique">🔥 Gaz</option>
+                            <option value="Pharmacie">💊 Pharmacie</option>
+                            <option value="Eau">💧 Eau</option>
+                            <option value="Chambre Froide">🥩 Chambre Froide</option>
+                        </select>
+                    </div>
+
+                    <div class="relative">
+                        <input type="text" id="search-review-text" oninput="filtrerAvisClientsAdmin()" placeholder="🔍 Rechercher dans les avis..." class="input-field mb-0">
+                    </div>
+
+                    <div id="container-admin-reviews-list" class="space-y-2.5 max-h-[58vh] overflow-y-auto"></div>
+                </div>
+
+                <!-- SOUS-PAGE : ENTREPRISES PUB -->
+                <div id="sub-gestion-entreprises-pub" class="hidden space-y-3">
+                    <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilGrille()"><span>← Retour à la console</span></div>
+                    
+                    <div id="pub-grid-icons" class="grid grid-cols-2 gap-3">
+                        <div onclick="afficherSousModulePub('pub-form-creer')" class="grid-icon-card py-6 border border-emerald-200 bg-emerald-50/50">
+                            <span class="text-3xl mb-1">➕</span>
+                            <span class="text-xs font-black text-emerald-800">Créer une Campagne</span>
+                        </div>
+                        <div onclick="afficherSousModulePub('pub-liste-ancnes')" class="grid-icon-card py-6 border border-amber-200 bg-amber-50/50">
+                            <span class="text-3xl mb-1">📢</span>
+                            <span class="text-xs font-black text-amber-800">Annonces & Bannières</span>
+                        </div>
+                    </div>
+
+                    <div id="pub-form-creer" class="hidden card p-4 space-y-3">
+                        <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-100 cursor-pointer" onclick="retourMenuPubIcones()">← Retour aux options pub</div>
+                        <h3 class="text-xs font-black text-emerald-700 uppercase tracking-wide">➕ Créer une nouvelle Campagne Publicitaire</h3>
+                        
+                        <div>
+                            <label class="text-[10px] text-slate-500 font-bold block mb-1">Nom de l'Annonceur *</label>
+                            <input type="text" id="pub-nom-annonceur" placeholder="Ex: Clean'App Kinshasa" class="input-field mb-0">
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] text-slate-500 font-bold block mb-1">Titre / Commentaire affiché sur la bannière</label>
+                            <input type="text" id="pub-titre" placeholder="Ex: Entretien et nettoyage à domicile" class="input-field mb-0">
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] text-slate-500 font-bold block mb-1">Lien Web / WhatsApp au clic (Optionnel)</label>
+                            <input type="url" id="pub-lien" placeholder="https://..." class="input-field mb-0">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold block mb-1">Date début</label>
+                                <input type="date" id="pub-date-debut" class="input-field mb-0">
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold block mb-1">Date fin</label>
+                                <input type="date" id="pub-date-fin" class="input-field mb-0">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] text-slate-500 font-bold block mb-1">Bannière Publicitaire (Image PNG/JPG) *</label>
+                            <input type="file" id="pub-file-input" accept="image/*" class="input-field bg-slate-50 cursor-pointer mb-0">
+                        </div>
+
+                        <button id="btn-publier-campagne" onclick="executerAjoutPubliciteAdmin()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3.5 rounded-xl shadow transition mt-2 cursor-pointer flex items-center justify-center space-x-2">
+                            <span>🚀 Publier la Campagne</span>
+                        </button>
+                    </div>
+
+                    <div id="pub-liste-ancnes" class="hidden space-y-3">
+                        <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-100 cursor-pointer" onclick="retourMenuPubIcones()">← Retour aux options pub</div>
+                        
+                        <div class="relative">
+                            <input type="text" id="search-pub-partner-input" oninput="filtrerCampagnesPublicitairesAdmin()" placeholder="🔍 Rechercher un partenaire ou titre..." class="input-field mb-0">
+                        </div>
+
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-slate-700 text-[10px] font-black uppercase tracking-wider">Annonces &amp; Bannières Partenaires</span>
+                            <button onclick="chargerCampagnesPublicitairesAdmin()" class="text-[10px] bg-white border border-slate-300 text-slate-700 px-2 py-1 rounded shadow-sm">🔄 Rafraîchir</button>
+                        </div>
+                        <div id="pub-companies-container" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- ROUTAGE HARMONISÉ -->
+                <div id="sub-suivi-routing" class="hidden space-y-3">
+                    <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilGrille()"><span>← Retour à la console</span></div>
+                    <span class="text-blue-600 text-[10px] font-black uppercase block tracking-wider">Filtre d'exploitation par secteur</span>
+                    <select id="filter-routing-secteur" onchange="chargerCommandesPourRoutage()" class="select-field">
+                        <option value="Gaz Domestique">🔥 Gaz Domestique</option>
+                        <option value="Pharmacie">💊 Pharmacie &amp; Santé</option>
+                        <option value="Eau">💧 Eau en Gros</option>
+                        <option value="Chambre Froide">🥩 Chambre Froide</option>
+                    </select>
+                    <div class="table-responsive border border-slate-200 rounded-xl bg-white shadow-sm">
+                        <table class="w-full text-xs">
+                            <thead>
+                                <tr>
+                                    <th>Zone &amp; Repères</th>
+                                    <th>Contenu Commande</th>
+                                    <th>Finances</th>
+                                    <th>Assignation Marchand</th>
+                                </tr>
+                            </thead>
+                            <tbody id="routing-orders-rows"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- GUICHET RECHARGES -->
+                <div id="sub-validation-recharge" class="hidden space-y-4">
+                    <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilGrille()"><span>← Retour à la console</span></div>
+                    <div class="card p-4 space-y-3">
+                        <div class="relative">
+                            <input type="text" id="search-commerce-name" placeholder="Nom du commerce ou identifiant..." class="input-field pr-10 mb-0">
+                            <span class="absolute right-3 top-3 text-sm cursor-pointer" onclick="rechercheRapideCommerceMarchand()">🔍</span>
+                        </div>
+                        
+                        <div id="box-marchand-resultat" class="hidden text-xs p-3 bg-slate-50 rounded-xl border border-slate-200 text-slate-700 font-mono"></div>
+                        
+                        <div>
+                            <label class="text-[10px] text-slate-600 font-black uppercase tracking-wider block mb-1">Sélectionner le Forfait / Plan *</label>
+                            <select id="recharge-forfait-select" onchange="ajusterMontantSuggereParForfait(this.value)" class="select-field mb-0 font-bold">
+                                <option value="commission">💼 Mode Commission (Recharge libre du solde)</option>
+                                <option value="journalier">🎟️ Pass Journalier (1 jour - aujourd'hui jusqu'à 23h59)</option>
+                                <option value="multijours">⏱️ Pass Temporaire Personnalisé (Définir le nombre de jours)</option>
+                                <option value="mensuel">📅 Pass Mensuel VIP (Abonnement 30 Jours 0% com)</option>
+                            </select>
+                        </div>
+
+                        <!-- BLOC DÉFINITION DU NOMBRE DE JOURS (Visible pour les pass journaliers et multi-jours) -->
+                        <div id="box-nb-jours-recharge" class="hidden bg-blue-50/70 border border-blue-200 p-3 rounded-xl space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="text-[10px] text-blue-900 font-black uppercase tracking-wider">Durée payée en jours :</label>
+                                <span class="text-[10px] text-blue-700 font-bold font-mono" id="lbl-calcul-prix-jours">Suggéré : 2.00 $</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="number" min="1" max="365" id="recharge-nb-jours-input" value="1" oninput="ajusterMontantPassMultiJours(this.value)" class="w-20 p-2 bg-white border border-blue-300 rounded-lg text-slate-900 font-mono text-center font-bold text-xs outline-none">
+                                <span class="text-xs text-slate-700 font-bold">jour(s) de couverture</span>
+                            </div>
+                            <p class="text-[9px] text-blue-600">Accès illimité aux commandes (0% de commission) pendant toute la période définie.</p>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] text-slate-500 font-bold block mb-1">Montant crédité ($) *</label>
+                            <input type="number" step="0.01" id="recharge-amount-input" placeholder="Montant en USD" class="input-field mb-0">
+                        </div>
+
+                        <button onclick="confirmerReceptionRechargeAdmin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3.5 rounded-xl shadow transition cursor-pointer">💳 Confirmer la recharge &amp; Appliquer le forfait</button>
+                    </div>
+                </div>
+
+                <!-- PARTENAIRES & MODÉRATION -->
+                <div id="sub-moderation-commerce" class="hidden space-y-3">
+                    <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilGrille()"><span>← Retour à l'accueil</span></div>
+                    <button onclick="declencherCollecteMasseAbonnementsPublicite()" class="w-full bg-gradient-to-r from-amber-600 to-red-600 text-white font-black text-xs py-2.5 rounded-xl shadow mb-2 cursor-pointer">💸 Forcer la collecte visibilité globale ($1)</button>
+                    
+                    <div class="relative">
+                        <input type="text" 
+                               id="search-partner-moderation-input" 
+                               oninput="filtrerPartenairesModerationAdmin()" 
+                               placeholder="🔍 Rechercher par Nom, ID, Responsable, Tel, Commune..." 
+                               class="input-field">
+                    </div>
+
+                    <div class="flex justify-between items-center gap-2">
+                        <select id="filter-moderation-secteur" onchange="chargerPartenairesPourModeration()" class="select-field mb-0 flex-1">
+                            <option value="Tous">Tous les secteurs d'activité</option>
+                            <option value="Pharmacie">💊 Pharmacie</option>
+                            <option value="Gaz Domestique">🔥 Gaz Domestique</option>
+                            <option value="Eau">💧 Eau en Gros</option>
+                            <option value="Chambre Froide">🥩 Chambre Froide</option>
+                        </select>
+                        <span id="lbl-count-partenaires-trouves" class="text-[10px] text-slate-600 font-bold whitespace-nowrap bg-white px-3 py-2.5 rounded-lg border border-slate-200 shadow-sm">...</span>
+                    </div>
+
+                    <div id="moderation-container-cards" class="space-y-3"></div>
+                </div>
+
+                <!-- GESTION CLIENTS -->
+                <div id="sub-moderation-clients" class="hidden space-y-3">
+                    <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilGrille()"><span>← Retour à l'accueil</span></div>
+                    <div class="relative">
+                        <input type="text" id="search-client-input" oninput="filtrerRepertoireClientsAdmin()" placeholder="🔍 Rechercher un client par nom ou téléphone..." class="input-field">
+                    </div>
+                    <div class="table-responsive border border-slate-200 rounded-xl bg-white shadow-sm">
+                        <table class="w-full text-xs">
+                            <thead>
+                                <tr>
+                                    <th>Nom Client</th>
+                                    <th>Téléphone</th>
+                                    <th>Dernière Localisation</th>
+                                    <th>Volume Cmds</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-table-clients-rows"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SECTEURS & PARAMÈTRES (GRILLE 3 LIGNES DE 2 ICÔNES & AFFICHAGE EXCLUSIF) -->
+                <div id="sub-secteurs-lignes" class="hidden space-y-4">
+                    <div class="flex items-center space-x-2 text-stone-600 font-bold text-xs pb-2 border-b border-[#e8e1d5] cursor-pointer" onclick="retourAccueilGrille()"><span>← Retour à la console</span></div>
+                    
+                    <!-- MENU PRINCIPAL DES PARAMÈTRES : 3 LIGNES (2 ICÔNES PAR LIGNE) -->
+                    <div id="menu-grid-secteurs" class="grid grid-cols-2 gap-3">
+                        
+                        <!-- LIGNE 1 - ICÔNE 1 : CONFIGURATION DES TARIFS RÉSEAU -->
+                        <div onclick="ouvrirSecteurSubFenetre('pane-tarifs-reseau')" class="grid-icon-card p-4 border border-[#e8e1d5] bg-[#fffdfa] hover:bg-[#f5efe3] rounded-2xl cursor-pointer transition shadow-xs flex flex-col items-center justify-center text-center">
+                            <span class="text-2xl mb-1.5 p-2.5 bg-blue-50 border border-blue-100 rounded-xl text-blue-600">⚙️</span>
+                            <span class="text-xs font-black text-stone-800 block">Tarifs Réseau</span>
+                            <span class="text-[10px] text-stone-500 mt-0.5">Commissions &amp; Pass</span>
+                        </div>
+
+                        <!-- LIGNE 1 - ICÔNE 2 : GESTION DES SECTEURS -->
+                        <div onclick="ouvrirSecteurSubFenetre('pane-secteurs-ouverts')" class="grid-icon-card p-4 border border-[#e8e1d5] bg-[#fffdfa] hover:bg-[#f5efe3] rounded-2xl cursor-pointer transition shadow-xs flex flex-col items-center justify-center text-center">
+                            <span class="text-2xl mb-1.5 p-2.5 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-600">🛠️</span>
+                            <span class="text-xs font-black text-stone-800 block">Gestion Secteurs</span>
+                            <span class="text-[10px] text-stone-500 mt-0.5">Activer / désactiver</span>
+                        </div>
+
+                        <!-- LIGNE 2 - ICÔNE 1 : NUMÉROS MOBILE MONEY & ROUTAGE -->
+                        <div onclick="ouvrirSecteurSubFenetre('pane-momo-lecture')" class="grid-icon-card p-4 border border-[#e8e1d5] bg-[#fffdfa] hover:bg-[#f5efe3] rounded-2xl cursor-pointer transition shadow-xs flex flex-col items-center justify-center text-center">
+                            <span class="text-2xl mb-1.5 p-2.5 bg-indigo-50 border border-indigo-100 rounded-xl text-indigo-600">📱</span>
+                            <span class="text-xs font-black text-stone-800 block">Réception &amp; Routage</span>
+                            <span class="text-[10px] text-stone-500 mt-0.5">Mobile Money &amp; WA</span>
+                        </div>
+
+                        <!-- LIGNE 2 - ICÔNE 2 : FRAIS DE LIVRAISON PAR COMMUNE -->
+                        <div onclick="ouvrirSecteurSubFenetre('pane-frais-livraison')" class="grid-icon-card p-4 border border-[#e8e1d5] bg-[#fffdfa] hover:bg-[#f5efe3] rounded-2xl cursor-pointer transition shadow-xs flex flex-col items-center justify-center text-center">
+                            <span class="text-2xl mb-1.5 p-2.5 bg-amber-50 border border-amber-100 rounded-xl text-amber-600">📍</span>
+                            <span class="text-xs font-black text-stone-800 block">Frais Communes</span>
+                            <span class="text-[10px] text-stone-500 mt-0.5">Grille Kinshasa</span>
+                        </div>
+
+                        <!-- LIGNE 3 - ICÔNE 1 : PRÉSENTATION GTS -->
+                        <div onclick="ouvrirSecteurSubFenetre('pane-presentation-gts')" class="grid-icon-card p-4 border border-[#e8e1d5] bg-[#fffdfa] hover:bg-[#f5efe3] rounded-2xl cursor-pointer transition shadow-xs flex flex-col items-center justify-center text-center">
+                            <span class="text-2xl mb-1.5 p-2.5 bg-cyan-50 border border-cyan-100 rounded-xl text-cyan-600">ℹ️</span>
+                            <span class="text-xs font-black text-stone-800 block">Présentation GTS</span>
+                            <span class="text-[10px] text-stone-500 mt-0.5">À propos officiel</span>
+                        </div>
+
+                        <!-- LIGNE 3 - ICÔNE 2 : CONDITIONS GÉNÉRALES D'UTILISATION (CGU) -->
+                        <div onclick="ouvrirSecteurSubFenetre('pane-cgu-eyano')" class="grid-icon-card p-4 border border-[#e8e1d5] bg-[#fffdfa] hover:bg-[#f5efe3] rounded-2xl cursor-pointer transition shadow-xs flex flex-col items-center justify-center text-center">
+                            <span class="text-2xl mb-1.5 p-2.5 bg-rose-50 border border-rose-100 rounded-xl text-rose-600">📜</span>
+                            <span class="text-xs font-black text-stone-800 block">CGU Eyano</span>
+                            <span class="text-[10px] text-stone-500 mt-0.5">Termes &amp; Conditions</span>
+                        </div>
+
+                    </div>
+
+                    <!-- FENÊTRES DE DÉTAILS EXCLUSIVES AVEC BOUTON RETOUR AUX OPTIONS -->
+                    
+                    <!-- PANE 1 : TARIFS RÉSEAU -->
+                    <div id="pane-tarifs-reseau" class="hidden card p-5 space-y-4">
+                        <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-100 cursor-pointer" onclick="backToSecteursMenu()">
+                            <span>← Retour aux options</span>
+                        </div>
+                        <span class="text-xs font-black text-blue-700 uppercase tracking-wider block">⚙️ Configuration des Tarifs Réseau &amp; Pass Partenaires</span>
+                        
+                        <div class="space-y-2.5 text-xs">
+                            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+                                <span class="text-slate-700 font-bold">Commission par commande (%) :</span>
+                                <input type="number" id="global-commission-input" value="5" step="0.5" class="w-24 p-2 bg-white border border-slate-300 rounded-lg text-slate-900 font-mono text-center font-bold outline-none">
+                            </div>
+                            
+                            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+                                <span class="text-emerald-700 font-bold">Prix Pass Journalier ($) :</span>
+                                <input type="number" id="global-pass-journalier-input" value="2.00" step="0.5" class="w-24 p-2 bg-white border border-slate-300 rounded-lg text-slate-900 font-mono text-center font-bold outline-none">
+                            </div>
+
+                            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+                                <span class="text-amber-700 font-bold">Prix Pass Mensuel VIP ($) :</span>
+                                <input type="number" id="global-pass-mensuel-input" value="35.00" step="1.0" class="w-24 p-2 bg-white border border-slate-300 rounded-lg text-slate-900 font-mono text-center font-bold outline-none">
+                            </div>
+                        </div>
+
+                        <button onclick="sauvegarderTarificationGlobaleCloud()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3 rounded-xl shadow transition cursor-pointer">
+                            💾 Enregistrer les Tarifs
+                        </button>
+                    </div>
+
+                    <!-- PANE 2 : GESTION DES SECTEURS -->
+                    <div id="pane-secteurs-ouverts" class="hidden card p-5 space-y-4">
+                        <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-100 cursor-pointer" onclick="backToSecteursMenu()">
+                            <span>← Retour aux options</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                            <div>
+                                <span class="text-emerald-700 text-xs font-black uppercase block tracking-wider">🛠️ Gestion des Secteurs d'Activité</span>
+                                <span class="text-[10px] text-slate-500">Activez ou désactivez les secteurs ouverts aux commandes en temps réel</span>
+                            </div>
+                        </div>
+                        <div id="container-admin-secteurs-toggles" class="space-y-2.5 pt-1"></div>
+                    </div>
+
+                    <!-- PANE 3 : NUMÉROS DE RÉCEPTION (VERROUILLÉS EN CONSULTATION) -->
+                    <div id="pane-momo-lecture" class="hidden card p-5 space-y-4">
+                        <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-100 cursor-pointer" onclick="backToSecteursMenu()">
+                            <span>← Retour aux options</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-blue-700 text-xs font-black uppercase block tracking-wider">📱 Coordonnées Mobile Money Officielles GTS</span>
+                            <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-200">🔒 Lecture Seule</span>
+                        </div>
+
+                        <div class="p-3 bg-amber-50/80 border border-amber-200 rounded-xl text-[11px] text-amber-900 space-y-1">
+                            <span class="font-black block">🔒 Modification restreinte :</span>
+                            <p>Ces numéros sont uniquement en consultation ici. Pour modifier les numéros officiels de réception ou de WhatsApp support, rendez-vous dans l'onglet <b>Sécurité</b> (Clé Master Direction requise).</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold block mb-1">WhatsApp Officiel Support :</label>
+                                <input type="text" id="quick-edit-wa" placeholder="Ex: +243813271112" class="input-field mb-0 font-mono font-bold bg-[#f5efe3] text-stone-700 cursor-not-allowed select-none" readonly>
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold block mb-1">Numéro Vodacom M-Pesa :</label>
+                                <input type="text" id="quick-edit-mpesa" placeholder="Ex: +24381..." class="input-field mb-0 font-mono font-bold bg-[#f5efe3] text-stone-700 cursor-not-allowed select-none" readonly>
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold block mb-1">Numéro Orange Money :</label>
+                                <input type="text" id="quick-edit-orange" placeholder="Ex: +24389..." class="input-field mb-0 font-mono font-bold bg-[#f5efe3] text-stone-700 cursor-not-allowed select-none" readonly>
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold block mb-1">Numéro Airtel Money :</label>
+                                <input type="text" id="quick-edit-airtel" placeholder="Ex: +24399..." class="input-field mb-0 font-mono font-bold bg-[#f5efe3] text-stone-700 cursor-not-allowed select-none" readonly>
+                            </div>
+                            <button type="button" onclick="navAdminMobile('page-securite-master', 'btn-nav-sec')" class="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-black text-xs py-3 rounded-xl shadow-xs transition mt-2 cursor-pointer flex items-center justify-center space-x-2">
+                                <span>🔐 Déverrouiller et modifier via l'onglet Sécurité</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PANE 4 : FRAIS DE LIVRAISON -->
+                    <div id="pane-frais-livraison" class="hidden card p-5 space-y-4">
+                        <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-100 cursor-pointer" onclick="backToSecteursMenu()">
+                            <span>← Retour aux options</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-blue-700 text-xs font-black uppercase tracking-wider">📍 Grille Tarifaire Livraison Kinshasa</span>
+                            <button onclick="sauvegarderGrilleFraisLivraisonCloud()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] px-3 py-1.5 rounded-lg shadow cursor-pointer">💾 Enregistrer</button>
+                        </div>
+                        <div class="table-responsive max-h-72 overflow-y-auto border border-slate-200 rounded-xl bg-white shadow-inner">
+                            <table class="w-full text-xs">
+                                <thead><tr class="bg-slate-100 text-slate-600 text-[9px]"><th>Commune</th><th class="text-right">Frais ($)</th></tr></thead>
+                                <tbody id="read-shipping-communes-rows"></tbody>
+                            </table>
+                        </div>
+                        <button onclick="sauvegarderGrilleFraisLivraisonCloud()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3 rounded-xl shadow transition cursor-pointer">💾 Enregistrer les Frais de Livraison</button>
+                    </div>
+
+                    <!-- PANE 5 : PRÉSENTATION GTS -->
+                    <div id="pane-presentation-gts" class="hidden card p-5 space-y-4">
+                        <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-100 cursor-pointer" onclick="backToSecteursMenu()">
+                            <span>← Retour aux options</span>
+                        </div>
+                        <span class="text-blue-700 text-xs font-black uppercase block">ℹ️ Message de Présentation GTS (Espace Client)</span>
+                        <p class="text-[11px] text-slate-500">Ce message sera affiché aux clients lorsqu'ils cliqueront sur l'icône d'information "À propos de GTS".</p>
+                        <textarea id="edit-gts-presentation-text" rows="8" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 outline-none focus:border-blue-500 font-medium leading-relaxed" placeholder="Saisissez la présentation officielle de Global Tech Solutions (GTS)..."></textarea>
+                        <button onclick="sauvegarderMessagePresentationGts()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3 rounded-xl shadow transition cursor-pointer">💾 Enregistrer la Présentation</button>
+                    </div>
+
+                    <!-- PANE 6 : CGU EYANO -->
+                    <div id="pane-cgu-eyano" class="hidden card p-5 space-y-4 border-emerald-200">
+                        <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-100 cursor-pointer" onclick="backToSecteursMenu()">
+                            <span>← Retour aux options</span>
+                        </div>
+                        <span class="text-emerald-700 text-xs font-black uppercase block">📜 Conditions Générales d'Utilisation (CGU - RDC)</span>
+                        <p class="text-[11px] text-slate-500">Modifiez les termes officiels applicables aux clients et aux partenaires. Ce texte est synchronisé en temps réel sur l'application.</p>
+                        <textarea id="edit-eyano-cgu-text" rows="14" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 outline-none focus:border-emerald-500 font-mono leading-relaxed" placeholder="Chargement ou saisie des CGU..."></textarea>
+                        <button onclick="sauvegarderCguEyanoAdmin()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3 rounded-xl shadow transition cursor-pointer">💾 Publier &amp; Mettre à jour les CGU</button>
+                    </div>
+
+                </div>
+
+                <!-- SÉCURITÉ MASTER -->
+                <div id="page-securite-master" class="page-panel space-y-4">
+                    <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilDepuisOngletFonds()"><span>← Retour à l'accueil</span></div>
+                    
+                    <div id="master-lock-box" class="card p-6 space-y-3 border-red-200 bg-red-50/40 relative z-10 text-center">
+                        <span class="text-red-700 text-xs font-black uppercase block tracking-wider">🔐 Authentification Souveraine Requise (Chefs)</span>
+                        <input type="password" 
+                               id="master-gate-password" 
+                               placeholder="Saisir la clé Master Direction..." 
+                               autocomplete="current-password"
+                               class="input-field text-center mb-2"
+                               onkeydown="if(event.key === 'Enter') deverrouillerConsoleSouveraineMaster()">
+                        <button onclick="deverrouillerConsoleSouveraineMaster()" 
+                                class="w-full bg-red-600 hover:bg-red-700 text-white font-black text-xs py-3 rounded-xl shadow transition cursor-pointer">
+                            Valider les accès
+                        </button>
+                    </div>
+
+                    <div id="master-unlocked-core" class="hidden space-y-4">
+                        <div id="master-grid-icons" class="grid grid-cols-2 gap-2">
+                            <div onclick="ouvrirSouverainSubModulePleinEcran('gov-commissions')" class="p-5 bg-white border border-slate-200 rounded-2xl text-center cursor-pointer text-xs font-bold text-slate-800 shadow-sm">💰 Commissions GTS</div>
+                            <div onclick="ouvrirSouverainSubModulePleinEcran('gov-routage-numeros')" class="p-5 bg-white border border-slate-200 rounded-2xl text-center cursor-pointer text-xs font-bold text-slate-800 shadow-sm">📱 Routage Numéros</div>
+                            <div onclick="ouvrirSouverainSubModulePleinEcran('gov-frais-communes')" class="p-5 bg-white border border-slate-200 rounded-2xl text-center cursor-pointer text-xs font-bold text-slate-800 shadow-sm">📍 Frais Communes</div>
+                            <div onclick="ouvrirSouverainSubModulePleinEcran('gov-chiffrement-profils')" class="p-5 bg-white border border-slate-200 rounded-2xl text-center cursor-pointer text-xs font-bold text-slate-800 shadow-sm">🔑 Chiffrement Clés</div>
+                        </div>
+
+                        <div id="gov-commissions" class="hidden space-y-3">
+                            <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-200 cursor-pointer" onclick="retourAuxIconesSecurite()">← Retour aux icônes</div>
+                            <div class="card p-4 space-y-3">
+                                <span class="text-amber-800 text-xs font-black uppercase block tracking-wider">💰 Commissions GTS Totales : <span id="lbl-master-cumul-com" class="font-mono text-emerald-600 font-extrabold text-sm ml-1">0.00 $</span></span>
+                                
+                                <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl space-y-2">
+                                    <span class="text-[9px] text-slate-600 font-bold uppercase tracking-wider block">📅 Filtrer les Commissions par Période</span>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="text-[8px] text-slate-500 font-bold block mb-0.5">Du :</label>
+                                            <input type="date" id="gov-com-date-start" onchange="filtrerCommissionsGtsParDate()" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-1.5 text-xs font-bold outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="text-[8px] text-slate-500 font-bold block mb-0.5">Au :</label>
+                                            <input type="date" id="gov-com-date-end" onchange="filtrerCommissionsGtsParDate()" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-1.5 text-xs font-bold outline-none">
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="reinitialiserFiltresDatesCommissionsGts()" class="w-full bg-white hover:bg-slate-100 text-slate-600 font-bold text-[10px] py-1.5 rounded-lg border border-slate-200 cursor-pointer transition">Tout afficher (Cumul Global)</button>
+                                </div>
+
+                                <div class="table-responsive border border-slate-200 rounded-xl overflow-hidden bg-white my-2">
+                                    <table class="w-full text-xs">
+                                        <thead>
+                                            <tr>
+                                                <th class="py-2.5 px-3">Secteur d'activité</th>
+                                                <th class="text-right py-2.5 px-3">Cumul Perçu ($)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="font-mono text-xs">
+                                            <tr>
+                                                <td class="py-2.5 px-3 font-semibold text-slate-700">💊 Pharmacie &amp; Santé</td>
+                                                <td id="sec-com-pharmacie" class="text-right py-2.5 px-3 text-emerald-600 font-bold">0.00 $</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2.5 px-3 font-semibold text-slate-700">🔥 Gaz Domestique</td>
+                                                <td id="sec-com-gaz" class="text-right py-2.5 px-3 text-emerald-600 font-bold">0.00 $</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2.5 px-3 font-semibold text-slate-700">💧 Eau en Gros</td>
+                                                <td id="sec-com-eau" class="text-right py-2.5 px-3 text-emerald-600 font-bold">0.00 $</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2.5 px-3 font-semibold text-slate-700">🥩 Chambre Froide</td>
+                                                <td id="sec-com-froide" class="text-right py-2.5 px-3 text-emerald-600 font-bold">0.00 $</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <input type="number" id="decaissement-amount" placeholder="Montant à décaisser ($)" class="input-field">
+                                <select id="decaissement-reseau" class="select-field">
+                                    <option value="M-Pesa">📱 Vodacom M-Pesa</option>
+                                    <option value="Orange Money">🍊 Orange Money</option>
+                                    <option value="Airtel Money">❤️ Airtel Money</option>
+                                </select>
+                                <input type="text" id="decaissement-cible-num" placeholder="Numéro bénéficiaire (Ex: 81XXXXXXX)..." class="input-field">
+                                <button onclick="alert('✓ Virement GTS exécuté vers le Mobile Money.')" class="w-full bg-amber-600 text-white font-bold text-xs py-2.5 rounded-xl cursor-pointer">Exécuter le virement</button>
+                            </div>
+                        </div>
+
+                        <div id="gov-routage-numeros" class="hidden space-y-3">
+                            <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-200 cursor-pointer" onclick="retourAuxIconesSecurite()">← Retour aux icônes</div>
+                            <div class="card p-4 space-y-2">
+                                <input type="text" id="edit-wa" placeholder="Nouveau WhatsApp Admin" class="input-field">
+                                <input type="text" id="edit-mpesa" placeholder="Nouveau M-Pesa" class="input-field">
+                                <input type="text" id="edit-orange" placeholder="Nouveau Orange" class="input-field">
+                                <input type="text" id="edit-airtel" placeholder="Nouveau Airtel" class="input-field">
+                                <button onclick="sauvegarderModificationNumerosOfficielsSouverains()" class="w-full bg-blue-600 text-white font-bold text-xs py-3 rounded-xl cursor-pointer">💾 Mettre à jour les Numéros</button>
+                            </div>
+                        </div>
+
+                        <div id="gov-frais-communes" class="hidden space-y-3">
+                            <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-200 cursor-pointer" onclick="retourAuxIconesSecurite()">← Retour aux icônes</div>
+                            <div class="card p-4 space-y-2">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold text-slate-700">Modifier Frais ($)</span>
+                                    <button onclick="sauvegarderGrilleFraisLivraisonCloud()" class="bg-emerald-600 text-white font-bold text-[10px] px-3 py-1 rounded cursor-pointer">Enregistrer</button>
+                                </div>
+                                <div class="table-responsive max-h-64 overflow-y-auto border border-slate-200 rounded-xl bg-white">
+                                    <table class="w-full text-xs">
+                                        <thead><tr class="bg-slate-100 text-slate-600 text-[9px]"><th>Commune</th><th>Tarif ($)</th></tr></thead>
+                                        <tbody id="master-editable-communes-rows"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="gov-chiffrement-profils" class="hidden space-y-4">
+                            <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-200 cursor-pointer" onclick="retourAuxIconesSecurite()">← Retour aux icônes</div>
+                            
+                            <div id="key-profile-grid-icons" class="space-y-2.5">
+                                <div onclick="ouvrirCleSubPanePleinEcran('subpane-banque-questions')" class="flex items-center justify-between p-3.5 bg-white hover:bg-slate-50 border border-indigo-100 rounded-2xl cursor-pointer transition shadow-sm">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="text-lg bg-indigo-50 p-2.5 rounded-xl border border-indigo-100 text-indigo-600">🛠️</span>
+                                        <div>
+                                            <span class="text-xs font-black text-slate-800 block">Banque des Questions Secrètes</span>
+                                            <span class="text-[10px] text-slate-500">Gérer le catalogue des questions de sécurité</span>
+                                        </div>
+                                    </div>
+                                    <span class="text-indigo-600 font-black text-xs">→</span>
+                                </div>
+
+                                <div onclick="ouvrirCleSubPanePleinEcran('subpane-acces-systeme')" class="flex items-center justify-between p-3.5 bg-white hover:bg-slate-50 border border-indigo-100 rounded-2xl cursor-pointer transition shadow-sm">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="text-lg bg-indigo-50 p-2.5 rounded-xl border border-indigo-100 text-indigo-600">🔑</span>
+                                        <div>
+                                            <span class="text-xs font-black text-slate-800 block">Accès Système Admin &amp; Clés Master</span>
+                                            <span class="text-[10px] text-slate-500">Gestion des rôles et identifiants de la direction</span>
+                                        </div>
+                                    </div>
+                                    <span class="text-indigo-600 font-black text-xs">→</span>
+                                </div>
+                            </div>
+
+                            <div id="subpane-banque-questions" class="hidden card p-4 space-y-3">
+                                <div class="text-slate-500 text-xs font-bold pb-1 cursor-pointer" onclick="backToKeysMainMenu()">← Retour à la liste</div>
+                                <span class="text-blue-700 text-[10px] font-black uppercase block tracking-wider">🛠️ Catalogue de Questions Secrètes Partenaires</span>
+                                <div id="container-admin-questions-list" class="space-y-1.5 max-h-40 overflow-y-auto p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700"></div>
+                                <div class="flex gap-2"><input type="text" id="new-admin-question-string" placeholder="Ajouter un intitulé de question..." class="input-field mb-0 flex-1"><button onclick="ajouterNouvelleQuestionOfficielleReseau()" class="bg-blue-600 text-white text-xs font-bold px-4 rounded-xl cursor-pointer">＋ Ajouter</button></div>
+                            </div>
+
+                            <div id="subpane-acces-systeme" class="hidden card p-4 space-y-2">
+                                <div class="text-slate-500 text-xs font-bold pb-1 cursor-pointer" onclick="backToKeysMainMenu()">← Retour à la liste</div>
+                                <span class="text-indigo-700 text-[10px] font-black uppercase block tracking-wider">🔒 Droits d'Accès Système Admin</span>
+                                <select id="new-master-admin-role" class="select-field"><option value="Super-Admin">👑 Super-Admin Élargi</option><option value="Modérateur">⚡ Modérateur Commerce</option><option value="Comptable">📊 Comptable Auditeur</option></select>
+                                <input type="text" id="new-master-admin-login" placeholder="Nouvel identifiant..." class="input-field">
+                                <input type="password" id="new-master-admin-pass" placeholder="Nouveau mot de passe de connexion..." class="input-field">
+                                <div class="grid grid-cols-3 gap-2">
+                                    <input type="text" id="new-master-admin-avenue" placeholder="Avenue" class="input-field col-span-2">
+                                    <input type="text" id="new-master-admin-numero" placeholder="N°" class="input-field col-span-1 text-center font-bold">
+                                </div>
+                                <input type="password" id="new-master-gate-pass" placeholder="Nouveau mot de passe master (Chefs)..." class="input-field">
+                                <button onclick="sauvegarderChiffrementProfilsChefsMaster()" class="w-full bg-indigo-600 text-white font-bold text-xs py-3 rounded-xl shadow-md cursor-pointer">Chiffrer et enregistrer les clés</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ANALYTIQUE & EXTRACTION -->
+                <div id="page-analytique-extraction" class="page-panel space-y-4">
+                    <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilDepuisOngletFonds()"><span>← Retour à l'accueil</span></div>
+                    <div id="extraction-grid-icons" class="grid grid-cols-2 gap-3">
+                        <div onclick="ouvrirExtractionSubModulePleinEcran('ext-stat-multicritere')" class="grid-icon-card"><span class="text-2xl mb-1">🗂️</span><span class="text-[11px] font-bold text-slate-700">Extraction Statistique</span></div>
+                        <div onclick="ouvrirExtractionSubModulePleinEcran('ext-volume-reseau')" class="grid-icon-card"><span class="text-2xl mb-1">🌐</span><span class="text-[11px] font-bold text-slate-700">Volume Global Réseau</span></div>
+                    </div>
+                    <div id="ext-stat-multicritere" class="hidden space-y-3">
+                        <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-200 cursor-pointer" onclick="backToExtractionMenu()">← Retour aux icônes d'extraction</div>
+                        <div class="card p-4 space-y-3">
+                            <span class="text-blue-700 text-[10px] font-black uppercase block tracking-wider">1. Configuration de l'Extraction Multicritères</span>
+                            
+                            <!-- FILTRE PAR PÉRIODE D'EXTRACTION -->
+                            <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl space-y-2">
+                                <span class="text-[9px] text-slate-600 font-bold uppercase tracking-wider block">📅 Délimiter la période d'extraction</span>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="text-[8px] text-slate-500 font-bold block mb-0.5">Du :</label>
+                                        <input type="date" id="extract-date-start" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-1.5 text-xs font-bold outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="text-[8px] text-slate-500 font-bold block mb-0.5">Au :</label>
+                                        <input type="date" id="extract-date-end" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-1.5 text-xs font-bold outline-none">
+                                    </div>
+                                </div>
+                                <button type="button" onclick="reinitialiserFiltresDatesExtraction()" class="w-full bg-white hover:bg-slate-100 text-slate-600 font-bold text-[10px] py-1.5 rounded-lg border border-slate-200 cursor-pointer transition">Toutes les dates (Historique complet)</button>
+                            </div>
+
+                            <label class="text-[10px] text-slate-500 font-bold block uppercase mb-1">Axe de segmentation :</label>
+                            <select id="extract-criteria-mode" class="select-field">
+                                <option value="Tous">📊 Historique des flux global</option>
+                                <option value="partenaire">👤 Filtrer par Partenaires Actifs</option>
+                                <option value="commune">📍 Regrouper par Communes Kinshasa</option>
+                            </select>
+
+                            <label class="text-[10px] text-slate-500 font-bold block uppercase mb-1">Filtre Métier / Secteur :</label>
+                            <select id="extract-sector-mode" class="select-field">
+                                <option value="Tous">Tous les secteurs ouverts</option>
+                                <option value="Pharmacie">💊 Pharmacie &amp; Santé</option>
+                                <option value="Gaz Domestique">🔥 Gaz Domestique</option>
+                                <option value="Eau">💧 Eau en Gros</option>
+                                <option value="Chambre Froide">🥩 Chambre Froide</option>
+                            </select>
+
+                            <button onclick="declencherTelechargementStatistiquesGlobalesCSV()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3 rounded-xl shadow mt-2 cursor-pointer">📥 Générer &amp; Télécharger le fichier .csv</button>
+                        </div>
+                    </div>
+                    <div id="ext-volume-reseau" class="hidden space-y-3">
+                        <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-200 cursor-pointer" onclick="backToExtractionMenu()">← Retour aux icônes d'extraction</div>
+                        <div class="card p-4 space-y-3">
+                            <span class="text-blue-700 text-[10px] font-black uppercase block tracking-wider">2. Volume Global Réseau</span>
+
+                            <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl space-y-2">
+                                <span class="text-[9px] text-slate-600 font-bold uppercase tracking-wider block">📅 Filtrer le Volume Réseau par Période</span>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="text-[8px] text-slate-500 font-bold block mb-0.5">Du :</label>
+                                        <input type="date" id="ext-vol-date-start" onchange="filtrerVolumeReseauParDate()" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-1.5 text-xs font-bold outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="text-[8px] text-slate-500 font-bold block mb-0.5">Au :</label>
+                                        <input type="date" id="ext-vol-date-end" onchange="filtrerVolumeReseauParDate()" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-1.5 text-xs font-bold outline-none">
+                                    </div>
+                                </div>
+                                <button type="button" onclick="reinitialiserFiltresDatesVolumeReseau()" class="w-full bg-white hover:bg-slate-100 text-slate-600 font-bold text-[10px] py-1.5 rounded-lg border border-slate-200 cursor-pointer transition">Tout afficher (Volume Global)</button>
+                            </div>
+
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl text-center"><span class="text-[10px] text-slate-500 font-bold block uppercase tracking-wider">Volume Chiffre d'Affaires Global Généré (Ventes Réelles)</span><h1 id="total-global-network-brut" class="text-2xl font-black text-blue-600 font-mono mt-1">0.00 $</h1></div>
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl text-center"><span class="text-[10px] text-slate-500 font-bold block uppercase tracking-wider">Total Commandes Clôturées</span><h1 id="impact-volume-count" class="text-2xl font-black text-emerald-600 font-mono mt-1">0</h1></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <footer>
+            <button id="btn-nav-home" onclick="navAdminMobile('page-accueil', 'btn-nav-home')" class="active">
+                <span class="nav-icon">🏠</span>
+                <span>Console</span>
+            </button>
+            <button id="btn-nav-sec" onclick="navAdminMobile('page-securite-master', 'btn-nav-sec')">
+                <span class="nav-icon">🔒</span>
+                <span>Sécurité</span>
+            </button>
+            <button id="btn-nav-export" onclick="navAdminMobile('page-analytique-extraction', 'btn-nav-export')">
+                <span class="nav-icon">📊</span>
+                <span>Extraction</span>
+            </button>
+        </footer>
+    </div>
+
+    <script>
+        const _supabase = supabase.createClient("https://ngsdxxgunrnzoqanfuhn.supabase.co", "sb_publishable_NXhDSDSp8emSPAiFs4wf8w_badTr5nC");
+        
+        let monLoginAdmin = "admin", monMdpAdmin = "GTS2026", maCleMasterCible = "Master2026", monRoleSession = "Super-Admin";
+        let listeMarchandsLocale = [], listeCommandesLocale = [], cacheRepertoireClients = {}, idMarchandSelectionneRecharge = null;
+        let cacheCampagnesPub = [];
+        let cacheAvisClients = [];
+        let questionsSecrètesPartenairesCatalogue = ["Nom de jeune fille de votre mère ?", "Nom de votre premier animal de compagnie ?", "Ville de naissance de votre père ?", "Nom de votre école primaire ?"];
+        const communesKinshasa = ["Bandalungwa", "Barumbu", "Bumbu", "Gombe", "Kalamu", "Kasa-Vubu", "Kimbanseke", "Kinshasa", "Kintambo", "Kisenso", "Lemba", "Limete", "Lingwala", "Makala", "Maluku", "Masina", "Matete", "Ngaba", "Ngaliema", "Ngiri-Ngiri", "Nsele", "Oualemba", "Selembao", "Mont-Ngafula"];
+
+        let statutSecteursConfig = {
+            "Gaz Domestique": { nom: "Gaz Domestique", emoji: "🔥", actif: true },
+            "Pharmacie": { nom: "Pharmacie & Santé", emoji: "💊", actif: true },
+            "Eau": { nom: "Eau en Gros", emoji: "💧", actif: true },
+            "Chambre Froide": { nom: "Chambre Froide / Vivres", emoji: "🥩", actif: true }
+        };
+
+        const cguParDefautTexte = `CONDITIONS GÉNÉRALES D'UTILISATION (CGU) – EYANO MARKET\nDernière mise à jour : Juillet 2026\nZone d'application : République Démocratique du Congo (RDC)\n\nARTICLE 1 : OBJET ET DÉFINITIONS\nLes présentes CGU régissent l'accès et l'utilisation d'Eyano Market.`;
+
+        function ouvrirSousPagePleinEcran(subViewId) { 
+            document.getElementById('grid-main-menu').style.display = 'none'; 
+            document.getElementById('sub-suivi-routing').className = "hidden"; 
+            document.getElementById('sub-validation-recharge').className = "hidden"; 
+            document.getElementById('sub-moderation-commerce').className = "hidden"; 
+            document.getElementById('sub-moderation-clients').className = "hidden"; 
+            document.getElementById('sub-avis-clients').className = "hidden";
+            document.getElementById('sub-gestion-entreprises-pub').className = "hidden";
+            document.getElementById('sub-secteurs-lignes').className = "hidden"; 
+            
+            const target = document.getElementById(subViewId); 
+            if(target) { 
+                target.className = "block space-y-3"; 
+                if(subViewId==='sub-secteurs-lignes') { backToSecteursMenu(); recupererTauxGlobalDepuisStorage(); chargerMessagePresentationGtsAdmin(); chargerCguEyanoAdmin(); chargerNumerosOfficielsDepuisCloud(); } 
+                if(subViewId==='sub-suivi-routing') chargerCommandesPourRoutage(); 
+                if(subViewId==='sub-moderation-commerce') chargerPartenairesPourModeration();
+                if(subViewId==='sub-moderation-clients') chargerRepertoireClientsAdmin(); 
+                if(subViewId==='sub-avis-clients') chargerAvisClientsAdmin();
+                if(subViewId==='sub-gestion-entreprises-pub') retourMenuPubIcones();
+            } 
+        }
+
+        function retourAccueilGrille() { 
+            document.getElementById('sub-suivi-routing').className = "hidden"; 
+            document.getElementById('sub-validation-recharge').className = "hidden"; 
+            document.getElementById('sub-moderation-commerce').className = "hidden"; 
+            document.getElementById('sub-moderation-clients').className = "hidden"; 
+            document.getElementById('sub-avis-clients').className = "hidden";
+            document.getElementById('sub-gestion-entreprises-pub').className = "hidden";
+            document.getElementById('sub-secteurs-lignes').className = "hidden"; 
+            document.getElementById('grid-main-menu').style.display = 'grid'; 
+            calculerMetriquesGlobalesHolding(); 
+        }
+
+        function retourAccueilDepuisOngletFonds() { navAdminMobile('page-accueil', 'btn-nav-home'); }
+        
+        /* GESTION DES SOUS-FENÊTRES EXCLUSIVES DE SECTEURS & PARAMÈTRES */
+        function ouvrirSecteurSubFenetre(paneId) { 
+            document.getElementById('menu-grid-secteurs').className = "hidden"; 
+            document.getElementById('pane-tarifs-reseau').className = "hidden";
+            document.getElementById('pane-secteurs-ouverts').className = "hidden"; 
+            document.getElementById('pane-momo-lecture').className = "hidden"; 
+            document.getElementById('pane-frais-livraison').className = "hidden"; 
+            if(document.getElementById('pane-presentation-gts')) document.getElementById('pane-presentation-gts').className = "hidden";
+            if(document.getElementById('pane-cgu-eyano')) document.getElementById('pane-cgu-eyano').className = "hidden";
+            
+            const targetPane = document.getElementById(paneId);
+            if(targetPane) {
+                targetPane.className = "block card p-5 space-y-4";
+            }
+
+            if(paneId === 'pane-tarifs-reseau') recupererTauxGlobalDepuisStorage();
+            if(paneId === 'pane-secteurs-ouverts') chargerSecteursConfigAdmin();
+            if(paneId === 'pane-momo-lecture') chargerNumerosOfficielsDepuisCloud();
+            if(paneId === 'pane-frais-livraison') initialiserTableauxKinshasa();
+            if(paneId === 'pane-presentation-gts') chargerMessagePresentationGtsAdmin();
+            if(paneId === 'pane-cgu-eyano') chargerCguEyanoAdmin();
+        }
+
+        function backToSecteursMenu() { 
+            document.getElementById('pane-tarifs-reseau').className = "hidden";
+            document.getElementById('pane-secteurs-ouverts').className = "hidden"; 
+            document.getElementById('pane-momo-lecture').className = "hidden"; 
+            document.getElementById('pane-frais-livraison').className = "hidden"; 
+            if(document.getElementById('pane-presentation-gts')) document.getElementById('pane-presentation-gts').className = "hidden";
+            if(document.getElementById('pane-cgu-eyano')) document.getElementById('pane-cgu-eyano').className = "hidden";
+            document.getElementById('menu-grid-secteurs').className = "grid grid-cols-2 gap-3"; 
+        }
+
+        /* MODULE DÉDIÉ : AVIS & RETOURS CLIENTS EN TEMPS RÉEL */
+        async function chargerAvisClientsAdmin() {
+            const container = document.getElementById('container-admin-reviews-list');
+            if(!container) return;
+            container.innerHTML = `<div class="text-center p-4 text-xs text-slate-500">Chargement des avis...</div>`;
+
+            const { data: commandes, error } = await _supabase
+                .from('commandes')
+                .select('*')
+                .or('note_client.not.is.null,avis_client.not.is.null')
+                .order('created_at', { ascending: false });
+
+            if(error || !commandes || commandes.length === 0) {
+                container.innerHTML = `<div class="card p-4 text-center text-xs text-slate-400 italic">Aucun avis client enregistré pour le moment.</div>`;
+                if(document.getElementById('admin-avg-rating-lbl')) document.getElementById('admin-avg-rating-lbl').innerText = "5.0 / 5";
+                if(document.getElementById('admin-total-reviews-lbl')) document.getElementById('admin-total-reviews-lbl').innerText = "0";
+                if(document.getElementById('admin-5star-reviews-lbl')) document.getElementById('admin-5star-reviews-lbl').innerText = "0";
+                return;
+            }
+
+            const avisValides = commandes.filter(c => c.note_client || (c.avis_client && c.avis_client.trim() !== ''));
+            cacheAvisClients = avisValides;
+
+            let cumulNotes = 0;
+            let countNotes = 0;
+            let count5Stars = 0;
+
+            avisValides.forEach(c => {
+                if(c.note_client) {
+                    cumulNotes += c.note_client;
+                    countNotes++;
+                    if(c.note_client === 5) count5Stars++;
+                }
+            });
+
+            const moyenne = countNotes > 0 ? (cumulNotes / countNotes).toFixed(1) : "5.0";
+            if(document.getElementById('admin-avg-rating-lbl')) document.getElementById('admin-avg-rating-lbl').innerText = `${moyenne} / 5`;
+            if(document.getElementById('admin-total-reviews-lbl')) document.getElementById('admin-total-reviews-lbl').innerText = avisValides.length;
+            if(document.getElementById('admin-5star-reviews-lbl')) document.getElementById('admin-5star-reviews-lbl').innerText = count5Stars;
+
+            filtrerAvisClientsAdmin();
+        }
+
+        function filtrerAvisClientsAdmin() {
+            const container = document.getElementById('container-admin-reviews-list');
+            if(!container) return;
+
+            const ratingFilter = document.getElementById('filter-review-rating')?.value || 'Tous';
+            const sectorFilter = document.getElementById('filter-review-sector')?.value || 'Tous';
+            const query = (document.getElementById('search-review-text')?.value || '').trim().toLowerCase();
+
+            const filtres = cacheAvisClients.filter(c => {
+                const note = c.note_client || 0;
+                const sect = (c.secteur || '').toLowerCase();
+                const targetSect = sectorFilter.toLowerCase();
+
+                if (ratingFilter !== 'Tous' && String(note) !== ratingFilter) return false;
+                if (sectorFilter !== 'Tous' && !sect.includes(targetSect) && !targetSect.includes(sect)) return false;
+
+                if (query) {
+                    const str = `${c.nom_client || ''} ${c.telephone_client || ''} ${c.nom_partenaire || ''} ${c.avis_client || ''} ${c.details_articles || ''} ${c.id_commande || ''}`.toLowerCase();
+                    if (!str.includes(query)) return false;
+                }
+
+                return true;
+            });
+
+            if(filtres.length === 0) {
+                container.innerHTML = `<div class="card p-4 text-center text-xs text-slate-400 italic">Aucun avis ne correspond aux critères de filtre.</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            filtres.forEach(c => {
+                const note = c.note_client || 5;
+                const dateStr = new Date(c.created_at || Date.now()).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                
+                let etoilesHtml = '⭐'.repeat(note);
+                let badgeNote = `<span class="bg-amber-50 border border-amber-200 text-amber-800 px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold">${etoilesHtml} (${note}/5)</span>`;
+
+                container.innerHTML += `
+                    <div class="card p-3.5 border border-slate-200 bg-white space-y-2 shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs font-black text-slate-900">👤 ${c.nom_client || 'Client'}</span>
+                                    <span class="text-[9px] font-mono text-blue-600">(${c.telephone_client || '-'})</span>
+                                </div>
+                                <span class="text-[10px] text-slate-500 block mt-0.5">Marchand : <b class="text-emerald-600">${c.nom_partenaire || 'Non assigné'}</b> | Secteur : <b>${c.secteur || '-'}</b></span>
+                            </div>
+                            <div class="text-right space-y-1">
+                                ${badgeNote}
+                                <span class="text-[8px] text-slate-400 font-mono block">${dateStr}</span>
+                            </div>
+                        </div>
+
+                        ${c.avis_client ? `
+                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs text-slate-700 font-medium italic">
+                                « ${c.avis_client} »
+                            </div>` : `<div class="text-[10px] text-slate-400 italic">Note attribuée sans commentaire texte.</div>`}
+
+                        <div class="flex justify-between items-center text-[9px] text-slate-400 pt-1 border-t border-slate-100 font-mono">
+                            <span>Commande : <b class="text-indigo-600">#${c.id_commande}</b> (${c.details_articles || 'Course'})</span>
+                            <span>📍 C/ ${c.commune_livraison || '-'}</span>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        /* GESTION ADMINISTRATIVE DES SECTEURS D'ACTIVITÉ */
+        async function chargerSecteursConfigAdmin() {
+            try {
+                const { data } = await _supabase.from('configuration').select('secteurs_actifs_json').limit(1).single();
+                if (data && data.secteurs_actifs_json) {
+                    const parsed = typeof data.secteurs_actifs_json === 'string' ? JSON.parse(data.secteurs_actifs_json) : data.secteurs_actifs_json;
+                    Object.keys(parsed).forEach(k => {
+                        if (statutSecteursConfig[k]) {
+                            statutSecteursConfig[k].actif = Boolean(parsed[k]);
+                        }
+                    });
+                }
+            } catch(e) {}
+            renderSecteursTogglesAdmin();
+        }
+
+        function renderSecteursTogglesAdmin() {
+            const container = document.getElementById('container-admin-secteurs-toggles');
+            if (!container) return;
+            container.innerHTML = '';
+
+            Object.keys(statutSecteursConfig).forEach(key => {
+                const item = statutSecteursConfig[key];
+                const isActif = item.actif;
+
+                container.innerHTML += `
+                    <div class="flex items-center justify-between p-3.5 bg-slate-50 border ${isActif ? 'border-emerald-200 bg-emerald-50/40' : 'border-slate-200 opacity-60'} rounded-xl transition">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-2xl">${item.emoji}</span>
+                            <div>
+                                <span class="text-xs font-bold text-slate-900 block">${item.nom}</span>
+                                <span class="text-[10px] font-bold ${isActif ? 'text-emerald-700' : 'text-slate-400'}">
+                                    ${isActif ? '● En service (Ouvert aux commandes)' : '○ Désactivé (Indisponible côté client)'}
+                                </span>
+                            </div>
+                        </div>
+                        <button onclick="basculerEtatSecteurAdmin('${key}')" 
+                                class="px-3.5 py-1.5 rounded-lg text-xs font-black shadow-sm transition cursor-pointer ${isActif ? 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100' : 'bg-emerald-600 text-white hover:bg-emerald-700'}">
+                            ${isActif ? 'Désactiver' : 'Activer'}
+                        </button>
+                    </div>`;
+            });
+        }
+
+        async function basculerEtatSecteurAdmin(key) {
+            if (statutSecteursConfig[key]) {
+                statutSecteursConfig[key].actif = !statutSecteursConfig[key].actif;
+                renderSecteursTogglesAdmin();
+
+                let payloadSecteurs = {};
+                Object.keys(statutSecteursConfig).forEach(k => {
+                    payloadSecteurs[k] = statutSecteursConfig[k].actif;
+                });
+
+                const { data: existing } = await _supabase.from('configuration').select('id').limit(1);
+                if (existing && existing.length > 0) {
+                    await _supabase.from('configuration').update({ secteurs_actifs_json: payloadSecteurs }).eq('id', existing[0].id);
+                } else {
+                    await _supabase.from('configuration').insert([{ secteurs_actifs_json: payloadSecteurs }]);
+                }
+            }
+        }
+
+        function retourMenuPubIcones() {
+            document.getElementById('pub-grid-icons').className = "grid grid-cols-2 gap-3";
+            document.getElementById('pub-form-creer').className = "hidden";
+            document.getElementById('pub-liste-ancnes').className = "hidden";
+        }
+
+        function afficherSousModulePub(targetId) {
+            document.getElementById('pub-grid-icons').className = "hidden";
+            document.getElementById('pub-form-creer').className = "hidden";
+            document.getElementById('pub-liste-ancnes').className = "hidden";
+            
+            const el = document.getElementById(targetId);
+            if(el) {
+                el.className = "block space-y-3";
+                if(targetId === 'pub-liste-ancnes') chargerCampagnesPublicitairesAdmin();
+            }
+        }
+
+        async function executerAjoutPubliciteAdmin() {
+            const btn = document.getElementById('btn-publier-campagne');
+            const annonceur = document.getElementById('pub-nom-annonceur').value.trim();
+            const titre = document.getElementById('pub-titre').value.trim();
+            const lien = document.getElementById('pub-lien').value.trim();
+            const dateDebutVal = document.getElementById('pub-date-debut').value;
+            const dateFinVal = document.getElementById('pub-date-fin').value;
+            const fileInput = document.getElementById('pub-file-input');
+
+            if (!annonceur || !fileInput.files || fileInput.files.length === 0) {
+                alert("⚠️ Veuillez remplir le nom de l'annonceur et sélectionner une image.");
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = "⏳ Envoi en cours...";
+            }
+
+            try {
+                const file = fileInput.files[0];
+                const cleanExt = file.name.split('.').pop().toLowerCase();
+                const safeName = annonceur.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const fileName = `pub_${safeName}_${Date.now()}.${cleanExt}`;
+
+                const { error: uploadError } = await _supabase.storage
+                    .from('publicites')
+                    .upload(fileName, file, { 
+                        cacheControl: '3600', 
+                        upsert: true,
+                        contentType: file.type || `image/${cleanExt}`
+                    });
+
+                if (uploadError) throw new Error("Erreur stockage : " + uploadError.message);
+
+                const { data: urlData } = _supabase.storage.from('publicites').getPublicUrl(fileName);
+                const imageUrl = urlData.publicUrl;
+
+                const dateDebutISO = dateDebutVal ? new Date(dateDebutVal + 'T00:00:00Z').toISOString() : new Date().toISOString();
+                const dateFinISO = dateFinVal ? new Date(dateFinVal + 'T23:59:59Z').toISOString() : new Date(Date.now() + 60*24*60*60*1000).toISOString();
+
+                const { error: insertError } = await _supabase.from('campagnes_pub').insert([{
+                    nom_annonceur: annonceur,
+                    titre_pub: titre || '',
+                    lien_cible: lien || '#',
+                    image_url: imageUrl,
+                    date_debut: dateDebutISO,
+                    date_fin: dateFinISO,
+                    statut: 'Actif'
+                }]);
+
+                if (insertError) throw new Error("Erreur base de données : " + insertError.message);
+
+                alert(`✅ Campagne "${annonceur}" publiée avec succès !`);
+                document.getElementById('pub-nom-annonceur').value = '';
+                document.getElementById('pub-titre').value = '';
+                document.getElementById('pub-lien').value = '';
+                document.getElementById('pub-file-input').value = '';
+                afficherSousModulePub('pub-liste-ancnes');
+            } catch (err) {
+                alert("❌ " + err.message);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = "🚀 Publier la Campagne";
+                }
+            }
+        }
+
+        async function chargerCampagnesPublicitairesAdmin() {
+            const container = document.getElementById('pub-companies-container');
+            if(!container) return;
+            container.innerHTML = `<div class="text-center p-4 text-xs text-slate-500">Chargement...</div>`;
+
+            const { data: pubs, error } = await _supabase.from('campagnes_pub').select('*').order('created_at', { ascending: false });
+
+            if(error || !pubs || pubs.length === 0) {
+                container.innerHTML = `<div class="card p-4 text-center text-xs text-slate-400">Aucune campagne publicitaire active.</div>`;
+                return;
+            }
+
+            cacheCampagnesPub = pubs;
+            container.innerHTML = '';
+            pubs.forEach(pub => {
+                const recordId = pub.id || pub.id_pub; 
+                const estActif = (pub.statut || '').toLowerCase() === 'actif';
+                const dateExp = pub.date_fin ? new Date(pub.date_fin).toLocaleDateString('fr-FR') : 'Indéfinie';
+                const searchKey = `${pub.nom_annonceur.toLowerCase()} ${(pub.titre_pub || '').toLowerCase()}`;
+
+                container.innerHTML += `
+                    <div class="card pub-card-item p-3.5 border border-slate-200 bg-white flex flex-col gap-2 shadow-sm" data-search="${searchKey}">
+                        <div class="flex items-center gap-3">
+                            <img src="${pub.image_url}" class="w-14 h-14 object-cover rounded-lg border border-slate-200 bg-slate-50 flex-shrink-0" alt="${pub.nom_annonceur}" onerror="this.src='logo.png'">
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-xs font-black text-slate-900 truncate">${pub.nom_annonceur}</h4>
+                                <p class="text-[10px] text-blue-600 font-bold truncate">${pub.titre_pub || '-'}</p>
+                                <span class="text-[9px] text-slate-500 block mt-0.5">Échéance : <b class="text-slate-800">${dateExp}</b></span>
+                            </div>
+                            <span class="text-[9px] font-bold px-2 py-0.5 rounded ${estActif ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}">
+                                ${pub.statut || 'Inactif'}
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 pt-1 border-t border-slate-100">
+                            <button onclick="changerStatutPubAdmin('${recordId}', '${estActif ? 'Masqué' : 'Actif'}')" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-[10px] py-1.5 rounded border border-slate-200">
+                                ${estActif ? '👁️ Masquer' : '✅ Activer'}
+                            </button>
+                            <button onclick="ouvrirModalModificationPub('${recordId}')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[10px] py-1.5 rounded border border-blue-200">
+                                ✏️ Modifier
+                            </button>
+                            <button onclick="supprimerPubAdmin('${recordId}', '${pub.nom_annonceur.replace(/'/g, "\\'")}')" class="bg-red-50 hover:bg-red-100 text-red-700 font-bold text-[10px] py-1.5 rounded border border-red-200">
+                                🗑️ Supprimer
+                            </button>
+                        </div>
+                    </div>`;
+            });
+
+            filtrerCampagnesPublicitairesAdmin();
+        }
+
+        function filtrerCampagnesPublicitairesAdmin() {
+            const input = document.getElementById('search-pub-partner-input');
+            if(!input) return;
+            const query = input.value.trim().toLowerCase();
+            const cards = document.querySelectorAll('.pub-card-item');
+
+            cards.forEach(card => {
+                const key = card.getAttribute('data-search') || '';
+                card.style.display = key.includes(query) ? 'flex' : 'none';
+            });
+        }
+
+        function ouvrirModalModificationPub(recordId) {
+            const pub = cacheCampagnesPub.find(p => String(p.id || p.id_pub) === String(recordId));
+            if (!pub) { alert("Campagne introuvable."); return; }
+
+            document.getElementById('edit-pub-id').value = recordId;
+            document.getElementById('lbl-edit-pub-id').innerText = `ID #${recordId}`;
+            document.getElementById('edit-pub-current-image-url').value = pub.image_url || '';
+            document.getElementById('edit-pub-nom-annonceur').value = pub.nom_annonceur || '';
+            document.getElementById('edit-pub-titre').value = pub.titre_pub || '';
+            document.getElementById('edit-pub-lien').value = pub.lien_cible && pub.lien_cible !== '#' ? pub.lien_cible : '';
+            document.getElementById('edit-pub-statut').value = pub.statut || 'Actif';
+
+            if (pub.date_debut) {
+                document.getElementById('edit-pub-date-debut').value = pub.date_debut.split('T')[0];
+            } else {
+                document.getElementById('edit-pub-date-debut').value = '';
+            }
+
+            if (pub.date_fin) {
+                document.getElementById('edit-pub-date-fin').value = pub.date_fin.split('T')[0];
+            } else {
+                document.getElementById('edit-pub-date-fin').value = '';
+            }
+
+            const imgPreview = document.getElementById('edit-pub-preview-img');
+            imgPreview.src = pub.image_url || 'logo.png';
+            document.getElementById('edit-pub-file-input').value = '';
+
+            document.getElementById('modal-edit-pub-view').classList.remove('hidden');
+        }
+
+        function fermerModalModificationPub() {
+            document.getElementById('modal-edit-pub-view').classList.add('hidden');
+        }
+
+        async function executerMiseAJourPubliciteAdmin() {
+            const btn = document.getElementById('btn-save-edit-pub');
+            const recordId = document.getElementById('edit-pub-id').value;
+            const annonceur = document.getElementById('edit-pub-nom-annonceur').value.trim();
+            const titre = document.getElementById('edit-pub-titre').value.trim();
+            const lien = document.getElementById('edit-pub-lien').value.trim();
+            const dateDebutVal = document.getElementById('edit-pub-date-debut').value;
+            const dateFinVal = document.getElementById('edit-pub-date-fin').value;
+            const statutVal = document.getElementById('edit-pub-statut').value;
+            const fileInput = document.getElementById('edit-pub-file-input');
+            let imageUrl = document.getElementById('edit-pub-current-image-url').value;
+
+            if (!annonceur) {
+                alert("⚠️ Le nom de l'annonceur est obligatoire.");
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = "⏳ Enregistrement...";
+            }
+
+            try {
+                if (fileInput.files && fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const cleanExt = file.name.split('.').pop().toLowerCase();
+                    const fileName = `pub_${Date.now()}_${Math.floor(Math.random()*1000)}.${cleanExt}`;
+
+                    const { error: uploadError } = await _supabase.storage
+                        .from('publicites')
+                        .upload(fileName, file, { cacheControl: '3600', upsert: true });
+
+                    if (uploadError) throw new Error("Erreur téléversement image : " + uploadError.message);
+
+                    const { data: urlData } = _supabase.storage.from('publicites').getPublicUrl(fileName);
+                    imageUrl = urlData.publicUrl;
+                }
+
+                const dateDebutISO = dateDebutVal ? new Date(dateDebutVal + 'T00:00:00Z').toISOString() : new Date().toISOString();
+                const dateFinISO = dateFinVal ? new Date(dateFinVal + 'T23:59:59Z').toISOString() : null;
+
+                const payload = {
+                    nom_annonceur: annonceur,
+                    titre_pub: titre || '',
+                    lien_cible: lien || '#',
+                    image_url: imageUrl,
+                    date_debut: dateDebutISO,
+                    date_fin: dateFinISO,
+                    statut: statutVal
+                };
+
+                const { error: updateError } = await _supabase.from('campagnes_pub').update(payload).eq('id', recordId);
+                if (updateError) throw new Error("Erreur base de données : " + updateError.message);
+
+                alert(`✅ Campagne publicitaire "${annonceur}" mise à jour avec succès !`);
+                fermerModalModificationPub();
+                chargerCampagnesPublicitairesAdmin();
+            } catch (err) {
+                alert("❌ " + err.message);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = "💾 Enregistrer les Modifications";
+                }
+            }
+        }
+
+        async function changerStatutPubAdmin(recordId, nouveauStatut) {
+            const { error } = await _supabase.from('campagnes_pub').update({ statut: nouveauStatut }).eq('id', recordId);
+            if(!error) chargerCampagnesPublicitairesAdmin();
+            else alert("Erreur : " + error.message);
+        }
+
+        async function supprimerPubAdmin(recordId, nomAnnonceur) {
+            if(confirm(`Supprimer l'annonce de "${nomAnnonceur}" ?`)) {
+                const { error } = await _supabase.from('campagnes_pub').delete().eq('id', recordId);
+                if(!error) {
+                    alert(`✓ Annonce supprimée.`);
+                    chargerCampagnesPublicitairesAdmin();
+                } else {
+                    alert("Erreur : " + error.message);
+                }
+            }
+        }
+
+        function ouvrirExtractionSubModulePleinEcran(extId) {
+            document.getElementById('extraction-grid-icons').className = "hidden";
+            document.getElementById('ext-stat-multicritere').className = "hidden";
+            document.getElementById('ext-volume-reseau').className = "hidden";
+            document.getElementById(extId).className = "block space-y-3";
+        }
+        function backToExtractionMenu() { document.getElementById('ext-stat-multicritere').className="hidden"; document.getElementById('ext-volume-reseau').className="hidden"; document.getElementById('extraction-grid-icons').className="grid grid-cols-2 gap-3"; }
+        
+        function ouvrirCleSubPanePleinEcran(paneId) { 
+            document.getElementById('key-profile-grid-icons').className="hidden"; 
+            document.getElementById('subpane-banque-questions').className="hidden"; 
+            document.getElementById('subpane-acces-systeme').className="hidden"; 
+            document.getElementById(paneId).className="block space-y-3"; 
+        }
+        function backToKeysMainMenu() { 
+            document.getElementById('subpane-banque-questions').className="hidden"; 
+            document.getElementById('subpane-acces-systeme').className="hidden"; 
+            document.getElementById('key-profile-grid-icons').className="space-y-2.5"; 
+        }
+
+        function navAdminMobile(panelId, btnId) {
+            document.querySelectorAll('.page-panel').forEach(p => p.classList.remove('active')); 
+            document.querySelectorAll('footer button').forEach(b => b.classList.remove('active')); 
+            if(document.getElementById(btnId)) document.getElementById(btnId).classList.add('active');
+            if(panelId === 'page-accueil') { document.getElementById('page-accueil').classList.add('active'); retourAccueilGrille(); } 
+            else { document.getElementById(panelId).classList.add('active'); document.getElementById('grid-main-menu').style.display = 'none'; if(panelId==='page-analytique-extraction') backToExtractionMenu(); }
+        }
+
+        async function chargerMessagePresentationGtsAdmin() {
+            try {
+                const { data, error } = await _supabase.from('configuration').select('presentation_gts').limit(1).single();
+                if(data && !error && data.presentation_gts) {
+                    document.getElementById('edit-gts-presentation-text').value = data.presentation_gts;
+                }
+            } catch(e){}
+        }
+
+        async function sauvegarderMessagePresentationGts() {
+            const texte = document.getElementById('edit-gts-presentation-text').value.trim();
+            if(!texte) { alert("Veuillez saisir un texte."); return; }
+            const { data: existing } = await _supabase.from('configuration').select('id').limit(1);
+            let error = null;
+            if(existing && existing.length > 0) {
+                const res = await _supabase.from('configuration').update({ presentation_gts: texte }).eq('id', existing[0].id);
+                error = res.error;
+            } else {
+                const res = await _supabase.from('configuration').insert([{ presentation_gts: texte }]);
+                error = res.error;
+            }
+            if(!error) alert("✓ Présentation GTS enregistrée avec succès !");
+            else alert("Erreur : " + error.message);
+        }
+
+        async function chargerCguEyanoAdmin() {
+            try {
+                const { data, error } = await _supabase.from('configuration').select('cgu').limit(1).single();
+                if(data && !error && data.cgu) {
+                    document.getElementById('edit-eyano-cgu-text').value = data.cgu;
+                } else {
+                    document.getElementById('edit-eyano-cgu-text').value = cguParDefautTexte;
+                }
+            } catch(e){
+                document.getElementById('edit-eyano-cgu-text').value = cguParDefautTexte;
+            }
+        }
+
+        async function sauvegarderCguEyanoAdmin() {
+            const texte = document.getElementById('edit-eyano-cgu-text').value.trim();
+            if(!texte) { alert("Veuillez saisir un texte de CGU."); return; }
+            const { data: existing } = await _supabase.from('configuration').select('id').limit(1);
+            let error = null;
+            if(existing && existing.length > 0) {
+                const res = await _supabase.from('configuration').update({ cgu: texte }).eq('id', existing[0].id);
+                error = res.error;
+            } else {
+                const res = await _supabase.from('configuration').insert([{ cgu: texte }]);
+                error = res.error;
+            }
+            if(!error) alert("✓ CGU publiées avec succès !");
+            else alert("Erreur : " + error.message);
+        }
+
+        function executerTableauMetriques(comTotal, brutTotal, countDeliv, pPhar, pGaz, pEau, pFroid) {
+            if (document.getElementById('lbl-master-cumul-com')) document.getElementById('lbl-master-cumul-com').innerText = comTotal.toFixed(2) + " $";
+            if (document.getElementById('total-global-network-brut')) document.getElementById('total-global-network-brut').innerText = brutTotal.toFixed(2) + " $";
+            if (document.getElementById('impact-volume-count')) document.getElementById('impact-volume-count').innerText = countDeliv;
+            if (document.getElementById('sec-com-pharmacie')) document.getElementById('sec-com-pharmacie').innerText = pPhar.toFixed(2) + " $";
+            if (document.getElementById('sec-com-gaz')) document.getElementById('sec-com-gaz').innerText = pGaz.toFixed(2) + " $";
+            if (document.getElementById('sec-com-eau')) document.getElementById('sec-com-eau').innerText = pEau.toFixed(2) + " $";
+            if (document.getElementById('sec-com-froide')) document.getElementById('sec-com-froide').innerText = pFroid.toFixed(2) + " $";
+        }
+
+        function authentifierEtAfficherVueDirecteAdmin() {
+            document.getElementById('auth-container').style.display = 'none'; 
+            document.getElementById('app-layout-wrapper').style.display = 'flex';
+            document.getElementById('lbl-admin-role-badge').innerText = `Rôle : ${monRoleSession}`;
+            if(localStorage.getItem('gts_partenaires_questions')) { questionsSecrètesPartenairesCatalogue = JSON.parse(localStorage.getItem('gts_partenaires_questions')); }
+            
+            chargerNumerosOfficielsDepuisCloud();
+            initialiserTableauxKinshasa(); 
+            renderQuestionsSecrètesCatalogueAdmin(); 
+            calculerMetriquesGlobalesHolding(); 
+            verifierEtExecuterPrelevementAutomatique28DuMois();
+
+            _supabase.channel('admin-commandes-flux')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'commandes' }, () => {
+                    calculerMetriquesGlobalesHolding();
+                    if(!document.getElementById('sub-suivi-routing').classList.contains('hidden')) {
+                        chargerCommandesPourRoutage();
+                    }
+                    if(!document.getElementById('sub-avis-clients').classList.contains('hidden')) {
+                        chargerAvisClientsAdmin();
+                    }
+                }).subscribe();
+        }
+
+        async function executerAuthentificationAdminGts() {
+            const user = (document.getElementById('admin-auth-user')?.value || '').trim(); 
+            const pass = (document.getElementById('admin-auth-pass')?.value || '').trim();
+
+            if (!user || !pass) {
+                alert("⚠️ Veuillez saisir votre identifiant et votre mot de passe.");
+                return;
+            }
+
+            if (user.toLowerCase() === monLoginAdmin.toLowerCase() && pass === monMdpAdmin) {
+                localStorage.setItem('gts_admin_session_active', 'true');
+                monRoleSession = "Super-Admin";
+                authentifierEtAfficherVueDirecteAdmin();
+                return;
+            }
+
+            try {
+                const { data, error } = await _supabase
+                    .from('administrateurs')
+                    .select('*')
+                    .eq('nom_complet', user)
+                    .eq('mot_de_passe', pass)
+                    .limit(1);
+
+                if (!error && data && data.length > 0) {
+                    localStorage.setItem('gts_admin_session_active', 'true');
+                    monRoleSession = data[0].role || "Admin";
+                    authentifierEtAfficherVueDirecteAdmin();
+                    return;
+                }
+            } catch(err) {}
+
+            alert("🚨 Identifiants incorrects. Vérifiez que le mot de passe est bien GTS2026.");
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('gts_admin_session_active') === 'true') {
+                authentifierEtAfficherVueDirecteAdmin();
+            } else {
+                document.getElementById('auth-container').style.display = 'flex';
+                document.getElementById('app-layout-wrapper').style.display = 'none';
+            }
+        });
+
+        function executerDeconnexionManuelleAdmin() { 
+            localStorage.setItem('gts_admin_session_active', 'false'); 
+            window.location.reload(); 
+        }
+
+        function initialiserTableauxKinshasa() {
+            const rowRead = document.getElementById('read-shipping-communes-rows'); 
+            const rowMaster = document.getElementById('master-editable-communes-rows'); 
+            if(!rowRead || !rowMaster) return; 
+            rowRead.innerHTML = ''; 
+            rowMaster.innerHTML = '';
+
+            communesKinshasa.forEach((c) => {
+                const tarifSimule = localStorage.getItem(`frais_${c}`) || "3.50";
+                rowRead.innerHTML += `<tr class="border-b border-slate-100"><td class="font-bold text-slate-800">📍 ${c}</td><td class="text-right"><input type="number" step="0.10" value="${tarifSimule}" id="frais-input-${c}" class="w-20 p-1.5 bg-slate-50 border border-slate-300 rounded-lg text-center text-slate-900 font-mono font-bold text-xs outline-none"> $</td></tr>`;
+                rowMaster.innerHTML += `<tr class="border-b border-slate-100"><td class="font-bold py-1.5 text-slate-800">${c}</td><td class="text-right"><input type="number" step="0.10" value="${tarifSimule}" id="master-frais-input-${c}" class="w-20 p-1.5 bg-slate-50 border border-slate-300 rounded-lg text-center text-slate-900 font-mono font-bold text-xs outline-none"> $</td></tr>`;
+            });
+        }
+
+        async function sauvegarderGrilleFraisLivraisonCloud() {
+            let grille = {};
+            communesKinshasa.forEach(c => {
+                const input1 = document.getElementById(`frais-input-${c}`);
+                const input2 = document.getElementById(`master-frais-input-${c}`);
+                const val = input1 ? input1.value : (input2 ? input2.value : "3.50");
+                localStorage.setItem(`frais_${c}`, val);
+                grille[c] = parseFloat(val) || 3.50;
+            });
+
+            const { data: existing } = await _supabase.from('configuration').select('id').limit(1);
+            let error = null;
+            if(existing && existing.length > 0) {
+                const res = await _supabase.from('configuration').update({ frais_communes_json: JSON.stringify(grille) }).eq('id', existing[0].id);
+                error = res.error;
+            } else {
+                const res = await _supabase.from('configuration').insert([{ frais_communes_json: JSON.stringify(grille) }]);
+                error = res.error;
+            }
+
+            if(!error) {
+                alert("✅ Grille des frais de livraison enregistrée avec succès sur le Cloud et en local !");
+                initialiserTableauxKinshasa();
+            } else {
+                alert("✓ Grille enregistrée en local (Avertissement cloud : " + error.message + ")");
+            }
+        }
+
+        function renderQuestionsSecrètesCatalogueAdmin() { const box = document.getElementById('container-admin-questions-list'); if(!box) return; box.innerHTML = ''; questionsSecrètesPartenairesCatalogue.forEach((q, idx) => { box.innerHTML += `<div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-slate-200 mb-1.5 shadow-sm"><span>❓ ${q}</span><b class="text-red-500 font-bold cursor-pointer hover:underline px-1" onclick="retirerQuestionOfficielleRéseau(${idx})">Supprimer</b></div>`; }); localStorage.setItem('gts_partenaires_questions', JSON.stringify(questionsSecrètesPartenairesCatalogue)); }
+        function ajouterNouvelleQuestionOfficielleReseau() { const txt = document.getElementById('new-admin-question-string').value.trim(); if(!txt) return; questionsSecrètesPartenairesCatalogue.push(txt); document.getElementById('new-admin-question-string').value = ''; renderQuestionsSecrètesCatalogueAdmin(); }
+        function retirerQuestionOfficielleRéseau(idx) { if(confirm("Supprimer cette question ?")) { questionsSecrètesPartenairesCatalogue.splice(idx, 1); renderQuestionsSecrètesCatalogueAdmin(); } }
+
+        /* CALCUL INSTANTANÉ DES COMMISSIONS */
+        async function calculerMetriquesGlobalesHolding() {
+            const { data: partners } = await _supabase.from('partenaires').select('*'); 
+            if(partners) listeMarchandsLocale = partners;
+            
+            const { data: orders } = await _supabase.from('commandes').select('*'); 
+            if(orders) listeCommandesLocale = orders;
+            
+            filtrerCommissionsGtsParDate();
+            filtrerVolumeReseauParDate();
+        }
+
+        function filtrerCommissionsGtsParDate() {
+            if(!listeCommandesLocale) return;
+
+            const dateStartVal = document.getElementById('gov-com-date-start')?.value;
+            const dateEndVal = document.getElementById('gov-com-date-end')?.value;
+
+            const dateDebut = dateStartVal ? new Date(dateStartVal + 'T00:00:00') : null;
+            const dateFin = dateEndVal ? new Date(dateEndVal + 'T23:59:59') : null;
+
+            let comTotal = 0, pPhar = 0, pGaz = 0, pEau = 0, pFroid = 0;
+
+            listeCommandesLocale.forEach(o => {
+                const st = (o.statut_commande || '').toLowerCase().trim();
+                if(st.includes('accept') || st.includes('livr')) {
+                    if (dateDebut || dateFin) {
+                        const cDate = new Date(o.created_at || Date.now());
+                        if (dateDebut && cDate < dateDebut) return;
+                        if (dateFin && cDate > dateFin) return;
+                    }
+
+                    const comUsd = parseFloat(o.commission_gts_usd || (parseFloat(o.montant_brut_usd || 0) * 0.05));
+                    comTotal += comUsd; 
+
+                    const secteurNorm = (o.secteur || '').toLowerCase().trim();
+                    if(secteurNorm.includes('pharmacie') || secteurNorm.includes('santé') || secteurNorm.includes('sante')) {
+                        pPhar += comUsd;
+                    } else if(secteurNorm.includes('gaz')) {
+                        pGaz += comUsd;
+                    } else if(secteurNorm.includes('eau')) {
+                        pEau += comUsd;
+                    } else if(secteurNorm.includes('chambre') || secteurNorm.includes('froide') || secteurNorm.includes('vivre')) {
+                        pFroid += comUsd;
+                    }
+                }
+            });
+
+            if (document.getElementById('lbl-master-cumul-com')) document.getElementById('lbl-master-cumul-com').innerText = comTotal.toFixed(2) + " $";
+            if (document.getElementById('sec-com-pharmacie')) document.getElementById('sec-com-pharmacie').innerText = pPhar.toFixed(2) + " $";
+            if (document.getElementById('sec-com-gaz')) document.getElementById('sec-com-gaz').innerText = pGaz.toFixed(2) + " $";
+            if (document.getElementById('sec-com-eau')) document.getElementById('sec-com-eau').innerText = pEau.toFixed(2) + " $";
+            if (document.getElementById('sec-com-froide')) document.getElementById('sec-com-froide').innerText = pFroid.toFixed(2) + " $";
+        }
+
+        function reinitialiserFiltresDatesCommissionsGts() {
+            if(document.getElementById('gov-com-date-start')) document.getElementById('gov-com-date-start').value = '';
+            if(document.getElementById('gov-com-date-end')) document.getElementById('gov-com-date-end').value = '';
+            filtrerCommissionsGtsParDate();
+        }
+
+        function filtrerVolumeReseauParDate() {
+            if(!listeCommandesLocale) return;
+
+            const dateStartVal = document.getElementById('ext-vol-date-start')?.value;
+            const dateEndVal = document.getElementById('ext-vol-date-end')?.value;
+
+            const dateDebut = dateStartVal ? new Date(dateStartVal + 'T00:00:00') : null;
+            const dateFin = dateEndVal ? new Date(dateEndVal + 'T23:59:59') : null;
+
+            let brutTotal = 0, countDeliv = 0;
+
+            listeCommandesLocale.forEach(o => {
+                const st = (o.statut_commande || '').toLowerCase().trim();
+                if(st.includes('accept') || st.includes('livr')) {
+                    if (dateDebut || dateFin) {
+                        const cDate = new Date(o.created_at || Date.now());
+                        if (dateDebut && cDate < dateDebut) return;
+                        if (dateFin && cDate > dateFin) return;
+                    }
+
+                    brutTotal += parseFloat(o.montant_brut_usd || o.montant_total_usd || 0); 
+                    if(st.includes('livr')) {
+                        countDeliv++;
+                    }
+                }
+            });
+
+            if (document.getElementById('total-global-network-brut')) document.getElementById('total-global-network-brut').innerText = brutTotal.toFixed(2) + " $";
+            if (document.getElementById('impact-volume-count')) document.getElementById('impact-volume-count').innerText = countDeliv;
+        }
+
+        function reinitialiserFiltresDatesVolumeReseau() {
+            if(document.getElementById('ext-vol-date-start')) document.getElementById('ext-vol-date-start').value = '';
+            if(document.getElementById('ext-vol-date-end')) document.getElementById('ext-vol-date-end').value = '';
+            filtrerVolumeReseauParDate();
+        }
+
+        function reinitialiserFiltresDatesExtraction() {
+            if(document.getElementById('extract-date-start')) document.getElementById('extract-date-start').value = '';
+            if(document.getElementById('extract-date-end')) document.getElementById('extract-date-end').value = '';
+        }
+
+        function declencherTelechargementStatistiquesGlobalesCSV() {
+            if(listeCommandesLocale.length === 0) { alert("Aucune donnée disponible."); return; }
+            const axeSelected = document.getElementById('extract-criteria-mode').value;
+            const sectorSelected = document.getElementById('extract-sector-mode').value;
+            const dateStartVal = document.getElementById('extract-date-start')?.value;
+            const dateEndVal = document.getElementById('extract-date-end')?.value;
+
+            const dateDebut = dateStartVal ? new Date(dateStartVal + 'T00:00:00') : null;
+            const dateFin = dateEndVal ? new Date(dateEndVal + 'T23:59:59') : null;
+
+            let correspondancesFiltrees = listeCommandesLocale;
+            if(sectorSelected !== 'Tous') {
+                correspondancesFiltrees = correspondancesFiltrees.filter(o => {
+                    const s = (o.secteur || '').toLowerCase();
+                    const target = sectorSelected.toLowerCase();
+                    return s.includes(target) || target.includes(s);
+                });
+            }
+
+            if(dateDebut || dateFin) {
+                correspondancesFiltrees = correspondancesFiltrees.filter(o => {
+                    const cDate = new Date(o.created_at || Date.now());
+                    if(dateDebut && cDate < dateDebut) return false;
+                    if(dateFin && cDate > dateFin) return false;
+                    return true;
+                });
+            }
+
+            if(correspondancesFiltrees.length === 0) {
+                alert("Aucune commande trouvée pour les critères et la période sélectionnés.");
+                return;
+            }
+
+            let csvBrut = "ID Commande,Date,Nom Client,Telephone,Commune,Quartier,Avenue,Secteur,Partenaire,Articles,Montant Brut (USD),Commission GTS (USD),Total (USD),Statut\n";
+            correspondancesFiltrees.forEach(o => {
+                const dateStr = o.created_at ? new Date(o.created_at).toLocaleDateString('fr-FR') : '-';
+                csvBrut += `"${o.id_commande}","${dateStr}","${o.nom_client || 'Anonyme'}","${o.telephone_client || '-'}","${o.commune_livraison || '-'}","${o.quartier || '-'}","${o.avenue || '-'}","${o.secteur || '-'}","${o.nom_partenaire || 'Non assigné'}","${(o.details_articles || '-').replace(/"/g, '""')}","${parseFloat(o.montant_brut_usd || 0).toFixed(2)}","${parseFloat(o.commission_gts_usd || 0).toFixed(2)}","${parseFloat(o.montant_total_usd || 0).toFixed(2)}","${o.statut_commande}"\n`;
+            });
+            const blobData = new Blob([csvBrut], { type: 'text/csv;charset=utf-8;' });
+            const lien = document.createElement("a");
+            lien.href = URL.createObjectURL(blobData);
+            const dateSuffix = (dateStartVal || dateEndVal) ? `_${dateStartVal || 'debut'}_au_${dateEndVal || 'fin'}` : '';
+            lien.setAttribute("download", `GTS-Extraction-${axeSelected}-${sectorSelected}${dateSuffix}.csv`);
+            document.body.appendChild(lien); lien.click(); document.body.removeChild(lien);
+        }
+
+        async function chargerRepertoireClientsAdmin() {
+            const { data: orders } = await _supabase.from('commandes').select('*');
+            if(orders) listeCommandesLocale = orders;
+            cacheRepertoireClients = {};
+            listeCommandesLocale.forEach(o => {
+                if(o.telephone_client) {
+                    if(!cacheRepertoireClients[o.telephone_client]) {
+                        cacheRepertoireClients[o.telephone_client] = { nom: o.nom_client || 'Client Global', commune: o.commune_livraison || 'Kinshasa', totalCmds: 1 };
+                    } else { 
+                        cacheRepertoireClients[o.telephone_client].totalCmds += 1; 
+                    }
+                }
+            });
+            injecterLignesFiltreesClients(cacheRepertoireClients);
+        }
+
+        function injecterLignesFiltreesClients(dictionnaireClients) {
+            const tbody = document.getElementById('admin-table-clients-rows'); if(!tbody) return; tbody.innerHTML = '';
+            if(Object.keys(dictionnaireClients).length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="text-center p-3 text-slate-400">Aucun profil client.</td></tr>`; return; }
+            for(let num in dictionnaireClients) {
+                const item = dictionnaireClients[num];
+                tbody.innerHTML += `<tr class="client-data-row border-b border-slate-100" data-string="${item.nom.toLowerCase()} ${num}"><td class="py-2.5 text-slate-800 font-bold">${item.nom}</td><td class="font-mono text-blue-600 font-bold">${num}</td><td class="text-slate-600">📍 C/ ${item.commune}</td><td class="font-mono text-center font-black text-amber-600">${item.totalCmds}</td></tr>`;
+            }
+        }
+
+        function filtrerRepertoireClientsAdmin() {
+            const saisieRecherche = document.getElementById('search-client-input').value.trim().toLowerCase();
+            document.querySelectorAll('.client-data-row').forEach(ligne => {
+                const attributDonnees = ligne.getAttribute('data-string') || '';
+                ligne.style.display = attributDonnees.includes(saisieRecherche) ? 'table-row' : 'none';
+            });
+        }
+
+        async function recupererTauxGlobalDepuisStorage() {
+            const tauxEnregistre = localStorage.getItem('gts_global_commission_percentage') || "5";
+            const passJour = localStorage.getItem('gts_prix_pass_journalier') || "2.00";
+            const passMois = localStorage.getItem('gts_prix_pass_mensuel') || "35.00";
+
+            if(document.getElementById('global-commission-input')) document.getElementById('global-commission-input').value = tauxEnregistre;
+            if(document.getElementById('global-pass-journalier-input')) document.getElementById('global-pass-journalier-input').value = passJour;
+            if(document.getElementById('global-pass-mensuel-input')) document.getElementById('global-pass-mensuel-input').value = passMois;
+
+            try {
+                const { data } = await _supabase.from('configuration').select('commission_taux, prix_pass_journalier, prix_pass_mensuel').limit(1).single();
+                if(data) {
+                    if(data.commission_taux) document.getElementById('global-commission-input').value = data.commission_taux;
+                    if(data.prix_pass_journalier) document.getElementById('global-pass-journalier-input').value = data.prix_pass_journalier;
+                    if(data.prix_pass_mensuel) document.getElementById('global-pass-mensuel-input').value = data.prix_pass_mensuel;
+                }
+            } catch(e){}
+        }
+
+        async function sauvegarderTarificationGlobaleCloud() {
+            const nouveauTaux = parseFloat(document.getElementById('global-commission-input').value) || 5;
+            const nouveauPassJour = parseFloat(document.getElementById('global-pass-journalier-input').value) || 2.00;
+            const nouveauPassMois = parseFloat(document.getElementById('global-pass-mensuel-input').value) || 35.00;
+
+            localStorage.setItem('gts_global_commission_percentage', nouveauTaux);
+            localStorage.setItem('gts_prix_pass_journalier', nouveauPassJour);
+            localStorage.setItem('gts_prix_pass_mensuel', nouveauPassMois);
+
+            const { data: existing } = await _supabase.from('configuration').select('id').limit(1);
+            let error = null;
+            const payload = { commission_taux: nouveauTaux, prix_pass_journalier: nouveauPassJour, prix_pass_mensuel: nouveauPassMois };
+
+            if (existing && existing.length > 0) {
+                const res = await _supabase.from('configuration').update(payload).eq('id', existing[0].id);
+                error = res.error;
+            } else {
+                const res = await _supabase.from('configuration').insert([payload]);
+                error = res.error;
+            }
+
+            await _supabase.from('partenaires').update({ commission_taux: nouveauTaux });
+
+            if(!error) {
+                alert(`✓ Tarifs enregistrés ! Commission: ${nouveauTaux}% | Jour: ${nouveauPassJour.toFixed(2)}$ | Mois: ${nouveauPassMois.toFixed(2)}$`);
+                calculerMetriquesGlobalesHolding();
+            } else {
+                alert("Erreur : " + error.message);
+            }
+        }
+
+        async function chargerCommandesPourRoutage() {
+            const sectorSelected = document.getElementById('filter-routing-secteur').value;
+            const { data: partners } = await _supabase.from('partenaires').select('*');
+            if(partners) listeMarchandsLocale = partners;
+
+            const { data: orders } = await _supabase.from('commandes').select('*').order('created_at', { ascending: false });
+            const tbody = document.getElementById('routing-orders-rows'); 
+            if(!tbody) return; 
+            tbody.innerHTML = '';
+            
+            const filtered = orders ? orders.filter(o => {
+                const sect = (o.secteur || '').toLowerCase();
+                const target = sectorSelected.toLowerCase();
+                return sect.includes(target) || target.includes(sect);
+            }) : [];
+
+            if(filtered.length === 0) { 
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center p-4 italic text-slate-400">Aucune course enregistrée dans ce secteur.</td></tr>`; 
+                return; 
+            } 
+            
+            filtered.forEach(o => {
+                const statut = (o.statut_commande || 'En attente').toLowerCase();
+                const estLivree = statut.includes('livr');
+                const estAcceptee = statut.includes('accept');
+
+                let badgeStatut = `<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-200">⏳ En attente</span>`;
+                if(estLivree) {
+                    badgeStatut = `<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">✅ Livrée</span>`;
+                } else if(estAcceptee) {
+                    badgeStatut = `<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-blue-700 border border-blue-200">🚚 Prise en charge</span>`;
+                }
+
+                const partenaireAffichage = o.nom_partenaire 
+                    ? `<div class="text-[10px] text-emerald-700 font-bold mt-1">🏬 Marchand : <b>${o.nom_partenaire}</b></div>` 
+                    : `<div class="text-[10px] text-slate-400 italic mt-1">Marchand : Non assigné</div>`;
+
+                let options = `<option value="">Marché ouvert (En attente)...</option>`;
+                listeMarchandsLocale.filter(m => {
+                    const mSect = (m.secteur || '').toLowerCase();
+                    const sSect = sectorSelected.toLowerCase();
+                    return mSect.includes(sSect) || sSect.includes(mSect);
+                }).forEach(m => { 
+                    const mId = m.identifiant || m.id_partenaire;
+                    options += `<option value="${mId}" ${String(mId) === String(o.id_partenaire) ? 'selected':''}>${m.nom_etablissement}</option>`; 
+                });
+                
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-100">
+                        <td>
+                            <div class="font-bold text-slate-800">📍 C/ ${o.commune_livraison}</div>
+                            <span class="text-[10px] text-slate-500">Repère : ${o.reference_lieu || o.quartier || '-'}</span>
+                            <div class="text-[9px] text-blue-600 font-mono mt-0.5 font-bold">👤 ${o.nom_client || 'Client'} (${o.telephone_client || '-'})</div>
+                        </td>
+                        <td>
+                            <div class="font-bold text-slate-700">${o.details_articles || 'Articles'}</div>
+                            <div class="mt-1">${badgeStatut}</div>
+                        </td>
+                        <td class="font-mono">
+                            <span class="text-slate-900 font-black block">${parseFloat(o.montant_total_usd || o.montant_brut_usd || 0).toFixed(2)} $</span>
+                            <span class="text-[9px] text-red-600 font-bold">Com: ${parseFloat(o.commission_gts_usd || 0).toFixed(2)} $</span>
+                        </td>
+                        <td class="space-y-1">
+                            ${partenaireAffichage}
+                            ${!estLivree ? `
+                                <select id="select-route-id-${o.id_commande}" class="p-1.5 bg-slate-50 border border-slate-300 text-slate-800 rounded text-xs block w-full outline-none font-medium">${options}</select>
+                                <button onclick="forcerReattributionMarcheAdmin('${o.id_commande}')" class="bg-blue-600 font-bold text-[10px] py-1 px-2 text-white rounded-lg shadow block w-full text-center cursor-pointer">🔄 Réassigner</button>
+                            ` : `<span class="text-[9px] text-slate-400 font-bold block">Course clôturée</span>`}
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        async function forcerReattributionMarcheAdmin(idCommande) {
+            const idPartenaireChoisi = document.getElementById(`select-route-id-${idCommande}`).value;
+            if(!idPartenaireChoisi) { alert("Veuillez sélectionner un partenaire."); return; }
+            
+            const partnerMatch = listeMarchandsLocale.find(m => String(m.identifiant || m.id_partenaire) === String(idPartenaireChoisi));
+            const partnerName = partnerMatch ? partnerMatch.nom_etablissement : 'Partenaire Eyano';
+
+            const { error } = await _supabase.from('commandes').update({ 
+                id_partenaire: idPartenaireChoisi, 
+                nom_partenaire: partnerName,
+                statut_commande: 'Acceptée' 
+            }).eq('id_commande', idCommande);
+
+            if(!error) {
+                alert(`✓ Commande #${idCommande} assignée avec succès à ${partnerName} (ID: ${idPartenaireChoisi}).`);
+                chargerCommandesPourRoutage();
+                calculerMetriquesGlobalesHolding();
+            } else {
+                alert("Erreur : " + error.message);
+            }
+        }
+
+        function rechercheRapideCommerceMarchand() { 
+            const query = document.getElementById('search-commerce-name').value.trim().toLowerCase(); 
+            const match = listeMarchandsLocale.find(m => (m.nom_etablissement && m.nom_etablissement.toLowerCase().includes(query)) || String(m.identifiant || '').toLowerCase() === query); 
+            const box = document.getElementById('box-marchand-resultat'); 
+            if(match) { 
+                idMarchandSelectionneRecharge = match.identifiant; 
+                box.className = "block text-xs p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 font-mono"; 
+                const forfaitActuel = match.type_forfait ? match.type_forfait.toUpperCase() : 'COMMISSION';
+                
+                let infoExpiration = "";
+                if(match.date_expiration_forfait) {
+                    const dExp = new Date(match.date_expiration_forfait);
+                    const estActif = dExp > new Date();
+                    const dateStr = dExp.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+                    infoExpiration = `<br>Statut Pass : <b class="${estActif ? 'text-emerald-700' : 'text-red-600'}">${estActif ? 'Actif jusqu\'au ' + dateStr : 'Expiré le ' + dateStr}</b>`;
+                }
+                
+                box.innerHTML = `Marchand : <b>${match.nom_etablissement}</b> (ID #${match.identifiant})<br>Solde : <b>${parseFloat(match.solde_caution_usd || 0).toFixed(2)} $</b> | Forfait : <b class="text-amber-600">${forfaitActuel}</b>${infoExpiration}`; 
+            } else { 
+                idMarchandSelectionneRecharge = null; 
+                box.className = "block text-xs p-3 bg-red-50 border border-red-200 text-red-700 font-mono"; 
+                box.innerHTML = `❌ Aucun marchand correspondant.`; 
+            } 
+        }
+
+        function ajusterMontantSuggereParForfait(typeForfait) {
+            const inputAmount = document.getElementById('recharge-amount-input');
+            const boxJours = document.getElementById('box-nb-jours-recharge');
+            const inputNbJours = document.getElementById('recharge-nb-jours-input');
+            const passJourPrix = parseFloat(localStorage.getItem('gts_prix_pass_journalier') || 2.00);
+            const passMoisPrix = parseFloat(localStorage.getItem('gts_prix_pass_mensuel') || 35.00);
+
+            if(typeForfait === 'journalier') {
+                if(boxJours) boxJours.classList.remove('hidden');
+                if(inputNbJours) inputNbJours.value = 1;
+                ajusterMontantPassMultiJours(1);
+            } else if(typeForfait === 'multijours') {
+                if(boxJours) boxJours.classList.remove('hidden');
+                const jours = parseInt(inputNbJours?.value) || 3;
+                if(inputNbJours) inputNbJours.value = jours;
+                ajusterMontantPassMultiJours(jours);
+            } else if(typeForfait === 'mensuel') {
+                if(boxJours) boxJours.classList.add('hidden');
+                if(inputNbJours) inputNbJours.value = 30;
+                inputAmount.value = passMoisPrix.toFixed(2);
+            } else {
+                if(boxJours) boxJours.classList.add('hidden');
+                if(inputNbJours) inputNbJours.value = 0;
+            }
+        }
+
+        function ajusterMontantPassMultiJours(val) {
+            const nbJours = Math.max(1, parseInt(val) || 1);
+            const passJourPrix = parseFloat(localStorage.getItem('gts_prix_pass_journalier') || 2.00);
+            const totalSuggere = nbJours * passJourPrix;
+            
+            const inputAmount = document.getElementById('recharge-amount-input');
+            const lblCalcul = document.getElementById('lbl-calcul-prix-jours');
+            
+            if(inputAmount) inputAmount.value = totalSuggere.toFixed(2);
+            if(lblCalcul) lblCalcul.innerText = `Suggéré (${nbJours}j × ${passJourPrix.toFixed(2)}$) : ${totalSuggere.toFixed(2)} $`;
+        }
+
+        async function confirmerReceptionRechargeAdmin() { 
+            const amount = parseFloat(document.getElementById('recharge-amount-input').value); 
+            const typeForfait = document.getElementById('recharge-forfait-select').value;
+            const nbJoursInput = parseInt(document.getElementById('recharge-nb-jours-input')?.value) || 1;
+
+            if(!idMarchandSelectionneRecharge || isNaN(amount) || amount <= 0) { 
+                alert("⚠️ Veuillez sélectionner un marchand et saisir un montant valide."); 
+                return; 
+            } 
+
+            const match = listeMarchandsLocale.find(m => String(m.identifiant) === String(idMarchandSelectionneRecharge)); 
+            if(!match) return;
+
+            const nSolde = parseFloat(match.solde_caution_usd || 0) + amount; 
+
+            let dateExpiration = null;
+            let typeForfaitFinal = typeForfait;
+            const maintenant = new Date();
+
+            if (typeForfait === 'journalier' || typeForfait === 'multijours') {
+                typeForfaitFinal = 'journalier'; // Reste 100% compatible avec l'app partenaire
+                const nbJours = Math.max(1, typeForfait === 'journalier' ? 1 : nbJoursInput);
+
+                // Si le partenaire possède déjà un pass actif non expiré, on ajoute les jours à la suite
+                let baseDate = maintenant;
+                if (match.date_expiration_forfait && new Date(match.date_expiration_forfait) > maintenant) {
+                    baseDate = new Date(match.date_expiration_forfait);
+                }
+
+                const dateFin = new Date(baseDate.getTime());
+                dateFin.setDate(dateFin.getDate() + nbJours);
+                dateFin.setHours(23, 59, 59, 999);
+                dateExpiration = dateFin.toISOString();
+
+            } else if (typeForfait === 'mensuel') {
+                typeForfaitFinal = 'mensuel';
+                let baseDate = maintenant;
+                if (match.date_expiration_forfait && new Date(match.date_expiration_forfait) > maintenant) {
+                    baseDate = new Date(match.date_expiration_forfait);
+                }
+                const dateFin = new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+                dateExpiration = dateFin.toISOString();
+            }
+
+            const updatePayload = {
+                solde_caution_usd: nSolde,
+                type_forfait: typeForfaitFinal,
+                date_expiration_forfait: dateExpiration
+            };
+
+            const { error } = await _supabase.from('partenaires').update(updatePayload).eq('identifiant', match.identifiant); 
+
+            if(!error) {
+                let forfaitLabel = 'Mode Commission';
+                if (typeForfaitFinal === 'journalier') {
+                    const dateFinLocale = new Date(dateExpiration).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    forfaitLabel = `Pass ${typeForfait === 'multijours' ? nbJoursInput + ' Jours' : 'Journalier'} (Valide jusqu'au ${dateFinLocale})`;
+                } else if (typeForfaitFinal === 'mensuel') {
+                    forfaitLabel = 'Pass Mensuel VIP (30 Jours)';
+                }
+
+                alert(`✅ Recharge de ${amount.toFixed(2)} $ validée avec succès !\n\nPartenaire : ${match.nom_etablissement}\nNouveau solde : ${nSolde.toFixed(2)} $\nForfait appliqué : ${forfaitLabel}`);
+                
+                document.getElementById('search-commerce-name').value = ''; 
+                document.getElementById('recharge-amount-input').value = ''; 
+                document.getElementById('box-marchand-resultat').className = "hidden"; 
+                if(document.getElementById('box-nb-jours-recharge')) document.getElementById('box-nb-jours-recharge').classList.add('hidden');
+                document.getElementById('recharge-forfait-select').value = 'commission';
+                
+                calculerMetriquesGlobalesHolding(); 
+                chargerPartenairesPourModeration();
+            } else {
+                alert("❌ Erreur lors de la mise à jour : " + error.message);
+            }
+        }
+
+        async function chargerPartenairesPourModeration() {
+            const { data: partners } = await _supabase.from('partenaires').select('*').order('nom_etablissement', { ascending: true });
+            if(partners) listeMarchandsLocale = partners;
+            const sectorFilter = document.getElementById('filter-moderation-secteur').value;
+            const container = document.getElementById('moderation-container-cards'); 
+            if(!container) return; 
+            container.innerHTML = ''; 
+            
+            const filtered = sectorFilter === 'Tous' ? listeMarchandsLocale : listeMarchandsLocale.filter(m => m.secteur === sectorFilter);
+            if(filtered.length === 0) {
+                container.innerHTML = `<div class="card p-4 text-center text-xs text-slate-400 italic">Aucun partenaire trouvé.</div>`;
+                document.getElementById('lbl-count-partenaires-trouves').innerText = `0 partenaire`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const partnerId = p.identifiant || p.id_partenaire;
+                const commissionUnifiee = localStorage.getItem('gts_global_commission_percentage') || p.commission_taux || 5;
+                const respInfo = p.responsable_nom ? `👔 Responsable : <b>${p.responsable_nom}</b> (${p.telephone || 'sans tel'})` : '👔 Responsable : Non renseigné';
+                const searchString = `${p.nom_etablissement || ''} ${partnerId} ${p.identifiant || ''} ${p.responsable_nom || ''} ${p.telephone || ''} ${p.commune_exploitation || ''} ${p.secteur || ''}`.toLowerCase();
+
+                let badgeForfait = `<span class="text-[9px] bg-slate-100 text-slate-700 border border-slate-300 px-1.5 py-0.5 rounded font-bold">Commission (${commissionUnifiee}%)</span>`;
+                
+                if (p.date_expiration_forfait) {
+                    const dateExp = new Date(p.date_expiration_forfait);
+                    const now = new Date();
+                    if (dateExp > now) {
+                        const msRestants = dateExp - now;
+                        const joursRestants = Math.ceil(msRestants / (1000 * 60 * 60 * 24));
+                        const dateStr = dateExp.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+                        if(p.type_forfait === 'mensuel') {
+                            badgeForfait = `<span class="text-[9px] bg-amber-50 text-amber-800 border border-amber-300 px-1.5 py-0.5 rounded font-bold">Pass Mensuel (${joursRestants}j restants - exp. ${dateStr}) 👑</span>`;
+                        } else {
+                            badgeForfait = `<span class="text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded font-bold">Pass Actif (${joursRestants}j restants - exp. ${dateStr}) ⚡</span>`;
+                        }
+                    } else {
+                        badgeForfait = `<span class="text-[9px] bg-rose-50 text-rose-700 border border-rose-200 px-1.5 py-0.5 rounded font-bold">Pass Expiré (Commission ${commissionUnifiee}%)</span>`;
+                    }
+                }
+
+                container.innerHTML += `
+                    <div class="card partner-mod-card p-4 space-y-2 border border-slate-200 bg-white shadow-sm" data-search="${searchString}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="flex items-center space-x-2">
+                                    <h3 class="text-sm font-black text-slate-900"><span>${p.nom_etablissement}</span></h3>
+                                    <span class="text-[9px] bg-slate-100 border border-slate-300 px-1.5 py-0.5 rounded font-mono text-blue-600 font-bold">#${partnerId}</span>
+                                </div>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Secteur : <b>${p.secteur}</b> | Forfait : ${badgeForfait}</p>
+                                <p class="text-[11px] text-slate-500">📍 C/ ${p.commune_exploitation || '-'} (Av. ${p.avenue || '-'}, N° ${p.numero || '-'})</p>
+                                <p class="text-[10px] text-emerald-700 font-semibold mt-1">${respInfo}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs font-mono font-black text-emerald-700 block">${parseFloat(p.solde_caution_usd || 0).toFixed(2)} $</span>
+                                <span class="text-[9px] font-bold px-2 py-0.5 rounded mt-1 inline-block ${p.statut === 'Actif' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}">
+                                    ${p.statut || 'Inactif'}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="black-box bg-slate-50 p-2.5 text-[11px] hidden border border-slate-200 rounded-xl" id="sec-lbl-${partnerId}"></div>
+                        <div class="pt-1">
+                            <select id="select-mod-action-id-${partnerId}" class="select-field mb-1.5">
+                                <option value="">Menu Action...</option>
+                                <option value="Actif">✅ Activer session</option>
+                                <option value="VoirSecrets">👁️ Voir Identifiants &amp; Secrets</option>
+                                <option value="Suspendu">❌ Suspendre</option>
+                                <option value="Supprimer">🗑️ Radier définitivement</option>
+                            </select>
+                            <button onclick="appliquerActionModerationDirecteMarchand('${partnerId}')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-[11px] py-2 rounded-xl shadow transition-all cursor-pointer">💾 Appliquer l'action</button>
+                        </div>
+                    </div>`;
+            });
+
+            filtrerPartenairesModerationAdmin();
+        }
+
+        function filtrerPartenairesModerationAdmin() {
+            const input = document.getElementById('search-partner-moderation-input');
+            const query = input ? input.value.trim().toLowerCase() : '';
+            const cards = document.querySelectorAll('.partner-mod-card');
+            let visibles = 0;
+            cards.forEach(card => {
+                const searchData = card.getAttribute('data-search') || '';
+                if(searchData.includes(query)) { card.style.display = 'block'; visibles++; }
+                else { card.style.display = 'none'; }
+            });
+            if(document.getElementById('lbl-count-partenaires-trouves')) {
+                document.getElementById('lbl-count-partenaires-trouves').innerText = `${visibles} partenaire(s)`;
+            }
+        }
+
+        function fermerApercuSecretsDirect(partnerId) {
+            const bloc = document.getElementById(`sec-lbl-${partnerId}`);
+            if(bloc) { bloc.classList.add('hidden'); bloc.style.display = 'none'; bloc.innerHTML = ''; }
+        }
+
+        async function appliquerActionModerationDirecteMarchand(partnerId) {
+            const selectElem = document.getElementById(`select-mod-action-id-${partnerId}`);
+            if(!selectElem) return;
+            const action = selectElem.value;
+            if(!action) { alert("Veuillez choisir une action."); return; }
+            const p = listeMarchandsLocale.find(m => String(m.identifiant) === String(partnerId));
+            if(!p) return;
+
+            const blocSecret = document.getElementById(`sec-lbl-${partnerId}`);
+            if(action === 'VoirSecrets') {
+                if(blocSecret) {
+                    if(!blocSecret.classList.contains('hidden') && blocSecret.style.display !== 'none') {
+                        fermerApercuSecretsDirect(partnerId);
+                    } else {
+                        blocSecret.classList.remove('hidden');
+                        blocSecret.style.display = 'block';
+                        blocSecret.innerHTML = `
+                            <div class="space-y-1 text-slate-800 font-bold font-mono p-3 bg-amber-50/70 rounded-xl border border-amber-200 text-left relative">
+                                <div class="flex justify-between items-center pb-1 border-b border-amber-200 mb-1">
+                                    <span class="text-[10px] text-amber-800 uppercase tracking-wider font-black">Secrets Partenaire #${partnerId}</span>
+                                    <button onclick="fermerApercuSecretsDirect('${partnerId}')" class="text-xs bg-red-100 hover:bg-red-200 text-red-700 font-bold px-2 py-0.5 rounded border border-red-300">✕ Masquer</button>
+                                </div>
+                                <div>🏢 Commerce : <span class="text-slate-900">${p.nom_etablissement || '-'}</span></div>
+                                <div>👤 Login : <span class="text-blue-700">${p.identifiant || '-'}</span></div>
+                                <div>🔑 Pass : <span class="text-red-700">${p.mot_de_passe || '-'}</span></div>
+                                <div>👔 Responsable : <span class="text-slate-900">${p.responsable_nom || '-'} (${p.telephone || '-'})</span></div>
+                            </div>`;
+                    }
+                }
+                return;
+            } else {
+                fermerApercuSecretsDirect(partnerId);
+            }
+
+            if(action === 'Supprimer') { 
+                if(confirm(`Radier définitivement ${p.nom_etablissement} ?`)) { 
+                    await _supabase.from('partenaires').delete().eq('identifiant', partnerId); 
+                    const { data } = await _supabase.from('partenaires').select('*');
+                    if(data) listeMarchandsLocale = data;
+                    calculerMetriquesGlobalesHolding(); 
+                    chargerPartenairesPourModeration(); 
+                } 
+                return; 
+            } 
+            
+            const { error } = await _supabase.from('partenaires').update({ statut: action }).eq('identifiant', partnerId);
+            if(!error) {
+                alert(`✓ Statut mis à jour : ${action}`);
+                p.statut = action;
+                calculerMetriquesGlobalesHolding(); 
+                chargerPartenairesPourModeration();
+            } else {
+                alert("Erreur : " + error.message);
+            }
+        }
+
+        async function verifierEtExecuterPrelevementAutomatique28DuMois() {
+            const aujourdhui = new Date();
+            const jourDuMois = aujourdhui.getDate();
+            const moisAnneeCle = `${aujourdhui.getFullYear()}-${String(aujourdhui.getMonth() + 1).padStart(2, '0')}-28`;
+
+            if (jourDuMois === 28) {
+                if (localStorage.getItem('gts_dernier_prelevement_auto') !== moisAnneeCle) {
+                    await declencherCollecteMasseAbonnementsPublicite(true);
+                    localStorage.setItem('gts_dernier_prelevement_auto', moisAnneeCle);
+                }
+            }
+        }
+
+        async function declencherCollecteMasseAbonnementsPublicite(autoSilent = false) {
+            if(!autoSilent && !confirm("⚠️ Confirmer le prélèvement mensuel de 1.00 $ sur les comptes actifs ?")) return;
+            const { data: partenairesList } = await _supabase.from('partenaires').select('*');
+            const liste = partenairesList || listeMarchandsLocale;
+            let count = 0;
+
+            for(let p of liste) {
+                const partnerId = p.identifiant;
+                const solde = parseFloat(p.solde_caution_usd || 0);
+                if(solde >= 1.00) {
+                    const nSolde = solde - 1.00;
+                    await _supabase.from('partenaires').update({ solde_caution_usd: nSolde }).eq('identifiant', partnerId);
+                    count++;
+                }
+            }
+            calculerMetriquesGlobalesHolding(); 
+            if(!autoSilent) alert(`✓ Prélèvement exécuté sur ${count} compte(s).`);
+        }
+
+        function deverrouillerConsoleSouveraineMaster() { 
+            const inputPass = (document.getElementById('master-gate-password')?.value || '').trim();
+            if(inputPass === maCleMasterCible) { 
+                document.getElementById('master-lock-box').className = "hidden"; 
+                document.getElementById('master-unlocked-core').className = "block space-y-4"; 
+                retourAuxIconesSecurite(); 
+                calculerMetriquesGlobalesHolding();
+            } else { alert("🚨 Clé invalide."); } 
+        }
+
+        function ouvrirSouverainSubModulePleinEcran(govId) { 
+            document.getElementById('master-grid-icons').className = "hidden"; 
+            document.getElementById('gov-commissions').className = "hidden"; 
+            document.getElementById('gov-routage-numeros').className = "hidden"; 
+            document.getElementById('gov-frais-communes').className = "hidden"; 
+            document.getElementById('gov-chiffrement-profils').className = "hidden"; 
+            document.getElementById(govId).className = "block space-y-3"; 
+            if(govId==='gov-chiffrement-profils') backToKeysMainMenu(); 
+            if(govId==='gov-commissions') calculerMetriquesGlobalesHolding();
+        }
+
+        function retourAuxIconesSecurite() { 
+            document.getElementById('gov-commissions').className = "hidden"; 
+            document.getElementById('gov-routage-numeros').className = "hidden"; 
+            document.getElementById('gov-frais-communes').className = "hidden"; 
+            document.getElementById('gov-chiffrement-profils').className = "hidden"; 
+            document.getElementById('master-grid-icons').className = "grid grid-cols-2 gap-2"; 
+        }
+
+        async function chargerNumerosOfficielsDepuisCloud() {
+            try {
+                const { data, error } = await _supabase.from('configuration').select('num_whatsapp, num_mpesa, num_orange, num_airtel').limit(1).single();
+                if (data && !error) {
+                    if(document.getElementById('quick-edit-wa')) document.getElementById('quick-edit-wa').value = data.num_whatsapp || '';
+                    if(document.getElementById('quick-edit-mpesa')) document.getElementById('quick-edit-mpesa').value = data.num_mpesa || '';
+                    if(document.getElementById('quick-edit-orange')) document.getElementById('quick-edit-orange').value = data.num_orange || '';
+                    if(document.getElementById('quick-edit-airtel')) document.getElementById('quick-edit-airtel').value = data.num_airtel || '';
+
+                    if(document.getElementById('edit-wa')) document.getElementById('edit-wa').value = data.num_whatsapp || '';
+                    if(document.getElementById('edit-mpesa')) document.getElementById('edit-mpesa').value = data.num_mpesa || '';
+                    if(document.getElementById('edit-orange')) document.getElementById('edit-orange').value = data.num_orange || '';
+                    if(document.getElementById('edit-airtel')) document.getElementById('edit-airtel').value = data.num_airtel || '';
+                }
+            } catch(e){}
+        }
+
+        async function sauvegarderNumerosOfficielsDirects() {
+            const wa = document.getElementById('quick-edit-wa').value.trim();
+            const mp = document.getElementById('quick-edit-mpesa').value.trim();
+            const og = document.getElementById('quick-edit-orange').value.trim();
+            const ai = document.getElementById('quick-edit-airtel').value.trim();
+
+            const { data: existing } = await _supabase.from('configuration').select('id').limit(1);
+            let error = null;
+            if (existing && existing.length > 0) {
+                const res = await _supabase.from('configuration').update({ num_whatsapp: wa, num_mpesa: mp, num_orange: og, num_airtel: ai }).eq('id', existing[0].id);
+                error = res.error;
+            } else {
+                const res = await _supabase.from('configuration').insert([{ num_whatsapp: wa, num_mpesa: mp, num_orange: og, num_airtel: ai }]);
+                error = res.error;
+            }
+
+            if (!error) {
+                alert("✅ Numéros officiels GTS enregistrés avec succès !");
+                chargerNumerosOfficielsDepuisCloud();
+            } else {
+                alert("Erreur : " + error.message);
+            }
+        }
+
+        async function sauvegarderModificationNumerosOfficielsSouverains() { 
+            const wa = document.getElementById('edit-wa').value.trim();
+            const mp = document.getElementById('edit-mpesa').value.trim();
+            const og = document.getElementById('edit-orange').value.trim();
+            const ai = document.getElementById('edit-airtel').value.trim();
+
+            const { data: existing } = await _supabase.from('configuration').select('id').limit(1);
+            let error = null;
+            if (existing && existing.length > 0) {
+                const res = await _supabase.from('configuration').update({ num_whatsapp: wa, num_mpesa: mp, num_orange: og, num_airtel: ai }).eq('id', existing[0].id);
+                error = res.error;
+            } else {
+                const res = await _supabase.from('configuration').insert([{ num_whatsapp: wa, num_mpesa: mp, num_orange: og, num_airtel: ai }]);
+                error = res.error;
+            }
+
+            if (!error) {
+                alert("✓ Numéros enregistrés !");
+                chargerNumerosOfficielsDepuisCloud();
+                retourAuxIconesSecurite();
+            } else {
+                alert("Erreur : " + error.message);
+            }
+        }
+        
+        async function sauvegarderChiffrementProfilsChefsMaster() { 
+            const nRole = document.getElementById('new-master-admin-role').value; 
+            const nLog = document.getElementById('new-master-admin-login').value.trim(); 
+            const nMdp = document.getElementById('new-master-admin-pass').value.trim(); 
+            const nAve = document.getElementById('new-master-admin-avenue').value.trim();
+            const nNum = document.getElementById('new-master-admin-numero').value.trim();
+            const nGate = document.getElementById('new-master-gate-pass').value.trim(); 
+
+            if(nLog) monLoginAdmin = nLog; 
+            if(nMdp) monMdpAdmin = nMdp; 
+            if(nGate) maCleMasterCible = nGate; 
+
+            if(nLog && nMdp) {
+                await _supabase.from('administrateurs').insert([{
+                    nom_complet: nLog,
+                    telephone: "+243000000000",
+                    mot_de_passe: nMdp,
+                    avenue: nAve,
+                    numero: nNum,
+                    role: nRole
+                }]);
+            }
+            alert("✓ Clés enregistrées.");
+            window.location.reload(); 
+        }
+    </script>
+</body>
+</html>
