@@ -94,14 +94,18 @@
                 </div>
             </div>
 
-            <!-- ADMIN PÔLE 2 : EASYFLY TRANSIT -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
+            <!-- ADMIN PÔLE 2 : EASYFLY TRANSIT (AVEC VERROUILLAGE) -->
+            <div id="card-easyfly" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
                         <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
-                            <img src="EASYFLY%20TRANSIT.jpg" alt="EasyFly Transit" class="w-full h-full object-contain scale-110" onerror="this.style.display='none'">
+                            <img src="EASYFLY%20TRANSIT.jpg" alt="EasyFly Transit" class="w-full h-full object-contain scale-110">
                         </div>
-                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-indigo-400 font-bold uppercase">Pôle 2 • Logistique Aéro</span>
+                        <div class="flex items-center gap-2">
+                            <span id="badge-status-easyfly" class="text-[10px] font-mono bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full text-emerald-400 font-bold uppercase">
+                                ● Actif
+                            </span>
+                        </div>
                     </div>
                     <div>
                         <h3 class="text-xl font-black text-slate-100">EasyFly Transit Admin</h3>
@@ -111,9 +115,14 @@
                         Supervision des collectes urbaines, validation des check-ins déportés (48h avant vol) et traitement agrégé en bloc (Batch) pour N'djili[cite: 6].
                     </p>
                 </div>
-                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                    <span class="text-[10px] text-slate-400 font-mono">Transit & Sûreté</span>
-                    <a href="lekafly/admin.html" class="inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md">
+
+                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
+                    <button type="button" onclick="toggleLockPole('easyfly')" id="btn-lock-easyfly" class="text-slate-400 hover:text-rose-400 text-xs font-mono border border-slate-800 hover:border-rose-500/30 px-3 py-2 rounded-xl transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-lock-open" id="icon-lock-easyfly"></i>
+                        <span id="label-lock-easyfly">Verrouiller</span>
+                    </button>
+
+                    <a id="link-easyfly" href="lekafly/admin.html" class="inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md">
                         Ouvrir le Back-office <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
@@ -123,7 +132,7 @@
             <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
-                        <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
+                        <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1 shadow-md flex-shrink-0">
                             <img src="cleanapp.png" alt="Matt Clean'App" class="w-full h-full object-contain scale-110" onerror="this.style.display='none'">
                         </div>
                         <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-emerald-400 font-bold uppercase">Pôle 3 • Salubrité</span>
@@ -177,5 +186,51 @@
         <p><b>Global Tech Solutions SARL</b> — Console d'Administration Centralisée[cite: 6].</p>
         <p class="text-[10px] font-mono">Accès restreint aux gestionnaires habilités[cite: 6].</p>
     </footer>
+
+    <!-- SCRIPT DU VERROUILLAGE DYNAMIQUE -->
+    <script>
+        function toggleLockPole(poleId) {
+            const isLocked = localStorage.getItem('lock_' + poleId) === 'true';
+            const newStatus = !isLocked;
+            localStorage.setItem('lock_' + poleId, newStatus);
+            applyLockUI(poleId, newStatus);
+        }
+
+        function applyLockUI(poleId, locked) {
+            const badge = document.getElementById('badge-status-' + poleId);
+            const link = document.getElementById('link-' + poleId);
+            const icon = document.getElementById('icon-lock-' + poleId);
+            const label = document.getElementById('label-lock-' + poleId);
+
+            if (!badge || !link || !icon || !label) return;
+
+            if (locked) {
+                badge.className = "text-[10px] font-mono bg-rose-500/10 border border-rose-500/20 px-3 py-1 rounded-full text-rose-400 font-bold uppercase";
+                badge.innerHTML = "● Verrouillé";
+                
+                link.removeAttribute('href');
+                link.className = "inline-flex items-center gap-2 bg-slate-800 text-slate-500 px-4 py-2 rounded-xl text-xs font-black uppercase cursor-not-allowed border border-slate-700 pointer-events-none";
+                link.innerHTML = '<i class="fa-solid fa-ban mr-1"></i> Accès Suspendu';
+                
+                icon.className = "fa-solid fa-lock text-rose-400";
+                label.textContent = "Déverrouiller";
+            } else {
+                badge.className = "text-[10px] font-mono bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full text-emerald-400 font-bold uppercase";
+                badge.innerHTML = "● Actif";
+                
+                link.setAttribute('href', 'lekafly/admin.html');
+                link.className = "inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md";
+                link.innerHTML = 'Ouvrir le Back-office <i class="fa-solid fa-arrow-right"></i>';
+                
+                icon.className = "fa-solid fa-lock-open";
+                label.textContent = "Verrouiller";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const isEasyFlyLocked = localStorage.getItem('lock_easyfly') === 'true';
+            applyLockUI('easyfly', isEasyFlyLocked);
+        });
+    </script>
 </body>
 </html>
