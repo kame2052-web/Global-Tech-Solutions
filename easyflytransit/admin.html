@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyFly Transit — Console d'Administration & Supervision</title>
+    <title>EasyFly Transit — Console Intégrale Hub Urbain</title>
     <link rel="icon" type="image/png" href="../GLOBAL.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,188 +23,309 @@
         }
     </script>
     <style>
-        .view-content { display: none; }
-        .view-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        .view-pane { display: none; }
+        .view-pane.active { display: block; animation: fadeIn 0.25s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
     <!-- EN-TÊTE PRINCIPAL -->
-    <header class="w-full border-b border-indigo-900/40 bg-slate-900/85 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="h-12 w-12 rounded-xl overflow-hidden bg-white flex items-center justify-center p-1 shadow-sm flex-shrink-0">
+    <header class="bg-slate-900/90 border-b border-slate-800 p-4 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="h-11 w-11 rounded-xl overflow-hidden bg-white flex items-center justify-center p-1 shadow-sm flex-shrink-0">
                     <img src="../EASYFLY%20TRANSIT.jpg" alt="EasyFly Transit" class="w-full h-full object-contain">
                 </div>
                 <div>
-                    <h1 class="text-sm md:text-base font-black tracking-wider uppercase text-slate-100">EasyFly Transit</h1>
-                    <p class="text-[9px] md:text-[10px] font-mono text-indigo-400 tracking-widest uppercase font-bold">Console d'Audit & Logistique Aéro (Kinshasa)</p>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-black px-2.5 py-0.5 rounded text-xs tracking-wider">EASYFLY HUB</span>
+                        <h1 class="text-sm font-bold text-slate-100 uppercase">Station Logistique Urbaine</h1>
+                    </div>
+                    <p class="text-[10px] text-slate-400 font-mono">Concession PROCOKI • Kinshasa, RDC</p>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <span class="hidden md:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-bold">
-                    <i class="fa-solid fa-circle text-[8px] animate-pulse"></i> N'djili Passerelle Connectée
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+                    <span class="h-2 w-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span> Passerelle N'djili Synchro
                 </span>
-                <a href="../admin.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all border border-slate-700 flex items-center gap-2">
+                <a href="../admin.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-black uppercase transition-all border border-slate-700 flex items-center gap-1.5">
                     <i class="fa-solid fa-arrow-left"></i> Hub Central
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- BARRE DE NAVIGATION EXCLUSIVE (ONGLETS) -->
-    <nav class="w-full border-b border-slate-800 bg-slate-950/60 sticky top-20 z-40 backdrop-blur-sm">
-        <div class="max-w-7xl mx-auto px-6 flex items-center gap-2 md:gap-4 overflow-x-auto py-3">
-            <button onclick="switchView('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md">
-                <i class="fa-solid fa-chart-pie"></i> <span>Dashboard KPIs</span>
+    <!-- BARRE DE NAVIGATION EXCLUSIVE PAR POSTES -->
+    <nav class="w-full border-b border-slate-800 bg-slate-950/70 sticky top-[73px] z-40 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 flex items-center gap-2 overflow-x-auto py-2.5">
+            <button onclick="navigateTab('dashboard')" id="btn-tab-dashboard" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md">
+                <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span>
             </button>
-            <button onclick="switchView('enregistrement')" id="tab-enregistrement" class="tab-btn px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
-                <i class="fa-solid fa-user-plus"></i> <span>Enregistrement Passager</span>
+            <button onclick="navigateTab('enregistrement')" id="btn-tab-enregistrement" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-user-plus text-indigo-400"></i> <span>1. Enregistrement</span>
             </button>
-            <button onclick="switchView('registre')" id="tab-registre" class="tab-btn px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
-                <i class="fa-solid fa-list-check"></i> <span>Registre Voyageurs</span>
+            <button onclick="navigateTab('pesee')" id="btn-tab-pesee" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-scale-balanced text-amber-400"></i> <span>2. Pesée & Caisse</span>
             </button>
-            <button onclick="switchView('batch')" id="tab-batch" class="tab-btn px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
-                <i class="fa-solid fa-truck-fast"></i> <span>Convois & Batch Transit</span>
+            <button onclick="navigateTab('surete')" id="btn-tab-surete" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-radiation text-rose-400"></i> <span>3. Scanner Rayon X</span>
+            </button>
+            <button onclick="navigateTab('registre')" id="btn-tab-registre" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-table-list text-sky-400"></i> <span>Registre Voyageurs</span>
+            </button>
+            <button onclick="navigateTab('batch')" id="btn-tab-batch" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-truck-fast text-emerald-400"></i> <span>Convoi Batch N'djili</span>
             </button>
         </div>
     </nav>
 
-    <!-- ZONE D'AFFICHAGE EXCLUSIF -->
-    <main class="flex-1 max-w-7xl mx-auto px-6 py-10 w-full">
+    <!-- ZONE DE CONTENU -->
+    <main class="max-w-7xl mx-auto p-4 md:p-6 flex-1 w-full">
 
-        <!-- VUE 1 : DASHBOARD KPIS -->
-        <section id="view-dashboard" class="view-content active space-y-8">
-            <div class="border-b border-slate-800 pb-4">
-                <h2 class="text-2xl font-black text-slate-100">Tableau de Bord Logistique & Flux</h2>
-                <p class="text-xs text-slate-400 mt-1">Vue panoramique des opérations déportées à destination de l'aéroport international de N'djili[cite: 9].</p>
-            </div>
-
-            <!-- GRILLE DES KPIS -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 border-t-4 border-t-indigo-500 shadow-lg">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Bagages Enregistrés (24h)</span>
-                    <h3 id="statBagages" class="text-3xl font-black text-slate-100 mt-2">148</h3>
-                    <span class="text-[10px] text-emerald-400 font-mono"><i class="fa-solid fa-arrow-trend-up"></i> +18% vs semaine passée</span>
-                </div>
-                <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 border-t-4 border-t-amber-500 shadow-lg">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Lots en Préparation (Batch)</span>
-                    <h3 class="text-3xl font-black text-slate-100 mt-2">04</h3>
-                    <span class="text-[10px] text-amber-400 font-mono">Agences Gombe & Limete</span>
-                </div>
-                <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 border-t-4 border-t-sky-500 shadow-lg">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Convois Scellés en Transit</span>
-                    <h3 class="text-3xl font-black text-slate-100 mt-2">02</h3>
-                    <span class="text-[10px] text-sky-400 font-mono">Fourgons actifs sous balise GPS</span>
-                </div>
-                <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 border-t-4 border-t-emerald-500 shadow-lg">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Scellés Inviolables Validés</span>
-                    <h3 class="text-3xl font-black text-slate-100 mt-2">100%</h3>
-                    <span class="text-[10px] text-slate-400 font-mono">Zéro rupture de scellé</span>
-                </div>
-            </div>
-
-            <!-- APERÇU RAPIDE D'ACTIONS -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <!-- 1. VUE DASHBOARD & KPIS -->
+        <section id="pane-dashboard" class="view-pane active space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
-                    <h3 class="text-lg font-black text-slate-100">Prêt pour un nouvel enregistrement ?</h3>
-                    <p class="text-xs text-slate-400 mt-1">Saisie rapide d'un voyageur avec calcul automatique des excédents au guichet.</p>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Supervision Globale du Hub Urbain</h2>
+                    <p class="text-xs text-slate-400">Suivi temps réel des volumes collectés, scellés et encaissés avant expédition N'djili[cite: 8, 9].</p>
                 </div>
-                <button onclick="switchView('enregistrement')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-2xl text-xs font-black uppercase transition-all shadow-md flex items-center gap-2">
-                    <i class="fa-solid fa-plus"></i> Ouvrir le formulaire
+                <button onclick="navigateTab('enregistrement')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Nouveau Dossier
                 </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-indigo-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Voyageurs Enregistrés</span>
+                    <h3 id="stat-total-pax" class="text-3xl font-black text-slate-100 mt-2">2</h3>
+                    <span class="text-[10px] text-indigo-400 font-mono">Dossiers ouverts aujourd'hui</span>
+                </div>
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-amber-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Poids Total Collecté</span>
+                    <h3 id="stat-total-kg" class="text-3xl font-black text-slate-100 mt-2">44.30 kg</h3>
+                    <span class="text-[10px] text-amber-400 font-mono">Pesées certifiées PROCOKI</span>
+                </div>
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-rose-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Surtaxes Encaissées</span>
+                    <h3 id="stat-total-cdf" class="text-3xl font-black text-slate-100 mt-2">0 CDF</h3>
+                    <span class="text-[10px] text-rose-400 font-mono">Tarif standard 42 000 CDF / kg</span>
+                </div>
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-emerald-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Convois Scellés Prêts</span>
+                    <h3 class="text-3xl font-black text-slate-100 mt-2">01 Lot</h3>
+                    <span class="text-[10px] text-emerald-400 font-mono">Batch BT-2026-093</span>
+                </div>
             </div>
         </section>
 
-        <!-- VUE 2 : FORMULAIRE D'ENREGISTREMENT -->
-        <section id="view-enregistrement" class="view-content space-y-6">
-            <div class="border-b border-slate-800 pb-4">
-                <h2 class="text-2xl font-black text-slate-100">Nouvelle Fiche Passager & Bagages</h2>
-                <p class="text-xs text-slate-400 mt-1">Saisie complète des données du voyageur, du billet et pesée certifiée[cite: 8].</p>
+        <!-- 2. VUE ENREGISTREMENT GUICHET (SAISIE CLIENTS) -->
+        <section id="pane-enregistrement" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3">
+                <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 1 : Fiche Voyageur & Vol</h2>
+                <p class="text-xs text-slate-400">Saisie des données administratives du client avant passage en balance et Rayon X[cite: 8].</p>
             </div>
 
             <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl">
-                <form id="passengerForm" onsubmit="enregistrerPassager(event)" class="space-y-6">
-                    <!-- IDENTITÉ -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <form id="clientRegisterForm" onsubmit="handleNewClient(event)" class="space-y-6">
+                    <!-- IDENTITÉ CLIENT -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-2 uppercase">Nom *</label>
-                            <input type="text" id="nom" required placeholder="ex: KABILA" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500 uppercase">
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Nom du passager *</label>
+                            <input type="text" id="reg-nom" required placeholder="ex: KABILA" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 uppercase focus:outline-none focus:border-indigo-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-2 uppercase">Post-nom *</label>
-                            <input type="text" id="postnom" required placeholder="ex: TSHISEKEDI" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500 uppercase">
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Post-nom *</label>
+                            <input type="text" id="reg-postnom" required placeholder="ex: TSHISEKEDI" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 uppercase focus:outline-none focus:border-indigo-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-2 uppercase">Prénom *</label>
-                            <input type="text" id="prenom" required placeholder="ex: Jean-Luc" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500 capitalize">
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Prénom *</label>
+                            <input type="text" id="reg-prenom" required placeholder="ex: Jean-Luc" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 capitalize focus:outline-none focus:border-indigo-500">
                         </div>
                     </div>
 
-                    <!-- VOL & BILLET -->
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+                    <!-- VOL & RÉSERVATION -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-2 uppercase">N° Billet / PNR *</label>
-                            <input type="text" id="billet" required placeholder="ex: ET-940284" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs font-mono text-indigo-300 focus:outline-none focus:border-indigo-500 uppercase">
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Numéro Billet / PNR *</label>
+                            <input type="text" id="reg-pnr" required placeholder="ex: AF-29401" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs font-mono text-indigo-400 uppercase focus:outline-none focus:border-indigo-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-2 uppercase">Compagnie Aérienne *</label>
-                            <select id="compagnie" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-                                <option value="">Sélectionner...</option>
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Compagnie Aérienne *</label>
+                            <select id="reg-compagnie" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
                                 <option value="Air France">Air France</option>
                                 <option value="Brussels Airlines">Brussels Airlines</option>
                                 <option value="Ethiopian Airlines">Ethiopian Airlines</option>
-                                <option value="Kenya Airways">Kenya Airways</option>
                                 <option value="Turkish Airlines">Turkish Airlines</option>
+                                <option value="Kenya Airways">Kenya Airways</option>
                                 <option value="Congo Airways">Congo Airways</option>
-                                <option value="Autre">Autre Compagnie</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-2 uppercase">Date du Vol *</label>
-                            <input type="date" id="dateVol" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Date du Vol *</label>
+                            <input type="date" id="reg-date" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-2 uppercase">Heure du Vol *</label>
-                            <input type="time" id="heureVol" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Heure du Vol *</label>
+                            <input type="time" id="reg-heure" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
                         </div>
                     </div>
 
-                    <!-- DESTINATION & POIDS -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <!-- DESTINATION & FRANCHISE -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-2 uppercase">Destination Finale *</label>
-                            <input type="text" id="destination" required placeholder="ex: Paris-CDG, Bruxelles, Dubaï" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Destination Finale *</label>
+                            <input type="text" id="reg-dest" required placeholder="ex: Paris-CDG (France)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-2 uppercase">Poids Autorisé (kg) *</label>
-                            <input type="number" step="0.5" id="poidsAuto" required placeholder="ex: 46" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs font-mono text-slate-100 focus:outline-none focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-2 uppercase">Poids Constaté (kg) *</label>
-                            <input type="number" step="0.5" id="poidsConst" required placeholder="ex: 42.5" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs font-mono text-slate-100 focus:outline-none focus:border-indigo-500">
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Poids Autorisé Billet (kg) *</label>
+                            <input type="number" step="0.5" id="reg-allowed" value="23" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs font-mono text-amber-400 focus:outline-none focus:border-indigo-500">
                         </div>
                     </div>
 
-                    <div class="flex justify-end pt-4 border-t border-slate-800/80">
-                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3.5 rounded-2xl text-xs font-black uppercase transition-all shadow-lg flex items-center gap-2">
-                            <i class="fa-solid fa-check"></i> Valider & Ajouter au Registre
+                    <div class="flex justify-end pt-3 border-t border-slate-800">
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase px-8 py-3.5 rounded-xl transition shadow-lg flex items-center gap-2">
+                            <i class="fa-solid fa-arrow-right"></i> Valider & Transférer à la Pesée
                         </button>
                     </div>
                 </form>
             </div>
         </section>
 
-        <!-- VUE 3 : REGISTRE DES PASSAGERS -->
-        <section id="view-registre" class="view-content space-y-6">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4">
+        <!-- 3. VUE PESÉE, CAISSE & SURTAXE CDF -->
+        <section id="pane-pesee" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
-                    <h2 class="text-2xl font-black text-slate-100">Registre des Passagers Enregistrés</h2>
-                    <p class="text-xs text-slate-400 mt-1">État des bagages et conformité avant mise en convoi.</p>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 2 : Pesée Certifiée, Franchise & Encaissement</h2>
+                    <p class="text-xs text-slate-400">Traitement de l'assiette d'excédent (42 000 CDF / kg) et délivrance de quittance thermique 80mm.</p>
                 </div>
-                <span id="counter" class="text-xs font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-4 py-1.5 rounded-full font-bold">
-                    2 Passagers enregistrés
+                <div class="flex items-center gap-2">
+                    <label class="text-xs font-mono text-slate-400">Dossier en traitement :</label>
+                    <select id="select-active-pax" onchange="loadPaxIntoWeigh(this.value)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-indigo-400 font-mono focus:outline-none">
+                    </select>
+                </div>
+            </div>
+
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                <!-- Récapitulatif du dossier sélectionné -->
+                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Voyageur :</span><strong class="text-slate-100" id="weigh-lbl-nom">-</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Vol / Comp. :</span><strong class="text-slate-100" id="weigh-lbl-vol">-</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Code PNR :</span><strong class="text-indigo-400 font-bold" id="weigh-lbl-pnr">-</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Franchise :</span><strong class="text-amber-400 font-bold" id="weigh-lbl-allowed">23.00 kg</strong></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Masse Balance Certifiée (kg) *</label>
+                        <input type="number" id="weigh-input-kg" step="0.1" oninput="liveCalcExcess()" placeholder="0.00" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 font-mono text-2xl text-amber-300 font-bold focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Surtaxe Excédent (42 000 CDF / kg)</label>
+                        <div id="weigh-fee-box" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-2xl text-emerald-400 font-black h-[58px] flex items-center">
+                            0 CDF (Conforme)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panneau de Caisse -->
+                <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-4">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Mode de Règlement au Guichet</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="flex items-center space-x-2 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer text-xs hover:border-slate-600">
+                            <input type="radio" name="payType" value="Cash" checked onclick="togglePayRef(true)" class="text-indigo-500 focus:ring-0">
+                            <span>💵 Cash CDF/USD</span>
+                        </label>
+                        <label class="flex items-center space-x-2 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer text-xs hover:border-slate-600">
+                            <input type="radio" name="payType" value="POS_Card" onclick="togglePayRef(true)" class="text-indigo-500 focus:ring-0">
+                            <span>💳 Carte POS</span>
+                        </label>
+                        <label class="flex items-center space-x-2 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer text-xs text-indigo-400 hover:border-indigo-500">
+                            <input type="radio" name="payType" value="Mobile_Money" onclick="togglePayRef(false)" class="text-indigo-500 focus:ring-0">
+                            <span>📱 Mobile Money</span>
+                        </label>
+                    </div>
+
+                    <div id="box-pay-ref">
+                        <input type="text" id="weigh-input-ref" placeholder="Numéro de reçu caisse papier obligatoire *" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs font-mono text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div id="box-pay-mobile" class="hidden text-xs text-indigo-300 bg-indigo-950/40 p-3 rounded-xl border border-indigo-900">
+                        ⚡ Requête STK Push asynchrone transmise au voyageur (M-Pesa, Airtel Money, Orange Money).
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
+                    <button type="button" onclick="saveWeighRecord()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase px-8 py-3.5 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> Enregistrer Pesée & Envoyer Rayon X
+                    </button>
+                    <button type="button" id="btn-print-80mm" onclick="printThermalDoc()" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs px-5 py-3.5 rounded-xl transition border border-slate-700 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i> Reçu Thermique 80mm
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. VUE SCANNER RAYON X & SCELLÉS -->
+        <section id="pane-surete" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 3 : Contrôle Rayon X & Pose du Scellé</h2>
+                    <p class="text-xs text-slate-400">Imagerie de sécurité du bagage et scellement sous plombage inviolable[cite: 8].</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label class="text-xs font-mono text-slate-400">Bagage en tunnel :</label>
+                    <select id="select-xray-pax" onchange="loadPaxIntoXray(this.value)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-indigo-400 font-mono focus:outline-none">
+                    </select>
+                </div>
+            </div>
+
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Voyageur :</span><strong class="text-slate-100" id="xray-lbl-nom">-</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Destination :</span><strong class="text-slate-100" id="xray-lbl-dest">-</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Code PNR :</span><strong class="text-indigo-400 font-bold" id="xray-lbl-pnr">-</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Poids Certifié :</span><strong class="text-amber-400 font-bold" id="xray-lbl-kg">-</strong></div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="block text-xs font-mono text-slate-400 uppercase">Décision Opérateur Rayon X</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" onclick="setXrayVote('Approved')" id="btn-dec-ok" class="flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 hover:border-emerald-500 transition-all">
+                            <span class="text-3xl mb-1">🟢</span>
+                            <span class="text-xs font-black uppercase text-slate-200">CONFORME (SCAN OK)</span>
+                            <span class="text-[10px] text-slate-500">Zéro article prohibé détecté</span>
+                        </button>
+                        <button type="button" onclick="setXrayVote('Suspect')" id="btn-dec-alert" class="flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 hover:border-rose-500 transition-all">
+                            <span class="text-3xl mb-1">🔴</span>
+                            <span class="text-xs font-black uppercase text-slate-200">SUSPECT / ALERTE</span>
+                            <span class="text-[10px] text-slate-500">Matière douteuse (Ouverture requise)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <div>
+                        <label class="block text-xs font-mono text-slate-400 uppercase mb-1">N° du Scellé Physique Inviolable *</label>
+                        <input type="text" id="xray-input-seal" placeholder="Scanner le code du plomb (ex: PL-9402)" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 font-mono text-xs text-emerald-400 uppercase focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div class="flex items-end">
+                        <button type="button" onclick="finalizeXray()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase p-3 rounded-xl transition shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-lock"></i> Valider Plombage & Clôturer Dossier
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. VUE REGISTRE GÉNÉRAL DES VOYAGEURS -->
+        <section id="pane-registre" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Registre Général des Voyageurs</h2>
+                    <p class="text-xs text-slate-400">Contrôle de chaque étape de traitement pour chaque passager enregistré[cite: 8].</p>
+                </div>
+                <span id="reg-badge-count" class="text-xs font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-3.5 py-1 rounded-full font-bold">
+                    2 Passagers
                 </span>
             </div>
 
@@ -214,91 +335,52 @@
                         <thead class="bg-slate-900/80 text-[10px] font-mono uppercase text-slate-400 border-b border-slate-800">
                             <tr>
                                 <th class="py-3 px-4">Passager</th>
-                                <th class="py-3 px-4">N° Billet</th>
-                                <th class="py-3 px-4">Compagnie</th>
+                                <th class="py-3 px-4">Vol & PNR</th>
                                 <th class="py-3 px-4">Destination</th>
-                                <th class="py-3 px-4">Vol (Date/Heure)</th>
-                                <th class="py-3 px-4">Poids (Constaté / Aut.)</th>
-                                <th class="py-3 px-4">Statut Bagage</th>
+                                <th class="py-3 px-4">Poids Constaté / Aut.</th>
+                                <th class="py-3 px-4">Surtaxe Encaissée</th>
+                                <th class="py-3 px-4">Statut Rayon X</th>
+                                <th class="py-3 px-4">N° Scellé</th>
                             </tr>
                         </thead>
-                        <tbody id="passengerList" class="divide-y divide-slate-800/60 font-mono">
-                            <tr class="hover:bg-slate-800/30">
-                                <td class="py-3.5 px-4 font-bold text-slate-100">MUTOMBO ILUNGA Patrick</td>
-                                <td class="py-3.5 px-4 text-indigo-400 font-bold">AF-29401</td>
-                                <td class="py-3.5 px-4">Air France</td>
-                                <td class="py-3.5 px-4">Paris CDG</td>
-                                <td class="py-3.5 px-4">03/10/2026 21:45</td>
-                                <td class="py-3.5 px-4"><span class="text-emerald-400 font-bold">42 kg</span> / 46 kg</td>
-                                <td class="py-3.5 px-4"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">Conforme</span></td>
-                            </tr>
-                            <tr class="hover:bg-slate-800/30">
-                                <td class="py-3.5 px-4 font-bold text-slate-100">BOKETSHU YONGO Mireille</td>
-                                <td class="py-3.5 px-4 text-indigo-400 font-bold">SN-88410</td>
-                                <td class="py-3.5 px-4">Brussels Airlines</td>
-                                <td class="py-3.5 px-4">Bruxelles BRU</td>
-                                <td class="py-3.5 px-4">03/10/2026 20:30</td>
-                                <td class="py-3.5 px-4"><span class="text-rose-400 font-bold">50 kg</span> / 46 kg</td>
-                                <td class="py-3.5 px-4"><span class="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 text-[10px] font-bold">+4 kg Excédent</span></td>
-                            </tr>
+                        <tbody id="pax-table-body" class="divide-y divide-slate-800/60 font-mono">
                         </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- VUE 4 : BATCH & CONVOIS SCELLÉS -->
-        <section id="view-batch" class="view-content space-y-6">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4">
+        <!-- 6. VUE BATCH & CONVOI SCELLÉ N'DJILI -->
+        <section id="pane-batch" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
-                    <h2 class="text-2xl font-black text-slate-100">Manifeste des Convois (Batch)</h2>
-                    <p class="text-xs text-slate-400 mt-1">Lots consolidés scellés acheminés sous escorte vers N'djili[cite: 9].</p>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Consolidation Convois Batch & Transfert</h2>
+                    <p class="text-xs text-slate-400">Regroupement des bagages scellés en convoi blindé vers l'aéroport[cite: 8, 9].</p>
                 </div>
-                <button onclick="alert('Exportation sécurisée du manifeste N\'djili effectuée.')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md flex items-center gap-2">
-                    <i class="fa-solid fa-file-export"></i> Exporter Manifeste Batch
-                </button>
             </div>
 
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 shadow-xl">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs text-slate-300">
-                        <thead class="bg-slate-900/80 text-[10px] font-mono uppercase text-slate-400 border-b border-slate-800">
-                            <tr>
-                                <th class="py-3 px-4">Réf. Lot (Batch)</th>
-                                <th class="py-3 px-4">Vol & Compagnie</th>
-                                <th class="py-3 px-4">Nb Bagages</th>
-                                <th class="py-3 px-4">Poids Total</th>
-                                <th class="py-3 px-4">Statut Sûreté</th>
-                                <th class="py-3 px-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-800/60 font-mono">
-                            <tr class="hover:bg-slate-800/30">
-                                <td class="py-3.5 px-4 font-bold text-indigo-400">BT-2026-091</td>
-                                <td class="py-3.5 px-4 text-slate-200">AF 898 • Air France</td>
-                                <td class="py-3.5 px-4">32 pièces</td>
-                                <td class="py-3.5 px-4">712 kg</td>
-                                <td class="py-3.5 px-4"><span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">Scellé & Transmis</span></td>
-                                <td class="py-3.5 px-4 text-right"><button class="text-slate-400 hover:text-indigo-400"><i class="fa-solid fa-eye"></i></button></td>
-                            </tr>
-                            <tr class="hover:bg-slate-800/30">
-                                <td class="py-3.5 px-4 font-bold text-indigo-400">BT-2026-092</td>
-                                <td class="py-3.5 px-4 text-slate-200">SN 358 • Brussels Airlines</td>
-                                <td class="py-3.5 px-4">24 pièces</td>
-                                <td class="py-3.5 px-4">540 kg</td>
-                                <td class="py-3.5 px-4"><span class="px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-400 text-[10px] font-bold">En Route N'djili</span></td>
-                                <td class="py-3.5 px-4 text-right"><button class="text-slate-400 hover:text-indigo-400"><i class="fa-solid fa-eye"></i></button></td>
-                            </tr>
-                            <tr class="hover:bg-slate-800/30">
-                                <td class="py-3.5 px-4 font-bold text-indigo-400">BT-2026-093</td>
-                                <td class="py-3.5 px-4 text-slate-200">ET 841 • Ethiopian Airlines</td>
-                                <td class="py-3.5 px-4">18 pièces</td>
-                                <td class="py-3.5 px-4">396 kg</td>
-                                <td class="py-3.5 px-4"><span class="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold">Pesée en cours</span></td>
-                                <td class="py-3.5 px-4 text-right"><button class="text-slate-400 hover:text-indigo-400"><i class="fa-solid fa-eye"></i></button></td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 space-y-4 md:col-span-2 shadow-xl">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <h3 class="text-sm font-bold text-slate-100 uppercase tracking-wider">Manifeste du Lot en Cours : BT-2026-093</h3>
+                        <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">Prêt pour convoi</span>
+                    </div>
+                    <div class="space-y-2 text-xs font-mono">
+                        <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Bagages certifiés et scellés :</span><strong class="text-emerald-400" id="batch-pax-count">2 pièces</strong></div>
+                        <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Masse globale transportée :</span><strong class="text-indigo-400" id="batch-pax-weight">44.30 kg</strong></div>
+                        <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Destination :</span><strong class="text-slate-200">Terminal Départs N'Djili</strong></div>
+                    </div>
+                </div>
+
+                <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 space-y-4 flex flex-col justify-between shadow-xl">
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-bold text-slate-100 uppercase tracking-wider">Plombage Camion</h3>
+                        <p class="text-[11px] text-slate-400">Verrouillage de la porte du fourgon avant départ de l'agence.</p>
+                        <input type="text" id="truck-seal-input" placeholder="N° Plomb Camion (ex: TRK-990)" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 font-mono text-xs text-amber-300 uppercase focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <button type="button" onclick="dispatchTruck()" class="w-full bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-black text-xs uppercase p-3.5 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-truck-shield"></i> Expédier Convoi N'djili
+                    </button>
                 </div>
             </div>
         </section>
@@ -306,90 +388,333 @@
     </main>
 
     <!-- PIED DE PAGE -->
-    <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-8 text-center text-xs text-slate-500 space-y-2">
-        <p><b>EasyFly Transit SARL</b> — Division Sûreté & Pré-enregistrement déporté[cite: 8, 9].</p>
-        <p class="text-[10px] font-mono">Système d'audit sécurisé GTS • Kinshasa, RDC[cite: 8, 9].</p>
+    <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-6 text-center text-xs text-slate-500 space-y-1">
+        <p><b>EasyFly Transit SARL</b> — Console Intégrale Hub PROCOKI Kinshasa[cite: 8, 9].</p>
+        <p class="text-[10px] font-mono">Connexion sécurisée passerelle aéroportuaire N'Djili[cite: 8, 9].</p>
     </footer>
 
-    <!-- LOGIQUE DE NAVIGATION EXCLUSIVE & SCRIPT -->
+    <!-- LOGIQUE JAVASCRIPT & BASE DE DONNÉES EN MÉMOIRE -->
     <script>
-        // Gestion de l'affichage exclusif des vues
-        function switchView(viewName) {
-            // Masquer toutes les vues
-            document.querySelectorAll('.view-content').forEach(view => {
-                view.classList.remove('active');
+        const TARIFF_PER_KG = 42000;
+
+        // Base de données réactive initiale
+        let PAX_DATABASE = [
+            {
+                id: "pax-1",
+                nom: "MUTOMBO",
+                postnom: "ILUNGA",
+                prenom: "Patrick",
+                pnr: "AF-29401",
+                compagnie: "Air France",
+                date: "2026-10-03",
+                heure: "21:45",
+                destination: "Paris-CDG",
+                allowedWeight: 23,
+                measuredWeight: 21.8,
+                excessFee: 0,
+                payMethod: "Cash",
+                payRef: "REC-001",
+                xrayStatus: "Approved",
+                sealNumber: "PL-9921"
+            },
+            {
+                id: "pax-2",
+                nom: "BOKETSHU",
+                postnom: "YONGO",
+                prenom: "Mireille",
+                pnr: "SN-88410",
+                compagnie: "Brussels Airlines",
+                date: "2026-10-03",
+                heure: "20:30",
+                destination: "Bruxelles BRU",
+                allowedWeight: 23,
+                measuredWeight: 22.5,
+                excessFee: 0,
+                payMethod: "POS_Card",
+                payRef: "REC-002",
+                xrayStatus: "Pending",
+                sealNumber: ""
+            }
+        ];
+
+        let selectedWeighId = "pax-1";
+        let selectedXrayId = "pax-2";
+        let currentXrayVote = null;
+
+        // 1. Navigation exclusive entre onglets
+        function navigateTab(tabName) {
+            document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60";
             });
 
-            // Réinitialiser les boutons d'onglets
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.className = "tab-btn px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60";
-            });
+            const activePane = document.getElementById('pane-' + tabName);
+            if (activePane) activePane.classList.add('active');
 
-            // Activer la vue sélectionnée
-            const targetView = document.getElementById('view-' + viewName);
-            if (targetView) targetView.classList.add('active');
-
-            // Mettre en valeur l'onglet actif
-            const targetTab = document.getElementById('tab-' + viewName);
-            if (targetTab) {
-                targetTab.className = "tab-btn px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
+            const activeBtn = document.getElementById('btn-tab-' + tabName);
+            if (activeBtn) {
+                activeBtn.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
             }
         }
 
-        // Gestion du formulaire et du registre
-        let totalCount = 2;
-        let totalBagages = 148;
-
-        function enregistrerPassager(e) {
+        // 2. Enregistrement d'un nouveau passager
+        function handleNewClient(e) {
             e.preventDefault();
+            const newPax = {
+                id: "pax-" + (PAX_DATABASE.length + 1),
+                nom: document.getElementById('reg-nom').value.trim().toUpperCase(),
+                postnom: document.getElementById('reg-postnom').value.trim().toUpperCase(),
+                prenom: document.getElementById('reg-prenom').value.trim(),
+                pnr: document.getElementById('reg-pnr').value.trim().toUpperCase(),
+                compagnie: document.getElementById('reg-compagnie').value,
+                date: document.getElementById('reg-date').value,
+                heure: document.getElementById('reg-heure').value,
+                destination: document.getElementById('reg-dest').value.trim(),
+                allowedWeight: parseFloat(document.getElementById('reg-allowed').value),
+                measuredWeight: 0,
+                excessFee: 0,
+                payMethod: "Cash",
+                payRef: "",
+                xrayStatus: "Pending",
+                sealNumber: ""
+            };
 
-            const nom = document.getElementById('nom').value.trim();
-            const postnom = document.getElementById('postnom').value.trim();
-            const prenom = document.getElementById('prenom').value.trim();
-            const billet = document.getElementById('billet').value.trim();
-            const compagnie = document.getElementById('compagnie').value;
-            const dateVol = document.getElementById('dateVol').value;
-            const heureVol = document.getElementById('heureVol').value;
-            const destination = document.getElementById('destination').value.trim();
-            const poidsAuto = parseFloat(document.getElementById('poidsAuto').value);
-            const poidsConst = parseFloat(document.getElementById('poidsConst').value);
+            PAX_DATABASE.unshift(newPax);
+            refreshAllUI();
+            document.getElementById('clientRegisterForm').reset();
+            alert(`Dossier ${newPax.nom} ${newPax.prenom} enregistré avec succès !\nRedirection vers le poste de pesée.`);
+            selectedWeighId = newPax.id;
+            loadPaxIntoWeigh(newPax.id);
+            navigateTab('pesee');
+        }
 
-            const passagerComplet = `${nom} ${postnom} ${prenom}`;
-            const excedent = poidsConst - poidsAuto;
-            
-            let statusBadge = '';
-            if (excedent > 0) {
-                statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 text-[10px] font-bold">+${excedent.toFixed(1)} kg Excédent</span>`;
+        // 3. Rafraîchissement global des listes déroulantes et tableaux
+        function refreshAllUI() {
+            // Mise à jour des compteurs Dashboard
+            document.getElementById('stat-total-pax').textContent = PAX_DATABASE.length;
+            const totalKg = PAX_DATABASE.reduce((sum, p) => sum + (p.measuredWeight || 0), 0);
+            document.getElementById('stat-total-kg').textContent = totalKg.toFixed(2) + " kg";
+            const totalCdf = PAX_DATABASE.reduce((sum, p) => sum + (p.excessFee || 0), 0);
+            document.getElementById('stat-total-cdf').textContent = totalCdf.toLocaleString('fr-FR') + " CDF";
+            document.getElementById('reg-badge-count').textContent = PAX_DATABASE.length + " Passagers";
+            document.getElementById('batch-pax-count').textContent = PAX_DATABASE.length + " pièces";
+            document.getElementById('batch-pax-weight').textContent = totalKg.toFixed(2) + " kg";
+
+            // Sélecteurs de pesée et Rayon X
+            const selWeigh = document.getElementById('select-active-pax');
+            const selXray = document.getElementById('select-xray-pax');
+            selWeigh.innerHTML = "";
+            selXray.innerHTML = "";
+
+            PAX_DATABASE.forEach(p => {
+                const opt1 = document.createElement('option');
+                opt1.value = p.id;
+                opt1.textContent = `${p.nom} (${p.pnr})`;
+                selWeigh.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = p.id;
+                opt2.textContent = `${p.nom} (${p.pnr})`;
+                selXray.appendChild(opt2);
+            });
+
+            // Tableau général du registre
+            const tbody = document.getElementById('pax-table-body');
+            tbody.innerHTML = "";
+            PAX_DATABASE.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/30 transition-colors";
+                const xrayBadge = p.xrayStatus === 'Approved' 
+                    ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">● Conforme Scan</span>`
+                    : (p.xrayStatus === 'Suspect' ? `<span class="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 text-[10px] font-bold">● Alerte Suspect</span>` : `<span class="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold">⏳ En Attente</span>`);
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-bold text-slate-100">${p.nom} ${p.postnom} ${p.prenom}</td>
+                    <td class="py-3 px-4 text-indigo-400 font-bold">${p.compagnie} • ${p.pnr}</td>
+                    <td class="py-3 px-4">${p.destination}</td>
+                    <td class="py-3 px-4"><span class="${p.measuredWeight > p.allowedWeight ? 'text-rose-400 font-bold' : 'text-emerald-400'}">${p.measuredWeight ? p.measuredWeight.toFixed(1) + ' kg' : 'Non pesé'}</span> / ${p.allowedWeight} kg</td>
+                    <td class="py-3 px-4 text-rose-400 font-bold">${p.excessFee ? p.excessFee.toLocaleString('fr-FR') + ' CDF' : '0 CDF'}</td>
+                    <td class="py-3 px-4">${xrayBadge}</td>
+                    <td class="py-3 px-4 font-bold text-emerald-400">${p.sealNumber || '<span class="text-slate-500">Non scellé</span>'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 4. Chargement d'un passager dans la pesée
+        function loadPaxIntoWeigh(paxId) {
+            selectedWeighId = paxId;
+            const pax = PAX_DATABASE.find(p => p.id === paxId);
+            if (!pax) return;
+            document.getElementById('weigh-lbl-nom').textContent = `${pax.nom} ${pax.postnom} ${pax.prenom}`;
+            document.getElementById('weigh-lbl-vol').textContent = `${pax.compagnie}`;
+            document.getElementById('weigh-lbl-pnr').textContent = pax.pnr;
+            document.getElementById('weigh-lbl-allowed').textContent = pax.allowedWeight.toFixed(2) + " kg";
+            document.getElementById('weigh-input-kg').value = pax.measuredWeight || "";
+            document.getElementById('select-active-pax').value = paxId;
+            liveCalcExcess();
+        }
+
+        // 5. Calcul en direct de l'excédent
+        function liveCalcExcess() {
+            const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
+            if (!pax) return;
+            const inputKg = parseFloat(document.getElementById('weigh-input-kg').value) || 0;
+            const excess = Math.max(0, inputKg - pax.allowedWeight);
+            const fee = Math.round(excess * TARIFF_PER_KG);
+            const feeBox = document.getElementById('weigh-fee-box');
+
+            if (excess > 0) {
+                feeBox.textContent = `+ ${fee.toLocaleString('fr-FR')} CDF (+${excess.toFixed(1)} kg)`;
+                feeBox.className = "w-full bg-slate-950 border border-rose-500/40 rounded-xl p-3 font-mono text-2xl text-rose-400 font-black h-[58px] flex items-center";
             } else {
-                statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">Conforme</span>`;
+                feeBox.textContent = "0 CDF (Conforme)";
+                feeBox.className = "w-full bg-slate-950 border border-emerald-500/30 rounded-xl p-3 font-mono text-2xl text-emerald-400 font-bold h-[58px] flex items-center";
+            }
+        }
+
+        // 6. Bascule Affichage référence Caisse
+        function togglePayRef(show) {
+            document.getElementById('box-pay-ref').classList.toggle('hidden', !show);
+            document.getElementById('box-pay-mobile').classList.toggle('hidden', show);
+        }
+
+        // 7. Enregistrer la pesée
+        function saveWeighRecord() {
+            const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
+            if (!pax) return;
+            const weight = parseFloat(document.getElementById('weigh-input-kg').value);
+            if (!weight || weight <= 0) {
+                alert("Veuillez saisir le poids relevé sur la balance.");
+                return;
             }
 
-            const tr = document.createElement('tr');
-            tr.className = "hover:bg-slate-800/30 transition-colors";
-            tr.innerHTML = `
-                <td class="py-3.5 px-4 font-bold text-slate-100">${passagerComplet}</td>
-                <td class="py-3.5 px-4 text-indigo-400 font-bold">${billet}</td>
-                <td class="py-3.5 px-4">${compagnie}</td>
-                <td class="py-3.5 px-4">${destination}</td>
-                <td class="py-3.5 px-4">${dateVol} ${heureVol}</td>
-                <td class="py-3.5 px-4"><span class="${excedent > 0 ? 'text-rose-400' : 'text-emerald-400'} font-bold">${poidsConst} kg</span> / ${poidsAuto} kg</td>
-                <td class="py-3.5 px-4">${statusBadge}</td>
-            `;
+            pax.measuredWeight = weight;
+            const excess = Math.max(0, weight - pax.allowedWeight);
+            pax.excessFee = Math.round(excess * TARIFF_PER_KG);
+            pax.payMethod = document.querySelector('input[name="payType"]:checked').value;
+            pax.payRef = document.getElementById('weigh-input-ref').value.trim();
 
-            const tbody = document.getElementById('passengerList');
-            tbody.insertBefore(tr, tbody.firstChild);
-
-            totalCount++;
-            totalBagages++;
-            document.getElementById('counter').innerText = `${totalCount} Passagers enregistrés`;
-            document.getElementById('statBagages').innerText = totalBagages;
-
-            document.getElementById('passengerForm').reset();
-            alert('Fiche passager enregistrée avec succès. Redirection vers le registre...');
-            
-            // Basculer automatiquement vers le registre
-            switchView('registre');
+            refreshAllUI();
+            alert(`Pesée enregistrée pour ${pax.nom} !\nMasse : ${pax.measuredWeight} kg\nTransfert au poste Rayon X.`);
+            loadPaxIntoXray(pax.id);
+            navigateTab('surete');
         }
+
+        // 8. Chargement d'un passager dans le Rayon X
+        function loadPaxIntoXray(paxId) {
+            selectedXrayId = paxId;
+            const pax = PAX_DATABASE.find(p => p.id === paxId);
+            if (!pax) return;
+            document.getElementById('xray-lbl-nom').textContent = `${pax.nom} ${pax.postnom} ${pax.prenom}`;
+            document.getElementById('xray-lbl-dest').textContent = pax.destination;
+            document.getElementById('xray-lbl-pnr').textContent = pax.pnr;
+            document.getElementById('xray-lbl-kg').textContent = pax.measuredWeight ? pax.measuredWeight.toFixed(2) + " kg" : "Non pesé";
+            document.getElementById('xray-input-seal').value = pax.sealNumber || "";
+            document.getElementById('select-xray-pax').value = paxId;
+            currentXrayVote = pax.xrayStatus;
+            updateXrayButtonsUI(pax.xrayStatus);
+        }
+
+        function setXrayVote(vote) {
+            currentXrayVote = vote;
+            updateXrayButtonsUI(vote);
+        }
+
+        function updateXrayButtonsUI(vote) {
+            const btnOk = document.getElementById('btn-dec-ok');
+            const btnAlert = document.getElementById('btn-dec-alert');
+            if (vote === 'Approved') {
+                btnOk.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-emerald-500 bg-emerald-950/30 transition-all";
+                btnAlert.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 opacity-40 transition-all";
+            } else if (vote === 'Suspect') {
+                btnAlert.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-rose-500 bg-rose-950/30 transition-all";
+                btnOk.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 opacity-40 transition-all";
+            } else {
+                btnOk.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 hover:border-emerald-500 transition-all";
+                btnAlert.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 hover:border-rose-500 transition-all";
+            }
+        }
+
+        // 9. Validation finale du scellé Rayon X
+        function finalizeXray() {
+            const pax = PAX_DATABASE.find(p => p.id === selectedXrayId);
+            if (!pax) return;
+            if (!currentXrayVote || currentXrayVote === 'Pending') {
+                alert("Veuillez sélectionner une décision Rayon X (Conforme ou Suspect).");
+                return;
+            }
+            const seal = document.getElementById('xray-input-seal').value.trim();
+            if (currentXrayVote === 'Approved' && !seal) {
+                alert("Pour un bagage conforme, le numéro du plomb scellé physique est obligatoire.");
+                return;
+            }
+
+            pax.xrayStatus = currentXrayVote;
+            pax.sealNumber = seal;
+            refreshAllUI();
+            alert(`Bagage de ${pax.nom} certifié et verrouillé sous le scellé #${seal || 'AUCUN'} !\nLe dossier est disponible dans le registre.`);
+            navigateTab('registre');
+        }
+
+        // 10. Impression Reçu Thermique 80mm
+        function printThermalDoc() {
+            const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
+            if (!pax) return;
+            const printWin = window.open('', '', 'width=340,height=550');
+            printWin.document.write(`
+                <html>
+                <head>
+                    <title>Ticket Thermique EasyFly</title>
+                    <style>
+                        body { font-family: monospace; font-size: 11px; width: 260px; margin: 0 auto; padding: 10px; color: #000; }
+                        .center { text-align: center; }
+                        .bold { font-weight: bold; }
+                        .line { border-bottom: 1px dashed #000; margin: 6px 0; }
+                    </style>
+                </head>
+                <body onload="window.print(); window.close();">
+                    <div class="center bold">EASYFLY TRANSIT </div>
+                    <div class="center" style="font-size: 8px;">Hub Concession PROCOKI - Gombe, Kinshasa</div>
+                    <div class="line"></div>
+                    <div>PASSAGER : ${pax.nom} ${pax.prenom}</div>
+                    <div>PNR : ${pax.pnr} | COMPAGNIE : ${pax.compagnie}</div>
+                    <div>DESTINATION : ${pax.destination}</div>
+                    <div class="line"></div>
+                    <div>FRANCHISE : ${pax.allowedWeight} kg</div>
+                    <div>PESEE REELLE : ${pax.measuredWeight} kg</div>
+                    <div class="bold">EXCEDENT : +${Math.max(0, pax.measuredWeight - pax.allowedWeight).toFixed(1)} kg</div>
+                    <div class="bold" style="font-size: 13px;">ENCAISSE : ${pax.excessFee.toLocaleString('fr-FR')} CDF</div>
+                    <div>REGLEMENT : ${pax.payMethod} (Réf: ${pax.payRef || 'N/A'})</div>
+                    <div class="line"></div>
+                    <div>SURETE SCAN : ${pax.xrayStatus}</div>
+                    <div class="bold">SCELLÉ PLOMB : ${pax.sealNumber || 'En cours'}</div>
+                    <div class="line"></div>
+                    <div class="center" style="font-size: 8px;">Présentez ce bon au tarmac de l'Aéroport de N'Djili.</div>
+                    <div class="center bold" style="margin-top: 8px;">BON VOYAGE !</div>
+                </body>
+                </html>
+            `);
+            printWin.document.close();
+        }
+
+        // 11. Clôture et Expédition Camion
+        function dispatchTruck() {
+            const truckSeal = document.getElementById('truck-seal-input').value.trim();
+            if (!truckSeal) {
+                alert("Veuillez renseigner le numéro de scellé camion avant de valider le convoi.");
+                return;
+            }
+            alert(`Convoi BT-2026-093 expédié sous le scellé #${truckSeal} avec succès vers l'Aéroport International de N'Djili !`);
+            document.getElementById('truck-seal-input').value = "";
+        }
+
+        // Initialisation au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshAllUI();
+            loadPaxIntoWeigh('pax-1');
+            loadPaxIntoXray('pax-2');
+        });
     </script>
 </body>
 </html>
