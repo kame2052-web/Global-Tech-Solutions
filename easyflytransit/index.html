@@ -77,7 +77,7 @@
             <p class="text-[11px] text-slate-500 font-mono">Conforme aux standards de sûreté aéroportuaire et scellés inviolables.</p>
         </div>
 
-        <!-- MODULE RÉSERVATION & SIMULATION DE COLLECTE VIP -->
+        <!-- MODULE RÉSERVATION & SIMULATEUR DYNAMIQUE -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-4">
             
             <!-- FORMULAIRE (2 COLONNES) -->
@@ -93,9 +93,9 @@
 
                     <form id="bookingForm" class="space-y-6" onsubmit="event.preventDefault(); validerDossierClient();">
                         
-                        <!-- CHOIX DU MODE -->
+                        <!-- CHOIX DU MODE (DÉCLENCHEUR DYNAMIQUE) -->
                         <div>
-                            <label class="block text-xs font-mono text-slate-300 uppercase mb-3 font-bold">Mode de Prise en Charge *</label>
+                            <label class="block text-xs font-mono text-slate-300 uppercase mb-3 font-bold">1. Sélectionnez votre Mode de Prise en Charge *</label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <label class="relative flex flex-col p-4 rounded-2xl border-2 border-indigo-600 bg-indigo-950/20 cursor-pointer transition-all" id="card-mode-agency">
                                     <input type="radio" name="serviceMode" value="AGENCY" checked onchange="basculerMode('AGENCY')" class="sr-only">
@@ -105,8 +105,8 @@
                                         </span>
                                         <i class="fa-solid fa-circle-check text-indigo-400 text-sm check-icon"></i>
                                     </div>
-                                    <p class="text-[11px] text-slate-400">Dépôt personnel dans nos agences de Gombe (PROCOKI), Limete ou Ngaliema.</p>
-                                    <span class="mt-3 text-[10px] font-mono text-emerald-400 font-bold">Tarif Standard Guichet</span>
+                                    <p class="text-[11px] text-slate-400">Vous déposez vos valises dans nos comptoirs (Gombe, Limete, Ngaliema).</p>
+                                    <span class="mt-3 text-[10px] font-mono text-indigo-300 font-bold">10 $ National • 20 $ International / sac</span>
                                 </label>
 
                                 <label class="relative flex flex-col p-4 rounded-2xl border-2 border-slate-800 bg-slate-900/60 hover:border-amber-500/50 cursor-pointer transition-all" id="card-mode-vip">
@@ -117,7 +117,7 @@
                                         </span>
                                         <i class="fa-regular fa-circle text-slate-600 text-sm check-icon"></i>
                                     </div>
-                                    <p class="text-[11px] text-slate-400">Fourgon à domicile, balance certifiée, scellés et déplacement 100% inclus.</p>
+                                    <p class="text-[11px] text-slate-400">Fourgon blindé à domicile, balance mobile, scellés et déplacement 100% inclus.</p>
                                     <span class="mt-3 text-[10px] font-mono text-amber-400 font-bold">15 $ National • 30 $ International / sac</span>
                                 </label>
                             </div>
@@ -142,10 +142,10 @@
                         <!-- TYPE DE VOL & DÉTAILS -->
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
-                                <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Destination / Type de Vol *</label>
+                                <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Destination / Vol *</label>
                                 <select id="flightType" onchange="calculerDevisEnDirect()" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 font-bold focus:border-indigo-500 focus:outline-none">
-                                    <option value="INT" selected>🌍 International (30 $ / sac)</option>
-                                    <option value="NAT">🇨🇩 National / Interne (15 $ / sac)</option>
+                                    <option value="INT" selected id="opt-flight-int">🌍 Vol International</option>
+                                    <option value="NAT" id="opt-flight-nat">🇨🇩 Vol National</option>
                                 </select>
                             </div>
                             <div>
@@ -166,14 +166,14 @@
                                 <input type="number" id="nbValises" min="1" max="10" value="2" oninput="calculerDevisEnDirect()" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-100 focus:border-indigo-500 focus:outline-none">
                             </div>
                             <div>
-                                <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Créneau Souhaité *</label>
+                                <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Créneau Prévu *</label>
                                 <input type="datetime-local" id="horairePassage" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:border-indigo-500 focus:outline-none">
                             </div>
                         </div>
 
-                        <!-- SECTION DÉPÔT EN AGENCE -->
+                        <!-- SECTION 1 : VISIBLE SI DÉPÔT EN AGENCE -->
                         <div id="section-agency" class="space-y-3">
-                            <label class="block text-xs font-mono text-slate-400 uppercase">Agence de Dépôt Urbain *</label>
+                            <label class="block text-xs font-mono text-slate-400 uppercase">Sélectionnez l'Agence Urbaine de Dépôt *</label>
                             <select id="formAgence" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:border-indigo-500 focus:outline-none">
                                 <option value="Gombe - Concession PROCOKI (Boulevard du 30 Juin)">Gombe — Concession PROCOKI (Boulevard du 30 Juin)</option>
                                 <option value="Limete - Échangeur / Boulevard Lumumba">Limete — Boulevard Lumumba</option>
@@ -181,14 +181,14 @@
                             </select>
                         </div>
 
-                        <!-- SECTION COLLECTE VIP DOMICILE & TARIFICATION FORFAITAIRE -->
+                        <!-- SECTION 2 : VISIBLE SI COLLECTE VIP DOMICILE -->
                         <div id="section-vip" class="hidden bg-slate-950/70 border border-amber-500/30 rounded-2xl p-5 space-y-4">
                             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                                 <div class="flex items-center gap-2">
                                     <i class="fa-solid fa-van-shuttle text-amber-400"></i>
                                     <h4 class="text-xs font-black uppercase text-amber-400 tracking-wider">Adresse de Collecte VIP à Domicile</h4>
                                 </div>
-                                <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">Déplacement Inclus</span>
+                                <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-bold">Déplacement 100% Inclus</span>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -210,30 +210,7 @@
                                 </div>
                             </div>
 
-                            <!-- ESTIMATEUR FINANCIER FORFAITAIRE TOUT INCLUS -->
-                            <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 space-y-2 font-mono text-xs">
-                                <div class="flex justify-between text-slate-300">
-                                    <span>Formule Forfaitaire VIP :</span>
-                                    <strong class="text-amber-300" id="lblFormuleType">Vol International (30 $ / valise)</strong>
-                                </div>
-                                <div class="flex justify-between text-slate-300">
-                                    <span>Nombre de bagages pris en charge :</span>
-                                    <strong class="text-slate-100" id="lblQtyBags">2 bagages</strong>
-                                </div>
-                                <div class="flex justify-between text-slate-300">
-                                    <span>Déplacement fourgon & convoi N'Djili :</span>
-                                    <strong class="text-emerald-400">0 CDF (100% Inclus)</strong>
-                                </div>
-                                <div class="border-t border-amber-500/20 pt-2 flex justify-between items-center text-sm">
-                                    <span class="font-bold text-white uppercase">Total Forfait VIP :</span>
-                                    <div class="text-right">
-                                        <span class="font-black text-amber-400 text-base" id="lblTotalVipCdf">168 000 CDF</span>
-                                        <span class="block text-[10px] text-slate-400" id="lblTotalVipUsd">(60.00 USD)</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- PROTOCOLE ARTICLE 1 -->
+                            <!-- PROTOCOLE ARTICLE 1 (INSPECTION DOMICILE) -->
                             <div class="bg-slate-900 border-l-4 border-amber-500 p-3 rounded-r-xl text-[11px] text-slate-300 space-y-1">
                                 <p class="font-bold text-amber-400 flex items-center gap-1.5">
                                     <i class="fa-solid fa-shield-halved"></i> Application de l'Article 1 (Inspection conjointe au domicile) :
@@ -244,7 +221,30 @@
                             </div>
                         </div>
 
-                        <!-- CLAUSES JURIDIQUES ET SÛRETÉ -->
+                        <!-- SIMULATEUR FINANCIER DYNAMIQUE EN DIRECT -->
+                        <div class="rounded-2xl p-5 border font-mono text-xs space-y-2 transition-all" id="box-pricing-summary">
+                            <div class="flex justify-between text-slate-300">
+                                <span>Formule active :</span>
+                                <strong id="lblActiveModeTitle">Dépôt en Agence Hub</strong>
+                            </div>
+                            <div class="flex justify-between text-slate-300">
+                                <span>Tarif appliqué par bagage :</span>
+                                <strong id="lblRatePerBag">20 $ / sac (Vol International)</strong>
+                            </div>
+                            <div class="flex justify-between text-slate-300">
+                                <span>Nombre de bagages prévus :</span>
+                                <strong class="text-slate-100" id="lblQtyBags">2 bagage(s)</strong>
+                            </div>
+                            <div class="border-t border-slate-700/60 pt-2 flex justify-between items-center text-sm">
+                                <span class="font-bold text-white uppercase">Montant total de la prise en charge :</span>
+                                <div class="text-right">
+                                    <span class="font-black text-base" id="lblTotalCdf">112 000 CDF</span>
+                                    <span class="block text-[10px] text-slate-400" id="lblTotalUsd">(40.00 USD)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DÉCHARGE JURIDIQUE -->
                         <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-3">
                             <h4 class="text-xs font-black uppercase tracking-wider text-rose-400 flex items-center gap-2">
                                 <i class="fa-solid fa-triangle-exclamation"></i> Déclaration de Sûreté & Décharge de Responsabilité (RVA / IATA)
@@ -261,8 +261,8 @@
                             </label>
                         </div>
 
-                        <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-black py-4 px-6 rounded-2xl shadow-xl transition-all duration-200 text-xs uppercase tracking-wider flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-barcode"></i> Valider Ma Prise en Charge & Générer Mon QR Pass
+                        <button type="submit" id="btnSubmitForm" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-black py-4 px-6 rounded-2xl shadow-xl transition-all duration-200 text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-barcode"></i> Valider mon Dépôt en Agence & Générer mon QR Pass
                         </button>
                     </form>
                 </div>
@@ -293,8 +293,8 @@
                             </div>
                             <span class="block font-mono text-xs text-indigo-400 font-bold uppercase" id="pnrClient">REF: AF-29401</span>
                             <span class="inline-block text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full mt-1" id="modeBadge">Mode Standard</span>
-                            <div id="recapTarifVip" class="hidden text-[11px] font-mono text-amber-300 font-bold bg-amber-500/10 p-2.5 rounded-lg mt-2 border border-amber-500/20">
-                                Total Forfait VIP : <span id="recapMontantVip">0 CDF</span>
+                            <div id="recapTarifBox" class="text-[11px] font-mono text-emerald-300 font-bold bg-emerald-500/10 p-2.5 rounded-lg mt-2 border border-emerald-500/20">
+                                Montant à régler : <span id="recapMontantVal">0 CDF</span>
                             </div>
                             <p class="text-[10px] text-slate-400 mt-2">Présentez ce QR Code à l'agent protocole EasyFly devant le hall des départs de N'Djili.</p>
                         </div>
@@ -332,7 +332,7 @@
             <div class="bg-gtscard border border-slate-800 rounded-2xl p-6 space-y-3">
                 <div class="h-10 w-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-black">1</div>
                 <h4 class="font-bold text-slate-100">Check-in Déporté</h4>
-                <p class="text-xs text-slate-400 leading-relaxed">Présentation du passeport et pesée certifiée des valises dans nos agences de Gombe, Limete ou Ngaliema (ou collecte directe à domicile).</p>
+                <p class="text-xs text-slate-400 leading-relaxed">Présentation du passeport et pesée certifiée des valises dans nos agences de Gombe, Limete ou Ngaliema (ou collecte à domicile).</p>
             </div>
             <div class="bg-gtscard border border-slate-800 rounded-2xl p-6 space-y-3">
                 <div class="h-10 w-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-black">2</div>
@@ -353,15 +353,25 @@
         <p class="text-[10px] font-mono">Hub Logistique Urbain Aéronautique Kinshasa • Concession PROCOKI.</p>
     </footer>
 
-    <!-- SCRIPT DU CALCULATEUR FORFAITAIRE (15$ NATIONAL / 30$ INTERNATIONAL) -->
+    <!-- SCRIPT DU CALCULATEUR DYNAMIQUE (AGENCE VS VIP DOMICILE) -->
     <script>
         const USD_EXCHANGE_RATE = 2800; // 1 USD = 2800 CDF
-        const RATE_NATIONAL_USD = 15;      // 15$ par valise (Tout inclus)
-        const RATE_INTERNATIONAL_USD = 30; // 30$ par valise (Tout inclus)
+
+        // GRILLE TARIFAIRE SELON MANIPULATION CLIENT
+        const PRICING_TABLE = {
+            AGENCY: {
+                NAT: 10, // 10$ par bagage si dépôt en agence
+                INT: 20  // 20$ par bagage si dépôt en agence
+            },
+            VIP_HOME: {
+                NAT: 15, // 15$ par bagage si collecte à domicile
+                INT: 30  // 30$ par bagage si collecte à domicile
+            }
+        };
 
         let currentServiceMode = 'AGENCY';
-        let calculatedVipTotalCdf = 0;
-        let calculatedVipTotalUsd = 0;
+        let calculatedTotalCdf = 0;
+        let calculatedTotalUsd = 0;
 
         function basculerMode(mode) {
             currentServiceMode = mode;
@@ -370,6 +380,8 @@
             const secAgency = document.getElementById('section-agency');
             const secVip = document.getElementById('section-vip');
             const vipAdresse = document.getElementById('vipAdresse');
+            const btnSubmit = document.getElementById('btnSubmitForm');
+            const boxSummary = document.getElementById('box-pricing-summary');
 
             if (mode === 'VIP_HOME') {
                 cardVip.className = "relative flex flex-col p-4 rounded-2xl border-2 border-amber-500 bg-amber-950/20 cursor-pointer transition-all";
@@ -381,7 +393,10 @@
                 secAgency.classList.add('hidden');
                 secVip.classList.remove('hidden');
                 vipAdresse.setAttribute('required', 'true');
-                calculerDevisEnDirect();
+
+                boxSummary.className = "rounded-2xl p-5 border font-mono text-xs space-y-2 bg-amber-500/10 border-amber-500/30 text-amber-300";
+                btnSubmit.className = "w-full bg-gradient-to-r from-amber-600 to-indigo-600 hover:from-amber-500 hover:to-indigo-500 text-white font-black py-4 px-6 rounded-2xl shadow-xl transition-all duration-200 text-xs uppercase tracking-wider flex items-center justify-center gap-2";
+                btnSubmit.innerHTML = '<i class="fa-solid fa-van-shuttle"></i> Réserver la Collecte VIP Domicile & Générer QR Pass';
             } else {
                 cardAgency.className = "relative flex flex-col p-4 rounded-2xl border-2 border-indigo-600 bg-indigo-950/20 cursor-pointer transition-all";
                 cardVip.className = "relative flex flex-col p-4 rounded-2xl border-2 border-slate-800 bg-slate-900/60 hover:border-amber-500/50 cursor-pointer transition-all";
@@ -392,28 +407,50 @@
                 secAgency.classList.remove('hidden');
                 secVip.classList.add('hidden');
                 vipAdresse.removeAttribute('required');
+
+                boxSummary.className = "rounded-2xl p-5 border font-mono text-xs space-y-2 bg-indigo-500/10 border-indigo-500/30 text-indigo-300";
+                btnSubmit.className = "w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-black py-4 px-6 rounded-2xl shadow-xl transition-all duration-200 text-xs uppercase tracking-wider flex items-center justify-center gap-2";
+                btnSubmit.innerHTML = '<i class="fa-solid fa-barcode"></i> Valider mon Dépôt en Agence & Générer QR Pass';
             }
+
+            calculerDevisEnDirect();
         }
 
-        // CALCUL INSTANTANÉ FORFAITAIRE TOUT INCLUS
+        // CALCUL INSTANTANÉ SELON CHOIX DU PASSAGER
         function calculerDevisEnDirect() {
-            if (currentServiceMode !== 'VIP_HOME') return;
-
             const flightType = document.getElementById('flightType').value;
             const nbBags = Math.max(1, parseInt(document.getElementById('nbValises').value) || 1);
             
-            const ratePerBagUsd = (flightType === 'NAT') ? RATE_NATIONAL_USD : RATE_INTERNATIONAL_USD;
-            calculatedVipTotalUsd = nbBags * ratePerBagUsd;
-            calculatedVipTotalCdf = calculatedVipTotalUsd * USD_EXCHANGE_RATE;
+            // Récupération du barème
+            const ratePerBagUsd = PRICING_TABLE[currentServiceMode][flightType];
+            calculatedTotalUsd = nbBags * ratePerBagUsd;
+            calculatedTotalCdf = calculatedTotalUsd * USD_EXCHANGE_RATE;
 
-            const labelFormule = (flightType === 'NAT') 
-                ? 'Vol National / Provincial (15 $ / valise)' 
-                : 'Vol International (30 $ / valise)';
+            const isVip = (currentServiceMode === 'VIP_HOME');
+            const isInt = (flightType === 'INT');
 
-            document.getElementById('lblFormuleType').textContent = labelFormule;
+            // Textes dynamiques
+            document.getElementById('lblActiveModeTitle').textContent = isVip 
+                ? 'Collecte VIP Domicile (Tout Inclus)' 
+                : 'Dépôt Personnel en Agence Hub';
+
+            document.getElementById('lblRatePerBag').textContent = `${ratePerBagUsd} $ / sac (${isInt ? 'Vol International' : 'Vol National'})`;
             document.getElementById('lblQtyBags').textContent = `${nbBags} bagage(s)`;
-            document.getElementById('lblTotalVipCdf').textContent = calculatedVipTotalCdf.toLocaleString('fr-FR') + ' CDF';
-            document.getElementById('lblTotalVipUsd').textContent = `(${calculatedVipTotalUsd.toFixed(2)} USD)`;
+            
+            const lblTotalCdf = document.getElementById('lblTotalCdf');
+            lblTotalCdf.textContent = calculatedTotalCdf.toLocaleString('fr-FR') + ' CDF';
+            lblTotalCdf.className = isVip ? "font-black text-base text-amber-400" : "font-black text-base text-indigo-300";
+
+            document.getElementById('lblTotalUsd').textContent = `(${calculatedTotalUsd.toFixed(2)} USD)`;
+
+            // Mise à jour des libellés du sélecteur
+            document.getElementById('opt-flight-int').textContent = isVip 
+                ? '🌍 Vol International (30 $ / sac)' 
+                : '🌍 Vol International (20 $ / sac)';
+
+            document.getElementById('opt-flight-nat').textContent = isVip 
+                ? '🇨🇩 Vol National (15 $ / sac)' 
+                : '🇨🇩 Vol National (10 $ / sac)';
         }
 
         function validerDossierClient() {
@@ -433,8 +470,8 @@
             const infoPrise = document.getElementById('infoPriseEnCharge');
             const step2Title = document.getElementById('step2Title');
             const step2Desc = document.getElementById('step2Desc');
-            const recapTarif = document.getElementById('recapTarifVip');
-            const recapMontant = document.getElementById('recapMontantVip');
+            const recapTarifBox = document.getElementById('recapTarifBox');
+            const recapMontant = document.getElementById('recapMontantVal');
 
             if (currentServiceMode === 'VIP_HOME') {
                 const commune = document.getElementById('vipCommune').value;
@@ -445,8 +482,8 @@
                 step2Title.textContent = "Passage Fourgon & Inspection Domicile";
                 step2Desc.textContent = "Pesée balance mobile & scellé en votre présence (Art. 1).";
                 
-                recapTarif.classList.remove('hidden');
-                recapMontant.textContent = `${calculatedVipTotalCdf.toLocaleString('fr-FR')} CDF (${calculatedVipTotalUsd} USD)`;
+                recapTarifBox.className = "text-[11px] font-mono text-amber-300 font-bold bg-amber-500/10 p-2.5 rounded-lg mt-2 border border-amber-500/20";
+                recapMontant.textContent = `${calculatedTotalCdf.toLocaleString('fr-FR')} CDF (${calculatedTotalUsd} USD)`;
             } else {
                 const agence = document.getElementById('formAgence').value;
                 modeBadge.className = "inline-block text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full mt-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400";
@@ -454,10 +491,12 @@
                 infoPrise.textContent = `Agence : ${agence}`;
                 step2Title.textContent = "Pesée & Plombage Inviolable Hub";
                 step2Desc.textContent = "Contrôle guichet et scellé physique.";
-                recapTarif.classList.add('hidden');
+                
+                recapTarifBox.className = "text-[11px] font-mono text-emerald-300 font-bold bg-emerald-500/10 p-2.5 rounded-lg mt-2 border border-emerald-500/20";
+                recapMontant.textContent = `${calculatedTotalCdf.toLocaleString('fr-FR')} CDF (${calculatedTotalUsd} USD)`;
             }
 
-            alert(`Félicitations ${nom} !\nVotre demande a été enregistrée avec succès.\n${currentServiceMode === 'VIP_HOME' ? 'Forfait VIP Collecte (Tout Inclus) : ' + calculatedVipTotalUsd + ' $ (' + calculatedVipTotalCdf.toLocaleString('fr-FR') + ' CDF)\n' : ''}Votre QR Pass N'Djili est actif.`);
+            alert(`Félicitations ${nom} !\nVotre demande a été enregistrée avec succès.\nMode : ${currentServiceMode === 'VIP_HOME' ? 'Collecte VIP Domicile' : 'Dépôt en Agence'}\nTotal à régler : ${calculatedTotalUsd} $ (${calculatedTotalCdf.toLocaleString('fr-FR')} CDF)\nVotre QR Pass N'Djili est actif.`);
         }
 
         function consulterStatutRapide() {
