@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espace Agent GTS — EasyFly Transit</title>
+    <title>EasyFly Transit — Console Intégrale Hub Urbain</title>
     <link rel="icon" type="image/png" href="../GLOBAL.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,90 +22,384 @@
             }
         }
     </script>
+    <style>
+        .view-pane { display: none; }
+        .view-pane.active { display: block; animation: fadeIn 0.25s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
-<body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+<body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
-    <!-- HEADER ADMIN -->
-    <header class="w-full border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <i class="fa-solid fa-shield-halved text-indigo-500 text-2xl"></i>
+    <!-- EN-TÊTE PRINCIPAL -->
+    <header class="bg-slate-900/90 border-b border-slate-800 p-4 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="h-11 w-11 rounded-xl overflow-hidden bg-white flex items-center justify-center p-1 shadow-sm flex-shrink-0">
+                    <img src="../EASYFLY%20TRANSIT.jpg" alt="EasyFly Transit" class="w-full h-full object-contain">
+                </div>
                 <div>
-                    <h1 class="text-sm font-black tracking-wider uppercase text-slate-100">GTS Portal Admin</h1>
-                    <p class="text-[10px] font-mono text-indigo-400 tracking-widest uppercase">Poste de Contrôle EasyFly</p>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-black px-2.5 py-0.5 rounded text-xs tracking-wider">EASYFLY HUB</span>
+                        <h1 class="text-sm font-bold text-slate-100 uppercase">Station Logistique Urbaine</h1>
+                    </div>
+                    <p class="text-[10px] text-slate-400 font-mono">Concession PROCOKI • Kinshasa, RDC</p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <a href="index.html" class="text-slate-400 hover:text-white transition-colors text-xs font-bold uppercase mr-4">
-                    <i class="fa-solid fa-arrow-left mr-1"></i> Retour Site
-                </a>
-                <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Système Actif
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+                    <span class="h-2 w-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span> Passerelle N'djili Synchro
                 </span>
+                <a href="../index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-black uppercase transition-all border border-slate-700 flex items-center gap-1.5">
+                    <i class="fa-solid fa-arrow-left"></i> Retour Site
+                </a>
             </div>
-        </div>
-        
-        <!-- ONGLETS DE NAVIGATION -->
-        <div class="max-w-7xl mx-auto px-6 flex gap-6 border-t border-slate-800">
-            <button onclick="switchTab('dashboard')" id="btn-tab-dashboard" class="py-3 text-xs font-black uppercase border-b-2 border-indigo-500 text-indigo-400 transition-colors">
-                <i class="fa-solid fa-chart-pie mr-2"></i> Tableau de Bord
-            </button>
-            <button onclick="switchTab('config')" id="btn-tab-config" class="py-3 text-xs font-black uppercase border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-colors">
-                <i class="fa-solid fa-sliders mr-2"></i> Configuration & Tarifs
-            </button>
         </div>
     </header>
 
-    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full">
-        
-        <!-- ONGLET 1 : TABLEAU DE BORD (Fonctionnalités existantes conservées) -->
-        <div id="tab-dashboard" class="space-y-8 block">
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-black text-slate-100 uppercase">Activité du Jour</h2>
-                <button class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-xs font-black uppercase shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-qrcode"></i> Scanner un QR Pass
+    <!-- BARRE DE NAVIGATION EXCLUSIVE PAR POSTES -->
+    <nav class="w-full border-b border-slate-800 bg-slate-950/70 sticky top-[73px] z-40 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 flex items-center gap-2 overflow-x-auto py-2.5">
+            <button onclick="navigateTab('dashboard')" id="btn-tab-dashboard" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md">
+                <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span>
+            </button>
+            <button onclick="navigateTab('enregistrement')" id="btn-tab-enregistrement" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-user-plus text-indigo-400"></i> <span>1. Enregistrement</span>
+            </button>
+            <button onclick="navigateTab('pesee')" id="btn-tab-pesee" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-scale-balanced text-amber-400"></i> <span>2. Pesée & Caisse</span>
+            </button>
+            <button onclick="navigateTab('surete')" id="btn-tab-surete" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-radiation text-rose-400"></i> <span>3. Scanner Rayon X</span>
+            </button>
+            <button onclick="navigateTab('registre')" id="btn-tab-registre" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-table-list text-sky-400"></i> <span>Registre Voyageurs</span>
+            </button>
+            <button onclick="navigateTab('batch')" id="btn-tab-batch" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-truck-fast text-emerald-400"></i> <span>Convoi Batch N'djili</span>
+            </button>
+            <!-- NOUVEL ONGLET DE CONFIGURATION -->
+            <button onclick="navigateTab('config')" id="btn-tab-config" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-sliders text-purple-400"></i> <span>Tarifs & Config</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ZONE DE CONTENU -->
+    <main class="max-w-7xl mx-auto p-4 md:p-6 flex-1 w-full">
+
+        <!-- 1. VUE DASHBOARD & KPIS -->
+        <section id="pane-dashboard" class="view-pane active space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Supervision Globale du Hub Urbain</h2>
+                    <p class="text-xs text-slate-400">Suivi temps réel des volumes collectés, scellés et encaissés avant expédition N'djili.</p>
+                </div>
+                <button onclick="navigateTab('enregistrement')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Nouveau Dossier
                 </button>
             </div>
 
-            <!-- Stats rapides -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl">
-                    <div class="text-slate-400 text-[10px] font-black uppercase mb-1">Bagages Enregistrés</div>
-                    <div class="text-2xl font-black text-white">42</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-indigo-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Voyageurs Enregistrés</span>
+                    <h3 id="stat-total-pax" class="text-3xl font-black text-slate-100 mt-2">2</h3>
+                    <span class="text-[10px] text-indigo-400 font-mono">Dossiers ouverts aujourd'hui</span>
                 </div>
-                <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl">
-                    <div class="text-slate-400 text-[10px] font-black uppercase mb-1">Collectes VIP Prévues</div>
-                    <div class="text-2xl font-black text-amber-400">8</div>
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-amber-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Poids Total Collecté</span>
+                    <h3 id="stat-total-kg" class="text-3xl font-black text-slate-100 mt-2">44.30 kg</h3>
+                    <span class="text-[10px] text-amber-400 font-mono">Pesées certifiées PROCOKI</span>
                 </div>
-                <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl">
-                    <div class="text-slate-400 text-[10px] font-black uppercase mb-1">Surplus Compagnie Collecté</div>
-                    <div class="text-2xl font-black text-rose-400">450 $</div>
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-rose-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Surtaxes Encaissées</span>
+                    <h3 id="stat-total-cdf" class="text-3xl font-black text-slate-100 mt-2">0 CDF</h3>
+                    <span class="text-[10px] text-rose-400 font-mono">Tarif standard 42 000 CDF / kg</span>
                 </div>
-                <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl">
-                    <div class="text-slate-400 text-[10px] font-black uppercase mb-1">Convois en Transit</div>
-                    <div class="text-2xl font-black text-emerald-400">2</div>
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-emerald-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Convois Scellés Prêts</span>
+                    <h3 class="text-3xl font-black text-slate-100 mt-2">01 Lot</h3>
+                    <span class="text-[10px] text-emerald-400 font-mono">Batch BT-2026-093</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. VUE ENREGISTREMENT GUICHET (SAISIE CLIENTS) -->
+        <section id="pane-enregistrement" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3">
+                <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 1 : Fiche Voyageur & Vol</h2>
+                <p class="text-xs text-slate-400">Saisie des données administratives du client avant passage en balance et Rayon X.</p>
+            </div>
+
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl">
+                <form id="clientRegisterForm" onsubmit="handleNewClient(event)" class="space-y-6">
+                    <!-- IDENTITÉ CLIENT -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Nom du passager *</label>
+                            <input type="text" id="reg-nom" required placeholder="ex: KABILA" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 uppercase focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Post-nom *</label>
+                            <input type="text" id="reg-postnom" required placeholder="ex: TSHISEKEDI" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 uppercase focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Prénom *</label>
+                            <input type="text" id="reg-prenom" required placeholder="ex: Jean-Luc" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 capitalize focus:outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <!-- VOL & RÉSERVATION -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Numéro Billet / PNR *</label>
+                            <input type="text" id="reg-pnr" required placeholder="ex: AF-29401" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs font-mono text-indigo-400 uppercase focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Compagnie Aérienne *</label>
+                            <select id="reg-compagnie" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                                <option value="Air France">Air France</option>
+                                <option value="Brussels Airlines">Brussels Airlines</option>
+                                <option value="Ethiopian Airlines">Ethiopian Airlines</option>
+                                <option value="Turkish Airlines">Turkish Airlines</option>
+                                <option value="Kenya Airways">Kenya Airways</option>
+                                <option value="Congo Airways">Congo Airways</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Date du Vol *</label>
+                            <input type="date" id="reg-date" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Heure du Vol *</label>
+                            <input type="time" id="reg-heure" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <!-- DESTINATION & FRANCHISE -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Destination Finale *</label>
+                            <input type="text" id="reg-dest" required placeholder="ex: Paris-CDG (France)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Poids Autorisé Billet (kg) *</label>
+                            <input type="number" step="0.5" id="reg-allowed" value="23" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs font-mono text-amber-400 focus:outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-3 border-t border-slate-800">
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase px-8 py-3.5 rounded-xl transition shadow-lg flex items-center gap-2">
+                            <i class="fa-solid fa-arrow-right"></i> Valider & Transférer à la Pesée
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- 3. VUE PESÉE, CAISSE & SURTAXE CDF -->
+        <section id="pane-pesee" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 2 : Pesée Certifiée, Franchise & Encaissement</h2>
+                    <p class="text-xs text-slate-400">Traitement de l'assiette d'excédent (42 000 CDF / kg) et délivrance de quittance thermique 80mm.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label class="text-xs font-mono text-slate-400">Dossier en traitement :</label>
+                    <select id="select-active-pax" onchange="loadPaxIntoWeigh(this.value)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-indigo-400 font-mono focus:outline-none">
+                    </select>
                 </div>
             </div>
 
-            <!-- Liste des derniers dossiers -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
-                <div class="px-6 py-4 border-b border-slate-800 bg-slate-900/50 flex justify-between items-center">
-                    <h3 class="text-sm font-bold uppercase text-slate-200">Derniers Scellés Appliqués</h3>
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                <!-- Récapitulatif du dossier sélectionné -->
+                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Voyageur :</span><strong class="text-slate-100" id="weigh-lbl-nom">-</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Vol / Comp. :</span><strong class="text-slate-100" id="weigh-lbl-vol">-</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Code PNR :</span><strong class="text-indigo-400 font-bold" id="weigh-lbl-pnr">-</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Franchise :</span><strong class="text-amber-400 font-bold" id="weigh-lbl-allowed">23.00 kg</strong></div>
                 </div>
-                <div class="p-6 text-center text-slate-500 text-xs font-mono py-12">
-                    <i class="fa-solid fa-box-archive text-4xl mb-3 block text-slate-700"></i>
-                    Aucun dossier récent pour aujourd'hui. Scannez un QR Pass pour commencer.
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Masse Balance Certifiée (kg) *</label>
+                        <input type="number" id="weigh-input-kg" step="0.1" oninput="liveCalcExcess()" placeholder="0.00" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 font-mono text-2xl text-amber-300 font-bold focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Surtaxe Excédent (42 000 CDF / kg)</label>
+                        <div id="weigh-fee-box" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-2xl text-emerald-400 font-black h-[58px] flex items-center">
+                            0 CDF (Conforme)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panneau de Caisse -->
+                <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-4">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Mode de Règlement au Guichet</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="flex items-center space-x-2 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer text-xs hover:border-slate-600">
+                            <input type="radio" name="payType" value="Cash" checked onclick="togglePayRef(true)" class="text-indigo-500 focus:ring-0">
+                            <span>💵 Cash CDF/USD</span>
+                        </label>
+                        <label class="flex items-center space-x-2 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer text-xs hover:border-slate-600">
+                            <input type="radio" name="payType" value="POS_Card" onclick="togglePayRef(true)" class="text-indigo-500 focus:ring-0">
+                            <span>💳 Carte POS</span>
+                        </label>
+                        <label class="flex items-center space-x-2 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer text-xs text-indigo-400 hover:border-indigo-500">
+                            <input type="radio" name="payType" value="Mobile_Money" onclick="togglePayRef(false)" class="text-indigo-500 focus:ring-0">
+                            <span>📱 Mobile Money</span>
+                        </label>
+                    </div>
+
+                    <div id="box-pay-ref">
+                        <input type="text" id="weigh-input-ref" placeholder="Numéro de reçu caisse papier obligatoire *" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs font-mono text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div id="box-pay-mobile" class="hidden text-xs text-indigo-300 bg-indigo-950/40 p-3 rounded-xl border border-indigo-900">
+                        ⚡ Requête STK Push asynchrone transmise au voyageur (M-Pesa, Airtel Money, Orange Money).
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
+                    <button type="button" onclick="saveWeighRecord()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase px-8 py-3.5 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> Enregistrer Pesée & Envoyer Rayon X
+                    </button>
+                    <button type="button" id="btn-print-80mm" onclick="printThermalDoc()" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs px-5 py-3.5 rounded-xl transition border border-slate-700 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i> Reçu Thermique 80mm
+                    </button>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- ONGLET 2 : CONFIGURATION (Nouvelles fonctionnalités) -->
-        <div id="tab-config" class="space-y-8 hidden">
-            
+        <!-- 4. VUE SCANNER RAYON X & SCELLÉS -->
+        <section id="pane-surete" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 3 : Contrôle Rayon X & Pose du Scellé</h2>
+                    <p class="text-xs text-slate-400">Imagerie de sécurité du bagage et scellement sous plombage inviolable.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label class="text-xs font-mono text-slate-400">Bagage en tunnel :</label>
+                    <select id="select-xray-pax" onchange="loadPaxIntoXray(this.value)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-indigo-400 font-mono focus:outline-none">
+                    </select>
+                </div>
+            </div>
+
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Voyageur :</span><strong class="text-slate-100" id="xray-lbl-nom">-</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Destination :</span><strong class="text-slate-100" id="xray-lbl-dest">-</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Code PNR :</span><strong class="text-indigo-400 font-bold" id="xray-lbl-pnr">-</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Poids Certifié :</span><strong class="text-amber-400 font-bold" id="xray-lbl-kg">-</strong></div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="block text-xs font-mono text-slate-400 uppercase">Décision Opérateur Rayon X</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" onclick="setXrayVote('Approved')" id="btn-dec-ok" class="flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 hover:border-emerald-500 transition-all">
+                            <span class="text-3xl mb-1">🟢</span>
+                            <span class="text-xs font-black uppercase text-slate-200">CONFORME (SCAN OK)</span>
+                            <span class="text-[10px] text-slate-500">Zéro article prohibé détecté</span>
+                        </button>
+                        <button type="button" onclick="setXrayVote('Suspect')" id="btn-dec-alert" class="flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 hover:border-rose-500 transition-all">
+                            <span class="text-3xl mb-1">🔴</span>
+                            <span class="text-xs font-black uppercase text-slate-200">SUSPECT / ALERTE</span>
+                            <span class="text-[10px] text-slate-500">Matière douteuse (Ouverture requise)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <div>
+                        <label class="block text-xs font-mono text-slate-400 uppercase mb-1">N° du Scellé Physique Inviolable *</label>
+                        <input type="text" id="xray-input-seal" placeholder="Scanner le code du plomb (ex: PL-9402)" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 font-mono text-xs text-emerald-400 uppercase focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div class="flex items-end">
+                        <button type="button" onclick="finalizeXray()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase p-3 rounded-xl transition shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-lock"></i> Valider Plombage & Clôturer Dossier
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. VUE REGISTRE GÉNÉRAL DES VOYAGEURS -->
+        <section id="pane-registre" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Registre Général des Voyageurs</h2>
+                    <p class="text-xs text-slate-400">Contrôle de chaque étape de traitement pour chaque passager enregistré.</p>
+                </div>
+                <span id="reg-badge-count" class="text-xs font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-3.5 py-1 rounded-full font-bold">
+                    2 Passagers
+                </span>
+            </div>
+
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 shadow-xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-900/80 text-[10px] font-mono uppercase text-slate-400 border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">Passager</th>
+                                <th class="py-3 px-4">Vol & PNR</th>
+                                <th class="py-3 px-4">Destination</th>
+                                <th class="py-3 px-4">Poids Constaté / Aut.</th>
+                                <th class="py-3 px-4">Surtaxe Encaissée</th>
+                                <th class="py-3 px-4">Statut Rayon X</th>
+                                <th class="py-3 px-4">N° Scellé</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pax-table-body" class="divide-y divide-slate-800/60 font-mono">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. VUE BATCH & CONVOI SCELLÉ N'DJILI -->
+        <section id="pane-batch" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Consolidation Convois Batch & Transfert</h2>
+                    <p class="text-xs text-slate-400">Regroupement des bagages scellés en convoi blindé vers l'aéroport.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 space-y-4 md:col-span-2 shadow-xl">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <h3 class="text-sm font-bold text-slate-100 uppercase tracking-wider">Manifeste du Lot en Cours : BT-2026-093</h3>
+                        <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">Prêt pour convoi</span>
+                    </div>
+                    <div class="space-y-2 text-xs font-mono">
+                        <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Bagages certifiés et scellés :</span><strong class="text-emerald-400" id="batch-pax-count">2 pièces</strong></div>
+                        <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Masse globale transportée :</span><strong class="text-indigo-400" id="batch-pax-weight">44.30 kg</strong></div>
+                        <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Destination :</span><strong class="text-slate-200">Terminal Départs N'Djili</strong></div>
+                    </div>
+                </div>
+
+                <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 space-y-4 flex flex-col justify-between shadow-xl">
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-bold text-slate-100 uppercase tracking-wider">Plombage Camion</h3>
+                        <p class="text-[11px] text-slate-400">Verrouillage de la porte du fourgon avant départ de l'agence.</p>
+                        <input type="text" id="truck-seal-input" placeholder="N° Plomb Camion (ex: TRK-990)" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 font-mono text-xs text-amber-300 uppercase focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <button type="button" onclick="dispatchTruck()" class="w-full bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-black text-xs uppercase p-3.5 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-truck-shield"></i> Expédier Convoi N'djili
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. NOUVELLE VUE : CONFIGURATION & TARIFS -->
+        <section id="pane-config" class="view-pane space-y-8">
+            <div class="border-b border-slate-800 pb-3">
+                <h2 class="text-xl md:text-2xl font-black text-slate-100">Gestionnaire des Tarifs & Paramètres</h2>
+                <p class="text-xs text-slate-400">Les modifications appliquées ici mettront à jour le simulateur client de réservation en ligne.</p>
+            </div>
+
             <div class="flex justify-between items-center bg-indigo-950/30 border border-indigo-500/20 p-4 rounded-2xl">
                 <div>
-                    <h2 class="text-lg font-black text-indigo-400 uppercase">Gestionnaire des Paramètres</h2>
-                    <p class="text-xs text-slate-400 mt-1">Les modifications appliquées ici mettront à jour le simulateur client.</p>
+                    <h3 class="text-sm font-black text-indigo-400 uppercase">Synchronisation Active</h3>
+                    <p class="text-[10px] text-slate-400 mt-1">Mémoire locale connectée au site principal.</p>
                 </div>
                 <button onclick="sauvegarderConfig()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2">
                     <i class="fa-solid fa-floppy-disk"></i> Enregistrer les modifications
@@ -113,7 +407,6 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                
                 <!-- COLONNE GAUCHE : Frais & Juridique -->
                 <div class="space-y-8">
                     <!-- FRAIS DE SERVICE -->
@@ -158,13 +451,13 @@
                         <h3 class="text-sm font-black uppercase text-slate-100 mb-5 flex items-center gap-2 border-b border-slate-800 pb-3">
                             <i class="fa-solid fa-scale-balanced text-rose-400"></i> Déclaration de Sûreté
                         </h3>
-                        <p class="text-[10px] text-slate-400 mb-3">Texte affiché à côté de la case à cocher obligatoire pour le client.</p>
+                        <p class="text-[10px] text-slate-400 mb-3">Texte affiché à côté de la case à cocher obligatoire pour le client lors de la réservation.</p>
                         <textarea id="legal-text" rows="4" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-300 focus:border-rose-500 focus:outline-none leading-relaxed"></textarea>
                     </div>
                 </div>
 
                 <!-- COLONNE DROITE : Compagnies -->
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl flex flex-col">
+                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl flex flex-col h-full">
                     <h3 class="text-sm font-black uppercase text-slate-100 mb-5 flex items-center gap-2 border-b border-slate-800 pb-3">
                         <i class="fa-solid fa-plane text-sky-400"></i> Compagnies & Tarifs d'Excédent
                     </h3>
@@ -175,18 +468,18 @@
                         <div class="flex gap-2 items-end">
                             <div class="flex-1">
                                 <label class="block text-[10px] text-slate-500 mb-1">Type Vol</label>
-                                <select id="new-airline-type" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+                                <select id="new-airline-type" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none">
                                     <option value="INT">International</option>
                                     <option value="NAT">National</option>
                                 </select>
                             </div>
                             <div class="flex-[2]">
                                 <label class="block text-[10px] text-slate-500 mb-1">Nom Compagnie</label>
-                                <input type="text" id="new-airline-name" placeholder="ex: Brussels Airlines" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+                                <input type="text" id="new-airline-name" placeholder="ex: Brussels Airlines" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none">
                             </div>
                             <div class="flex-1">
                                 <label class="block text-[10px] text-slate-500 mb-1">Tarif ($/kg)</label>
-                                <input type="number" id="new-airline-rate" placeholder="ex: 15" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+                                <input type="number" id="new-airline-rate" placeholder="ex: 15" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none">
                             </div>
                             <button onclick="ajouterCompagnie()" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors">
                                 Ajouter
@@ -195,79 +488,235 @@
                     </div>
 
                     <!-- Liste des compagnies -->
-                    <div class="flex-1 overflow-y-auto pr-2 space-y-4" id="airlines-list">
+                    <div class="flex-1 overflow-y-auto pr-2 space-y-4 max-h-[400px]" id="airlines-list">
                         <!-- Rempli par le JavaScript -->
                     </div>
                 </div>
-
             </div>
-        </div>
+        </section>
+
     </main>
 
-    <!-- FOOTER (Sans mention SARL) -->
-    <footer class="w-full border-t border-slate-800 py-6 text-center mt-auto">
-        <p class="text-xs font-mono text-slate-500">
-            &copy; 2026 Global Tech Solutions (GTS). <br>Plateforme de gestion logistique - Accès Restreint.
-        </p>
+    <!-- PIED DE PAGE -->
+    <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-6 text-center text-xs text-slate-500 space-y-1">
+        <p><b>EasyFly Transit </b> — Console Intégrale Hub PROCOKI Kinshasa.</p>
+        <p class="text-[10px] font-mono">Connexion sécurisée passerelle aéroportuaire N'Djili.</p>
     </footer>
 
-    <!-- SCRIPT DE GESTION ADMIN -->
+    <!-- LOGIQUE JAVASCRIPT & BASE DE DONNÉES EN MÉMOIRE -->
     <script>
-        // DONNÉES PAR DÉFAUT (si rien n'est encore enregistré)
-        const defaultData = {
-            serviceRates: {
-                AGENCY: { NAT: 10, INT: 20 },
-                VIP_HOME: { NAT: 15, INT: 30 }
-            },
-            airlines: {
-                INT: {
-                    defaultFranchise: 23,
-                    companies: { "Air France": 15, "Brussels Airlines": 15, "Ethiopian Airlines": 12, "Turkish Airlines": 13, "Kenya Airways": 12, "Autre Compagnie": 15 }
-                },
-                NAT: {
-                    defaultFranchise: 20,
-                    companies: { "Congo Airways": 5, "Air Kasaï": 5, "Autre Compagnie": 5 }
-                }
-            },
-            legalText: "J'accepte l'obligation d'acquittement de l'excédent au tarif de ma compagnie et les clauses de sûreté (matières dangereuses interdites)."
-        };
+        const TARIFF_PER_KG = 42000;
 
-        // Chargement depuis la mémoire du navigateur ou données par défaut
+        // Base de données réactive initiale (Hub)
+        let PAX_DATABASE = [
+            { id: "pax-1", nom: "MUTOMBO", postnom: "ILUNGA", prenom: "Patrick", pnr: "AF-29401", compagnie: "Air France", date: "2026-10-03", heure: "21:45", destination: "Paris-CDG", allowedWeight: 23, measuredWeight: 21.8, excessFee: 0, payMethod: "Cash", payRef: "REC-001", xrayStatus: "Approved", sealNumber: "PL-9921" },
+            { id: "pax-2", nom: "BOKETSHU", postnom: "YONGO", prenom: "Mireille", pnr: "SN-88410", compagnie: "Brussels Airlines", date: "2026-10-03", heure: "20:30", destination: "Bruxelles BRU", allowedWeight: 23, measuredWeight: 22.5, excessFee: 0, payMethod: "POS_Card", payRef: "REC-002", xrayStatus: "Pending", sealNumber: "" }
+        ];
+
+        let selectedWeighId = "pax-1";
+        let selectedXrayId = "pax-2";
+        let currentXrayVote = null;
+
+        // Configuration du simulateur client
+        const defaultData = {
+            serviceRates: { AGENCY: { NAT: 10, INT: 20 }, VIP_HOME: { NAT: 15, INT: 30 } },
+            airlines: {
+                INT: { defaultFranchise: 23, companies: { "Air France": 15, "Brussels Airlines": 15, "Ethiopian Airlines": 12, "Turkish Airlines": 13, "Kenya Airways": 12, "Autre Compagnie": 15 } },
+                NAT: { defaultFranchise: 20, companies: { "Congo Airways": 5, "Air Kasaï": 5, "Autre Compagnie": 5 } }
+            },
+            legalText: "Tout excédent constaté au-delà de la franchise fait obligatoirement l'objet d'une facturation immédiate. Le passager s'engage à acquitter ces frais selon le barème officiel au kilo appliqué par sa compagnie aérienne."
+        };
         let gtsConfig = JSON.parse(localStorage.getItem('gtsAdminConfig')) || defaultData;
 
-        // Fonction pour changer d'onglet
-        function switchTab(tabId) {
-            document.getElementById('tab-dashboard').classList.add('hidden');
-            document.getElementById('tab-config').classList.add('hidden');
-            document.getElementById('btn-tab-dashboard').className = "py-3 text-xs font-black uppercase border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-colors";
-            document.getElementById('btn-tab-config').className = "py-3 text-xs font-black uppercase border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-colors";
+        // 1. Navigation exclusive entre onglets
+        function navigateTab(tabName) {
+            document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60";
+            });
 
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            document.getElementById(`btn-tab-${tabId}`).className = "py-3 text-xs font-black uppercase border-b-2 border-indigo-500 text-indigo-400 transition-colors";
-            
-            if(tabId === 'config') chargerFormulaireConfig();
+            const activePane = document.getElementById('pane-' + tabName);
+            if (activePane) activePane.classList.add('active');
+
+            const activeBtn = document.getElementById('btn-tab-' + tabName);
+            if (activeBtn) {
+                activeBtn.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
+            }
+
+            if(tabName === 'config') chargerFormulaireConfig();
         }
 
-        // Remplir les champs avec les données actuelles
+        /* --- LOGIQUE POSTES DU HUB --- */
+        // (Enregistrement, Pesée, Rayon X, etc. - Identique à l'original)
+        function handleNewClient(e) {
+            e.preventDefault();
+            const newPax = {
+                id: "pax-" + (PAX_DATABASE.length + 1),
+                nom: document.getElementById('reg-nom').value.trim().toUpperCase(),
+                postnom: document.getElementById('reg-postnom').value.trim().toUpperCase(),
+                prenom: document.getElementById('reg-prenom').value.trim(),
+                pnr: document.getElementById('reg-pnr').value.trim().toUpperCase(),
+                compagnie: document.getElementById('reg-compagnie').value,
+                date: document.getElementById('reg-date').value,
+                heure: document.getElementById('reg-heure').value,
+                destination: document.getElementById('reg-dest').value.trim(),
+                allowedWeight: parseFloat(document.getElementById('reg-allowed').value),
+                measuredWeight: 0,
+                excessFee: 0,
+                payMethod: "Cash",
+                payRef: "",
+                xrayStatus: "Pending",
+                sealNumber: ""
+            };
+            PAX_DATABASE.unshift(newPax);
+            refreshAllUI();
+            document.getElementById('clientRegisterForm').reset();
+            alert(`Dossier ${newPax.nom} ${newPax.prenom} enregistré avec succès !\nRedirection vers le poste de pesée.`);
+            selectedWeighId = newPax.id;
+            loadPaxIntoWeigh(newPax.id);
+            navigateTab('pesee');
+        }
+
+        function refreshAllUI() {
+            document.getElementById('stat-total-pax').textContent = PAX_DATABASE.length;
+            const totalKg = PAX_DATABASE.reduce((sum, p) => sum + (p.measuredWeight || 0), 0);
+            document.getElementById('stat-total-kg').textContent = totalKg.toFixed(2) + " kg";
+            const totalCdf = PAX_DATABASE.reduce((sum, p) => sum + (p.excessFee || 0), 0);
+            document.getElementById('stat-total-cdf').textContent = totalCdf.toLocaleString('fr-FR') + " CDF";
+            document.getElementById('reg-badge-count').textContent = PAX_DATABASE.length + " Passagers";
+            document.getElementById('batch-pax-count').textContent = PAX_DATABASE.length + " pièces";
+            document.getElementById('batch-pax-weight').textContent = totalKg.toFixed(2) + " kg";
+
+            const selWeigh = document.getElementById('select-active-pax');
+            const selXray = document.getElementById('select-xray-pax');
+            selWeigh.innerHTML = "";
+            selXray.innerHTML = "";
+
+            PAX_DATABASE.forEach(p => {
+                const opt1 = document.createElement('option'); opt1.value = p.id; opt1.textContent = `${p.nom} (${p.pnr})`; selWeigh.appendChild(opt1);
+                const opt2 = document.createElement('option'); opt2.value = p.id; opt2.textContent = `${p.nom} (${p.pnr})`; selXray.appendChild(opt2);
+            });
+
+            const tbody = document.getElementById('pax-table-body');
+            tbody.innerHTML = "";
+            PAX_DATABASE.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/30 transition-colors";
+                const xrayBadge = p.xrayStatus === 'Approved' ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">● Conforme</span>` : (p.xrayStatus === 'Suspect' ? `<span class="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 text-[10px] font-bold">● Suspect</span>` : `<span class="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold">⏳ Attente</span>`);
+                tr.innerHTML = `<td class="py-3 px-4 font-bold text-slate-100">${p.nom} ${p.prenom}</td><td class="py-3 px-4 text-indigo-400 font-bold">${p.compagnie} • ${p.pnr}</td><td class="py-3 px-4">${p.destination}</td><td class="py-3 px-4"><span class="${p.measuredWeight > p.allowedWeight ? 'text-rose-400 font-bold' : 'text-emerald-400'}">${p.measuredWeight ? p.measuredWeight.toFixed(1) + ' kg' : 'Non pesé'}</span> / ${p.allowedWeight} kg</td><td class="py-3 px-4 text-rose-400 font-bold">${p.excessFee ? p.excessFee.toLocaleString('fr-FR') + ' CDF' : '0 CDF'}</td><td class="py-3 px-4">${xrayBadge}</td><td class="py-3 px-4 font-bold text-emerald-400">${p.sealNumber || '<span class="text-slate-500">Non scellé</span>'}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function loadPaxIntoWeigh(paxId) {
+            selectedWeighId = paxId;
+            const pax = PAX_DATABASE.find(p => p.id === paxId);
+            if (!pax) return;
+            document.getElementById('weigh-lbl-nom').textContent = `${pax.nom} ${pax.postnom} ${pax.prenom}`;
+            document.getElementById('weigh-lbl-vol').textContent = `${pax.compagnie}`;
+            document.getElementById('weigh-lbl-pnr').textContent = pax.pnr;
+            document.getElementById('weigh-lbl-allowed').textContent = pax.allowedWeight.toFixed(2) + " kg";
+            document.getElementById('weigh-input-kg').value = pax.measuredWeight || "";
+            document.getElementById('select-active-pax').value = paxId;
+            liveCalcExcess();
+        }
+
+        function liveCalcExcess() {
+            const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
+            if (!pax) return;
+            const inputKg = parseFloat(document.getElementById('weigh-input-kg').value) || 0;
+            const excess = Math.max(0, inputKg - pax.allowedWeight);
+            const fee = Math.round(excess * TARIFF_PER_KG);
+            const feeBox = document.getElementById('weigh-fee-box');
+            if (excess > 0) {
+                feeBox.textContent = `+ ${fee.toLocaleString('fr-FR')} CDF (+${excess.toFixed(1)} kg)`;
+                feeBox.className = "w-full bg-slate-950 border border-rose-500/40 rounded-xl p-3 font-mono text-2xl text-rose-400 font-black h-[58px] flex items-center";
+            } else {
+                feeBox.textContent = "0 CDF (Conforme)";
+                feeBox.className = "w-full bg-slate-950 border border-emerald-500/30 rounded-xl p-3 font-mono text-2xl text-emerald-400 font-bold h-[58px] flex items-center";
+            }
+        }
+
+        function togglePayRef(show) {
+            document.getElementById('box-pay-ref').classList.toggle('hidden', !show);
+            document.getElementById('box-pay-mobile').classList.toggle('hidden', show);
+        }
+
+        function saveWeighRecord() {
+            const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
+            const weight = parseFloat(document.getElementById('weigh-input-kg').value);
+            if (!weight || weight <= 0) return alert("Veuillez saisir le poids relevé sur la balance.");
+            pax.measuredWeight = weight;
+            pax.excessFee = Math.round(Math.max(0, weight - pax.allowedWeight) * TARIFF_PER_KG);
+            pax.payMethod = document.querySelector('input[name="payType"]:checked').value;
+            pax.payRef = document.getElementById('weigh-input-ref').value.trim();
+            refreshAllUI();
+            alert(`Pesée enregistrée pour ${pax.nom} !\nTransfert au poste Rayon X.`);
+            loadPaxIntoXray(pax.id);
+            navigateTab('surete');
+        }
+
+        function loadPaxIntoXray(paxId) {
+            selectedXrayId = paxId;
+            const pax = PAX_DATABASE.find(p => p.id === paxId);
+            document.getElementById('xray-lbl-nom').textContent = `${pax.nom} ${pax.postnom} ${pax.prenom}`;
+            document.getElementById('xray-lbl-dest').textContent = pax.destination;
+            document.getElementById('xray-lbl-pnr').textContent = pax.pnr;
+            document.getElementById('xray-lbl-kg').textContent = pax.measuredWeight ? pax.measuredWeight.toFixed(2) + " kg" : "Non pesé";
+            document.getElementById('xray-input-seal').value = pax.sealNumber || "";
+            document.getElementById('select-xray-pax').value = paxId;
+            currentXrayVote = pax.xrayStatus;
+            updateXrayButtonsUI(pax.xrayStatus);
+        }
+
+        function setXrayVote(vote) { currentXrayVote = vote; updateXrayButtonsUI(vote); }
+
+        function updateXrayButtonsUI(vote) {
+            const btnOk = document.getElementById('btn-dec-ok'), btnAlert = document.getElementById('btn-dec-alert');
+            if (vote === 'Approved') { btnOk.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-emerald-500 bg-emerald-950/30 transition-all"; btnAlert.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 opacity-40 transition-all"; }
+            else if (vote === 'Suspect') { btnAlert.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-rose-500 bg-rose-950/30 transition-all"; btnOk.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 opacity-40 transition-all"; }
+            else { btnOk.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 hover:border-emerald-500 transition-all"; btnAlert.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 hover:border-rose-500 transition-all"; }
+        }
+
+        function finalizeXray() {
+            const pax = PAX_DATABASE.find(p => p.id === selectedXrayId);
+            if (!currentXrayVote || currentXrayVote === 'Pending') return alert("Sélectionnez une décision Rayon X.");
+            const seal = document.getElementById('xray-input-seal').value.trim();
+            if (currentXrayVote === 'Approved' && !seal) return alert("Le numéro de scellé est obligatoire pour valider.");
+            pax.xrayStatus = currentXrayVote; pax.sealNumber = seal;
+            refreshAllUI();
+            alert(`Bagage certifié sous le scellé #${seal || 'AUCUN'} !`);
+            navigateTab('registre');
+        }
+
+        function printThermalDoc() {
+            const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
+            if (!pax) return;
+            const printWin = window.open('', '', 'width=340,height=550');
+            printWin.document.write(`<html><head><title>Ticket EasyFly</title><style>body{font-family:monospace;font-size:11px;width:260px;margin:0 auto;padding:10px;color:#000}.center{text-align:center}.bold{font-weight:bold}.line{border-bottom:1px dashed #000;margin:6px 0}</style></head><body onload="window.print(); window.close();"><div class="center bold">EASYFLY TRANSIT</div><div class="center" style="font-size:8px;">Hub PROCOKI - Kinshasa</div><div class="line"></div><div>PASSAGER : ${pax.nom} ${pax.prenom}</div><div>PNR : ${pax.pnr}</div><div class="line"></div><div>FRANCHISE : ${pax.allowedWeight} kg</div><div>PESEE : ${pax.measuredWeight} kg</div><div class="bold">EXCEDENT : +${Math.max(0, pax.measuredWeight - pax.allowedWeight).toFixed(1)} kg</div><div class="bold" style="font-size:13px;">ENCAISSE : ${pax.excessFee.toLocaleString('fr-FR')} CDF</div><div class="line"></div><div>SURETE SCAN : ${pax.xrayStatus}</div><div class="bold">SCELLÉ PLOMB : ${pax.sealNumber || 'En cours'}</div><div class="line"></div><div class="center bold" style="margin-top:8px;">BON VOYAGE !</div></body></html>`);
+            printWin.document.close();
+        }
+
+        function dispatchTruck() {
+            const truckSeal = document.getElementById('truck-seal-input').value.trim();
+            if (!truckSeal) return alert("Renseignez le numéro de scellé camion.");
+            alert(`Convoi expédié sous le scellé #${truckSeal} vers N'Djili !`);
+            document.getElementById('truck-seal-input').value = "";
+        }
+
+        /* --- LOGIQUE ONGLET CONFIGURATION --- */
         function chargerFormulaireConfig() {
-            // Frais de service
             document.getElementById('fee-agency-nat').value = gtsConfig.serviceRates.AGENCY.NAT;
             document.getElementById('fee-agency-int').value = gtsConfig.serviceRates.AGENCY.INT;
             document.getElementById('fee-vip-nat').value = gtsConfig.serviceRates.VIP_HOME.NAT;
             document.getElementById('fee-vip-int').value = gtsConfig.serviceRates.VIP_HOME.INT;
-
-            // Texte Juridique
             document.getElementById('legal-text').value = gtsConfig.legalText;
-
-            // Rendre la liste des compagnies
             rendreListeCompagnies();
         }
 
-        // Afficher la liste dynamique des compagnies
         function rendreListeCompagnies() {
             const listContainer = document.getElementById('airlines-list');
             listContainer.innerHTML = '';
-
             ['INT', 'NAT'].forEach(type => {
                 const title = document.createElement('div');
                 title.className = "text-[10px] font-black uppercase text-slate-500 mt-4 mb-2 tracking-widest border-b border-slate-800 pb-1";
@@ -277,63 +726,46 @@
                 Object.entries(gtsConfig.airlines[type].companies).forEach(([name, rate]) => {
                     const item = document.createElement('div');
                     item.className = "flex justify-between items-center bg-slate-900 border border-slate-800 p-3 rounded-lg";
-                    item.innerHTML = `
-                        <span class="text-xs text-slate-200 font-bold">${name}</span>
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs font-mono text-rose-400 font-bold">+${rate} $/kg</span>
-                            <button onclick="supprimerCompagnie('${type}', '${name}')" class="text-slate-600 hover:text-rose-500 transition-colors" title="Supprimer">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </div>
-                    `;
+                    item.innerHTML = `<span class="text-xs text-slate-200 font-bold">${name}</span><div class="flex items-center gap-3"><span class="text-xs font-mono text-rose-400 font-bold">+${rate} $/kg</span><button onclick="supprimerCompagnie('${type}', '${name}')" class="text-slate-600 hover:text-rose-500 transition-colors" title="Supprimer"><i class="fa-solid fa-trash-can"></i></button></div>`;
                     listContainer.appendChild(item);
                 });
             });
         }
 
-        // Ajouter une nouvelle compagnie depuis le petit formulaire
         function ajouterCompagnie() {
             const type = document.getElementById('new-airline-type').value;
             const name = document.getElementById('new-airline-name').value.trim();
             const rate = parseFloat(document.getElementById('new-airline-rate').value);
-
-            if (name === '' || isNaN(rate)) {
-                alert("Veuillez saisir un nom et un tarif valide.");
-                return;
-            }
-
+            if (name === '' || isNaN(rate)) return alert("Saisissez un nom et un tarif valide.");
             gtsConfig.airlines[type].companies[name] = rate;
             document.getElementById('new-airline-name').value = '';
             document.getElementById('new-airline-rate').value = '';
-            
             rendreListeCompagnies();
         }
 
-        // Supprimer une compagnie
         function supprimerCompagnie(type, name) {
-            if(confirm(`Voulez-vous vraiment supprimer ${name} ?`)) {
+            if(confirm(`Supprimer ${name} ?`)) {
                 delete gtsConfig.airlines[type].companies[name];
                 rendreListeCompagnies();
             }
         }
 
-        // Enregistrer toute la configuration dans le navigateur
         function sauvegarderConfig() {
-            // Récupérer les nouvelles valeurs des frais
             gtsConfig.serviceRates.AGENCY.NAT = parseFloat(document.getElementById('fee-agency-nat').value) || 0;
             gtsConfig.serviceRates.AGENCY.INT = parseFloat(document.getElementById('fee-agency-int').value) || 0;
             gtsConfig.serviceRates.VIP_HOME.NAT = parseFloat(document.getElementById('fee-vip-nat').value) || 0;
             gtsConfig.serviceRates.VIP_HOME.INT = parseFloat(document.getElementById('fee-vip-int').value) || 0;
-
-            // Récupérer le texte juridique
             gtsConfig.legalText = document.getElementById('legal-text').value;
 
-            // Sauvegarder dans localStorage
             localStorage.setItem('gtsAdminConfig', JSON.stringify(gtsConfig));
-
-            alert("✅ Configuration sauvegardée avec succès ! Les tarifs sont mis à jour.");
+            alert("✅ Configuration sauvegardée ! Le simulateur client utilisera ces nouveaux tarifs.");
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshAllUI();
+            loadPaxIntoWeigh('pax-1');
+            loadPaxIntoXray('pax-2');
+        });
     </script>
 </body>
 </html>
