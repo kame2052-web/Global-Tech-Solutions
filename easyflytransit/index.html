@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyFly Transit — Pré-enregistrement & Bagagerie Sécurisée Kinshasa</title>
+    <title>EasyFly Transit — Espace Voyageur Kinshasa</title>
     <link rel="icon" type="image/png" href="../GLOBAL.png">
     
+    <!-- CDNs Valides -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -25,8 +26,8 @@
 </head>
 <body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
-    <!-- NAVIGATION -->
-    <header class="w-full border-b border-slate-800 bg-slate-900/85 backdrop-blur-md sticky top-0 z-50">
+    <!-- NAVIGATION PRINCIPALE -->
+    <header class="w-full border-b border-indigo-900/40 bg-slate-900/85 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="h-12 w-12 rounded-xl overflow-hidden bg-white flex items-center justify-center p-1 shadow-sm flex-shrink-0">
@@ -34,73 +35,326 @@
                 </div>
                 <div>
                     <h1 class="text-sm md:text-base font-black tracking-wider uppercase text-slate-100">EasyFly Transit</h1>
-                    <p class="text-[9px] md:text-[10px] font-mono text-indigo-400 tracking-widest uppercase font-bold">Kinshasa • N'djili Express Logistique</p>
+                    <p class="text-[9px] md:text-[10px] font-mono text-indigo-400 tracking-widest uppercase font-bold">Un service de Global Tech Solutions SARL</p>
                 </div>
             </div>
             <div class="flex items-center gap-4">
+                <span class="hidden sm:inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs px-3 py-1 rounded-full font-mono font-bold">
+                    <i class="fa-solid fa-circle text-[8px] animate-pulse"></i> Sûreté RVA / IATA Connectée
+                </span>
                 <a href="../index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all border border-slate-700">
-                    <i class="fa-solid fa-house mr-1.5"></i> Portail GTS
-                </a>
-                <a href="admin.html" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md">
-                    <i class="fa-solid fa-lock mr-1.5"></i> Espace Agent
+                    <i class="fa-solid fa-house mr-1.5"></i> GTS Hub
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- HERO SECTION -->
-    <main class="flex-1 max-w-7xl mx-auto px-6 py-12 space-y-16 w-full">
-        <div class="text-center max-w-3xl mx-auto space-y-6">
-            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono font-bold">
-                <i class="fa-solid fa-plane-departure"></i> Voyagez léger, votre check-in est déjà fait
-            </span>
-            <h2 class="text-4xl md:text-5xl font-black tracking-tight text-slate-100 leading-tight">
-                Déposez vos bagages en ville, <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-400 to-amber-300">embarquez sans stress à N'djili.</span>
-            </h2>
-            <p class="text-sm md:text-base text-slate-400 leading-relaxed">
-                Service exclusif de pré-enregistrement déporté 48h à 12h avant le vol. Collecte sécurisée à domicile ou en agence urbaine et traitement direct en convoi scellé.
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-10 w-full space-y-10">
+        <!-- BANNIÈRE DE BIENVENUE -->
+        <div class="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 border border-indigo-900/50 rounded-3xl p-8 shadow-xl">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-3">
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono font-bold">
+                    <i class="fa-solid fa-plane-departure"></i> Service Déporté d'Enregistrement Urbain (Kinshasa)
+                </span>
+                <span class="inline-flex items-center gap-1 text-[11px] font-mono text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full font-bold">
+                    <i class="fa-solid fa-crown"></i> Option VIP Collecte à Domicile Disponible
+                </span>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-black text-slate-100 mb-2">Voyagez léger, votre check-in est déjà fait !</h2>
+            <p class="text-slate-300 max-w-3xl text-xs md:text-sm leading-relaxed">
+                Confiez vos valises à nos équipes en agence ou directement chez vous (Service VIP Premium). Nous assurons l'audit de sûreté, le passage aux Rayons X, le scellé inviolable individuel et le convoi blindé vers l'Aéroport International de N'Djili.
             </p>
         </div>
 
-        <!-- FORMULAIRE RAPIDE : SUIVI / SIMULATION -->
-        <div class="max-w-2xl mx-auto bg-gtscard border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
-            <h3 class="text-lg font-black text-slate-100 flex items-center gap-2">
-                <i class="fa-solid fa-qrcode text-indigo-400"></i> Suivi de Bagages & Statut du Lot (Batch)
-            </h3>
-            <div class="flex flex-col sm:flex-row gap-3">
-                <input type="text" placeholder="N° de scellé ou référence PNR (ex: EF-9421)" class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
-                <button onclick="alert('Module de consultation connecté à la passerelle aéroportuaire.')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl text-xs font-black uppercase transition-all shadow-md flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-magnifying-glass"></i> Vérifier
-                </button>
-            </div>
-            <p class="text-[11px] text-slate-500 font-mono">Conforme aux standards de sûreté aéroportuaire et scellés inviolables.</p>
-        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- COLONNE FORMULAIRE (2 COLONNES) -->
+            <div class="lg:col-span-2 space-y-8">
+                <div class="bg-gtscard border border-slate-800 p-6 md:p-8 rounded-3xl shadow-xl space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-calendar-check text-indigo-400 text-xl"></i>
+                            <h3 class="text-base font-black uppercase tracking-wider text-slate-100">1. Planifier ma Prise en Charge</h3>
+                        </div>
+                        <span class="text-[10px] font-mono text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1 rounded-full">Kinshasa Déporté</span>
+                    </div>
 
-        <!-- LES 3 ÉTAPES CLÉS -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-gtscard border border-slate-800 rounded-2xl p-6 space-y-3">
-                <div class="h-10 w-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-black">1</div>
-                <h4 class="font-bold text-slate-100">Check-in Déporté</h4>
-                <p class="text-xs text-slate-400 leading-relaxed">Présentation du passeport et pesée certifiée des valises dans nos agences de Gombe, Limete ou Ngaliema.</p>
+                    <form id="bookingForm" class="space-y-6" onsubmit="event.preventDefault(); initialiserSuivi();">
+                        
+                        <!-- CHOIX DU MODE DE SERVICE -->
+                        <div>
+                            <label class="block text-xs font-mono text-slate-300 uppercase mb-3 font-bold">Mode de Prise en Charge *</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <label class="relative flex flex-col p-4 rounded-2xl border-2 border-indigo-600 bg-indigo-950/20 cursor-pointer transition-all mode-card" id="card-mode-agency">
+                                    <input type="radio" name="serviceMode" value="AGENCY" checked onchange="toggleServiceMode('AGENCY')" class="sr-only">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-black uppercase text-indigo-400 flex items-center gap-2">
+                                            <i class="fa-solid fa-building-columns"></i> Dépôt en Agence Hub
+                                        </span>
+                                        <i class="fa-solid fa-circle-check text-indigo-400 text-sm check-icon"></i>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400">Déposez vous-même vos valises dans l'une de nos agences urbaines (Gombe, Limete, Ngaliema).</p>
+                                    <span class="mt-3 text-[10px] font-mono text-emerald-400 font-bold">Tarif Standard Inclus</span>
+                                </label>
+
+                                <label class="relative flex flex-col p-4 rounded-2xl border-2 border-slate-800 bg-slate-900/60 hover:border-amber-500/50 cursor-pointer transition-all mode-card" id="card-mode-vip">
+                                    <input type="radio" name="serviceMode" value="VIP_HOME" onchange="toggleServiceMode('VIP_HOME')" class="sr-only">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-black uppercase text-amber-400 flex items-center gap-2">
+                                            <i class="fa-solid fa-crown"></i> Collecte VIP à Domicile
+                                        </span>
+                                        <i class="fa-regular fa-circle text-slate-600 text-sm check-icon"></i>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400">Notre fourgon sécurisé vient chez vous avec balance certifiée et scellés inviolables.</p>
+                                    <span class="mt-3 text-[10px] font-mono text-amber-400 font-bold">Service Premium • Confort Absolu</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- IDENTITÉ ET VOL -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Nom & Prénom du Voyageur *</label>
+                                <input type="text" id="clientNom" required placeholder="ex: Patrick Mutombo" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 focus:border-indigo-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Numéro Téléphone / WhatsApp *</label>
+                                <input type="tel" id="clientTel" required placeholder="+243 81..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-100 focus:border-indigo-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 uppercase mb-2">N° Billet / PNR *</label>
+                                <input type="text" id="formPnr" required placeholder="ex: AF-29401" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs font-mono text-indigo-300 uppercase focus:border-indigo-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Compagnie Aérienne *</label>
+                                <select id="formCompagnie" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:border-indigo-500 focus:outline-none">
+                                    <option value="">Sélectionner une compagnie...</option>
+                                    <option value="Air France">Air France</option>
+                                    <option value="Brussels Airlines">Brussels Airlines</option>
+                                    <option value="Ethiopian Airlines">Ethiopian Airlines</option>
+                                    <option value="Turkish Airlines">Turkish Airlines</option>
+                                    <option value="Kenya Airways">Kenya Airways</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Nombre estimé de valises *</label>
+                                <input type="number" id="nbValises" min="1" max="10" value="2" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-100 focus:border-indigo-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Créneau d'enlèvement / passage *</label>
+                                <input type="datetime-local" id="horairePassage" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:border-indigo-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <!-- BLOC SPÉCIFIQUE 1 : DÉPÔT EN AGENCE -->
+                        <div id="section-agency" class="space-y-3">
+                            <label class="block text-xs font-mono text-slate-400 uppercase">Agence de Dépôt Urbain *</label>
+                            <select id="formAgence" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:border-indigo-500 focus:outline-none">
+                                <option value="Gombe - Concession PROCOKI (Boulevard du 30 Juin)">Gombe — Concession PROCOKI (Boulevard du 30 Juin)</option>
+                                <option value="Limete - Échangeur / Boulevard Lumumba">Limete — Boulevard Lumumba</option>
+                                <option value="Ngaliema - Place Kintambo Magasin">Ngaliema — Place Kintambo Magasin</option>
+                            </select>
+                        </div>
+
+                        <!-- BLOC SPÉCIFIQUE 2 : COLLECTE VIP À DOMICILE -->
+                        <div id="section-vip" class="hidden bg-slate-950/70 border border-amber-500/30 rounded-2xl p-5 space-y-4">
+                            <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+                                <i class="fa-solid fa-van-shuttle text-amber-400"></i>
+                                <h4 class="text-xs font-black uppercase text-amber-400 tracking-wider">Adresse de Collecte VIP à Domicile</h4>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-[11px] font-mono text-slate-400 uppercase mb-1">Commune *</label>
+                                    <select id="vipCommune" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:border-amber-500 focus:outline-none">
+                                        <option value="Gombe">Gombe</option>
+                                        <option value="Ngaliema">Ngaliema</option>
+                                        <option value="Mont-Fleury / Ma Campagne">Mont-Fleury / Ma Campagne</option>
+                                        <option value="Limete Résidentiel">Limete Résidentiel</option>
+                                        <option value="Bandalungwa">Bandalungwa</option>
+                                        <option value="Kintambo">Kintambo</option>
+                                        <option value="Autre commune">Autre commune</option>
+                                    </select>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-[11px] font-mono text-slate-400 uppercase mb-1">Avenue, N° parcelle & Référence visuelle *</label>
+                                    <input type="text" id="vipAdresse" placeholder="ex: 14 Av. de la Justice, en face de l'ambassade" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:border-amber-500 focus:outline-none">
+                                </div>
+                            </div>
+
+                            <!-- PROTOCOLE DE L'ARTICLE 1 POUR LE VIP -->
+                            <div class="bg-amber-500/10 border-l-4 border-amber-500 p-3 rounded-r-xl text-[11px] text-slate-300 space-y-1">
+                                <p class="font-bold text-amber-400 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-shield-halved"></i> Protocole d'Inspection Conjointe à Domicile (Article 1) :
+                                </p>
+                                <p class="text-[10px] text-slate-300 leading-relaxed">
+                                    Notre équipage VIP assermenté effectuera la pesée sur balance certifiée mobile et inspectera visuellement l'intégrité de vos bagages en votre présence. Le scellé haute sécurité sera posé et consigné devant vous avant tout chargement dans le véhicule blindé.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- CLAUSE DE SÛRETÉ & DÉCHARGE (STANDARDS INTERNATIONAUX HONG KONG / DUBAÏ) -->
+                        <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-3">
+                            <h4 class="text-xs font-black uppercase tracking-wider text-rose-400 flex items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Déclaration Juridique de Sûreté & Décharge de Responsabilité
+                            </h4>
+                            <ul class="text-[11px] text-slate-400 space-y-1.5 list-disc pl-4 leading-relaxed">
+                                <li><b>Marchandises Prohibées :</b> Aucun bagage ne contient d'explosifs, corrosifs, liquides inflammables, drogues ou batteries lithium amovibles (Powerbanks interdites en soute - IATA).</li>
+                                <li><b>Exclusion Objets de Valeur :</b> Il est formellement interdit d'insérer des espèces en devises, lingots, bijoux précieux, passeports originaux ou documents d'affaires. Global Tech Solutions SARL décline toute indemnisation sur ces articles qui doivent rester en cabine.</li>
+                                <li><b>Limite de Responsabilité GTS :</b> Notre responsabilité de garde matérielle prend fin dès la remise physique et l'enregistrement de vos valises auprès de la compagnie aérienne à N'Djili.</li>
+                            </ul>
+
+                            <label class="inline-flex items-center gap-2 pt-2 cursor-pointer border-t border-slate-800/80 w-full">
+                                <input type="checkbox" id="checkLegal" required class="rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                <span class="text-xs text-slate-200 font-semibold">J'ai lu, compris et j'accepte sans réserve les termes contractuels ci-dessus.</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-black py-4 px-6 rounded-2xl shadow-xl transition-all duration-200 text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-barcode"></i> Confirmer Ma Réservation & Générer Mon QR Pass
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div class="bg-gtscard border border-slate-800 rounded-2xl p-6 space-y-3">
-                <div class="h-10 w-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-black">2</div>
-                <h4 class="font-bold text-slate-100">Scellé & Convoi Batch</h4>
-                <p class="text-xs text-slate-400 leading-relaxed">Vos bagages sont étiquetés, scellés sous traçabilité électronique et acheminés en fourgon sécurisé vers l'aéroport.</p>
-            </div>
-            <div class="bg-gtscard border border-slate-800 rounded-2xl p-6 space-y-3">
-                <div class="h-10 w-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-black">3</div>
-                <h4 class="font-bold text-slate-100">Accès VIP N'djili</h4>
-                <p class="text-xs text-slate-400 leading-relaxed">Arrivez 1h30 seulement avant le décollage avec votre bagage cabine et passez directement l'immigration.</p>
+
+            <!-- COLONNE LATÉRALE : STATUT & SUIVI (1 COLONNE) -->
+            <div class="lg:col-span-1">
+                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl sticky top-28 space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-shield-halved text-emerald-400 text-lg"></i>
+                            <h3 class="text-sm font-black uppercase text-slate-100">2. Suivi Logistique</h3>
+                        </div>
+                        <span id="badgeStatut" class="bg-slate-800 text-slate-400 text-[10px] font-mono px-3 py-1 rounded-full font-bold uppercase">En Attente</span>
+                    </div>
+
+                    <!-- Écran initial d'attente -->
+                    <div id="attenteSuivi" class="text-center py-12 space-y-3">
+                        <i class="fa-solid fa-barcode text-slate-700 text-6xl block"></i>
+                        <p class="text-xs text-slate-400 px-4">Complétez le formulaire ci-contre pour générer votre QR Pass N'Djili et initialiser le tracking sécurisé.</p>
+                    </div>
+
+                    <!-- Écran actif après validation -->
+                    <div id="blocSuivi" class="hidden space-y-6">
+                        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl text-center space-y-2">
+                            <div class="bg-white p-3 inline-block rounded-xl shadow-md">
+                                <i class="fa-solid fa-qrcode text-6xl text-slate-950"></i>
+                            </div>
+                            <span class="block font-mono text-xs text-indigo-400 font-bold uppercase" id="pnrClient">REF: EASY-XXXX</span>
+                            <span class="inline-block text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full mt-1" id="modeBadge">Mode Standard</span>
+                            <p class="text-[10px] text-slate-400 mt-2">Présentez ce QR Code à l'agent protocole EasyFly devant le hall des départs de N'Djili.</p>
+                        </div>
+
+                        <!-- Timeline dynamique adaptée au mode -->
+                        <div class="relative pl-6 border-l-2 border-indigo-900/60 space-y-6 text-xs font-mono">
+                            <div class="relative">
+                                <span class="absolute -left-[31px] top-0 bg-indigo-500 text-slate-950 rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold"><i class="fa-solid fa-check"></i></span>
+                                <h4 class="font-bold text-slate-100">Dossier Enregistré</h4>
+                                <p class="text-[10px] text-slate-400" id="infoPriseEnCharge">Dépôt prévu en agence</p>
+                            </div>
+                            <div class="relative">
+                                <span class="absolute -left-[31px] top-0 bg-slate-800 text-indigo-400 border border-indigo-500 rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold animate-ping"></span>
+                                <span class="absolute -left-[31px] top-0 bg-slate-800 text-indigo-400 border border-indigo-500 rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold">2</span>
+                                <h4 class="font-bold text-indigo-400" id="step2Title">Pesée & Plombage Inviolable</h4>
+                                <p class="text-[10px] text-slate-500" id="step2Desc">Inspection conjointe et scellés.</p>
+                            </div>
+                            <div class="relative opacity-40">
+                                <span class="absolute -left-[31px] top-0 bg-slate-800 text-slate-500 rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold">3</span>
+                                <h4 class="font-bold text-slate-400">Scanner Rayon X (X-Ray)</h4>
+                                <p class="text-[10px] text-slate-500">Validation imagerie sûreté au Hub PROCOKI.</p>
+                            </div>
+                            <div class="relative opacity-40">
+                                <span class="absolute -left-[31px] top-0 bg-slate-800 text-slate-500 rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-bold">4</span>
+                                <h4 class="font-bold text-slate-400">Convoi Blindé vers N'Djili</h4>
+                                <p class="text-[10px] text-slate-500">Acheminement sécurisé sous balise GPS TransVision.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 
-    <!-- FOOTER -->
+    <!-- PIED DE PAGE CORPORATE -->
     <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-8 text-center text-xs text-slate-500 space-y-2">
-        <p><b>EasyFly Transit </b> — Marque Deposée de Global Tech Solutions (GTS).</p>
-        <p class="text-[10px] font-mono">Hub Logistique Urbain Aéronautique Kinshasa.</p>
+        <p><b>EasyFly Transit</b> — Pôle Logistique & Sûreté Aéroportuaire • <b>Global Tech Solutions (GTS) SARL</b></p>
+        <p class="text-[10px] font-mono">Hub Urbain PROCOKI Gombe • Convois Sécurisés vers l'Aéroport International de N'Djili.</p>
     </footer>
+
+    <!-- SCRIPT DU FORMULAIRE CLIENT & BASCULE DE MODE -->
+    <script>
+        let currentMode = 'AGENCY';
+
+        function toggleServiceMode(mode) {
+            currentMode = mode;
+            const cardAgency = document.getElementById('card-mode-agency');
+            const cardVip = document.getElementById('card-mode-vip');
+            const secAgency = document.getElementById('section-agency');
+            const secVip = document.getElementById('section-vip');
+            const vipAdresse = document.getElementById('vipAdresse');
+
+            if (mode === 'VIP_HOME') {
+                cardVip.className = "relative flex flex-col p-4 rounded-2xl border-2 border-amber-500 bg-amber-950/20 cursor-pointer transition-all mode-card";
+                cardAgency.className = "relative flex flex-col p-4 rounded-2xl border-2 border-slate-800 bg-slate-900/60 hover:border-indigo-500/50 cursor-pointer transition-all mode-card";
+                
+                cardVip.querySelector('.check-icon').className = "fa-solid fa-circle-check text-amber-400 text-sm check-icon";
+                cardAgency.querySelector('.check-icon').className = "fa-regular fa-circle text-slate-600 text-sm check-icon";
+
+                secAgency.classList.add('hidden');
+                secVip.classList.remove('hidden');
+                vipAdresse.setAttribute('required', 'true');
+            } else {
+                cardAgency.className = "relative flex flex-col p-4 rounded-2xl border-2 border-indigo-600 bg-indigo-950/20 cursor-pointer transition-all mode-card";
+                cardVip.className = "relative flex flex-col p-4 rounded-2xl border-2 border-slate-800 bg-slate-900/60 hover:border-amber-500/50 cursor-pointer transition-all mode-card";
+                
+                cardAgency.querySelector('.check-icon').className = "fa-solid fa-circle-check text-indigo-400 text-sm check-icon";
+                cardVip.querySelector('.check-icon').className = "fa-regular fa-circle text-slate-600 text-sm check-icon";
+
+                secAgency.classList.remove('hidden');
+                secVip.classList.add('hidden');
+                vipAdresse.removeAttribute('required');
+            }
+        }
+
+        function initialiserSuivi() {
+            const pnr = document.getElementById('formPnr').value.trim().toUpperCase();
+            const nom = document.getElementById('clientNom').value.trim();
+
+            document.getElementById('attenteSuivi').classList.add('hidden');
+            document.getElementById('blocSuivi').classList.remove('hidden');
+
+            const badge = document.getElementById('badgeStatut');
+            badge.className = "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono px-3 py-1 rounded-full font-bold uppercase";
+            badge.textContent = "Dossier Confirmé";
+
+            document.getElementById('pnrClient').textContent = 'REF: ' + pnr;
+            
+            const modeBadge = document.getElementById('modeBadge');
+            const infoPrise = document.getElementById('infoPriseEnCharge');
+            const step2Title = document.getElementById('step2Title');
+            const step2Desc = document.getElementById('step2Desc');
+
+            if (currentMode === 'VIP_HOME') {
+                const commune = document.getElementById('vipCommune').value;
+                const adresse = document.getElementById('vipAdresse').value.trim();
+                modeBadge.className = "inline-block text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full mt-1 bg-amber-500/10 border border-amber-500/20 text-amber-400";
+                modeBadge.textContent = "Collecte VIP à Domicile";
+                infoPrise.textContent = `Collecte : ${commune} (${adresse})`;
+                step2Title.textContent = "Passage Fourgon & Inspection Domicile";
+                step2Desc.textContent = "Pesée balance mobile & scellé en votre présence (Art. 1).";
+            } else {
+                const agence = document.getElementById('formAgence').value;
+                modeBadge.className = "inline-block text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full mt-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400";
+                modeBadge.textContent = "Dépôt Hub Agence";
+                infoPrise.textContent = `Agence : ${agence}`;
+                step2Title.textContent = "Pesée & Plombage Inviolable Hub";
+                step2Desc.textContent = "Contrôle guichet et scellé inviolable individuel.";
+            }
+
+            alert(`Félicitations ${nom} !\nVotre demande de prise en charge (${currentMode === 'VIP_HOME' ? 'Collecte VIP Domicile' : 'Dépôt Hub Agence'}) a été enregistrée.\nPrésentez votre QR Pass à N'Djili pour récupérer vos étiquettes.`);
+        }
+    </script>
 </body>
 </html>
