@@ -61,14 +61,57 @@
             </p>
         </div>
 
+        <!-- RECHERCHE RAPIDE PNR & TIMELINE -->
         <div class="max-w-2xl mx-auto bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-5">
             <h3 class="text-base md:text-lg font-black text-slate-100 flex items-center gap-2">
                 <i class="fa-solid fa-qrcode text-indigo-400"></i> Suivi de Bagages & Statut du Lot
             </h3>
-            <div class="flex flex-col sm:flex-row gap-3">
+            
+            <!-- Formulaire de recherche -->
+            <div id="searchFormBloc" class="flex flex-col sm:flex-row gap-3">
                 <input type="text" id="quickSearchInput" placeholder="N° de scellé ou référence PNR (ex: AF-29401)" class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs md:text-sm text-slate-100 uppercase font-mono focus:outline-none focus:border-indigo-500">
                 <button type="button" onclick="consulterStatutRapide()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl text-xs font-black uppercase transition-all shadow-md flex items-center justify-center gap-2">
                     <i class="fa-solid fa-magnifying-glass"></i> Vérifier
+                </button>
+            </div>
+            <p id="searchHelpText" class="text-[11px] text-slate-500 font-mono">Conforme aux normes RVA / IATA et traçabilité par scellé inviolable.</p>
+
+            <!-- Résultat : Timeline Verticale (Cachée par défaut) -->
+            <div id="trackingResult" class="hidden mt-6 pt-6 border-t border-slate-800 space-y-6">
+                <div class="flex justify-between items-center bg-slate-900 p-4 rounded-xl border border-slate-800">
+                    <span class="text-xs font-mono font-bold text-slate-300">Dossier : <span id="trackedNumber" class="text-indigo-400 uppercase text-sm ml-1"></span></span>
+                    <span class="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-black uppercase tracking-wider animate-pulse flex items-center gap-1.5"><i class="fa-solid fa-satellite-dish"></i> En Transit</span>
+                </div>
+                
+                <div class="relative pl-6 border-l-2 border-slate-700 ml-4 space-y-8 text-xs font-mono">
+                    <!-- Etape 1 -->
+                    <div class="relative">
+                        <span class="absolute -left-[35px] top-0 bg-emerald-500 text-slate-950 rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black shadow-[0_0_10px_rgba(16,185,129,0.4)]"><i class="fa-solid fa-check"></i></span>
+                        <h4 class="font-bold text-emerald-400 text-sm">Prise en charge & Scellé posé</h4>
+                        <p class="text-[10px] text-slate-400 mt-1">Pesée certifiée et scellé inviolable appliqué sur vos bagages.</p>
+                    </div>
+                    <!-- Etape 2 -->
+                    <div class="relative">
+                        <span class="absolute -left-[35px] top-0 bg-blue-500 text-slate-950 rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black shadow-[0_0_10px_rgba(59,130,246,0.4)]"><i class="fa-solid fa-check"></i></span>
+                        <h4 class="font-bold text-blue-400 text-sm">Inspection Sûreté (X-Ray)</h4>
+                        <p class="text-[10px] text-slate-400 mt-1">Validation de l'imagerie de sûreté passée avec succès au Hub PROCOKI.</p>
+                    </div>
+                    <!-- Etape 3 -->
+                    <div class="relative">
+                        <span class="absolute -left-[35px] top-0 bg-slate-900 border-2 border-amber-500 text-amber-500 rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black"><i class="fa-solid fa-truck-fast"></i></span>
+                        <h4 class="font-bold text-amber-400 text-sm">En transit vers N'Djili</h4>
+                        <p class="text-[10px] text-slate-400 mt-1">Convoi blindé sous escorte. Suivi GPS actif (Lot: BT-2026-093).</p>
+                    </div>
+                    <!-- Etape 4 -->
+                    <div class="relative opacity-40">
+                        <span class="absolute -left-[35px] top-0 bg-slate-800 text-slate-500 rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black"><i class="fa-solid fa-plane"></i></span>
+                        <h4 class="font-bold text-slate-400 text-sm">Remis à la compagnie</h4>
+                        <p class="text-[10px] text-slate-500 mt-1">Check-in finalisé à l'aéroport. Responsabilité transférée au transporteur.</p>
+                    </div>
+                </div>
+
+                <button type="button" onclick="nouvelleRecherche()" class="w-full mt-4 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-3 rounded-xl text-xs font-bold uppercase transition-all flex items-center justify-center">
+                    <i class="fa-solid fa-rotate-left mr-2"></i> Nouvelle recherche
                 </button>
             </div>
         </div>
@@ -338,6 +381,31 @@
         let totalSurplusUsd = 0;
         let totalGlobalUsd = 0;
         let totalGlobalCdf = 0;
+
+        // Fonction d'affichage de la timeline (Remplacement de l'alerte)
+        function consulterStatutRapide() {
+            const query = document.getElementById('quickSearchInput').value.trim();
+            if (!query) {
+                alert("Veuillez saisir votre référence PNR ou numéro de scellé.");
+                return;
+            }
+            
+            // On affiche le numéro recherché
+            document.getElementById('trackedNumber').textContent = query;
+            
+            // On cache la zone de recherche pour afficher la timeline avec animation
+            document.getElementById('searchFormBloc').classList.add('hidden');
+            document.getElementById('searchHelpText').classList.add('hidden');
+            document.getElementById('trackingResult').classList.remove('hidden');
+        }
+
+        // Fonction pour refaire une recherche
+        function nouvelleRecherche() {
+            document.getElementById('quickSearchInput').value = '';
+            document.getElementById('trackingResult').classList.add('hidden');
+            document.getElementById('searchFormBloc').classList.remove('hidden');
+            document.getElementById('searchHelpText').classList.remove('hidden');
+        }
 
         function changerTypeVol() {
             const flightType = document.getElementById('flightType').value;
