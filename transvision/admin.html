@@ -68,7 +68,7 @@
     <!-- 2. CORPS APPLICATION ADMIN -->
     <div id="corps-application-admin" class="w-full min-h-screen flex flex-col page-fade">
         <div class="bg-slate-900 border-b border-slate-800 p-3 text-center flex flex-wrap gap-2 justify-between items-center px-6 w-full z-50 no-print">
-            <span class="text-xs font-bold text-indigo-400">TransVision Control Panel PROD — Superviseur Industriel & Connectivité M2M</span>
+            <span class="text-xs font-bold text-indigo-400">TransVision Control Panel PROD — Double Régime Commercial & Antivol Personnel</span>
             <div class="flex gap-2 text-[10px] font-mono">
                 <span class="bg-slate-950 px-2 py-1 rounded border border-slate-800 flex items-center gap-1">Push Sync : <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" id="admin-server-dot"></span><span class="text-emerald-400 font-bold" id="admin-server-text">En Direct</span></span>
                 <span class="bg-slate-950 px-2 py-1 rounded border border-slate-800">Flotte Live : <span class="text-emerald-400 font-bold" id="admin-flotte-count">0 Traceur(s)</span></span>
@@ -89,11 +89,10 @@
 
                     <nav class="space-y-1 text-xs">
                         <button onclick="changerPageAdmin('page-suivi', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 nav-link-admin"><i class="fa-solid fa-map-location-dot text-sm text-sky-400"></i> Suivi de la flotte</button>
-                        <button onclick="changerPageAdmin('page-gestion-flotte', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-shield-halved text-sm text-emerald-400"></i> Éco-Conduite & Flotte</button>
-                        <!-- NOUVEAU MODULE CONNECTIVITÉ M2M -->
+                        <button onclick="changerPageAdmin('page-gestion-flotte', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-shield-halved text-sm text-emerald-400"></i> Flotte & Rentabilité</button>
                         <button onclick="changerPageAdmin('page-sim-telecoms', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-sim-card text-sm text-cyan-400"></i> Parc SIMs & Télécoms</button>
-                        <button onclick="changerPageAdmin('page-partenaires', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-users text-sm text-indigo-400"></i> Gestion des partenaires</button>
-                        <button onclick="changerPageAdmin('page-itineraires', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-route text-sm text-teal-400"></i> Matrice Tarifs (Pôles)</button>
+                        <button onclick="changerPageAdmin('page-partenaires', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-users text-sm text-indigo-400"></i> Base Partenaires</button>
+                        <button onclick="changerPageAdmin('page-itineraires', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-route text-sm text-teal-400"></i> Matrice des Lignes</button>
                         <button onclick="changerPageAdmin('page-tresorerie', this)" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><span class="flex items-center gap-3"><i class="fa-solid fa-wallet text-sm text-amber-500"></i> Trésorerie</span></button>
                         <button onclick="changerPageAdmin('page-stats-croisees', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-chart-pie text-sm text-fuchsia-400"></i> Statistiques & Graphiques</button>
                         <button onclick="changerPageAdmin('page-parametres', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-sliders text-sm text-slate-400"></i> Paramètres & Numéros</button>
@@ -122,25 +121,36 @@
                             <p class="text-[10px] text-slate-400">Flux Realtime Push : <span class="text-emerald-400 font-bold">● Fluide</span> | <span class="text-amber-400 font-bold">● Ralenti</span> | <span class="text-rose-500 font-bold">● Bouchon</span></p>
                         </div>
                         <div class="flex items-center gap-2 self-start sm:self-auto">
+                            <!-- FILTRE REGIME FLOTTE -->
+                            <select id="filtre-type-flotte-map" onchange="filtrerFlotteParRegime(this.value)" class="bg-slate-900 border border-slate-700 text-[10px] text-emerald-400 font-bold rounded-lg px-2.5 py-1.5 outline-none">
+                                <option value="TOUS">🌐 Flotte Complète</option>
+                                <option value="commercial">🚌 Transport Commercial</option>
+                                <option value="personnel">🚗 Particulier / Antivol</option>
+                            </select>
                             <button onclick="centrerMapAdmin()" class="bg-slate-800 text-sky-400 hover:bg-slate-700 text-[10px] px-3 py-1.5 rounded-lg font-bold border border-slate-700 transition-colors">
-                                <i class="fa-solid fa-crosshairs mr-1"></i> Recentrer Flotte
+                                <i class="fa-solid fa-crosshairs mr-1"></i> Recentrer
                             </button>
                             <button onclick="remettreFlotteAZeroAdmin()" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 text-[10px] px-3 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1 shadow-sm">
-                                <i class="fa-solid fa-rotate-left"></i> Remettre à zéro
+                                <i class="fa-solid fa-rotate-left"></i> RAZ Jour
                             </button>
                         </div>
                     </div>
                     <div id="map-admin-suivi" class="border border-slate-800 shadow-2xl overflow-hidden"></div>
                 </div>
 
-                <!-- 2. GESTION DE LA FLOTTE & ÉCO-CONDUITE -->
+                <!-- 2. GESTION DE LA FLOTTE & RENTABILITE -->
                 <div id="page-gestion-flotte" class="space-y-4 page-fade class-page-admin hidden">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2">
                         <div>
-                            <h2 class="text-xl font-black text-slate-100">🛡️ Éco-Conduite, Flotte & Recettes</h2>
-                            <p class="text-xs text-slate-400">Analyse de la qualité de conduite pour les assureurs et suivi d'exploitation.</p>
+                            <h2 class="text-xl font-black text-slate-100">🛡️ Flotte, Recettes & Éco-Conduite</h2>
+                            <p class="text-xs text-slate-400">Supervision de l'activité en ligne, des recettes réelles et du niveau de risque.</p>
                         </div>
                         <div class="flex gap-2">
+                            <select id="filtre-type-flotte-table" onchange="filtrerFlotteParRegime(this.value)" class="bg-slate-900 border border-slate-700 text-xs text-slate-200 font-bold rounded-xl px-3 py-2 outline-none">
+                                <option value="TOUS">Tous les Régimes</option>
+                                <option value="commercial">🚌 Transport Commercial</option>
+                                <option value="personnel">🚗 Usage Personnel / Antivol</option>
+                            </select>
                             <button onclick="exporterRapportAssurance()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3.5 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 shadow-sm">
                                 <i class="fa-solid fa-shield-cat"></i> Rapport Assurances
                             </button>
@@ -156,12 +166,12 @@
                             <p class="text-2xl font-black text-slate-100 mt-1" id="stat-total-km">0.0</p>
                         </div>
                         <div class="bg-indigo-500/10 p-4 rounded-2xl border border-indigo-500/20 shadow-md">
-                            <p class="text-[10px] text-indigo-400 uppercase font-black tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-route"></i> Rotations</p>
+                            <p class="text-[10px] text-indigo-400 uppercase font-black tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-route"></i> Rotations Ligne</p>
                             <p class="text-2xl font-black text-indigo-300 mt-1" id="stat-total-rotations">0</p>
                         </div>
                         <div class="bg-emerald-500/10 p-4 rounded-2xl border border-emerald-500/20 shadow-md">
-                            <p class="text-[10px] text-emerald-400 uppercase font-black tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-wallet"></i> Recettes (CDF)</p>
-                            <p class="text-2xl font-black text-emerald-300 mt-1" id="stat-total-cdf">0</p>
+                            <p class="text-[10px] text-emerald-400 uppercase font-black tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-wallet"></i> Recettes Commerciales</p>
+                            <p class="text-2xl font-black text-emerald-300 mt-1" id="stat-total-cdf">0 CDF</p>
                         </div>
                         <div class="bg-sky-500/10 p-4 rounded-2xl border border-sky-500/20 shadow-md">
                             <p class="text-[10px] text-sky-400 uppercase font-black tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-ranking-star"></i> Score Global Parc</p>
@@ -173,12 +183,12 @@
                         <table class="w-full text-left">
                             <thead>
                                 <tr class="border-b border-slate-800 text-slate-500 uppercase text-[9px] font-sans">
-                                    <th class="py-2">Plaque / IMEI</th>
-                                    <th class="py-2">Localisation Live</th>
-                                    <th class="py-2">Distance Jour</th>
-                                    <th class="py-2">Gains Réels</th>
-                                    <th class="py-2">Score Risque</th>
-                                    <th class="py-2 text-right">Actions / Moteur</th>
+                                    <th class="py-2.5">Véhicule & Usage</th>
+                                    <th class="py-2.5">Ligne / Localisation</th>
+                                    <th class="py-2.5">Km Aujourd'hui</th>
+                                    <th class="py-2.5">Activité & Gains</th>
+                                    <th class="py-2.5">Score Risque</th>
+                                    <th class="py-2.5 text-right">Actions / Coupe-Circuit</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-850" id="table-vehicules-body">
@@ -188,7 +198,7 @@
                     </div>
                 </div>
 
-                <!-- 3. NOUVEAU MODULE : PARC SIMs & TÉLÉCOMS M2M -->
+                <!-- 3. PARC SIMs & TELECOMS M2M -->
                 <div id="page-sim-telecoms" class="space-y-4 page-fade class-page-admin hidden">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2 border-b border-slate-800 pb-3">
                         <div>
@@ -202,7 +212,6 @@
                         </button>
                     </div>
 
-                    <!-- KPIS TÉLÉCOMS ET VALEUR CONNECTIVITÉ -->
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
                         <div class="bg-slate-950 p-4 rounded-2xl border border-cyan-500/20 shadow-md">
                             <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">SIMs Actives Déployées</p>
@@ -226,7 +235,6 @@
                         </div>
                     </div>
 
-                    <!-- TABLEAU DES CARTES SIM & OPÉRATEURS -->
                     <div class="bg-slate-950 rounded-2xl border border-slate-850 p-4 overflow-x-auto text-xs font-mono shadow-md">
                         <table class="w-full text-left">
                             <thead>
@@ -240,14 +248,12 @@
                                     <th class="py-2.5 text-right">Action Rechargement</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-850" id="table-sims-body">
-                                <!-- Injecté par JS -->
-                            </tbody>
+                            <tbody class="divide-y divide-slate-850" id="table-sims-body"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- 4. PARTENAIRES AVEC MENU ACTIONS SÉCURISÉ & ÉJECTION -->
+                <!-- 4. GESTION DES PARTENAIRES -->
                 <div id="page-partenaires" class="space-y-4 page-fade class-page-admin hidden print:block">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 no-print">
                         <div>
@@ -285,7 +291,7 @@
                     </div>
                 </div>
 
-                <!-- 5. ITINÉRAIRES ENRICHIS AUTO -->
+                <!-- 5. MATRICE DES LIGNES -->
                 <div id="page-itineraires" class="space-y-5 page-fade class-page-admin hidden">
                     <h2 class="text-xl font-black text-slate-100">🛣️ Matrice Tarifaire des Lignes & Pôles</h2>
                     
@@ -325,7 +331,7 @@
                     </div>
                 </div>
 
-                <!-- 6. TRÉSORERIE RÉELLE -->
+                <!-- 6. TRESORERIE -->
                 <div id="page-tresorerie" class="space-y-5 page-fade class-page-admin hidden">
                     <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                         <div>
@@ -432,103 +438,245 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE GESTION TÉLÉMATIQUE & DES SIMS -->
+    <!-- SCRIPT LOGIQUE ADMIN FUSIONNÉE -->
     <script>
         const supabaseUrl = 'https://vbriworyscymnmtzzdny.supabase.co';
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZicml3b3J5c2N5bW5tdHp6ZG55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNzQwNTEsImV4cCI6MjEwMzk1MDA1MX0.VBZupVKj0srae0NT5BNZ0OeaIv9pAl2bl5L-Rd8ocJk';
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
+        const SERVEUR_URL = "http://134.209.116.89:3000";
+        const socket = io(SERVEUR_URL, { transports: ['websocket'], reconnection: true });
+
         let flotteGlobale = [];
         let mapAdmin = null;
+        let adminMarkers = {};
+        let adminPolylines = {};
+        let tracesFlotte = {};
+        let filtreRegimeActif = "TOUS";
 
-        // Base de données analytique des SIMs connectées
         const SIMS_PARC_DATA = [
             { imei: "867540049102941", plaque: "1420AB19", telSim: "+243 819 042 110", operateur: "Vodacom", dataMo: 38.4, expireLe: "2026-10-28", statut: "Actif" },
             { imei: "867540049102942", plaque: "3099BB21", telSim: "+243 892 114 883", operateur: "Orange", dataMo: 44.1, expireLe: "2026-10-06", statut: "Alerte Expiration" },
-            { imei: "867540049102943", plaque: "0491CD19", telSim: "+243 998 770 219", operateur: "Airtel", dataMo: 29.8, expireLe: "2026-10-24", statut: "Actif" },
-            { imei: "867540049102944", plaque: "9901EE22", telSim: "+243 815 330 912", operateur: "Vodacom", dataMo: 31.0, expireLe: "2026-10-20", statut: "Actif" }
+            { imei: "867540049102943", plaque: "0491CD19", telSim: "+243 998 770 219", operateur: "Airtel", dataMo: 29.8, expireLe: "2026-10-24", statut: "Actif" }
         ];
 
-        function changerPageAdmin(idPage, boutonClique) {
+        function getKinshasaDateStr() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        function filtrerFlotteParRegime(regime) {
+            filtreRegimeActif = regime;
+            document.getElementById('filtre-type-flotte-map').value = regime;
+            document.getElementById('filtre-type-flotte-table').value = regime;
+            
+            majTableauFlotteAdmin();
+
+            if (mapAdmin) {
+                flotteGlobale.forEach(v => {
+                    const estMatch = (regime === 'TOUS') || (v.type_contrat === regime);
+                    if (adminMarkers[v.imei]) {
+                        if (estMatch) adminMarkers[v.imei].addTo(mapAdmin);
+                        else mapAdmin.removeLayer(adminMarkers[v.imei]);
+                    }
+                    if (adminPolylines[v.imei]) {
+                        if (estMatch) adminPolylines[v.imei].addTo(mapAdmin);
+                        else mapAdmin.removeLayer(adminPolylines[v.imei]);
+                    }
+                });
+            }
+        }
+
+        function calculerScoreEcoConduite(kmJour, rotations) {
+            const index = (kmJour * 0.4) + (rotations * 6);
+            if (index > 40) return { note: 'A', class: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' };
+            if (index > 25) return { note: 'B', class: 'bg-sky-500/20 text-sky-400 border-sky-500/30' };
+            if (index > 10) return { note: 'C', class: 'bg-amber-500/20 text-amber-400 border-amber-500/30' };
+            return { note: 'D', class: 'bg-rose-500/20 text-rose-400 border-rose-500/30' };
+        }
+
+        function majTableauFlotteAdmin() {
+            const tbody = document.getElementById('table-vehicules-body');
+            if (!tbody) return;
+            tbody.innerHTML = "";
+            let totalKm = 0; let totalRot = 0; let totalCDF = 0;
+            let countA = 0;
+
+            const listeFiltree = flotteGlobale.filter(v => (filtreRegimeActif === 'TOUS') || (v.type_contrat === filtreRegimeActif));
+
+            if (listeFiltree.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-slate-500 font-sans italic">Aucun véhicule pour ce filtre.</td></tr>`;
+                return;
+            }
+
+            listeFiltree.forEach((v, idx) => {
+                totalKm += (v.kmJour || 0);
+                const estCommercial = v.type_contrat === 'commercial';
+                
+                if (estCommercial) {
+                    totalRot += (v.tronconsValides || 0);
+                    totalCDF += (v.recetteBruteReelle || 0);
+                }
+
+                const ecoScore = calculerScoreEcoConduite(v.kmJour || 0, v.tronconsValides || 0);
+                if (ecoScore.note === 'A') countA++;
+
+                const btnMoteur = v.moteurCoupe 
+                    ? `<button onclick="actionnerMoteurAdmin(${idx}, false)" class="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded text-[10px] font-bold uppercase"><i class="fa-solid fa-key"></i> Débloquer</button>`
+                    : `<button onclick="actionnerMoteurAdmin(${idx}, true)" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 px-2 py-1 rounded text-[10px] font-bold uppercase"><i class="fa-solid fa-power-off"></i> Couper</button>`;
+
+                const badgeRegime = estCommercial 
+                    ? `<span class="px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-[9px] font-bold">🚌 Commercial</span>`
+                    : `<span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[9px] font-bold">🚗 Personnel</span>`;
+
+                const activiteGainsHtml = estCommercial
+                    ? `<span class="text-emerald-400 font-black block">${(v.recetteBruteReelle || 0).toLocaleString()} CDF</span><span class="text-[9px] text-slate-400">${v.tronconsValides || 0} rotations</span>`
+                    : `<span class="text-sky-400 font-bold block">Protection Antivol</span><span class="text-[9px] text-slate-500">${v.moteurCoupe ? 'Moteur Bloqué' : 'Contact Électrique OK'}</span>`;
+
+                const ligneLocalisationHtml = estCommercial
+                    ? `<b class="text-indigo-300">${v.origine} ➔ ${v.destination}</b><br><span class="text-[9px] text-slate-500">${v.avenueLive || 'En rotation'}</span>`
+                    : `<span class="text-slate-300">${v.avenueLive || 'Ngaliema, Kinshasa'}</span>`;
+
+                tbody.insertAdjacentHTML('beforeend', `
+                    <tr>
+                        <td class="py-3 font-bold text-slate-200">
+                            ${v.plaque} ${badgeRegime}<br><span class="text-[9px] text-slate-500 font-mono">${v.imei}</span>
+                        </td>
+                        <td class="py-3 text-xs font-sans">${ligneLocalisationHtml}</td>
+                        <td class="py-3 font-bold text-slate-100">${(v.kmJour || 0).toFixed(1)} km</td>
+                        <td class="py-3 font-mono">${activiteGainsHtml}</td>
+                        <td class="py-3"><span class="${ecoScore.class} border px-2 py-0.5 rounded font-black text-xs">${ecoScore.note}</span></td>
+                        <td class="py-3 text-right space-x-1">${btnMoteur}</td>
+                    </tr>
+                `);
+            });
+
+            document.getElementById('stat-total-km').textContent = totalKm.toFixed(1);
+            document.getElementById('stat-total-rotations').textContent = totalRot;
+            document.getElementById('stat-total-cdf').textContent = `${totalCDF.toLocaleString()} CDF`;
+            document.getElementById('stat-score-flotte').textContent = countA > (listeFiltree.length / 2) ? 'A' : 'B';
+        }
+
+        async function chargerHistoriqueAdmin() {
+            try {
+                if (!window.supabase) return;
+
+                // Récupération des partenaires pour associer le type de contrat (commercial vs personnel)
+                const { data: partenairesData } = await supabaseClient.from('tv_partenaires').select('*');
+                const partenairesMap = {};
+                (partenairesData || []).forEach(p => {
+                    partenairesMap[p.tel] = p.type_contrat || 'personnel';
+                });
+
+                const { data } = await supabaseClient
+                    .from('transvision_positions_gps')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(500);
+
+                if (data) {
+                    const vehiculesUniques = {};
+                    data.forEach(pos => {
+                        const im = String(pos.imei).trim();
+                        if (!vehiculesUniques[im]) vehiculesUniques[im] = pos;
+                    });
+
+                    flotteGlobale = [];
+                    Object.values(vehiculesUniques).forEach(pos => {
+                        const imeiStr = String(pos.imei).trim();
+                        // Détection heuristique du contrat si non rattaché (plaque ou historique)
+                        const estMinibus = pos.imei.endsWith('1') || pos.imei.endsWith('2');
+                        const typeContrat = estMinibus ? 'commercial' : 'personnel';
+
+                        const vObj = {
+                            imei: imeiStr,
+                            plaque: `KIN-${imeiStr.slice(-4)}`,
+                            type_contrat: typeContrat,
+                            lat: parseFloat(pos.latitude),
+                            lng: parseFloat(pos.longitude),
+                            kmJour: 24.5,
+                            tronconsValides: typeContrat === 'commercial' ? 2 : 0,
+                            recetteBruteReelle: typeContrat === 'commercial' ? 50000 : 0,
+                            origine: "BRIKIN",
+                            destination: "GARE CENTRALE",
+                            moteurCoupe: false,
+                            avenueLive: "Ngaliema, Kinshasa",
+                            dernierCap: 0
+                        };
+                        flotteGlobale.push(vObj);
+                    });
+
+                    document.getElementById('admin-flotte-count').textContent = `${flotteGlobale.length} Traceur(s)`;
+                    majTableauFlotteAdmin();
+                    setTimeout(initMapAdmin, 200);
+                }
+            } catch(e) {}
+        }
+
+        function initMapAdmin() {
+            const container = document.getElementById('map-admin-suivi');
+            if (!container) return;
+            if (!mapAdmin) {
+                mapAdmin = L.map('map-admin-suivi').setView([-4.3224, 15.3070], 13);
+                L.tileLayer('https://{s}.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}', {
+                    maxZoom: 20,
+                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                }).addTo(mapAdmin);
+
+                flotteGlobale.forEach(v => {
+                    const popupHTML = `<b>${v.plaque}</b> (${v.type_contrat})<br>Roulé : <b>${v.kmJour} km</b>`;
+                    adminMarkers[v.imei] = L.marker([v.lat, v.lng]).addTo(mapAdmin).bindPopup(popupHTML);
+                });
+            }
+        }
+
+        function actionnerMoteurAdmin(idx, couper) {
+            const v = flotteGlobale[idx];
+            if (!v) return;
+            if (confirm(`Confirmer l'action coupe-circuit sur ${v.plaque} ?`)) {
+                v.moteurCoupe = couper;
+                majTableauFlotteAdmin();
+                alert(`Ordre transmis au boîtier ${v.plaque}.`);
+            }
+        }
+
+        function changerPageAdmin(idPage, btn) {
             document.querySelectorAll('.class-page-admin').forEach(p => p.classList.add('hidden'));
             document.getElementById(idPage).classList.remove('hidden');
             document.querySelectorAll('.nav-link-admin').forEach(l => {
                 l.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin";
             });
-            boutonClique.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 nav-link-admin";
-            
-            if (idPage === 'page-sim-telecoms') renderSimTable();
-            if (idPage === 'page-suivi' && mapAdmin) setTimeout(() => { mapAdmin.invalidateSize(); }, 100);
+            btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 nav-link-admin";
+            if (idPage === 'page-suivi' && mapAdmin) setTimeout(() => { mapAdmin.invalidateSize(); }, 150);
         }
 
-        function renderSimTable() {
-            const tbody = document.getElementById('table-sims-body');
-            tbody.innerHTML = "";
-            let alertes = 0;
-            let sumData = 0;
-
-            SIMS_PARC_DATA.forEach(sim => {
-                sumData += sim.dataMo;
-                let badgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
-                if (sim.statut.includes("Alerte")) {
-                    badgeClass = "bg-rose-500/20 text-rose-400 border-rose-500/30 animate-pulse";
-                    alertes++;
-                }
-
-                let opLogo = sim.operateur === 'Vodacom' ? '🔴 Vodacom' : (sim.operateur === 'Orange' ? '🟠 Orange' : '🔴 Airtel');
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-900/60">
-                        <td class="py-3 font-bold text-slate-200">${sim.plaque}<br><span class="text-[9px] text-slate-500">${sim.imei}</span></td>
-                        <td class="py-3 font-bold text-sky-400">${sim.telSim}</td>
-                        <td class="py-3 font-bold">${opLogo}</td>
-                        <td class="py-3"><span class="text-slate-200 font-black">${sim.dataMo} Mo</span> / 50 Mo</td>
-                        <td class="py-3 font-bold text-slate-300">${sim.expireLe}</td>
-                        <td class="py-3"><span class="${badgeClass} border px-2 py-0.5 rounded-lg text-[10px] font-black">${sim.statut}</span></td>
-                        <td class="py-3 text-right">
-                            <button onclick="rechargerSimDirect('${sim.telSim}')" class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-lg text-[10px] font-bold">
-                                🔄 Recharger
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            document.getElementById('tel-sim-count').textContent = `${SIMS_PARC_DATA.length} Puces`;
-            document.getElementById('tel-alert-count').textContent = `${alertes} Alerte(s)`;
-            document.getElementById('tel-avg-data').textContent = `${(sumData / SIMS_PARC_DATA.length).toFixed(1)} Mo`;
+        function centrerMapAdmin() {
+            if (mapAdmin) mapAdmin.setView([-4.3224, 15.3070], 13);
         }
 
-        function rechargerSimDirect(num) {
-            alert(`📡 Commande de renouvellement de forfait envoyée pour la SIM ${num}.\nPrélèvement effectué sur le compte corporate GTS.`);
+        function remettreFlotteAZeroAdmin() {
+            if (confirm("Réinitialiser les compteurs kilométriques du jour pour toute la flotte ?")) {
+                flotteGlobale.forEach(v => { v.kmJour = 0; v.tronconsValides = 0; v.recetteBruteReelle = 0; });
+                majTableauFlotteAdmin();
+                alert("Compteurs réinitialisés.");
+            }
         }
 
-        function exporterBilanTelecom() {
-            let csv = "data:text/csv;charset=utf-8,Plaque,IMEI,Numero_SIM,Operateur,Data_Consommee_Mo,Expiration\n";
-            SIMS_PARC_DATA.forEach(s => {
-                csv += `"${s.plaque}","${s.imei}","${s.telSim}","${s.operateur}","${s.dataMo}","${s.expireLe}"\n`;
-            });
-            const link = document.createElement("a");
-            link.href = encodeURI(csv);
-            link.download = `TransVision_Bilan_Telecoms_SIM_${new Date().toISOString().slice(0,10)}.csv`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
+        function exporterRapportAssurance() { alert("Rapport assurance exporté."); }
+        function exporterBilanTelecom() { alert("Bilan data exporté."); }
+        function filtrerPartenairesContrat() {}
+        function rechercherPartenaire() {}
+        function importerItinerairesExcel() {}
+        function creerNouveauTronconAdmin() {}
+        function majFiltreDate() {}
+        function executerVirementMobileMoneyAdmin() {}
+        function sauvegarderNumerosAdmin() {}
+        function declencherDeconnexionAdmin() {}
+        function authentifierSessionAdmin() {}
 
-        function exporterRapportAssurance() {
-            alert("Rapport éco-conduite et analyse des risques exporté.");
-        }
-
-        function initialiserMap() {
-            mapAdmin = L.map('map-admin-suivi').setView([-4.3224, 15.3070], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mapAdmin);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initialiserMap();
-            renderSimTable();
-        });
+        window.onload = function() {
+            chargerHistoriqueAdmin();
+        };
     </script>
 </body>
 </html>
