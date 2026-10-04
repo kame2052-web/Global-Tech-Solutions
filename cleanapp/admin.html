@@ -47,54 +47,17 @@
         </div>
         
         <div class="flex items-center gap-2.5">
-            <button onclick="refreshAllAppData()" id="btn-global-refresh" class="hidden px-3.5 py-2 bg-navy-900 hover:bg-slate-800 text-aqua border border-aqua/40 rounded-xl text-xs font-bold transition shadow flex items-center gap-1.5">
+            <button onclick="refreshAllAppData()" id="btn-global-refresh" class="px-3.5 py-2 bg-navy-900 hover:bg-slate-800 text-aqua border border-aqua/40 rounded-xl text-xs font-bold transition shadow flex items-center gap-1.5">
                 <span id="global-refresh-icon" class="inline-block transition-transform">🔄</span> Actualiser
             </button>
             <a href="index.html" class="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white bg-navy-900 border border-slate-700 transition">
                 ⬅ Portail Public
             </a>
-            <button onclick="lockAdminSession()" id="btn-lock-session" class="hidden px-3.5 py-2 bg-red-600/90 hover:bg-red-600 text-white rounded-xl text-xs font-bold transition shadow flex items-center gap-1.5">
-                Verrouiller 🔒
-            </button>
         </div>
     </header>
 
-    <!-- ÉCRAN D'AUTHENTIFICATION -->
-    <div id="admin-auth-screen" class="container mx-auto px-4 py-16 max-w-md flex-grow flex items-center justify-center">
-        <div class="bg-white text-slate-900 p-8 rounded-3xl shadow-2xl border border-slate-200 w-full space-y-5 text-center">
-            <div class="w-16 h-16 bg-navy-900 text-mattOrange rounded-2xl mx-auto flex items-center justify-center text-3xl font-mono shadow-inner">
-                🔐
-            </div>
-            <div>
-                <h2 class="text-xl font-black text-navy-800">Authentification Direction MATT</h2>
-                <p class="text-xs text-slate-500 font-semibold mt-1">Saisissez vos accès pour déverrouiller la console.</p>
-            </div>
-            
-            <div class="space-y-4 text-left">
-                <div>
-                    <label class="text-[11px] font-black text-slate-700 uppercase block mb-1">Identifiant</label>
-                    <input type="text" id="admin-login-input" placeholder="0980000338" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-mattOrange focus:outline-none" onkeydown="if(event.key==='Enter') verifyAdminAuth();">
-                </div>
-
-                <div>
-                    <label class="text-[11px] font-black text-slate-700 uppercase block mb-1">Mot de passe</label>
-                    <div class="relative">
-                        <input type="password" id="admin-pass-input" placeholder="••••••••" class="w-full px-3.5 py-2.5 pr-10 bg-slate-50 border border-slate-300 rounded-xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-mattOrange focus:outline-none" onkeydown="if(event.key==='Enter') verifyAdminAuth();">
-                        <button type="button" onclick="toggleAuthPasswordVisibility()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-700 focus:outline-none">
-                            <span id="eye-icon" class="text-lg">👁️</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <button onclick="verifyAdminAuth()" class="w-full py-3.5 bg-mattOrange hover:bg-orange-600 text-white font-black text-xs uppercase tracking-wider rounded-xl transition shadow">
-                Déverrouiller le Panneau de Gestion
-            </button>
-        </div>
-    </div>
-
     <!-- DASHBOARD PRINCIPAL -->
-    <main id="admin-dashboard-screen" class="w-full px-4 py-6 md:px-8 md:py-8 flex-grow hidden">
+    <main id="admin-dashboard-screen" class="w-full px-4 py-6 md:px-8 md:py-8 flex-grow">
         <div class="bg-white text-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6 w-full">
             
             <div class="flex gap-2 border-b border-slate-200 pb-3 overflow-x-auto custom-scrollbar text-xs font-bold">
@@ -1080,82 +1043,6 @@
             setTimeout(() => toast.remove(), 4000);
         }
 
-        function toggleAuthPasswordVisibility() {
-            const pass = document.getElementById('admin-pass-input');
-            const icon = document.getElementById('eye-icon');
-            if (!pass || !icon) return;
-            if (pass.type === 'password') { pass.type = 'text'; icon.innerText = '🙈'; }
-            else { pass.type = 'password'; icon.innerText = '👁️'; }
-        }
-
-        function verifyAdminAuth() {
-            try {
-                const loginInp = document.getElementById('admin-login-input');
-                const passInp = document.getElementById('admin-pass-input');
-                if (!loginInp || !passInp) return;
-
-                const login = loginInp.value.trim();
-                const pass = passInp.value.trim();
-
-                const matched = state.adminUsers.find(u => u.login === login && u.pass === pass);
-                if (matched || (login === "0980000338" && pass === MASTER_PASS) || pass === MASTER_PASS) {
-                    
-                    let roleStr = "Administrateur Master";
-                    if (matched) roleStr = matched.role;
-                    
-                    localStorage.setItem('matt_admin_auth', 'true');
-                    localStorage.setItem('matt_admin_role', roleStr);
-                    
-                    ouvrirConsoleAdmin();
-                    showToast("Accès validé. Bienvenue à la Direction.", "success");
-                } else {
-                    showToast("Identifiant ou mot de passe incorrect.", "error");
-                }
-            } catch (e) {
-                console.error("Erreur authentification:", e);
-                showToast("Une erreur inattendue s'est produite.", "error");
-            }
-        }
-
-        function ouvrirConsoleAdmin() {
-            const authScreen = document.getElementById('admin-auth-screen');
-            const dashScreen = document.getElementById('admin-dashboard-screen');
-            const btnLock = document.getElementById('btn-lock-session');
-            const btnRefresh = document.getElementById('btn-global-refresh');
-
-            if (authScreen) authScreen.classList.add('hidden');
-            if (dashScreen) dashScreen.classList.remove('hidden');
-            if (btnLock) btnLock.classList.remove('hidden');
-            if (btnRefresh) btnRefresh.classList.remove('hidden');
-
-            refreshAllAppData();
-            renderCommunesTable();
-            renderAdminUsersTable();
-            renderSecretQuestionsDB();
-        }
-
-        function lockAdminSession() {
-            localStorage.removeItem('matt_admin_auth');
-            localStorage.removeItem('matt_admin_role');
-            
-            const authScreen = document.getElementById('admin-auth-screen');
-            const dashScreen = document.getElementById('admin-dashboard-screen');
-            const btnLock = document.getElementById('btn-lock-session');
-            const btnRefresh = document.getElementById('btn-global-refresh');
-
-            if (dashScreen) dashScreen.classList.add('hidden');
-            if (authScreen) authScreen.classList.remove('hidden');
-            if (btnLock) btnLock.classList.add('hidden');
-            if (btnRefresh) btnRefresh.classList.add('hidden');
-
-            const loginInp = document.getElementById('admin-login-input');
-            const passInp = document.getElementById('admin-pass-input');
-            if (loginInp) loginInp.value = '';
-            if (passInp) passInp.value = '';
-
-            showToast("Session verrouillée.", "info");
-        }
-
         function unlockConfigSystem() {
             const passInp = document.getElementById('cfg-master-pass');
             if(!passInp) return;
@@ -2117,19 +2004,18 @@
             }
         }
 
-        window.onload = function() { ouvrirConsoleAdmin();
+        window.onload = function() {
             const selCommune = document.getElementById('admin-filter-commune');
             if (selCommune) {
                 selCommune.innerHTML = '<option value="Toutes">Toutes les Communes</option>' + communesList.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
             }
             onCommuneGroupChange();
-
-            if (true) {
-                ouvrirConsoleAdmin();
-            }
+            
+            refreshAllAppData();
+            renderCommunesTable();
+            renderAdminUsersTable();
+            renderSecretQuestionsDB();
         };
     </script>
 </body>
 </html>
-
-
