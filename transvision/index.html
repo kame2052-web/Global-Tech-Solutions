@@ -75,7 +75,7 @@
                     </div>
                     <h2 class="text-xl font-black tracking-wide">TransVision Protect</h2>
                     <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">by Global Tech Solutions</p>
-                    <p class="text-[9px] text-slate-300 mt-0.5 italic">Suivi Satellite, Antivol & Flotte Personnelle</p>
+                    <p class="text-[9px] text-slate-300 mt-0.5 italic">Suivi Satellite, Antivol & Flotte Commerciale</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-1 bg-slate-950/80 backdrop-blur p-1 rounded-xl border border-slate-800">
@@ -105,6 +105,13 @@
                         <input type="text" id="ins-nom" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200" placeholder="Ex: Jean Mukendi">
                     </div>
                     <div>
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Type d'Usage / Contrat</label>
+                        <select id="ins-type-contrat" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-emerald-400 font-bold outline-none">
+                            <option value="personnel">🚗 Particulier / Antivol Personnel</option>
+                            <option value="commercial">🚌 Commercial (Minibus 207, Ligne, Taxi)</option>
+                        </select>
+                    </div>
+                    <div>
                         <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Téléphone RDC</label>
                         <input type="tel" id="ins-tel" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 font-mono" placeholder="Ex: 0812345678">
                     </div>
@@ -126,7 +133,7 @@
                 </div>
             </div>
             <div class="text-center py-2 text-[9px] font-mono text-slate-400 border-t border-slate-800/80">
-                TransVision v33.7 — Antivol & Flotte Personnelle
+                TransVision v34.0 — Télématique Sécurisée GTS
             </div>
         </div>
 
@@ -137,7 +144,7 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <h1 id="lbl-nom-partenaire" class="text-sm font-black text-slate-100">Chargement...</h1>
-                            <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold">PROTÉGÉ</span>
+                            <span id="badge-mode-contrat" class="text-[9px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold">PROTÉGÉ</span>
                         </div>
                         <p class="text-[8px] text-slate-400 font-mono truncate max-w-[220px]" id="lbl-adresse-partenaire">Kinshasa, RDC</p>
                     </div>
@@ -160,8 +167,33 @@
                 </div>
             </header>
 
-            <!-- ONGLET 1 : GPS LIVE -->
+            <!-- ONGLET 1 : GPS LIVE & TABLEAU DE BORD D'EXPLOITATION -->
             <div id="onglet-flotte" class="p-2 flex-1 flex flex-col blur-transition class-onglet no-print min-h-[calc(100vh-170px)] space-y-2">
+                
+                <!-- BLOC EXCLUSIF : EXPLOITATION COMMERCIALE (Ligne, Rotations, Recettes) -->
+                <div id="bloc-widgets-commercial" class="bg-gradient-to-br from-indigo-950/80 to-slate-900/90 border border-indigo-500/30 rounded-2xl p-3 space-y-2 shadow-2xl backdrop-blur hidden">
+                    <div class="flex justify-between items-center text-xs border-b border-indigo-500/20 pb-2">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-route text-indigo-400"></i>
+                            <span class="text-[10px] font-black text-slate-300 uppercase">Ligne Affectée :</span>
+                            <span id="hud-commercial-ligne" class="font-bold text-emerald-400 font-mono">BRIKIN ➔ GARE CENTRALE</span>
+                        </div>
+                        <span class="text-[9px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded font-black uppercase">Service Ligne</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-center text-[10px] font-mono">
+                        <div class="bg-slate-950/80 p-2 rounded-xl border border-slate-800">
+                            <span class="text-[8px] text-slate-400 block uppercase font-bold">Rotations Effectuées</span>
+                            <span class="font-black text-indigo-300 text-sm" id="hud-commercial-rotations">0 Course(s)</span>
+                        </div>
+                        <div class="bg-slate-950/80 p-2 rounded-xl border border-slate-800">
+                            <span class="text-[8px] text-slate-400 block uppercase font-bold">Recette Brute Estimée</span>
+                            <span class="font-black text-emerald-400 text-sm" id="hud-commercial-recette">0 CDF</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BLOC STANDARD / PERSONNEL (Vitesse, Avenue, État coupe-circuit) -->
                 <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-3 space-y-2 shadow-2xl backdrop-blur">
                     <div class="flex justify-between items-center text-xs">
                         <div class="flex items-center gap-2 truncate max-w-[240px]">
@@ -186,6 +218,7 @@
                     </div>
                 </div>
 
+                <!-- CARTE INTERACTIVE -->
                 <div class="bg-slate-950 p-2 rounded-2xl border border-slate-800 flex-1 flex flex-col space-y-2 shadow-md">
                     <div class="flex justify-between items-center px-1">
                         <h2 class="text-[10px] font-bold text-slate-300 uppercase tracking-widest flex items-center gap-1.5">
@@ -279,7 +312,7 @@
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Modèle</label>
-                            <input type="text" id="add-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 outline-none focus:border-indigo-500" placeholder="Ex: Toyota IST">
+                            <input type="text" id="add-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 outline-none focus:border-indigo-500" placeholder="Ex: Minibus 207 / Toyota">
                         </div>
                         <div>
                             <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Kilométrage Compteur</label>
@@ -306,9 +339,15 @@
                 <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Informations du Compte</h2>
 
                 <div class="bg-slate-950/80 backdrop-blur p-4 rounded-2xl border border-slate-800 space-y-3 shadow-xl">
-                    <h3 class="text-xs font-black uppercase text-indigo-400 flex items-center gap-2 border-b border-slate-800 pb-2">
-                        <i class="fa-solid fa-address-card"></i> Coordonnées & Sécurité
-                    </h3>
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                        <h3 class="text-xs font-black uppercase text-indigo-400 flex items-center gap-2">
+                            <i class="fa-solid fa-address-card"></i> Coordonnées & Sécurité
+                        </h3>
+                        <select id="select-bascule-mode" onchange="changerModeAffichageManuel(this.value)" class="bg-slate-900 border border-slate-700 text-[10px] text-slate-300 font-bold px-2 py-1 rounded-lg">
+                            <option value="personnel">Mode Personnel</option>
+                            <option value="commercial">Mode Commercial</option>
+                        </select>
+                    </div>
                     
                     <div>
                         <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Nom Complet</label>
@@ -336,7 +375,6 @@
                         <input type="password" id="prof-pin-new" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 font-mono outline-none focus:border-indigo-500" placeholder="Laisser vide si inchangé">
                     </div>
 
-                    <!-- BANNIÈRE DE RETOUR VISUEL DIRECT -->
                     <div id="prof-msg-feedback" class="hidden p-3 rounded-xl text-center text-xs font-bold transition-all"></div>
 
                     <button id="btn-maj-profil" onclick="majIdentifiantsEtAdresse()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-black py-2.5 rounded-xl text-xs uppercase transition-colors">
@@ -376,7 +414,6 @@
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZicml3b3J5c2N5bW5tdHp6ZG55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNzQwNTEsImV4cCI6MjEwMzk1MDA1MX0.VBZupVKj0srae0NT5BNZ0OeaIv9pAl2bl5L-Rd8ocJk';
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-        // Connexion Socket.IO sécurisée évitant le blocage de contenu mixte sur Vercel
         let socket = { emit: () => {}, on: () => {} };
         if (window.location.protocol === 'http:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             try {
@@ -387,7 +424,7 @@
         const syncChannel = supabaseClient.channel('tv_sync_channel');
 
         let partenaireProfil = null; 
-        let client = { nom: "Chargement...", tel: "", commune: "", quartier: "", vehicules: [] };
+        let client = { nom: "Chargement...", tel: "", commune: "", quartier: "", type_contrat: "personnel", vehicules: [] };
         let map = null; 
         let busMarker = null;
         let polylineTrace = null;
@@ -401,6 +438,34 @@
 
         let dernierGeocodageTs = 0;
         let cacheAdresse = "";
+
+        // BASCULE DE MODE (PERSONNEL vs COMMERCIAL)
+        function adapterInterfaceSelonMode(typeContrat) {
+            const estCommercial = (typeContrat || '').toLowerCase() === 'commercial';
+            const blocCommercial = document.getElementById('bloc-widgets-commercial');
+            const badgeContrat = document.getElementById('badge-mode-contrat');
+            const selMode = document.getElementById('select-bascule-mode');
+
+            if (blocCommercial) blocCommercial.classList.toggle('hidden', !estCommercial);
+            if (selMode) selMode.value = estCommercial ? 'commercial' : 'personnel';
+            
+            if (badgeContrat) {
+                if (estCommercial) {
+                    badgeContrat.textContent = "FLOTTE COMMERCIALE";
+                    badgeContrat.className = "text-[9px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-1.5 py-0.5 rounded font-mono font-bold";
+                } else {
+                    badgeContrat.textContent = "PROTÉGÉ";
+                    badgeContrat.className = "text-[9px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold";
+                }
+            }
+        }
+
+        function changerModeAffichageManuel(nouveauMode) {
+            if (partenaireProfil) partenaireProfil.type_contrat = nouveauMode;
+            client.type_contrat = nouveauMode;
+            localStorage.setItem('tv_partenaire_type_contrat', nouveauMode);
+            adapterInterfaceSelonMode(nouveauMode);
+        }
 
         async function detecterNomAvenue(lat, lng) {
             const now = Date.now();
@@ -448,7 +513,7 @@
         function interpolerAngle(depart, arrivee) {
             let diff = (arrivee - depart) % 360;
             if (diff < -180) diff += 360;
-            if (diff > 180) diff -= 360;
+            if (diff > 180) diff += 360;
             return depart + diff;
         }
 
@@ -466,15 +531,10 @@
                 const curAngle = startAngle + (angleFinal - startAngle) * ease;
                 
                 marker.setLatLng([curLat, curLng]);
-                
                 const carBody = marker.getElement()?.querySelector('.tv-car-body');
-                if (carBody) {
-                    carBody.style.transform = `rotate(${curAngle}deg)`;
-                }
+                if (carBody) carBody.style.transform = `rotate(${curAngle}deg)`;
                 
-                if (ratio < 1.0) {
-                    requestAnimationFrame(frame);
-                }
+                if (ratio < 1.0) requestAnimationFrame(frame);
             }
             requestAnimationFrame(frame);
         }
@@ -507,10 +567,7 @@
 
         function getKinshasaDateStr() {
             const d = new Date();
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         }
 
         function marquerServeurEnLigne() {
@@ -532,7 +589,11 @@
                     lat: v.lat,
                     lng: v.lng,
                     dernierCap: v.dernierCap,
-                    moteurCoupe: v.moteurCoupe
+                    moteurCoupe: v.moteurCoupe,
+                    tronconsValides: v.tronconsValides || 0,
+                    recetteBruteReelle: v.recetteBruteReelle || 0,
+                    origine: v.origine || "BRIKIN",
+                    destination: v.destination || "GARE CENTRALE"
                 }
             });
         }
@@ -544,6 +605,15 @@
                 if (payload.tel === telSauve) {
                     alert("⚠️ Votre compte a été suspendu par l'Administrateur.");
                     declencherDeconnexion();
+                }
+            })
+            .on('broadcast', { event: 'maj_ligne_vehicule' }, ({ payload }) => {
+                let v = client.vehicules.find(item => item.imei === payload.imei);
+                if (v) {
+                    v.origine = payload.origine;
+                    v.destination = payload.destination;
+                    v.tarif = payload.tarif;
+                    document.getElementById('hud-commercial-ligne').textContent = `${v.origine} ➔ ${v.destination}`;
                 }
             })
             .subscribe();
@@ -576,15 +646,17 @@
                     const ts = Date.now();
                     localStorage.setItem('tv_reset_ts_' + v.imei, ts);
                     v.kmJour = 0;
+                    v.tronconsValides = 0;
+                    v.recetteBruteReelle = 0;
                     tracePositions = [[v.lat, v.lng]];
                     if (polylineTrace) polylineTrace.setLatLngs(tracePositions);
                     genererToutesLesVues();
+                    diffuserEtatAdmin(v);
                     alert("✅ Compteur remis à 0.0 km.");
                 }
             }
         }
 
-        // CHARGEMENT DES COORDONNÉES RÉELLES DEPUIS SUPABASE
         async function chargerDernieresPositions() {
             try {
                 const txtStatut = document.getElementById('last-update-text');
@@ -622,7 +694,12 @@
                         moteurCoupe: cfg.moteurCoupe || false, 
                         kmJour: 0,
                         kmOdometre: parseInt(cfg.kmOdometre) || 120000,
-                        dernierCap: 0
+                        dernierCap: 0,
+                        origine: cfg.origine || "BRIKIN",
+                        destination: cfg.destination || "GARE CENTRALE",
+                        tarif: parseFloat(cfg.tarif) || 2500,
+                        tronconsValides: parseInt(cfg.tronconsValides) || 0,
+                        recetteBruteReelle: parseFloat(cfg.recetteBruteReelle) || 0
                     };
 
                     const { data: latestData } = await supabaseClient
@@ -663,6 +740,12 @@
                     }
                     
                     v.kmJour = totalRouléAujourdhui;
+                    // Estimation des rotations commerciales si mode commercial actif (environ 12 km par rotation)
+                    if (v.kmJour > 0 && v.tronconsValides === 0) {
+                        v.tronconsValides = Math.floor(v.kmJour / 12);
+                        v.recetteBruteReelle = v.tronconsValides * v.tarif;
+                    }
+
                     client.vehicules.push(v);
                 }
 
@@ -703,6 +786,13 @@
                 v.kmJour += distDelta;
                 v.kmOdometre += distDelta;
 
+                // Mise à jour des rotations commerciales
+                const rotationsEstimees = Math.floor(v.kmJour / 12);
+                if (rotationsEstimees !== v.tronconsValides) {
+                    v.tronconsValides = rotationsEstimees;
+                    v.recetteBruteReelle = v.tronconsValides * (v.tarif || 2500);
+                }
+
                 const nouveauCap = calculerCap(v.lat, v.lng, data.lat, data.lng);
                 const ancienCap = v.dernierCap || 0;
                 v.dernierCap = nouveauCap;
@@ -741,6 +831,11 @@
                 document.getElementById('hud-km-jour').textContent = `${v.kmJour.toFixed(1)} km`;
                 document.getElementById('hud-moteur-statut').textContent = v.moteurCoupe ? "🔴 Moteur Coupé" : "🟢 Autorisé";
                 document.getElementById('hud-moteur-statut').className = v.moteurCoupe ? "font-black text-rose-400 text-xs" : "font-black text-emerald-400 text-xs";
+
+                // Mise à jour des compteurs commerciaux
+                document.getElementById('hud-commercial-ligne').textContent = `${v.origine || 'BRIKIN'} ➔ ${v.destination || 'GARE CENTRALE'}`;
+                document.getElementById('hud-commercial-rotations').textContent = `${v.tronconsValides || 0} Course(s)`;
+                document.getElementById('hud-commercial-recette').textContent = `${(v.recetteBruteReelle || 0).toLocaleString()} CDF`;
 
                 if (map) {
                     if (busMarker) {
@@ -812,6 +907,7 @@
             const telActuel = (partenaireProfil && partenaireProfil.tel) ? partenaireProfil.tel : (localStorage.getItem('tv_partenaire_tel') || client.tel);
             const com = (partenaireProfil && partenaireProfil.commune) ? partenaireProfil.commune : (localStorage.getItem('tv_partenaire_commune') || "Kinshasa");
             const qtr = (partenaireProfil && partenaireProfil.quartier) ? partenaireProfil.quartier : (localStorage.getItem('tv_partenaire_quartier') || "RDC");
+            const typeContratActuel = (partenaireProfil && partenaireProfil.type_contrat) ? partenaireProfil.type_contrat : (localStorage.getItem('tv_partenaire_type_contrat') || "personnel");
 
             document.getElementById('lbl-nom-partenaire').textContent = nomActuel;
             document.getElementById('lbl-adresse-partenaire').textContent = `${com} • ${qtr}`;
@@ -821,6 +917,8 @@
             document.getElementById('prof-commune').value = com;
             document.getElementById('prof-quartier').value = qtr;
             
+            adapterInterfaceSelonMode(typeContratActuel);
+
             majSelecteursVehicules();
             genererVueControleEntretien();
             genererVueFlotte();
@@ -870,6 +968,10 @@
                 document.getElementById('hud-km-jour').textContent = `${v.kmJour.toFixed(1)} km`;
                 document.getElementById('hud-moteur-statut').textContent = v.moteurCoupe ? "🔴 Moteur Coupé" : "🟢 Autorisé";
                 document.getElementById('hud-moteur-statut').className = v.moteurCoupe ? "font-black text-rose-400 text-xs" : "font-black text-emerald-400 text-xs";
+
+                document.getElementById('hud-commercial-ligne').textContent = `${v.origine || 'BRIKIN'} ➔ ${v.destination || 'GARE CENTRALE'}`;
+                document.getElementById('hud-commercial-rotations').textContent = `${v.tronconsValides || 0} Course(s)`;
+                document.getElementById('hud-commercial-recette').textContent = `${(v.recetteBruteReelle || 0).toLocaleString()} CDF`;
             }
             
             if(!map) {
@@ -913,7 +1015,6 @@
             if (indexStr !== "none") initMapEtCentrer(parseInt(indexStr)); 
         }
 
-        // HISTORIQUE / REPLAY
         function initMapHistorique() {
             const histContainer = document.getElementById('map-history-container');
             if (!histContainer || histContainer.offsetParent === null) return;
@@ -932,17 +1033,11 @@
             const selectVehicule = document.getElementById('hist-select-vehicule');
             const dateInput = document.getElementById('hist-date-picker').value;
 
-            if (!dateInput) {
-                alert("Veuillez sélectionner une date.");
-                return;
-            }
+            if (!dateInput) { alert("Veuillez sélectionner une date."); return; }
 
             const vehiculeIdx = parseInt(selectVehicule.value);
             const vehicule = client.vehicules[vehiculeIdx];
-            if (!vehicule) {
-                alert("Aucun véhicule sélectionné.");
-                return;
-            }
+            if (!vehicule) { alert("Aucun véhicule sélectionné."); return; }
 
             const btn = event.currentTarget;
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Recherche...`;
@@ -1023,7 +1118,6 @@
             }
         }
 
-        // FUSION ANTIVOL & ENTRETIEN
         function genererVueControleEntretien() {
             const container = document.getElementById('combo-vehicules-list');
             if (!container) return;
@@ -1099,7 +1193,6 @@
                                 <i class="fa-solid fa-wrench text-amber-400"></i> Échéances d'Entretien
                             </span>
 
-                            <!-- VIDANGE -->
                             <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-850 space-y-1">
                                 <div class="flex justify-between text-xs font-bold">
                                     <span class="flex items-center gap-1.5 text-slate-200">
@@ -1118,7 +1211,6 @@
                                 </div>
                             </div>
 
-                            <!-- FREINS -->
                             <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-850 space-y-1">
                                 <div class="flex justify-between text-xs font-bold">
                                     <span class="flex items-center gap-1.5 text-slate-200">
@@ -1137,7 +1229,6 @@
                                 </div>
                             </div>
 
-                            <!-- FILTRES -->
                             <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-850 space-y-1">
                                 <div class="flex justify-between text-xs font-bold">
                                     <span class="flex items-center gap-1.5 text-slate-200">
@@ -1216,7 +1307,6 @@
             }
         }
 
-        // GESTION FLOTTE
         function genererVueFlotte() {
             const container = document.getElementById('flotte-cards-container');
             if (!container) return;
@@ -1279,7 +1369,8 @@
             } else {
                 const nv = { 
                     plaque: plaque, type: type, imei: imeiClean, 
-                    lat: -4.32, lng: 15.31, vitesse: 0, moteurCoupe: false, kmJour: 0, kmOdometre: odo, dernierCap: 0
+                    lat: -4.32, lng: 15.31, vitesse: 0, moteurCoupe: false, kmJour: 0, kmOdometre: odo, dernierCap: 0,
+                    origine: "BRIKIN", destination: "GARE CENTRALE", tarif: 2500, tronconsValides: 0, recetteBruteReelle: 0
                 };
                 client.vehicules.push(nv);
             }
@@ -1317,7 +1408,6 @@
             }
         }
 
-        // AFFICHAGE DU RETOUR VISUEL SUR LA PAGE
         function afficherFeedbackCompte(type, message) {
             const fb = document.getElementById('prof-msg-feedback');
             if (!fb) return;
@@ -1335,7 +1425,6 @@
             }, 6000);
         }
 
-        // MISE À JOUR SÉCURISÉE DU PROFIL
         async function majIdentifiantsEtAdresse() {
             const btn = document.getElementById('btn-maj-profil');
             const ancienTel = (partenaireProfil && partenaireProfil.tel) || localStorage.getItem('tv_partenaire_tel');
@@ -1344,6 +1433,7 @@
             const newCommune = document.getElementById('prof-commune').value.trim();
             const newQuartier = document.getElementById('prof-quartier').value.trim();
             const newPin = document.getElementById('prof-pin-new').value.trim();
+            const newMode = document.getElementById('select-bascule-mode')?.value || 'personnel';
 
             if (!ancienTel) {
                 afficherFeedbackCompte('error', "❌ Session expirée. Veuillez vous reconnecter.");
@@ -1352,26 +1442,25 @@
             if (!newNom) { afficherFeedbackCompte('error', "❌ Le nom ne peut pas être vide."); return; }
             if (!newTel) { afficherFeedbackCompte('error', "❌ Le téléphone ne peut pas être vide."); return; }
 
-            // Animation du bouton
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Enregistrement en cours...`;
             btn.disabled = true;
 
             const adresseComplete = `${newCommune || 'Kinshasa'} • ${newQuartier || 'RDC'}`;
 
-            // 1. Sauvegarde locale immédiate
             localStorage.setItem('tv_partenaire_nom', newNom);
             localStorage.setItem('tv_partenaire_tel', newTel);
             localStorage.setItem('tv_partenaire_commune', newCommune);
             localStorage.setItem('tv_partenaire_quartier', newQuartier);
             localStorage.setItem('tv_partenaire_adresse', adresseComplete);
+            localStorage.setItem('tv_partenaire_type_contrat', newMode);
 
-            // 2. Objet pour Supabase
             let updates = {
                 nom: newNom,
                 tel: newTel,
                 adresse: adresseComplete,
                 commune: newCommune,
-                quartier: newQuartier
+                quartier: newQuartier,
+                type_contrat: newMode
             };
 
             if (newPin && newPin.length >= 4) {
@@ -1385,13 +1474,12 @@
                         .update(updates)
                         .eq('tel', ancienTel);
 
-                    // Si les colonnes spécifiques n'existent pas encore dans Supabase
                     if (error) {
-                        console.warn("Repli de sauvegarde :", error.message);
                         let fallbackUpdates = {
                             nom: newNom,
                             tel: newTel,
-                            adresse: adresseComplete
+                            adresse: adresseComplete,
+                            type_contrat: newMode
                         };
                         if (newPin && newPin.length >= 4) fallbackUpdates.pin = newPin;
 
@@ -1404,22 +1492,23 @@
                     }
                 }
 
-                // 3. Mise à jour de l'état en mémoire
                 if (!partenaireProfil) partenaireProfil = {};
                 partenaireProfil.nom = newNom;
                 partenaireProfil.tel = newTel;
                 partenaireProfil.commune = newCommune;
                 partenaireProfil.quartier = newQuartier;
                 partenaireProfil.adresse = adresseComplete;
+                partenaireProfil.type_contrat = newMode;
 
                 document.getElementById('lbl-nom-partenaire').textContent = newNom;
                 document.getElementById('lbl-adresse-partenaire').textContent = adresseComplete;
+
+                adapterInterfaceSelonMode(newMode);
 
                 afficherFeedbackCompte('success', "✅ Informations mises à jour avec succès !");
                 document.getElementById('prof-pin-new').value = "";
                 genererToutesLesVues();
             } catch(e) {
-                console.error("Détail de l'erreur :", e);
                 afficherFeedbackCompte('error', "❌ Erreur base de données : " + (e.message || "Vérifiez vos permissions."));
             } finally {
                 btn.innerHTML = `Mettre à Jour mes Informations`;
@@ -1450,6 +1539,7 @@
         async function inscrireNouveauPartenaire() {
             const nom = document.getElementById('ins-nom').value.trim();
             const tel = document.getElementById('ins-tel').value.trim();
+            const typeContrat = document.getElementById('ins-type-contrat').value;
             const commune = document.getElementById('ins-commune').value.trim();
             const quartier = document.getElementById('ins-quartier').value.trim();
             const pin = document.getElementById('ins-pin').value.trim();
@@ -1469,7 +1559,7 @@
                     quartier: quartier,
                     adresse: `${commune} • ${quartier}`,
                     pin: pin, 
-                    type_contrat: 'particulier_antivol', 
+                    type_contrat: typeContrat, 
                     date_expiration: dateExpiration.toISOString()
                 }]);
 
@@ -1479,7 +1569,7 @@
                         tel: tel, 
                         adresse: `${commune} • ${quartier}`,
                         pin: pin, 
-                        type_contrat: 'particulier_antivol', 
+                        type_contrat: typeContrat, 
                         date_expiration: dateExpiration.toISOString()
                     }]);
                     if (resFallback.error) throw resFallback.error;
@@ -1488,6 +1578,7 @@
                 localStorage.setItem('tv_partenaire_nom', nom);
                 localStorage.setItem('tv_partenaire_commune', commune);
                 localStorage.setItem('tv_partenaire_quartier', quartier);
+                localStorage.setItem('tv_partenaire_type_contrat', typeContrat);
 
                 alert("✅ Inscription réussie. Connectez-vous avec votre numéro et votre PIN.");
                 document.getElementById('login-tel').value = tel;
@@ -1518,6 +1609,8 @@
                         localStorage.setItem('tv_partenaire_quartier', parts[1] || 'RDC');
                     }
                     if(data.quartier) localStorage.setItem('tv_partenaire_quartier', data.quartier);
+                    if(data.type_contrat) localStorage.setItem('tv_partenaire_type_contrat', data.type_contrat);
+                    
                     lancerEspaceFlotte(data);
                 } else {
                     alert("❌ Téléphone ou Code PIN incorrect."); 
