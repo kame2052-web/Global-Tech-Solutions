@@ -62,6 +62,9 @@
             <button onclick="navigateTab('dashboard')" id="btn-tab-dashboard" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md">
                 <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span>
             </button>
+            <button onclick="navigateTab('yield-analytics')" id="btn-tab-yield-analytics" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-chart-line text-cyan-400"></i> <span>Yield & Capacité</span>
+            </button>
             <button onclick="navigateTab('enregistrement')" id="btn-tab-enregistrement" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
                 <i class="fa-solid fa-user-plus text-indigo-400"></i> <span>1. Enregistrement</span>
             </button>
@@ -77,7 +80,6 @@
             <button onclick="navigateTab('batch')" id="btn-tab-batch" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
                 <i class="fa-solid fa-truck-fast text-emerald-400"></i> <span>Convoi Batch N'djili</span>
             </button>
-            <!-- NOUVEL ONGLET DE CONFIGURATION -->
             <button onclick="navigateTab('config')" id="btn-tab-config" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
                 <i class="fa-solid fa-sliders text-purple-400"></i> <span>Tarifs & Config</span>
             </button>
@@ -102,12 +104,12 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-indigo-500 shadow-xl">
                     <span class="text-xs font-mono text-slate-400 uppercase">Voyageurs Enregistrés</span>
-                    <h3 id="stat-total-pax" class="text-3xl font-black text-slate-100 mt-2">2</h3>
+                    <h3 id="stat-total-pax" class="text-3xl font-black text-slate-100 mt-2">0</h3>
                     <span class="text-[10px] text-indigo-400 font-mono">Dossiers ouverts aujourd'hui</span>
                 </div>
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-amber-500 shadow-xl">
                     <span class="text-xs font-mono text-slate-400 uppercase">Poids Total Collecté</span>
-                    <h3 id="stat-total-kg" class="text-3xl font-black text-slate-100 mt-2">44.30 kg</h3>
+                    <h3 id="stat-total-kg" class="text-3xl font-black text-slate-100 mt-2">0.00 kg</h3>
                     <span class="text-[10px] text-amber-400 font-mono">Pesées certifiées PROCOKI</span>
                 </div>
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-rose-500 shadow-xl">
@@ -117,8 +119,80 @@
                 </div>
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-emerald-500 shadow-xl">
                     <span class="text-xs font-mono text-slate-400 uppercase">Convois Scellés Prêts</span>
-                    <h3 class="text-3xl font-black text-slate-100 mt-2">01 Lot</h3>
+                    <h3 class="text-3xl font-black text-slate-100 mt-2" id="stat-total-convois">01 Lot</h3>
                     <span class="text-[10px] text-emerald-400 font-mono">Batch BT-2026-093</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- NOUVEAU MODULE STRATÉGIQUE : YIELD MANAGEMENT & CAPACITÉ -->
+        <section id="pane-yield-analytics" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-cyan-400 uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line"></i> Yield Management & Capacité Logistique
+                    </h2>
+                    <p class="text-xs text-slate-400">Optimisation tarifaire des canaux de collecte et anticipation du tonnage pour les convois N'Djili.</p>
+                </div>
+                <button onclick="exporterYieldCsv()" class="bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-black px-4 py-2 rounded-xl text-xs uppercase transition shadow flex items-center gap-2">
+                    <i class="fa-solid fa-file-csv"></i> Exporter Rapport Yield
+                </button>
+            </div>
+
+            <!-- KPIS YIELD & CHARGE -->
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div class="bg-gtscard border border-cyan-500/20 p-4 rounded-2xl shadow-md">
+                    <span class="text-[10px] font-mono uppercase text-slate-400">Mix Collecte VIP</span>
+                    <h3 class="text-2xl font-black text-cyan-300 mt-1" id="kpi-vip-ratio">0%</h3>
+                    <span class="text-[9px] text-slate-500 font-mono">Cible rentabilité : &gt; 35%</span>
+                </div>
+                <div class="bg-gtscard border border-slate-800 p-4 rounded-2xl shadow-md">
+                    <span class="text-[10px] font-mono uppercase text-slate-400">Excédent / Passager Moyen</span>
+                    <h3 class="text-2xl font-black text-slate-100 mt-1" id="kpi-avg-excess">0.00 kg</h3>
+                    <span class="text-[9px] text-amber-400 font-mono">Facturation extra-billet</span>
+                </div>
+                <div class="bg-gtscard border border-emerald-500/20 p-4 rounded-2xl shadow-md">
+                    <span class="text-[10px] font-mono uppercase text-slate-400">Taux Remplissage Fourgon</span>
+                    <h3 class="text-2xl font-black text-emerald-300 mt-1" id="kpi-truck-fill">0%</h3>
+                    <span class="text-[9px] text-slate-500 font-mono">Sur capacité de 1 200 kg / convoi</span>
+                </div>
+                <div class="bg-gtscard border border-purple-500/20 p-4 rounded-2xl shadow-md">
+                    <span class="text-[10px] font-mono uppercase text-slate-400">Majoration Yield Actuelle</span>
+                    <h3 class="text-2xl font-black text-purple-300 mt-1" id="kpi-yield-multiplier">+0%</h3>
+                    <span class="text-[9px] text-purple-400 font-mono" id="kpi-yield-status">Tarif standard</span>
+                </div>
+            </div>
+
+            <!-- ANALYSE CROISÉE : CANAUX ET COMPAGNIES -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- PANNEAU CANAUX DE COLLECTE -->
+                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
+                    <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
+                        <h3 class="text-xs font-black uppercase text-slate-100 tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group text-amber-400"></i> Canaux : Agence vs Domicile VIP
+                        </h3>
+                        <span class="text-[10px] text-slate-500 font-mono">Dernières 24h</span>
+                    </div>
+                    <div class="space-y-3" id="yield-channels-box">
+                        <!-- Rempli en JS -->
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-850 text-xs text-slate-400 space-y-1">
+                        <span class="font-bold text-amber-300 block">💡 Règle de Yield Management :</span>
+                        <p>Pour tout enlèvement VIP demandé à moins de 8h du vol en heure de pointe (16h-20h), une surcote d'urgence de <strong>+20%</strong> est appliquée pour optimiser la tournée des chauffeurs.</p>
+                    </div>
+                </div>
+
+                <!-- PANNEAU VOLUMÉTRIE PAR COMPAGNIE -->
+                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
+                    <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
+                        <h3 class="text-xs font-black uppercase text-slate-100 tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-plane-departure text-sky-400"></i> Charge & Tonnage par Compagnie
+                        </h3>
+                        <span class="text-[10px] text-slate-500 font-mono">Base Négociation B2B</span>
+                    </div>
+                    <div class="space-y-2.5 max-h-[300px] overflow-y-auto pr-1" id="yield-airlines-box">
+                        <!-- Rempli en JS -->
+                    </div>
                 </div>
             </div>
         </section>
@@ -132,6 +206,21 @@
 
             <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl">
                 <form id="clientRegisterForm" onsubmit="handleNewClient(event)" class="space-y-6">
+                    <!-- CANAL DE PRISE EN CHARGE (YIELD) -->
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <label class="block text-xs font-mono uppercase text-cyan-400 font-bold">Canal de Prise en Charge *</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                            <label class="flex items-center space-x-2 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer">
+                                <input type="radio" name="regChannel" value="AGENCY" checked class="text-indigo-500">
+                                <span>🏢 Dépôt en Agence Hub (PROCOKI)</span>
+                            </label>
+                            <label class="flex items-center space-x-2 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer text-amber-300">
+                                <input type="radio" name="regChannel" value="VIP_HOME" class="text-amber-500">
+                                <span>🚐 Collecte VIP à Domicile</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <!-- IDENTITÉ CLIENT -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
@@ -329,7 +418,7 @@
                     <p class="text-xs text-slate-400">Contrôle de chaque étape de traitement pour chaque passager enregistré.</p>
                 </div>
                 <span id="reg-badge-count" class="text-xs font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-3.5 py-1 rounded-full font-bold">
-                    2 Passagers
+                    0 Passagers
                 </span>
             </div>
 
@@ -339,6 +428,7 @@
                         <thead class="bg-slate-900/80 text-[10px] font-mono uppercase text-slate-400 border-b border-slate-800">
                             <tr>
                                 <th class="py-3 px-4">Passager</th>
+                                <th class="py-3 px-4">Canal</th>
                                 <th class="py-3 px-4">Vol & PNR</th>
                                 <th class="py-3 px-4">Destination</th>
                                 <th class="py-3 px-4">Poids Constaté / Aut.</th>
@@ -370,8 +460,8 @@
                         <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">Prêt pour convoi</span>
                     </div>
                     <div class="space-y-2 text-xs font-mono">
-                        <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Bagages certifiés et scellés :</span><strong class="text-emerald-400" id="batch-pax-count">2 pièces</strong></div>
-                        <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Masse globale transportée :</span><strong class="text-indigo-400" id="batch-pax-weight">44.30 kg</strong></div>
+                        <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Bagages certifiés et scellés :</span><strong class="text-emerald-400" id="batch-pax-count">0 pièces</strong></div>
+                        <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Masse globale transportée :</span><strong class="text-indigo-400" id="batch-pax-weight">0.00 kg</strong></div>
                         <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Destination :</span><strong class="text-slate-200">Terminal Départs N'Djili</strong></div>
                     </div>
                 </div>
@@ -389,7 +479,7 @@
             </div>
         </section>
 
-        <!-- 7. NOUVELLE VUE : CONFIGURATION & TARIFS -->
+        <!-- 7. VUE CONFIGURATION & TARIFS -->
         <section id="pane-config" class="view-pane space-y-8">
             <div class="border-b border-slate-800 pb-3">
                 <h2 class="text-xl md:text-2xl font-black text-slate-100">Gestionnaire des Tarifs & Paramètres</h2>
@@ -499,25 +589,26 @@
 
     <!-- PIED DE PAGE -->
     <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-6 text-center text-xs text-slate-500 space-y-1">
-        <p><b>EasyFly Transit </b> — Console Intégrale Hub PROCOKI Kinshasa.</p>
+        <p><b>EasyFly Transit</b> — Console Intégrale Hub PROCOKI Kinshasa.</p>
         <p class="text-[10px] font-mono">Connexion sécurisée passerelle aéroportuaire N'Djili.</p>
     </footer>
 
     <!-- LOGIQUE JAVASCRIPT & BASE DE DONNÉES EN MÉMOIRE -->
     <script>
         const TARIFF_PER_KG = 42000;
+        const CAMION_CAPACITE_KG = 1200;
 
-        // Base de données réactive initiale (Hub)
+        // Base de données réactive initiale (Hub) enrichie du canal
         let PAX_DATABASE = [
-            { id: "pax-1", nom: "MUTOMBO", postnom: "ILUNGA", prenom: "Patrick", pnr: "AF-29401", compagnie: "Air France", date: "2026-10-03", heure: "21:45", destination: "Paris-CDG", allowedWeight: 23, measuredWeight: 21.8, excessFee: 0, payMethod: "Cash", payRef: "REC-001", xrayStatus: "Approved", sealNumber: "PL-9921" },
-            { id: "pax-2", nom: "BOKETSHU", postnom: "YONGO", prenom: "Mireille", pnr: "SN-88410", compagnie: "Brussels Airlines", date: "2026-10-03", heure: "20:30", destination: "Bruxelles BRU", allowedWeight: 23, measuredWeight: 22.5, excessFee: 0, payMethod: "POS_Card", payRef: "REC-002", xrayStatus: "Pending", sealNumber: "" }
+            { id: "pax-1", nom: "MUTOMBO", postnom: "ILUNGA", prenom: "Patrick", channel: "AGENCY", pnr: "AF-29401", compagnie: "Air France", date: "2026-10-03", heure: "21:45", destination: "Paris-CDG", allowedWeight: 23, measuredWeight: 21.8, excessFee: 0, payMethod: "Cash", payRef: "REC-001", xrayStatus: "Approved", sealNumber: "PL-9921" },
+            { id: "pax-2", nom: "BOKETSHU", postnom: "YONGO", prenom: "Mireille", channel: "VIP_HOME", pnr: "SN-88410", compagnie: "Brussels Airlines", date: "2026-10-03", heure: "20:30", destination: "Bruxelles BRU", allowedWeight: 23, measuredWeight: 26.5, excessFee: 147000, payMethod: "POS_Card", payRef: "REC-002", xrayStatus: "Pending", sealNumber: "" },
+            { id: "pax-3", nom: "KANKU", postnom: "KALALA", prenom: "Christian", channel: "VIP_HOME", pnr: "ET-49120", compagnie: "Ethiopian Airlines", date: "2026-10-04", heure: "13:15", destination: "Dubai DXB", allowedWeight: 23, measuredWeight: 28.2, excessFee: 218400, payMethod: "Mobile_Money", payRef: "REC-003", xrayStatus: "Approved", sealNumber: "PL-9922" }
         ];
 
         let selectedWeighId = "pax-1";
         let selectedXrayId = "pax-2";
         let currentXrayVote = null;
 
-        // Configuration du simulateur client
         const defaultData = {
             serviceRates: { AGENCY: { NAT: 10, INT: 20 }, VIP_HOME: { NAT: 15, INT: 30 } },
             airlines: {
@@ -528,7 +619,6 @@
         };
         let gtsConfig = JSON.parse(localStorage.getItem('gtsAdminConfig')) || defaultData;
 
-        // 1. Navigation exclusive entre onglets
         function navigateTab(tabName) {
             document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(btn => {
@@ -544,17 +634,120 @@
             }
 
             if(tabName === 'config') chargerFormulaireConfig();
+            if(tabName === 'yield-analytics') calculerYieldEtCapacite();
         }
 
-        /* --- LOGIQUE POSTES DU HUB --- */
-        // (Enregistrement, Pesée, Rayon X, etc. - Identique à l'original)
+        /* --- LOGIQUE ANALYTIQUE YIELD & CAPACITÉ --- */
+        function calculerYieldEtCapacite() {
+            const totalPax = PAX_DATABASE.length;
+            if (totalPax === 0) return;
+
+            let vipCount = 0;
+            let agencyCount = 0;
+            let totalWeight = 0;
+            let totalExcessKg = 0;
+            const airlinesMap = {};
+
+            PAX_DATABASE.forEach(p => {
+                if (p.channel === 'VIP_HOME') vipCount++;
+                else agencyCount++;
+
+                const weight = p.measuredWeight || 0;
+                totalWeight += weight;
+
+                const excess = Math.max(0, weight - (p.allowedWeight || 23));
+                totalExcessKg += excess;
+
+                if (!airlinesMap[p.compagnie]) {
+                    airlinesMap[p.compagnie] = { count: 0, weight: 0, excessKg: 0 };
+                }
+                airlinesMap[p.compagnie].count++;
+                airlinesMap[p.compagnie].weight += weight;
+                airlinesMap[p.compagnie].excessKg += excess;
+            });
+
+            const vipRatio = Math.round((vipCount / totalPax) * 100);
+            const avgExcess = (totalExcessKg / totalPax).toFixed(2);
+            const truckFill = Math.min(100, Math.round((totalWeight / CAMION_CAPACITE_KG) * 100));
+
+            // Règle de Yield dynamique (Heure actuelle)
+            const currentHour = new Date().getHours();
+            const isPeak = currentHour >= 16 && currentHour <= 20;
+            const yieldSurge = isPeak ? 20 : 0;
+
+            document.getElementById('kpi-vip-ratio').textContent = `${vipRatio}% (${vipCount} pax)`;
+            document.getElementById('kpi-avg-excess').textContent = `${avgExcess} kg`;
+            document.getElementById('kpi-truck-fill').textContent = `${truckFill}% (${totalWeight.toFixed(1)} / ${CAMION_CAPACITE_KG} kg)`;
+            document.getElementById('kpi-yield-multiplier').textContent = `+${yieldSurge}%`;
+            document.getElementById('kpi-yield-status').textContent = isPeak ? 'Pic de soirée actif (Majoration +20%)' : 'Heures creuses (Tarif régulier)';
+
+            // Panneau Canaux
+            const channelsBox = document.getElementById('yield-channels-box');
+            channelsBox.innerHTML = `
+                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+                    <div>
+                        <span class="font-bold text-slate-200">🏢 Dépôt Agence Hub (PROCOKI)</span>
+                        <span class="block text-[10px] text-slate-500 font-mono">${agencyCount} passagers enregistrés</span>
+                    </div>
+                    <span class="font-mono font-bold text-indigo-400">${Math.round((agencyCount/totalPax)*100)}% volume</span>
+                </div>
+                <div class="bg-slate-950 p-3 rounded-xl border border-amber-500/30 flex justify-between items-center text-xs">
+                    <div>
+                        <span class="font-bold text-amber-300">🚐 Collecte VIP à Domicile</span>
+                        <span class="block text-[10px] text-slate-500 font-mono">${vipCount} réservations premium</span>
+                    </div>
+                    <span class="font-mono font-bold text-amber-400">${vipRatio}% volume</span>
+                </div>
+            `;
+
+            // Panneau Compagnies
+            const airlinesBox = document.getElementById('yield-airlines-box');
+            airlinesBox.innerHTML = '';
+            Object.entries(airlinesMap).forEach(([cie, data]) => {
+                const cieShare = Math.round((data.weight / (totalWeight || 1)) * 100);
+                airlinesBox.innerHTML += `
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1.5 text-xs font-mono">
+                        <div class="flex justify-between items-center">
+                            <strong class="text-sky-400">${cie}</strong>
+                            <span class="text-slate-300 font-bold">${data.weight.toFixed(1)} kg (${cieShare}%)</span>
+                        </div>
+                        <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-sky-500 h-full rounded-full" style="width: ${cieShare}%"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-400">
+                            <span>${data.count} billet(s)</span>
+                            <span class="text-rose-400 font-bold">Excédents : +${data.excessKg.toFixed(1)} kg</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function exporterYieldCsv() {
+            let csv = "\uFEFFPassager,Canal,Compagnie,PNR,Poids_Total_Kg,Excedent_Kg,Surtaxe_CDF\n";
+            PAX_DATABASE.forEach(p => {
+                const excess = Math.max(0, (p.measuredWeight || 0) - (p.allowedWeight || 23)).toFixed(1);
+                csv += `"${p.nom} ${p.prenom}","${p.channel || 'AGENCY'}","${p.compagnie}","${p.pnr}","${p.measuredWeight || 0}","${excess}","${p.excessFee || 0}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `EasyFly_Yield_Capacite_${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        /* --- LOGIQUE OPÉRATIONNELLE DU HUB --- */
         function handleNewClient(e) {
             e.preventDefault();
+            const channelVal = document.querySelector('input[name="regChannel"]:checked').value;
             const newPax = {
                 id: "pax-" + (PAX_DATABASE.length + 1),
                 nom: document.getElementById('reg-nom').value.trim().toUpperCase(),
                 postnom: document.getElementById('reg-postnom').value.trim().toUpperCase(),
                 prenom: document.getElementById('reg-prenom').value.trim(),
+                channel: channelVal,
                 pnr: document.getElementById('reg-pnr').value.trim().toUpperCase(),
                 compagnie: document.getElementById('reg-compagnie').value,
                 date: document.getElementById('reg-date').value,
@@ -570,8 +763,9 @@
             };
             PAX_DATABASE.unshift(newPax);
             refreshAllUI();
+            calculerYieldEtCapacite();
             document.getElementById('clientRegisterForm').reset();
-            alert(`Dossier ${newPax.nom} ${newPax.prenom} enregistré avec succès !\nRedirection vers le poste de pesée.`);
+            alert(`Dossier ${newPax.nom} ${newPax.prenom} enregistré avec succès !\nCanal : ${newPax.channel === 'VIP_HOME' ? 'Collecte VIP Domicile' : 'Dépôt Agence Hub'}\nRedirection vers le poste de pesée.`);
             selectedWeighId = newPax.id;
             loadPaxIntoWeigh(newPax.id);
             navigateTab('pesee');
@@ -603,7 +797,8 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-800/30 transition-colors";
                 const xrayBadge = p.xrayStatus === 'Approved' ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">● Conforme</span>` : (p.xrayStatus === 'Suspect' ? `<span class="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 text-[10px] font-bold">● Suspect</span>` : `<span class="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold">⏳ Attente</span>`);
-                tr.innerHTML = `<td class="py-3 px-4 font-bold text-slate-100">${p.nom} ${p.prenom}</td><td class="py-3 px-4 text-indigo-400 font-bold">${p.compagnie} • ${p.pnr}</td><td class="py-3 px-4">${p.destination}</td><td class="py-3 px-4"><span class="${p.measuredWeight > p.allowedWeight ? 'text-rose-400 font-bold' : 'text-emerald-400'}">${p.measuredWeight ? p.measuredWeight.toFixed(1) + ' kg' : 'Non pesé'}</span> / ${p.allowedWeight} kg</td><td class="py-3 px-4 text-rose-400 font-bold">${p.excessFee ? p.excessFee.toLocaleString('fr-FR') + ' CDF' : '0 CDF'}</td><td class="py-3 px-4">${xrayBadge}</td><td class="py-3 px-4 font-bold text-emerald-400">${p.sealNumber || '<span class="text-slate-500">Non scellé</span>'}</td>`;
+                const channelBadge = p.channel === 'VIP_HOME' ? `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[9px] font-bold">VIP Dom.</span>` : `<span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[9px] font-bold">Hub Agence</span>`;
+                tr.innerHTML = `<td class="py-3 px-4 font-bold text-slate-100">${p.nom} ${p.prenom}</td><td class="py-3 px-4">${channelBadge}</td><td class="py-3 px-4 text-indigo-400 font-bold">${p.compagnie} • ${p.pnr}</td><td class="py-3 px-4">${p.destination}</td><td class="py-3 px-4"><span class="${p.measuredWeight > p.allowedWeight ? 'text-rose-400 font-bold' : 'text-emerald-400'}">${p.measuredWeight ? p.measuredWeight.toFixed(1) + ' kg' : 'Non pesé'}</span> / ${p.allowedWeight} kg</td><td class="py-3 px-4 text-rose-400 font-bold">${p.excessFee ? p.excessFee.toLocaleString('fr-FR') + ' CDF' : '0 CDF'}</td><td class="py-3 px-4">${xrayBadge}</td><td class="py-3 px-4 font-bold text-emerald-400">${p.sealNumber || '<span class="text-slate-500">Non scellé</span>'}</td>`;
                 tbody.appendChild(tr);
             });
         }
@@ -651,6 +846,7 @@
             pax.payMethod = document.querySelector('input[name="payType"]:checked').value;
             pax.payRef = document.getElementById('weigh-input-ref').value.trim();
             refreshAllUI();
+            calculerYieldEtCapacite();
             alert(`Pesée enregistrée pour ${pax.nom} !\nTransfert au poste Rayon X.`);
             loadPaxIntoXray(pax.id);
             navigateTab('surete');
@@ -659,6 +855,7 @@
         function loadPaxIntoXray(paxId) {
             selectedXrayId = paxId;
             const pax = PAX_DATABASE.find(p => p.id === paxId);
+            if (!pax) return;
             document.getElementById('xray-lbl-nom').textContent = `${pax.nom} ${pax.postnom} ${pax.prenom}`;
             document.getElementById('xray-lbl-dest').textContent = pax.destination;
             document.getElementById('xray-lbl-pnr').textContent = pax.pnr;
@@ -693,7 +890,7 @@
             const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
             if (!pax) return;
             const printWin = window.open('', '', 'width=340,height=550');
-            printWin.document.write(`<html><head><title>Ticket EasyFly</title><style>body{font-family:monospace;font-size:11px;width:260px;margin:0 auto;padding:10px;color:#000}.center{text-align:center}.bold{font-weight:bold}.line{border-bottom:1px dashed #000;margin:6px 0}</style></head><body onload="window.print(); window.close();"><div class="center bold">EASYFLY TRANSIT</div><div class="center" style="font-size:8px;">Hub PROCOKI - Kinshasa</div><div class="line"></div><div>PASSAGER : ${pax.nom} ${pax.prenom}</div><div>PNR : ${pax.pnr}</div><div class="line"></div><div>FRANCHISE : ${pax.allowedWeight} kg</div><div>PESEE : ${pax.measuredWeight} kg</div><div class="bold">EXCEDENT : +${Math.max(0, pax.measuredWeight - pax.allowedWeight).toFixed(1)} kg</div><div class="bold" style="font-size:13px;">ENCAISSE : ${pax.excessFee.toLocaleString('fr-FR')} CDF</div><div class="line"></div><div>SURETE SCAN : ${pax.xrayStatus}</div><div class="bold">SCELLÉ PLOMB : ${pax.sealNumber || 'En cours'}</div><div class="line"></div><div class="center bold" style="margin-top:8px;">BON VOYAGE !</div></body></html>`);
+            printWin.document.write(`<html><head><title>Ticket EasyFly</title><style>body{font-family:monospace;font-size:11px;width:260px;margin:0 auto;padding:10px;color:#000}.center{text-align:center}.bold{font-weight:bold}.line{border-bottom:1px dashed #000;margin:6px 0}</style></head><body onload="window.print(); window.close();"><div class="center bold">EASYFLY TRANSIT</div><div class="center" style="font-size:8px;">Hub PROCOKI - Kinshasa</div><div class="line"></div><div>CANAL : ${pax.channel === 'VIP_HOME' ? 'COLLECTE VIP' : 'AGENCE HUB'}</div><div>PASSAGER : ${pax.nom} ${pax.prenom}</div><div>PNR : ${pax.pnr}</div><div class="line"></div><div>FRANCHISE : ${pax.allowedWeight} kg</div><div>PESEE : ${pax.measuredWeight} kg</div><div class="bold">EXCEDENT : +${Math.max(0, pax.measuredWeight - pax.allowedWeight).toFixed(1)} kg</div><div class="bold" style="font-size:13px;">ENCAISSE : ${pax.excessFee.toLocaleString('fr-FR')} CDF</div><div class="line"></div><div>SURETE SCAN : ${pax.xrayStatus}</div><div class="bold">SCELLÉ PLOMB : ${pax.sealNumber || 'En cours'}</div><div class="line"></div><div class="center bold" style="margin-top:8px;">BON VOYAGE !</div></body></html>`);
             printWin.document.close();
         }
 
@@ -763,6 +960,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             refreshAllUI();
+            calculerYieldEtCapacite();
             loadPaxIntoWeigh('pax-1');
             loadPaxIntoXray('pax-2');
         });
