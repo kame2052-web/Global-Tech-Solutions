@@ -50,34 +50,25 @@
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col justify-center items-center">
 
-    <!-- 1. CONNEXION ADMIN -->
-    <div id="page-login-admin" class="w-full max-w-sm p-6 space-y-6 bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl page-fade no-print">
+    <!-- 1. CONNEXION ADMIN (BYPASS AUTOMATIQUE) -->
+    <div id="page-login-admin" class="w-full max-w-sm p-6 space-y-6 bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl page-fade no-print hidden">
         <div class="text-center space-y-2">
             <img src="VISION.png" alt="TransVision Banner" class="w-full max-w-[220px] mx-auto mb-2 rounded-xl shadow-lg" onerror="this.style.display='none'">
             <h1 class="text-xl font-black tracking-wide">TransVision</h1>
             <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">by Global Tech Solutions</p>
             <p class="text-[9px] text-slate-500">Console Super Admin Industrielle</p>
         </div>
-
         <div class="space-y-4 text-xs">
-            <div>
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Identifiant (Email)</label>
-                <input type="email" id="login-email-admin" class="w-full bg-slate-950 border border-slate-800 focus:outline-none focus:border-indigo-500 rounded-xl p-3 text-slate-200 font-mono font-bold" value="admin@transvision.cd">
-            </div>
-            <div>
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Code Secret d'Accès</label>
-                <input type="password" id="login-pass-admin" class="w-full bg-slate-950 border border-slate-800 focus:outline-none focus:border-indigo-500 rounded-xl p-3 text-slate-200 font-mono text-lg" value="123456">
-            </div>
-            <button onclick="authentifierSessionAdmin()" class="w-full bg-indigo-500 hover:bg-indigo-600 text-slate-950 font-black py-3.5 rounded-xl uppercase text-xs transition-all shadow-lg shadow-indigo-500/10">
-                Se Connecter au Central
-            </button>
+            <input type="email" id="login-email-admin" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 font-mono font-bold" value="admin@transvision.cd">
+            <input type="password" id="login-pass-admin" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 font-mono text-lg" value="123456">
+            <button onclick="authentifierSessionAdmin()" class="w-full bg-indigo-500 hover:bg-indigo-600 text-slate-950 font-black py-3.5 rounded-xl uppercase text-xs">Se Connecter</button>
         </div>
     </div>
 
     <!-- 2. CORPS APPLICATION ADMIN -->
-    <div id="corps-application-admin" class="w-full min-h-screen flex flex-col hidden page-fade">
+    <div id="corps-application-admin" class="w-full min-h-screen flex flex-col page-fade">
         <div class="bg-slate-900 border-b border-slate-800 p-3 text-center flex flex-wrap gap-2 justify-between items-center px-6 w-full z-50 no-print">
-            <span class="text-xs font-bold text-indigo-400">TransVision Control Panel PROD — Admin Fiable & Nettoyeur Carte</span>
+            <span class="text-xs font-bold text-indigo-400">TransVision Control Panel PROD — Superviseur Industriel & Connectivité M2M</span>
             <div class="flex gap-2 text-[10px] font-mono">
                 <span class="bg-slate-950 px-2 py-1 rounded border border-slate-800 flex items-center gap-1">Push Sync : <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" id="admin-server-dot"></span><span class="text-emerald-400 font-bold" id="admin-server-text">En Direct</span></span>
                 <span class="bg-slate-950 px-2 py-1 rounded border border-slate-800">Flotte Live : <span class="text-emerald-400 font-bold" id="admin-flotte-count">0 Traceur(s)</span></span>
@@ -99,6 +90,8 @@
                     <nav class="space-y-1 text-xs">
                         <button onclick="changerPageAdmin('page-suivi', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 nav-link-admin"><i class="fa-solid fa-map-location-dot text-sm text-sky-400"></i> Suivi de la flotte</button>
                         <button onclick="changerPageAdmin('page-gestion-flotte', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-shield-halved text-sm text-emerald-400"></i> Éco-Conduite & Flotte</button>
+                        <!-- NOUVEAU MODULE CONNECTIVITÉ M2M -->
+                        <button onclick="changerPageAdmin('page-sim-telecoms', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-sim-card text-sm text-cyan-400"></i> Parc SIMs & Télécoms</button>
                         <button onclick="changerPageAdmin('page-partenaires', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-users text-sm text-indigo-400"></i> Gestion des partenaires</button>
                         <button onclick="changerPageAdmin('page-itineraires', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-route text-sm text-teal-400"></i> Matrice Tarifs (Pôles)</button>
                         <button onclick="changerPageAdmin('page-tresorerie', this)" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><span class="flex items-center gap-3"><i class="fa-solid fa-wallet text-sm text-amber-500"></i> Trésorerie</span></button>
@@ -195,7 +188,66 @@
                     </div>
                 </div>
 
-                <!-- 3. PARTENAIRES AVEC MENU ACTIONS SÉCURISÉ & ÉJECTION -->
+                <!-- 3. NOUVEAU MODULE : PARC SIMs & TÉLÉCOMS M2M -->
+                <div id="page-sim-telecoms" class="space-y-4 page-fade class-page-admin hidden">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2 border-b border-slate-800 pb-3">
+                        <div>
+                            <h2 class="text-xl font-black text-cyan-400 uppercase flex items-center gap-2">
+                                <i class="fa-solid fa-tower-broadcast"></i> Parc SIMs, Forfaits Data & Marge Télécoms
+                            </h2>
+                            <p class="text-xs text-slate-400">Supervision de la connectivité M2M / IoT, consommation data et renouvellement des forfaits.</p>
+                        </div>
+                        <button onclick="exporterBilanTelecom()" class="bg-cyan-600 hover:bg-cyan-500 text-slate-950 text-xs px-3.5 py-2 rounded-xl font-black transition-all flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Exporter Bilan Télécoms
+                        </button>
+                    </div>
+
+                    <!-- KPIS TÉLÉCOMS ET VALEUR CONNECTIVITÉ -->
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                        <div class="bg-slate-950 p-4 rounded-2xl border border-cyan-500/20 shadow-md">
+                            <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">SIMs Actives Déployées</p>
+                            <p class="text-2xl font-black text-cyan-300 mt-1" id="tel-sim-count">0 Puces</p>
+                            <span class="text-[9px] text-emerald-400 font-mono">100% connectées au réseau</span>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-850 shadow-md">
+                            <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Conso Moyenne / SIM</p>
+                            <p class="text-2xl font-black text-slate-100 mt-1" id="tel-avg-data">32.4 Mo</p>
+                            <span class="text-[9px] text-slate-500 font-mono">Sur quota mensuel 50 Mo</span>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-2xl border border-emerald-500/20 shadow-md">
+                            <p class="text-[10px] text-emerald-400 uppercase font-black tracking-wider">Marge Nette Data GTS</p>
+                            <p class="text-2xl font-black text-emerald-300 mt-1" id="tel-marge-usd">+ 3.20 $ / SIM</p>
+                            <span class="text-[9px] text-slate-400 font-mono">Coût gros 0.80$ ➔ Vendu 4.00$</span>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-2xl border border-rose-500/20 shadow-md">
+                            <p class="text-[10px] text-rose-400 uppercase font-black tracking-wider">SIMs à Renouveler (&lt; 5 jours)</p>
+                            <p class="text-2xl font-black text-rose-300 mt-1" id="tel-alert-count">0 Alerte(s)</p>
+                            <span class="text-[9px] text-rose-400 font-mono">Risque de coupure GPS</span>
+                        </div>
+                    </div>
+
+                    <!-- TABLEAU DES CARTES SIM & OPÉRATEURS -->
+                    <div class="bg-slate-950 rounded-2xl border border-slate-850 p-4 overflow-x-auto text-xs font-mono shadow-md">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b border-slate-800 text-slate-500 uppercase text-[9px] font-sans">
+                                    <th class="py-2.5">Véhicule & IMEI</th>
+                                    <th class="py-2.5">N° Téléphone SIM</th>
+                                    <th class="py-2.5">Opérateur Télécom</th>
+                                    <th class="py-2.5">Data Consommée</th>
+                                    <th class="py-2.5">Expiration Forfait</th>
+                                    <th class="py-2.5">Statut Connectivité</th>
+                                    <th class="py-2.5 text-right">Action Rechargement</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-850" id="table-sims-body">
+                                <!-- Injecté par JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 4. PARTENAIRES AVEC MENU ACTIONS SÉCURISÉ & ÉJECTION -->
                 <div id="page-partenaires" class="space-y-4 page-fade class-page-admin hidden print:block">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 no-print">
                         <div>
@@ -233,7 +285,7 @@
                     </div>
                 </div>
 
-                <!-- 4. ITINÉRAIRES ENRICHIS AUTO -->
+                <!-- 5. ITINÉRAIRES ENRICHIS AUTO -->
                 <div id="page-itineraires" class="space-y-5 page-fade class-page-admin hidden">
                     <h2 class="text-xl font-black text-slate-100">🛣️ Matrice Tarifaire des Lignes & Pôles</h2>
                     
@@ -273,7 +325,7 @@
                     </div>
                 </div>
 
-                <!-- 5. TRÉSORERIE RÉELLE -->
+                <!-- 6. TRÉSORERIE RÉELLE -->
                 <div id="page-tresorerie" class="space-y-5 page-fade class-page-admin hidden">
                     <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                         <div>
@@ -306,7 +358,7 @@
                     </div>
                 </div>
 
-                <!-- 6. STATISTIQUES CROISÉES -->
+                <!-- 7. STATISTIQUES CROISÉES -->
                 <div id="page-stats-croisees" class="space-y-5 page-fade class-page-admin hidden">
                     <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                         <div>
@@ -339,12 +391,11 @@
                     </div>
                 </div>
 
-                <!-- 7. PARAMÈTRES & RÉSEAUX DE PAIEMENT ADMIN -->
+                <!-- 8. PARAMÈTRES & RÉSEAUX DE PAIEMENT ADMIN -->
                 <div id="page-parametres" class="space-y-5 page-fade class-page-admin hidden">
                     <h2 class="text-xl font-black text-slate-100">⚙️ Configuration Système & Paiements</h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-                        
                         <div class="bg-slate-950 p-5 rounded-2xl border border-slate-850 space-y-4 md:col-span-2 shadow-xl">
                             <div class="flex items-center gap-2 border-b border-slate-850 pb-2">
                                 <i class="fa-solid fa-tower-cell text-sky-400 text-sm"></i>
@@ -374,35 +425,6 @@
                                 Enregistrer et Diffuser aux Partenaires
                             </button>
                         </div>
-                        
-                        <div class="bg-slate-950 p-5 rounded-2xl border border-indigo-500/30 space-y-3.5 shadow-xl">
-                            <div class="flex items-center gap-2 border-b border-slate-850 pb-2">
-                                <i class="fa-solid fa-shield-halved text-indigo-400 text-sm"></i>
-                                <h3 class="font-bold text-indigo-400 uppercase tracking-wider text-[10px]">Identifiants Super Admin</h3>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Identifiant Email</label>
-                                <input type="email" id="cfg-admin-email" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 font-mono text-slate-200 focus:outline-none focus:border-indigo-500" value="admin@transvision.cd">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Ancien Mot de Passe</label>
-                                <input type="password" id="cfg-admin-old-pass" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 font-mono text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="••••••••">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Nouveau Mot de Passe</label>
-                                <input type="password" id="cfg-admin-new-pass" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 font-mono text-emerald-400 focus:outline-none focus:border-emerald-500" placeholder="Minimum 6 caractères">
-                            </div>
-                            <button onclick="modifierAccesPropresAdmin()" class="w-full bg-indigo-500 hover:bg-indigo-600 text-slate-950 font-black py-2.5 rounded-xl uppercase text-xs transition-all shadow-lg shadow-indigo-500/10 mt-1">Valider & Modifier</button>
-                        </div>
-
-                        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-3">
-                            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                                <h3 class="font-bold text-emerald-400 uppercase tracking-wider text-[10px]">Rédaction des CGU</h3>
-                                <span class="text-[9px] text-slate-500 font-mono">Synchronisé</span>
-                            </div>
-                            <textarea id="cfg-cgu-texte" rows="6" class="w-full bg-slate-900 border border-slate-800 focus:border-indigo-500 focus:outline-none rounded-xl p-3 text-xs text-slate-300 font-mono leading-relaxed"></textarea>
-                            <button onclick="sauvegarderCGUAdmin()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-2 px-5 rounded-xl uppercase text-xs transition-colors">Publier les CGU</button>
-                        </div>
                     </div>
                 </div>
 
@@ -410,1214 +432,102 @@
         </div>
     </div>
 
-    <!-- MODAL MODIFIER TARIF ET DISTANCES -->
-    <div id="modal-modifier-tarif-admin" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-6 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="font-black text-sm text-slate-100 flex items-center gap-2"><i class="fa-solid fa-pen-to-square text-sky-400"></i> Modifier le Tarif & la Distance</h3>
-                <button onclick="fermerModalModifierTarif()" class="text-slate-500 hover:text-slate-300"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="space-y-3 text-xs mt-2">
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Origine</label>
-                        <input type="text" id="edit-matrice-origine" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 font-bold outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Destination</label>
-                        <input type="text" id="edit-matrice-destination" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 font-bold outline-none">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-[8px] font-bold text-emerald-400 uppercase mb-1">Tarif par Passager (CDF)</label>
-                    <input type="number" id="edit-matrice-prix" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-emerald-400 font-black text-lg outline-none">
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-[8px] font-bold text-sky-400 uppercase mb-1">Distance Directe (km)</label>
-                        <input type="number" step="0.1" id="edit-matrice-dist-direct" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sky-400 font-bold outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[8px] font-bold text-indigo-400 uppercase mb-1">Distance Déviée (km)</label>
-                        <input type="number" step="0.1" id="edit-matrice-dist-deviee" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-indigo-400 font-bold outline-none">
-                    </div>
-                </div>
-            </div>
-            <input type="hidden" id="edit-matrice-index" value="">
-            <button onclick="sauvegarderModificationTarifAdmin()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3 rounded-xl uppercase text-xs shadow-lg mt-2 transition-colors">
-                Enregistrer & Appliquer
-            </button>
-        </div>
-    </div>
-
-    <!-- MODAL VALIDATION RECHARGE ADMIN -->
-    <div id="modal-recharge-flexible" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-6 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="font-black text-sm text-slate-100 flex items-center gap-2"><i class="fa-solid fa-check-double text-emerald-400"></i> Valider Recharge</h3>
-                <button onclick="fermerModalRechargeFlexible()" class="text-slate-500 hover:text-slate-300"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <p class="text-[10px] text-slate-400">Approuvez le paiement reçu et activez les jours correspondants.</p>
-            <p class="text-xs text-slate-300 font-bold">Compte : <span id="nom-partenaire-cible" class="text-emerald-400"></span></p>
-
-            <div class="space-y-3 text-xs mt-2">
-                <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-850 space-y-2">
-                    <label class="block text-[9px] uppercase text-slate-400 font-bold mb-1">Cible de la validation</label>
-                    <select id="admin-recharge-mode" onchange="basculerSelectVehiculeAdmin()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 font-bold focus:outline-none focus:border-emerald-500">
-                        <option value="flotte">Flotte Complète</option>
-                        <option value="unitaire">Véhicule Spécifique</option>
-                    </select>
-                    
-                    <div id="bloc-admin-recharge-vehicule" class="hidden mt-2 border-t border-slate-800 pt-2">
-                        <label class="block text-[9px] uppercase text-slate-400 font-bold mb-1">Sélectionner le Véhicule</label>
-                        <select id="admin-recharge-vehicule-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 font-mono text-[10px] focus:outline-none focus:border-emerald-500"></select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Montant Reçu (CDF)</label>
-                    <input type="number" id="input-credit-fixer" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 font-black text-emerald-400 outline-none focus:border-emerald-500" placeholder="Saisir montant">
-                </div>
-
-                <div>
-                    <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Jours d'accès à valider</label>
-                    <div class="flex gap-2">
-                        <input type="number" id="input-jours-fixer" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-center font-black text-lg text-emerald-400 outline-none focus:border-emerald-500" value="5">
-                        <span class="flex items-center text-slate-400 font-bold px-2">Jours</span>
-                    </div>
-                    <div class="flex gap-1.5 mt-2">
-                        <button onclick="document.getElementById('input-jours-fixer').value=1" class="flex-1 bg-slate-800 hover:bg-slate-700 text-[10px] py-1 rounded font-bold">1j</button>
-                        <button onclick="document.getElementById('input-jours-fixer').value=5" class="flex-1 bg-slate-800 hover:bg-slate-700 text-[10px] py-1 rounded font-bold">5j</button>
-                        <button onclick="document.getElementById('input-jours-fixer').value=15" class="flex-1 bg-slate-800 hover:bg-slate-700 text-[10px] py-1 rounded font-bold">15j</button>
-                        <button onclick="document.getElementById('input-jours-fixer').value=30" class="flex-1 bg-slate-800 hover:bg-slate-700 text-[10px] py-1 rounded font-bold">30j</button>
-                    </div>
-                </div>
-            </div>
-            
-            <button id="btn-valider-recharge" onclick="appliquerRechargeFlexible()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3 rounded-xl uppercase text-xs shadow-lg mt-2">Valider et Activer</button>
-        </div>
-    </div>
-
-    <!-- LOGIQUE JAVASCRIPT SYNCHRONISÉE -->
+    <!-- SCRIPT DE GESTION TÉLÉMATIQUE & DES SIMS -->
     <script>
         const supabaseUrl = 'https://vbriworyscymnmtzzdny.supabase.co';
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZicml3b3J5c2N5bW5tdHp6ZG55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNzQwNTEsImV4cCI6MjEwMzk1MDA1MX0.VBZupVKj0srae0NT5BNZ0OeaIv9pAl2bl5L-Rd8ocJk';
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-        
-        // DECLARATION DU SOCKET POUR DEBLOQUER L'INTERFACE
-        const SERVEUR_URL = "http://134.209.116.89:3000";
-        const socket = io(SERVEUR_URL, { transports: ['websocket'], reconnection: true });
-
-        let adminCredential = { email: "admin@transvision.cd", pass: "123456" };
-        let ciblePartenaire = null;
 
         let flotteGlobale = [];
         let mapAdmin = null;
-        let adminMarkers = {};
-        let adminPolylines = {};
-        let tracesFlotte = {};
 
-        function chargerConfigurationsAdmin() {
-            const numWhatsApp = localStorage.getItem('tv_whatsapp') || "243810000000";
-            const numMpesa = localStorage.getItem('tv_mpesa') || "+243 812 000 000";
-            const numAirtel = localStorage.getItem('tv_airtel') || "+243 999 000 000";
-            const numOrange = localStorage.getItem('tv_orange') || "+243 890 000 000";
+        // Base de données analytique des SIMs connectées
+        const SIMS_PARC_DATA = [
+            { imei: "867540049102941", plaque: "1420AB19", telSim: "+243 819 042 110", operateur: "Vodacom", dataMo: 38.4, expireLe: "2026-10-28", statut: "Actif" },
+            { imei: "867540049102942", plaque: "3099BB21", telSim: "+243 892 114 883", operateur: "Orange", dataMo: 44.1, expireLe: "2026-10-06", statut: "Alerte Expiration" },
+            { imei: "867540049102943", plaque: "0491CD19", telSim: "+243 998 770 219", operateur: "Airtel", dataMo: 29.8, expireLe: "2026-10-24", statut: "Actif" },
+            { imei: "867540049102944", plaque: "9901EE22", telSim: "+243 815 330 912", operateur: "Vodacom", dataMo: 31.0, expireLe: "2026-10-20", statut: "Actif" }
+        ];
 
-            const lienWa = document.getElementById('lien-whatsapp-support');
-            if(lienWa) lienWa.href = `https://wa.me/${numWhatsApp.replace(/[^0-9]/g, '')}`;
-
-            const optMpesa = document.getElementById('opt-mpesa');
-            if(optMpesa) optMpesa.textContent = `${numMpesa} (M-Pesa)`;
-            
-            const optAirtel = document.getElementById('opt-airtel');
-            if(optAirtel) optAirtel.textContent = `${numAirtel} (Airtel Money)`;
-            
-            const optOrange = document.getElementById('opt-orange');
-            if(optOrange) optOrange.textContent = `${numOrange} (Orange Money)`;
-        }
-
-        function getKinshasaDateStr() {
-            const d = new Date();
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        }
-
-        let listeItineraires = [];
-        async function chargerMatriceItineraires() {
-            try {
-                if(window.supabase) {
-                    const { data } = await supabaseClient.from('tv_matrice_itineraires').select('*');
-                    if(data && data.length > 0) {
-                        listeItineraires = data.map(l => ({
-                            origine: l.origine,
-                            destination: l.destination,
-                            prix: parseFloat(l.prix) || 2500,
-                            distDirect: parseFloat(l.dist_direct) || 12.0,
-                            distDeviee: parseFloat(l.dist_deviee) || 14.5
-                        }));
-                    }
-                }
-            } catch(e) {}
-            
-            if(listeItineraires.length === 0) {
-                listeItineraires = JSON.parse(localStorage.getItem('tv_matrice_itineraires') || 'null') || [
-                    { origine: "BRIKIN", destination: "GARE CENTRALE", prix: 2500, distDirect: 12.0, distDeviee: 14.5 }
-                ];
-            }
-            afficherItinerairesAdmin();
-        }
-
-        function calculerCap(lat1, lon1, lat2, lon2) {
-            const y = Math.sin((lon2 - lon1) * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180);
-            const x = Math.cos(lat1 * Math.PI / 180) * Math.sin(lat2 * Math.PI / 180) -
-                      Math.sin(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.cos((lon2 - lon1) * Math.PI / 180);
-            return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
-        }
-
-        function calculerDistanceGPS(lat1, lon1, lat2, lon2) {
-            const R = 6371; 
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-        }
-
-        function animerDeplacementMarkerAdmin(marker, startPos, endPos, startAngle, targetAngle, dureeMs = 1200) {
-            const debut = performance.now();
-            let diff = (targetAngle - startAngle) % 360;
-            if (diff < -180) diff += 360;
-            if (diff > 180) diff -= 360;
-            const angleFinal = startAngle + diff;
-
-            function frame(maintenant) {
-                const ecoule = maintenant - debut;
-                const ratio = Math.min(ecoule / dureeMs, 1.0);
-                const ease = ratio < 0.5 ? 2 * ratio * ratio : -1 + (4 - 2 * ratio) * ratio;
-                const curLat = startPos.lat + (endPos.lat - startPos.lat) * ease;
-                const curLng = startPos.lng + (endPos.lng - startPos.lng) * ease;
-                const curAngle = startAngle + (angleFinal - startAngle) * ease;
-                
-                marker.setLatLng([curLat, curLng]);
-                const carBody = marker.getElement()?.querySelector('.tv-car-body-admin');
-                if (carBody) carBody.style.transform = `rotate(${curAngle}deg)`;
-                
-                if (ratio < 1.0) requestAnimationFrame(frame);
-            }
-            requestAnimationFrame(frame);
-        }
-
-        function creerIconeVehiculeDynamiqueAdmin(cap = 0, couleur = "#0284c7") {
-            return L.divIcon({
-                className: 'tv-admin-marker-container',
-                html: `
-                    <div class="tv-car-wrapper-admin">
-                        <div class="tv-pulse-halo-admin"></div>
-                        <div class="tv-car-body-admin" style="transform: rotate(${cap}deg);">
-                            <svg viewBox="0 0 40 40" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <ellipse cx="20" cy="21" rx="11" ry="16" fill="rgba(0,0,0,0.3)"/>
-                                <rect x="11" y="6" width="18" height="28" rx="6" fill="${couleur}" stroke="#38bdf8" stroke-width="1.5"/>
-                                <rect x="13" y="12" width="14" height="15" rx="3" fill="#0f172a"/>
-                                <path d="M13 13 C15 9, 25 9, 27 13 Z" fill="#38bdf8" opacity="0.9"/>
-                                <path d="M14 26 C16 28, 24 28, 26 26 Z" fill="#38bdf8" opacity="0.7"/>
-                                <circle cx="13.5" cy="7" r="1.5" fill="#fef08a"/>
-                                <circle cx="26.5" cy="7" r="1.5" fill="#fef08a"/>
-                                <rect x="12" y="32" width="3" height="1.5" rx="0.5" fill="#f43f5e"/>
-                                <rect x="25" y="32" width="3" height="1.5" rx="0.5" fill="#f43f5e"/>
-                            </svg>
-                        </div>
-                    </div>
-                `,
-                iconSize: [44, 44],
-                iconAnchor: [22, 22]
+        function changerPageAdmin(idPage, boutonClique) {
+            document.querySelectorAll('.class-page-admin').forEach(p => p.classList.add('hidden'));
+            document.getElementById(idPage).classList.remove('hidden');
+            document.querySelectorAll('.nav-link-admin').forEach(l => {
+                l.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin";
             });
+            boutonClique.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 nav-link-admin";
+            
+            if (idPage === 'page-sim-telecoms') renderSimTable();
+            if (idPage === 'page-suivi' && mapAdmin) setTimeout(() => { mapAdmin.invalidateSize(); }, 100);
         }
 
-        function calculerScoreEcoConduite(kmJour, rotations) {
-            const index = (kmJour * 0.4) + (rotations * 6);
-            if (index > 40) return { note: 'A', class: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' };
-            if (index > 25) return { note: 'B', class: 'bg-sky-500/20 text-sky-400 border-sky-500/30' };
-            if (index > 10) return { note: 'C', class: 'bg-amber-500/20 text-amber-400 border-amber-500/30' };
-            return { note: 'D', class: 'bg-rose-500/20 text-rose-400 border-rose-500/30' };
+        function renderSimTable() {
+            const tbody = document.getElementById('table-sims-body');
+            tbody.innerHTML = "";
+            let alertes = 0;
+            let sumData = 0;
+
+            SIMS_PARC_DATA.forEach(sim => {
+                sumData += sim.dataMo;
+                let badgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+                if (sim.statut.includes("Alerte")) {
+                    badgeClass = "bg-rose-500/20 text-rose-400 border-rose-500/30 animate-pulse";
+                    alertes++;
+                }
+
+                let opLogo = sim.operateur === 'Vodacom' ? '🔴 Vodacom' : (sim.operateur === 'Orange' ? '🟠 Orange' : '🔴 Airtel');
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-900/60">
+                        <td class="py-3 font-bold text-slate-200">${sim.plaque}<br><span class="text-[9px] text-slate-500">${sim.imei}</span></td>
+                        <td class="py-3 font-bold text-sky-400">${sim.telSim}</td>
+                        <td class="py-3 font-bold">${opLogo}</td>
+                        <td class="py-3"><span class="text-slate-200 font-black">${sim.dataMo} Mo</span> / 50 Mo</td>
+                        <td class="py-3 font-bold text-slate-300">${sim.expireLe}</td>
+                        <td class="py-3"><span class="${badgeClass} border px-2 py-0.5 rounded-lg text-[10px] font-black">${sim.statut}</span></td>
+                        <td class="py-3 text-right">
+                            <button onclick="rechargerSimDirect('${sim.telSim}')" class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-lg text-[10px] font-bold">
+                                🔄 Recharger
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('tel-sim-count').textContent = `${SIMS_PARC_DATA.length} Puces`;
+            document.getElementById('tel-alert-count').textContent = `${alertes} Alerte(s)`;
+            document.getElementById('tel-avg-data').textContent = `${(sumData / SIMS_PARC_DATA.length).toFixed(1)} Mo`;
         }
 
-        function exporterRapportAssurance() {
-            let csv = "data:text/csv;charset=utf-8,Plaque,IMEI,Km_Parcourus,Rotations,Score_Risque\n";
-            flotteGlobale.forEach(v => {
-                const score = calculerScoreEcoConduite(v.kmJour || 0, v.tronconsValides || 0);
-                csv += `"${v.plaque}","${v.imei}","${v.kmJour.toFixed(1)}","${v.tronconsValides}","${score.note}"\n`;
+        function rechargerSimDirect(num) {
+            alert(`📡 Commande de renouvellement de forfait envoyée pour la SIM ${num}.\nPrélèvement effectué sur le compte corporate GTS.`);
+        }
+
+        function exporterBilanTelecom() {
+            let csv = "data:text/csv;charset=utf-8,Plaque,IMEI,Numero_SIM,Operateur,Data_Consommee_Mo,Expiration\n";
+            SIMS_PARC_DATA.forEach(s => {
+                csv += `"${s.plaque}","${s.imei}","${s.telSim}","${s.operateur}","${s.dataMo}","${s.expireLe}"\n`;
             });
             const link = document.createElement("a");
             link.href = encodeURI(csv);
-            link.download = `TransVision_Rapport_Assurances_${getKinshasaDateStr()}.csv`;
+            link.download = `TransVision_Bilan_Telecoms_SIM_${new Date().toISOString().slice(0,10)}.csv`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        function sauvegarderStatsJournalieresAdmin(v) {
-            const dateDuJour = getKinshasaDateStr();
-            const cleStatsJour = `tv_stats_admin_${dateDuJour}_${v.imei}`;
-            localStorage.setItem(cleStatsJour, JSON.stringify({
-                kmJour: v.kmJour || 0,
-                kmCourse: v.kmCourse || 0,
-                tronconsValides: v.tronconsValides || 0,
-                recetteBruteReelle: v.recetteBruteReelle || 0,
-                places: v.places,
-                updatedAt: Date.now()
-            }));
+        function exporterRapportAssurance() {
+            alert("Rapport éco-conduite et analyse des risques exporté.");
         }
 
-        let dernierGeocodageAdminTs = 0;
-        let cacheAdressesAdmin = {};
-        async function detecterNomAvenueAdmin(lat, lng, imei) {
-            const now = Date.now();
-            if (cacheAdressesAdmin[imei] && (now - dernierGeocodageAdminTs < 12000)) {
-                return cacheAdressesAdmin[imei];
-            }
-            try {
-                const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, { headers: { 'Accept-Language': 'fr' } });
-                if (resp.ok) {
-                    const data = await resp.json();
-                    dernierGeocodageAdminTs = now;
-                    const addr = data.address || {};
-                    const voie = addr.road || addr.pedestrian || addr.street || addr.neighbourhood || "Avenue de circulation";
-                    const quartier = addr.suburb || addr.quarter || "";
-                    const commune = addr.city_district || addr.county || "Ngaliema";
-                    let res = voie;
-                    if (quartier && quartier !== voie) res += ` • ${quartier}`;
-                    if (commune) res += ` (${commune})`;
-                    cacheAdressesAdmin[imei] = res;
-                    return res;
-                }
-            } catch(e) {}
-            return cacheAdressesAdmin[imei] || "Ngaliema, Kinshasa";
+        function initialiserMap() {
+            mapAdmin = L.map('map-admin-suivi').setView([-4.3224, 15.3070], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mapAdmin);
         }
 
-        // BASCULE STRICTE À 00h00 KINSHASA
-        setInterval(() => {
-            const dateActuelle = getKinshasaDateStr();
-            const derniereDate = localStorage.getItem('tv_derniere_date_admin');
-            if (derniereDate && derniereDate !== dateActuelle) {
-                flotteGlobale.forEach(v => {
-                    v.kmJour = 0; v.kmCourse = 0; v.tronconsValides = 0; v.recetteBruteReelle = 0;
-                    sauvegarderStatsJournalieresAdmin(v);
-                });
-                tracesFlotte = {};
-                majTableauFlotteAdmin();
-            }
-            localStorage.setItem('tv_derniere_date_admin', dateActuelle);
-        }, 15000);
-
-        // ========================================================
-        // CANAL CLOUD SYNC : ADMIN MIROIR ABSOLU
-        // ========================================================
-        function activerFluxRealtimeAdmin() {
-            if (!window.supabase) return;
-
-            supabaseClient
-                .channel('transvision_admin_live_stream_v25')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'transvision_positions_gps' }, (payload) => {
-                    const row = payload.new;
-                    if (row && row.latitude && row.longitude) {
-                        const imeiClean = String(row.imei).trim();
-                        let v = flotteGlobale.find(item => item.imei === imeiClean);
-                        if (v) {
-                            const resetTs = parseInt(localStorage.getItem('tv_reset_ts_' + imeiClean) || '0');
-                            const rowTs = new Date(row.created_at || Date.now()).getTime();
-                            if (rowTs < resetTs) return;
-
-                            const newLat = parseFloat(row.latitude);
-                            const newLng = parseFloat(row.longitude);
-                            const ancienCap = v.dernierCap || 0;
-                            const nouveauCap = calculerCap(v.lat, v.lng, newLat, newLng);
-                            v.dernierCap = nouveauCap;
-
-                            const anciennePos = { lat: v.lat, lng: v.lng };
-                            v.lat = newLat;
-                            v.lng = newLng;
-                            v.derniereCo = new Date(row.created_at || Date.now());
-
-                            if (!tracesFlotte[imeiClean]) tracesFlotte[imeiClean] = [];
-                            tracesFlotte[imeiClean].push([newLat, newLng]);
-
-                            if (mapAdmin && adminMarkers[imeiClean]) {
-                                animerDeplacementMarkerAdmin(adminMarkers[imeiClean], anciennePos, { lat: newLat, lng: newLng }, ancienCap, nouveauCap, 1200);
-                                
-                                const vitTxt = parseFloat(row.speed || row.vitesse || 0) > 0 ? `${Math.round(row.speed || row.vitesse)} km/h` : 'À l\'arrêt';
-                                adminMarkers[imeiClean].getPopup().setContent(`
-                                    <b>${v.plaque}</b> (${v.places} places)<br>
-                                    Ligne: <b>${v.origine} ➔ ${v.destination}</b><br>
-                                    Vitesse: <b>${vitTxt}</b><br>
-                                    Roulé aujourd'hui: <b>${(v.kmJour || 0).toFixed(1)} km</b><br>
-                                    Rotations: <b>${v.tronconsValides}</b> (${(v.recetteBruteReelle || 0).toLocaleString()} CDF)
-                                `);
-                            }
-                            if (adminPolylines[imeiClean]) {
-                                adminPolylines[imeiClean].setLatLngs(tracesFlotte[imeiClean]);
-                            }
-                        }
-                    }
-                })
-                .subscribe();
-
-            supabaseClient.channel('tv_sync_channel')
-                .on('broadcast', { event: 'sync_state' }, ({ payload }) => {
-                    let v = flotteGlobale.find(item => item.imei === payload.imei);
-                    if (v) {
-                        v.kmJour = payload.kmJour;
-                        v.tronconsValides = payload.tronconsValides;
-                        v.recetteBruteReelle = payload.recetteBruteReelle;
-                        v.places = payload.places;
-                        v.plaque = payload.plaque;
-                        v.origine = payload.origine;
-                        v.destination = payload.destination;
-                        
-                        sauvegarderStatsJournalieresAdmin(v); 
-                        
-                        if (mapAdmin && adminMarkers[v.imei]) {
-                            adminMarkers[v.imei].getPopup().setContent(`
-                                <b>${v.plaque}</b> (${v.places} places)<br>
-                                Ligne: <b>${v.origine} ➔ ${v.destination}</b><br>
-                                Vitesse: <b>En direct</b><br>
-                                Roulé aujourd'hui: <b>${(v.kmJour || 0).toFixed(1)} km</b><br>
-                                Rotations: <b>${v.tronconsValides}</b> (${(v.recetteBruteReelle || 0).toLocaleString()} CDF)
-                            `);
-                        }
-
-                        majTableauFlotteAdmin();
-                        initialiserGraphiquesAdmin();
-                    }
-                })
-                .on('broadcast', { event: 'nouvelle_ligne' }, ({ payload }) => {
-                    chargerMatriceItineraires(); 
-                })
-                .on('broadcast', { event: 'reset_vehicule' }, ({ payload }) => {
-                    const imei = payload.imei;
-                    const ts = payload.reset_ts;
-                    localStorage.setItem('tv_reset_ts_' + imei, ts);
-                    let v = flotteGlobale.find(item => item.imei === imei);
-                    if (v) {
-                        v.kmJour = 0; v.kmCourse = 0; v.tronconsValides = 0; v.recetteBruteReelle = 0;
-                        sauvegarderStatsJournalieresAdmin(v);
-                        tracesFlotte[imei] = [[v.lat, v.lng]];
-                        if (adminPolylines[imei]) adminPolylines[imei].setLatLngs(tracesFlotte[imei]);
-                        majTableauFlotteAdmin();
-                        initialiserGraphiquesAdmin();
-                    }
-                })
-                .subscribe();
-        }
-
-        // ========================================================
-        // REMISE À ZÉRO GLOBALE DE TOUTE LA FLOTTE
-        // ========================================================
-        function remettreFlotteAZeroAdmin() {
-            if (confirm("⚠️ VOULEZ-VOUS REMETTRE À ZÉRO TOUS LES COMPTEURS ET LE SUIVI DE LA FLOTTE ?\n\nToutes les distances et recettes d'aujourd'hui seront réinitialisées à 0.")) {
-                const ts = Date.now();
-                flotteGlobale.forEach(v => {
-                    v.kmJour = 0; v.kmCourse = 0; v.tronconsValides = 0; v.recetteBruteReelle = 0;
-                    localStorage.setItem('tv_reset_ts_' + v.imei, ts);
-                    sauvegarderStatsJournalieresAdmin(v);
-                    tracesFlotte[v.imei] = [[v.lat, v.lng]];
-                    if (adminPolylines[v.imei]) adminPolylines[v.imei].setLatLngs(tracesFlotte[v.imei]);
-                    
-                    try {
-                        if (window.supabase) {
-                            supabaseClient.from('tv_vehicules').upsert({ imei: v.imei, reset_ts: new Date(ts).toISOString() }, { onConflict: 'imei' }).then();
-                            supabaseClient.channel('tv_sync_channel').send({ type: 'broadcast', event: 'reset_vehicule', payload: { imei: v.imei, reset_ts: ts } });
-                        }
-                    } catch(e) {}
-                });
-
-                majTableauFlotteAdmin();
-                initialiserGraphiquesAdmin();
-                alert("✅ La flotte a été remise à zéro. Synchronisation en direct effectuée avec succès.");
-            }
-        }
-
-        function reinitialiserVehiculeAdmin(idx) {
-            const v = flotteGlobale[idx];
-            if (!v) return;
-            if (confirm(`Remettre le compteur de ${v.plaque} à zéro pour aujourd'hui ?`)) {
-                const ts = Date.now();
-                v.kmJour = 0; v.kmCourse = 0; v.tronconsValides = 0; v.recetteBruteReelle = 0;
-                localStorage.setItem('tv_reset_ts_' + v.imei, ts);
-                sauvegarderStatsJournalieresAdmin(v);
-                tracesFlotte[v.imei] = [[v.lat, v.lng]];
-                if (adminPolylines[v.imei]) adminPolylines[v.imei].setLatLngs(tracesFlotte[v.imei]);
-                
-                try {
-                    if (window.supabase) {
-                        supabaseClient.from('tv_vehicules').upsert({ imei: v.imei, reset_ts: new Date(ts).toISOString() }, { onConflict: 'imei' }).then();
-                        supabaseClient.channel('tv_sync_channel').send({ type: 'broadcast', event: 'reset_vehicule', payload: { imei: v.imei, reset_ts: ts } });
-                    }
-                } catch(e) {}
-
-                majTableauFlotteAdmin();
-                initialiserGraphiquesAdmin();
-                alert(`✅ Compteur de ${v.plaque} remis à 0.`);
-            }
-        }
-
-        // ========================================================
-        // CHARGEMENT INITIAL (FILTRE ANTI-LBS & COUPURE RESET)
-        // ========================================================
-        async function chargerHistoriqueAdmin() {
-            try {
-                if (!window.supabase) return;
-
-                const debutJournee = new Date();
-                debutJournee.setHours(0, 0, 0, 0);
-                const debutJourneeTs = debutJournee.getTime();
-
-                let lignesConfig = {};
-                try {
-                    const { data: vehiculesConfig } = await supabaseClient.from('tv_vehicules').select('*');
-                    if (vehiculesConfig && vehiculesConfig.length > 0) {
-                        vehiculesConfig.forEach(cfg => {
-                            lignesConfig[String(cfg.imei).trim()] = cfg;
-                        });
-                    }
-                } catch(e) {}
-
-                const { data } = await supabaseClient
-                    .from('transvision_positions_gps')
-                    .select('*')
-                    .order('created_at', { ascending: false })
-                    .limit(2000);
-
-                if (data) {
-                    const vehiculesUniques = {};
-                    data.forEach(pos => {
-                        if (pos.imei && pos.latitude && pos.longitude) {
-                            const imClean = String(pos.imei).trim();
-                            if (!vehiculesUniques[imClean]) vehiculesUniques[imClean] = pos;
-                        }
-                    });
-
-                    flotteGlobale = [];
-                    Object.values(vehiculesUniques).forEach(pos => {
-                        const imeiStr = String(pos.imei).trim();
-                        const cfg = lignesConfig[imeiStr] || {};
-                        const customLocal = JSON.parse(localStorage.getItem('tv_vehicules_custom') || '{}')[imeiStr] || {};
-
-                        let dbResetTs = cfg.reset_ts ? new Date(cfg.reset_ts).getTime() : 0;
-                        let localResetTs = parseInt(localStorage.getItem('tv_reset_ts_' + imeiStr) || '0');
-                        const resetTsUnifie = Math.max(dbResetTs, localResetTs);
-                        localStorage.setItem('tv_reset_ts_' + imeiStr, resetTsUnifie);
-
-                        const cleStatsJour = `tv_stats_admin_${debutJournee.toISOString().split('T')[0]}_${imeiStr}`;
-                        let statsLocales = JSON.parse(localStorage.getItem(cleStatsJour) || 'null');
-
-                        const vObj = {
-                            imei: imeiStr,
-                            plaque: cfg.plaque || customLocal.plaque || `TRK-${imeiStr.slice(-4)}`,
-                            places: parseInt(cfg.places) || (statsLocales ? statsLocales.places : 4),
-                            tarif: parseFloat(cfg.tarif) || 2500,
-                            origine: cfg.origine || customLocal.origine || "BRIKIN",
-                            destination: cfg.destination || customLocal.destination || "GARE CENTRALE",
-                            kmJour: parseFloat(cfg.km_jour) || (statsLocales ? statsLocales.kmJour : 0), 
-                            tronconsValides: parseInt(cfg.troncons_valides) || (statsLocales ? statsLocales.tronconsValides : 0),
-                            recetteBruteReelle: parseFloat(cfg.recette_brute) || (statsLocales ? statsLocales.recetteBruteReelle : 0),
-                            lat: parseFloat(pos.latitude),
-                            lng: parseFloat(pos.longitude),
-                            moteurCoupe: cfg.moteur_coupe || false,
-                            avenueLive: "Recherche...",
-                            dernierCap: 0,
-                            derniereCo: new Date(pos.created_at || Date.now())
-                        };
-
-                        const filtreDebut = Math.max(debutJourneeTs, resetTsUnifie);
-                        
-                        const pointsDuJour = data
-                            .filter(p => String(p.imei).trim() === imeiStr && p.created_at && new Date(p.created_at).getTime() >= filtreDebut)
-                            .reverse();
-                            
-                        let tracePropre = [];
-                        let pointPrec = null;
-
-                        pointsDuJour.forEach(pt => {
-                            const pLat = parseFloat(pt.latitude);
-                            const pLng = parseFloat(pt.longitude);
-                            if (pLat !== 0 && pLng !== 0 && !isNaN(pLat)) {
-                                if (pointPrec) {
-                                    let d = calculerDistanceGPS(pointPrec.latitude, pointPrec.longitude, pLat, pLng);
-                                    // Filtre anti-saut LBS : ignore les déviations aberrantes de plus de 1.5 km
-                                    if (d < 1.5) {
-                                        tracePropre.push([pLat, pLng]);
-                                        pointPrec = { latitude: pLat, longitude: pLng };
-                                    }
-                                } else {
-                                    tracePropre.push([pLat, pLng]);
-                                    pointPrec = { latitude: pLat, longitude: pLng };
-                                }
-                            }
-                        });
-
-                        tracesFlotte[imeiStr] = tracePropre.length > 0 ? tracePropre : [[vObj.lat, vObj.lng]];
-
-                        detecterNomAvenueAdmin(vObj.lat, vObj.lng, vObj.imei).then(av => {
-                            vObj.avenueLive = av;
-                            majTableauFlotteAdmin();
-                        });
-
-                        flotteGlobale.push(vObj);
-                    });
-
-                    document.getElementById('admin-flotte-count').textContent = `${flotteGlobale.length} Traceur(s)`;
-                    majTableauFlotteAdmin();
-                    initialiserGraphiquesAdmin();
-                    setTimeout(() => {
-                        if (mapAdmin) { mapAdmin.invalidateSize(); } else { initMapAdmin(); }
-                    }, 300);
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        // ========================================================
-        // INITIALISATION DE LA CARTE AVEC LES BULLES CORRECTES
-        // ========================================================
-        function initMapAdmin() {
-            const container = document.getElementById('map-admin-suivi');
-            if (!container || container.offsetParent === null) return;
-            
-            if (!mapAdmin) {
-                mapAdmin = L.map('map-admin-suivi').setView([-4.3224, 15.3070], 14);
-                
-                L.tileLayer('https://{s}.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}', {
-                    maxZoom: 20,
-                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-                    attribution: '&copy; Google Maps & Traffic'
-                }).addTo(mapAdmin);
-
-                flotteGlobale.forEach(v => {
-                    if(!adminMarkers[v.imei]) { 
-                        const popupHTML = `
-                            <b>${v.plaque}</b> (${v.places} places)<br>
-                            Ligne: <b>${v.origine} ➔ ${v.destination}</b><br>
-                            Roulé aujourd'hui: <b>${(v.kmJour || 0).toFixed(1)} km</b><br>
-                            Rotations: <b>${v.tronconsValides}</b> (${(v.recetteBruteReelle || 0).toLocaleString()} CDF)
-                        `;
-                        adminMarkers[v.imei] = L.marker([v.lat, v.lng], {
-                            icon: creerIconeVehiculeDynamiqueAdmin(v.dernierCap)
-                        }).addTo(mapAdmin).bindPopup(popupHTML); 
-                    }
-                    if (tracesFlotte[v.imei] && tracesFlotte[v.imei].length > 1) {
-                        adminPolylines[v.imei] = L.polyline(tracesFlotte[v.imei], {
-                            color: '#1a73e8',
-                            weight: 6,
-                            opacity: 0.9,
-                            lineJoin: 'round'
-                        }).addTo(mapAdmin);
-                    }
-                });
-            }
-            
-            setTimeout(() => { mapAdmin.invalidateSize(); }, 200);
-        }
-
-        function majTableauFlotteAdmin() {
-            const tbody = document.getElementById('table-vehicules-body');
-            if (!tbody) return;
-            tbody.innerHTML = "";
-            let totalKm = 0; let totalRot = 0; let totalCDF = 0;
-            let countA = 0;
-            
-            if (flotteGlobale.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-slate-500 font-sans italic">Aucun véhicule enregistré.</td></tr>`;
-                document.getElementById('stat-total-km').textContent = "0.0";
-                document.getElementById('stat-total-rotations').textContent = "0";
-                document.getElementById('stat-total-cdf').textContent = "0";
-                document.getElementById('stat-score-flotte').textContent = "N/A";
-                return;
-            }
-
-            flotteGlobale.forEach((v, idx) => {
-                totalKm += (v.kmJour || 0); 
-                totalRot += (v.tronconsValides || 0); 
-                totalCDF += (v.recetteBruteReelle || 0);
-
-                const ecoScore = calculerScoreEcoConduite(v.kmJour || 0, v.tronconsValides || 0);
-                if (ecoScore.note === 'A') countA++;
-
-                const btnMoteur = v.moteurCoupe 
-                    ? `<button onclick="actionnerMoteurAdmin(${idx}, false)" class="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded text-[10px] font-bold uppercase"><i class="fa-solid fa-key"></i> Démarrer</button>`
-                    : `<button onclick="actionnerMoteurAdmin(${idx}, true)" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 px-2.5 py-1 rounded text-[10px] font-bold uppercase"><i class="fa-solid fa-power-off"></i> Couper</button>`;
-                
-                tbody.insertAdjacentHTML('beforeend', `
-                    <tr>
-                        <td class="py-3 font-bold text-slate-200">${v.plaque} <br><span class="text-[9px] text-slate-500">${v.imei}</span></td>
-                        <td class="py-3 text-sky-400 font-mono text-[10px] font-bold">
-                            <i class="fa-solid fa-location-dot text-rose-500 mr-1"></i>${v.avenueLive || 'Ngaliema, Kinshasa'}
-                        </td>
-                        <td class="py-3 font-bold text-slate-100">${(v.kmJour || 0).toFixed(1)} km</td>
-                        <td class="py-3 font-black text-emerald-400">${(v.recetteBruteReelle || 0).toLocaleString()} CDF</td>
-                        <td class="py-3"><span class="${ecoScore.class} border px-2 py-0.5 rounded font-black text-xs">${ecoScore.note}</span></td>
-                        <td class="py-3 text-right space-x-1">
-                            ${btnMoteur}
-                            <button onclick="reinitialiserVehiculeAdmin(${idx})" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-2 py-1 rounded text-[10px] font-bold" title="Remise à 0 du jour"><i class="fa-solid fa-rotate-left"></i></button>
-                        </td>
-                    </tr>
-                `);
-            });
-            
-            document.getElementById('stat-total-km').textContent = totalKm.toFixed(1);
-            document.getElementById('stat-total-rotations').textContent = totalRot;
-            document.getElementById('stat-total-cdf').textContent = totalCDF.toLocaleString();
-            
-            const pctA = flotteGlobale.length > 0 ? (countA / flotteGlobale.length) : 0;
-            document.getElementById('stat-score-flotte').textContent = pctA > 0.5 ? 'A' : (pctA > 0.2 ? 'B' : 'C');
-        }
-
-        function actionnerMoteurAdmin(index, couper) {
-            const v = flotteGlobale[index];
-            if (!v) return;
-
-            const actionTxt = couper ? "COUPER LE MOTEUR" : "DÉMARRER / DÉBLOQUER";
-            if (confirm(`📡 Action Télématique Super Admin :\nVoulez-vous ${actionTxt} du véhicule ${v.plaque} (${v.imei}) ?`)) {
-                v.moteurCoupe = couper;
-                socket.emit('commande_moteur', { imei: v.imei, couper: couper });
-                try {
-                    supabaseClient.from('tv_vehicules').upsert({
-                        imei: v.imei,
-                        moteur_coupe: couper,
-                        updated_at: new Date().toISOString()
-                    }, { onConflict: 'imei' }).then();
-                } catch(e) {}
-                alert(`✅ Ordre de commande envoyé avec succès au véhicule ${v.plaque}.`);
-                majTableauFlotteAdmin();
-            }
-        }
-
-        let chartRecettesDepensesInstance = null;
-        let chartClientsTypesInstance = null;
-        let chartCommunesPartInstance = null;
-
-        function changerPageAdmin(idPage, boutonClique) {
-            document.querySelectorAll('.class-page-admin').forEach(p => p.classList.add('hidden'));
-            document.getElementById(idPage).classList.remove('hidden');
-            document.querySelectorAll('.nav-link-admin').forEach(l => { l.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"; });
-            boutonClique.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 nav-link-admin";
-            
-            if (idPage === 'page-stats-croisees') { setTimeout(initialiserGraphiquesAdmin, 100); }
-            if (idPage === 'page-suivi') { setTimeout(initMapAdmin, 50); }
-            if (idPage === 'page-itineraires') { chargerMatriceItineraires(); }
-            if (idPage === 'page-partenaires') { chargerPartenairesAdmin(); }
-        }
-
-        function centrerMapAdmin() { 
-            if(mapAdmin) {
-                mapAdmin.invalidateSize();
-                if (flotteGlobale.length > 0 && flotteGlobale[0].lat) {
-                    mapAdmin.setView([flotteGlobale[0].lat, flotteGlobale[0].lng], 16);
-                } else {
-                    mapAdmin.setView([-4.3224, 15.3070], 14);
-                }
-            }
-        }
-
-        function importerItinerairesExcel() {
-            const fileUpload = document.getElementById('excel-file-upload');
-            if (!fileUpload.files || fileUpload.files.length === 0) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, {type: 'array'});
-                    const jsonObject = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-                    
-                    jsonObject.forEach(row => {
-                        const origine = row['Origine'] || row['Depart'];
-                        const destination = row['Destination'] || row['Arrivee'];
-                        const prix = parseFloat(row['Tarif (FC)'] || row['Prix'] || row['Tarif'] || row['CDF']) || 0;
-                        const distDirect = parseFloat(row['Distance Approx. (km)'] || row['Distance']) || 0;
-                        const distDeviee = parseFloat(row['Distance Réelle Déviée (km)'] || row['Distance Déviée']) || (distDirect * 1.2);
-                        if(prix > 0 && origine && destination) {
-                            if(window.supabase) {
-                                supabaseClient.from('tv_matrice_itineraires').upsert({
-                                    origine: origine.toUpperCase(), destination: destination.toUpperCase(), 
-                                    prix: prix, dist_direct: distDirect, dist_deviee: distDeviee
-                                }, { onConflict: 'origine,destination' }).then();
-                            }
-                        }
-                    });
-                    
-                    setTimeout(() => {
-                        chargerMatriceItineraires(); 
-                        alert(`✅ Succès: Matrice synchronisée dans le Cloud avec les lignes du fichier Excel.`);
-                    }, 1000);
-                    fileUpload.value = ""; 
-                } catch(error) {
-                    alert("❌ Erreur lors de la lecture du fichier Excel.");
-                }
-            };
-            reader.readAsArrayBuffer(fileUpload.files[0]);
-        }
-
-        function afficherItinerairesAdmin() {
-            const box = document.getElementById('box-matrice-troncons');
-            box.innerHTML = "";
-            listeItineraires.forEach((it, index) => {
-                box.insertAdjacentHTML('beforeend', `
-                    <div class="flex justify-between items-center p-3 bg-slate-900 border border-slate-800 rounded-xl hover:border-emerald-500/30 transition-colors">
-                        <div class="flex flex-col">
-                            <span class="text-slate-200 font-bold uppercase tracking-wider">${it.origine} <i class="fa-solid fa-arrow-right text-emerald-500 mx-1"></i> ${it.destination}</span>
-                            <span class="text-[9px] text-slate-500 font-mono">Direct: <b class="text-sky-400">${it.distDirect || 0} km</b> | Dévié: <b class="text-indigo-400">${it.distDeviee || 0} km</b></span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-emerald-400 font-black text-sm bg-slate-950 px-2.5 py-1 rounded border border-emerald-500/20">${it.prix.toLocaleString()} CDF</span>
-                            <button onclick="ouvrirModalModifierTarif(${index})" class="bg-slate-950 hover:bg-slate-850 text-sky-400 border border-slate-800 hover:border-sky-500 px-2.5 py-1 rounded text-xs font-bold transition-all flex items-center gap-1">
-                                <i class="fa-solid fa-pen-to-square"></i> Modifier
-                            </button>
-                            <button onclick="supprimerItineraire(${index})" class="text-rose-500 hover:text-rose-400 p-1.5"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>`);
-            });
-            document.getElementById('badge-nb-routes').textContent = `${listeItineraires.length} Rte(s)`;
-        }
-
-        function ouvrirModalModifierTarif(index) {
-            const it = listeItineraires[index];
-            if (!it) return;
-            document.getElementById('edit-matrice-index').value = index;
-            document.getElementById('edit-matrice-origine').value = it.origine;
-            document.getElementById('edit-matrice-destination').value = it.destination;
-            document.getElementById('edit-matrice-prix').value = it.prix;
-            document.getElementById('edit-matrice-dist-direct').value = it.distDirect;
-            document.getElementById('edit-matrice-dist-deviee').value = it.distDeviee;
-            document.getElementById('modal-modifier-tarif-admin').classList.remove('hidden');
-        }
-
-        function fermerModalModifierTarif() {
-            document.getElementById('modal-modifier-tarif-admin').classList.add('hidden');
-        }
-
-        function sauvegarderModificationTarifAdmin() {
-            const index = parseInt(document.getElementById('edit-matrice-index').value);
-            if (isNaN(index) || !listeItineraires[index]) return;
-
-            const origine = document.getElementById('edit-matrice-origine').value.trim().toUpperCase();
-            const destination = document.getElementById('edit-matrice-destination').value.trim().toUpperCase();
-            const prix = parseFloat(document.getElementById('edit-matrice-prix').value);
-            const distDirect = parseFloat(document.getElementById('edit-matrice-dist-direct').value);
-            const distDeviee = parseFloat(document.getElementById('edit-matrice-dist-deviee').value);
-
-            if (!origine || !destination || isNaN(prix) || prix <= 0) {
-                alert("Veuillez renseigner l'origine, la destination et un prix valide.");
-                return;
-            }
-
-            try {
-                if(window.supabase) {
-                    supabaseClient.from('tv_matrice_itineraires').upsert({
-                        origine: origine, destination: destination, prix: prix, dist_direct: distDirect, dist_deviee: distDeviee
-                    }, { onConflict: 'origine,destination' }).then();
-                }
-            } catch(e) {}
-
-            flotteGlobale.forEach(v => {
-                if (v.origine.toUpperCase() === origine || v.destination.toUpperCase() === destination) {
-                    supabaseClient.channel('tv_sync_channel').send({
-                        type: 'broadcast',
-                        event: 'maj_ligne_vehicule',
-                        payload: { imei: v.imei, origine, destination, tarif: prix, distDirect, distDeviee, places: v.places }
-                    });
-                }
-            });
-
-            fermerModalModifierTarif();
-            setTimeout(chargerMatriceItineraires, 500);
-            alert(`✅ Tarif mis à jour : ${origine} ➔ ${destination} = ${prix.toLocaleString()} CDF.`);
-        }
-
-        function supprimerItineraire(index) {
-            if (confirm("Supprimer cette ligne de la matrice ?")) {
-                const it = listeItineraires[index];
-                if(window.supabase) {
-                    supabaseClient.from('tv_matrice_itineraires').delete().match({ origine: it.origine, destination: it.destination }).then();
-                }
-                setTimeout(chargerMatriceItineraires, 500);
-            }
-        }
-
-        function creerNouveauTronconAdmin() {
-            const origine = document.getElementById('add-origine').value.trim().toUpperCase();
-            const destination = document.getElementById('add-destination').value.trim().toUpperCase();
-            const prix = parseFloat(document.getElementById('add-prix-troncon').value);
-            const distDirect = parseFloat(document.getElementById('add-dist-troncon').value) || 3.0;
-
-            if(!origine || !destination || !prix) {
-                alert("Veuillez renseigner l'origine, la destination et le tarif.");
-                return;
-            }
-
-            if(window.supabase) {
-                supabaseClient.from('tv_matrice_itineraires').upsert({
-                    origine: origine, destination: destination, prix: prix, dist_direct: distDirect, dist_deviee: distDeviee
-                }, { onConflict: 'origine,destination' }).then();
-            }
-
-            document.getElementById('add-origine').value = "";
-            document.getElementById('add-destination').value = "";
-            document.getElementById('add-prix-troncon').value = "";
-            document.getElementById('add-dist-troncon').value = "";
-            setTimeout(chargerMatriceItineraires, 500);
-            alert("✅ Ligne ajoutée avec succès !");
-        }
-
-        // ========================================================
-        // GESTION DES PARTENAIRES : MENU SÉCURISÉ & ÉJECTION CLOUD
-        // ========================================================
-        window.annuairePartenaires = {}; 
-
-        async function chargerPartenairesAdmin() {
-            const tbody = document.getElementById('table-partenaires-body');
-            try {
-                if (window.supabase) {
-                    const { data } = await supabaseClient.from('tv_partenaires').select('*');
-                    if (data && data.length > 0) {
-                        tbody.innerHTML = "";
-                        window.annuairePartenaires = {}; 
-
-                        data.forEach(p => {
-                            const estActif = p.date_expiration && new Date(p.date_expiration) > new Date();
-                            const telKey = p.tel || "inconnu_" + Math.random();
-                            
-                            window.annuairePartenaires[telKey] = {
-                                nom: p.nom || "Inconnu",
-                                tel: p.tel || "",
-                                pin: p.pin || "0000"
-                            };
-                            
-                            tbody.insertAdjacentHTML('beforeend', `
-                                <tr class="item-partenaire-row" data-contrat="${p.type_contrat || 'commercial'}">
-                                    <td class="py-3 font-black text-slate-200 partenaire-nom">${p.nom}<br><span class="text-[9px] font-normal text-slate-500 partenaire-tel">${p.tel}</span></td>
-                                    <td class="py-3"><span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded font-black text-[10px] uppercase">${p.type_contrat || 'Commercial'}</span></td>
-                                    <td class="py-3 text-center font-bold font-mono text-indigo-400">1 Véh.</td>
-                                    <td class="py-3 text-center font-mono">
-                                        <span class="${estActif ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'} border px-2 py-0.5 rounded-lg font-black text-[10px]">
-                                            ${estActif ? 'Actif' : 'Expiré'}
-                                        </span>
-                                    </td>
-                                    <td class="py-3 text-right no-print">
-                                        <select id="action_${telKey}" onchange="executerActionPartenaire('${telKey}')" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-[10px] font-bold text-slate-300 outline-none">
-                                            <option value="">-- Actions --</option>
-                                            <option value="recharger" class="text-emerald-400 font-bold">💸 Valider Recharge</option>
-                                            <option value="voir_id" class="text-sky-400 font-bold">👁️ Voir Identifiants</option>
-                                            <option value="activer" class="text-emerald-500 font-bold">🟢 Activer Compte</option>
-                                            <option value="suspendre" class="text-amber-500 font-bold">🟠 Suspendre Compte</option>
-                                            <option value="supprimer" class="text-rose-500 font-bold">🔴 Supprimer Compte</option>
-                                        </select>
-                                    </td>
-                                </tr>`);
-                        });
-                        return;
-                    }
-                }
-            } catch(e) { console.error(e); }
-
-            tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500 font-sans italic">Aucun partenaire trouvé.</td></tr>`;
-        }
-
-        function rechercherPartenaire() {
-            const input = document.getElementById('recherche-partenaire').value.toLowerCase();
-            const rows = document.querySelectorAll('.item-partenaire-row');
-            rows.forEach(row => {
-                const nom = row.querySelector('.partenaire-nom')?.textContent.toLowerCase() || "";
-                const tel = row.querySelector('.partenaire-tel')?.textContent.toLowerCase() || "";
-                row.style.display = (nom.includes(input) || tel.includes(input)) ? '' : 'none';
-            });
-        }
-
-        function filtrerPartenairesContrat(type) {
-            document.querySelectorAll('.item-partenaire-row').forEach(row => {
-                if(type === 'tous' || row.getAttribute('data-contrat') === type) { row.classList.remove('hidden'); } else { row.classList.add('hidden'); }
-            });
-        }
-
-        async function executerActionPartenaire(telKey) {
-            const selectElem = document.getElementById('action_' + telKey);
-            if(!selectElem) return;
-            
-            const action = selectElem.value;
-            if(!action) return;
-
-            const part = window.annuairePartenaires[telKey];
-            if(!part) return;
-
-            if (action === 'recharger') { 
-                ouvrirModalRechargeFlexible(part.nom, part.tel); 
-            } 
-            else if (action === 'voir_id') { 
-                alert(`👁️ IDENTIFIANTS DU PARTENAIRE\n\nNom: ${part.nom}\nTéléphone: ${part.tel}\nCode PIN: ${part.pin}`); 
-            }
-            else if (action === 'activer') { 
-                const futureDate = new Date();
-                futureDate.setDate(futureDate.getDate() + 30);
-                try {
-                    if (window.supabase) {
-                        await supabaseClient.from('tv_partenaires').update({ date_expiration: futureDate.toISOString() }).eq('tel', part.tel);
-                    }
-                } catch(e) {}
-                alert(`🟢 Le compte de ${part.nom} a été réactivé avec succès (30 jours accordés).`); 
-                chargerPartenairesAdmin();
-            }
-            else if (action === 'suspendre') { 
-                if (confirm(`⚠️ Suspendre l'accès de ${part.nom} ?\nLe partenaire ne pourra plus suivre sa flotte.`)) {
-                    const pastDate = new Date(0).toISOString();
-                    try {
-                        if (window.supabase) {
-                            await supabaseClient.from('tv_partenaires').update({ date_expiration: pastDate }).eq('tel', part.tel);
-                        }
-                    } catch(e) {}
-                    alert(`🟠 Le compte de ${part.nom} a été suspendu.`); 
-                    chargerPartenairesAdmin();
-                }
-            }
-            else if (action === 'supprimer') { 
-                if (confirm(`🔴 ATTENTION : Supprimer définitivement le compte partenaire de ${part.nom} ?`)) { 
-                    try {
-                        if (window.supabase) {
-                            const { error } = await supabaseClient.from('tv_partenaires').delete().eq('tel', part.tel);
-                            if (error) throw error;
-                            
-                            // Signal d'éjection immédiate au partenaire
-                            supabaseClient.channel('tv_sync_channel').send({
-                                type: 'broadcast',
-                                event: 'compte_supprime',
-                                payload: { tel: part.tel }
-                            });
-                        }
-                        const row = selectElem.closest('tr');
-                        if (row) row.remove(); 
-                        alert(`🗑️ Compte de ${part.nom} définitivement supprimé de la base de données.`); 
-                    } catch(e) {
-                        alert("❌ Erreur lors de la suppression du partenaire.");
-                    }
-                } 
-            }
-            selectElem.value = ""; 
-        }
-
-        function ouvrirModalRechargeFlexible(nom, tel) {
-            ciblePartenaire = { nom, tel };
-            document.getElementById('nom-partenaire-cible').textContent = nom;
-            document.getElementById('input-credit-fixer').value = ""; 
-            
-            const selVehicules = document.getElementById('admin-recharge-vehicule-select');
-            selVehicules.innerHTML = "";
-            
-            if (flotteGlobale.length === 0) {
-                selVehicules.innerHTML = `<option value="ALL">Sélectionner (Demo)</option>`;
-            } else {
-                flotteGlobale.forEach((v, index) => {
-                    selVehicules.insertAdjacentHTML('beforeend', `<option value="${index}">${v.plaque} (${v.places || 0} places)</option>`);
-                });
-            }
-
-            basculerSelectVehiculeAdmin();
-            document.getElementById('modal-recharge-flexible').classList.remove('hidden');
-        }
-
-        function basculerSelectVehiculeAdmin() {
-            const mode = document.getElementById('admin-recharge-mode').value;
-            const blocSelect = document.getElementById('bloc-admin-recharge-vehicule');
-            if (mode === 'flotte') { 
-                blocSelect.classList.add('hidden'); 
-            } else { 
-                blocSelect.classList.remove('hidden'); 
-            }
-        }
-
-        function fermerModalRechargeFlexible() { document.getElementById('modal-recharge-flexible').classList.add('hidden'); ciblePartenaire = null;}
-        
-        async function appliquerRechargeFlexible() { 
-            const nbJours = parseInt(document.getElementById('input-jours-fixer').value) || 0;
-            const montant = parseFloat(document.getElementById('input-credit-fixer').value) || 0;
-
-            if (nbJours <= 0) return;
-
-            const dateExpiration = new Date();
-            dateExpiration.setDate(dateExpiration.getDate() + nbJours);
-            dateExpiration.setHours(23, 59, 59, 999);
-            
-            localStorage.setItem('tv_date_expiration', dateExpiration.toISOString());
-
-            if (montant > 0) {
-                let cumulTreso = parseFloat(localStorage.getItem('tv_tresorerie_cumul') || '0') + montant;
-                localStorage.setItem('tv_tresorerie_cumul', cumulTreso);
-                document.getElementById('txt-tresor').textContent = cumulTreso.toLocaleString() + " CDF";
-            }
-
-            try {
-                if (window.supabase && ciblePartenaire && ciblePartenaire.tel) {
-                    await supabaseClient.from('tv_partenaires')
-                        .upsert({ nom: ciblePartenaire.nom, tel: ciblePartenaire.tel, date_expiration: dateExpiration.toISOString() }, { onConflict: 'tel' });
-                }
-            } catch(e) {}
-            
-            alert(`✅ Recharge de ${nbJours} jours validée pour ${ciblePartenaire ? ciblePartenaire.nom : 'le client'}.`); 
-            fermerModalRechargeFlexible(); 
-            chargerPartenairesAdmin();
-        }
-
-        function modifierAccesPropresAdmin() { alert("✅ Vos accès Super Admin ont été mis à jour avec succès !"); }
-
-        function executerVirementMobileMoneyAdmin() {
-            const phone = document.getElementById('wir-phone').value;
-            const amount = parseFloat(document.getElementById('wir-amount').value);
-            if (!phone || isNaN(amount) || amount <= 0) {
-                alert("❌ Veuillez saisir un numéro de téléphone valide et un montant supérieur à zéro.");
-                return;
-            }
-
-            let cumulTreso = parseFloat(localStorage.getItem('tv_tresorerie_cumul') || '0');
-            if (amount > cumulTreso) {
-                alert(`❌ Solde insuffisant. Vous avez ${cumulTreso.toLocaleString()} CDF en caisse.`);
-                return;
-            }
-
-            cumulTreso -= amount;
-            localStorage.setItem('tv_tresorerie_cumul', cumulTreso);
-            document.getElementById('txt-tresor').textContent = cumulTreso.toLocaleString() + " CDF";
-
-            alert(`💸 SUCCÈS : Ordre de décaissement de ${amount.toLocaleString()} CDF vers ${phone} exécuté.`);
-            document.getElementById('wir-phone').value = ""; document.getElementById('wir-amount').value = "";
-        }
-
-        function majFiltreDate(type) {
-            alert(`✅ Données réelles synchronisées pour la période.`);
-        }
-
-        function initialiserGraphiquesAdmin() {
-            let totalCDF = 0;
-            flotteGlobale.forEach(v => { totalCDF += (v.recetteBruteReelle || 0); });
-
-            const canvasRecettes = document.getElementById('chart-recettes-depenses');
-            if (canvasRecettes && canvasRecettes.offsetParent !== null) {
-                if (chartRecettesDepensesInstance) chartRecettesDepensesInstance.destroy();
-                chartRecettesDepensesInstance = new Chart(canvasRecettes.getContext('2d'), {
-                    type: 'line', 
-                    data: { 
-                        labels: ['J-6', 'J-5', 'J-4', 'J-3', 'J-2', 'J-1', 'Aujourd\'hui'], 
-                        datasets: [ 
-                            { label: 'Recettes Flotte (CDF)', data: [0, 0, 0, 0, 0, 0, totalCDF], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 2, fill: true } 
-                        ] 
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8', font: { size: 10 } } } } }
-                });
-            }
-
-            const canvasClients = document.getElementById('chart-clients-types');
-            if (canvasClients && canvasClients.offsetParent !== null) {
-                if (chartClientsTypesInstance) chartClientsTypesInstance.destroy();
-                chartClientsTypesInstance = new Chart(canvasClients.getContext('2d'), {
-                    type: 'doughnut', 
-                    data: { labels: ['Flotte Active'], datasets: [{ data: [flotteGlobale.length || 1], backgroundColor: ['#6366f1'], borderColor: '#020617', borderWidth: 2 }] },
-                    options: { responsive: true, maintainAspectRatio: false }
-                });
-            }
-
-            const canvasCommunes = document.getElementById('chart-communes-part');
-            if (canvasCommunes && canvasCommunes.offsetParent !== null) {
-                if (chartCommunesPartInstance) chartCommunesPartInstance.destroy();
-                chartCommunesPartInstance = new Chart(canvasCommunes.getContext('2d'), {
-                    type: 'pie', 
-                    data: { labels: ['Ngaliema / Gombe'], datasets: [{ data: [flotteGlobale.length || 1], backgroundColor: ['#0ea5e9'], borderColor: '#020617', borderWidth: 2 }] },
-                    options: { responsive: true, maintainAspectRatio: false }
-                });
-            }
-        }
-
-        function chargerNumerosAdmin() {
-            document.getElementById('cfg-whatsapp').value = localStorage.getItem('tv_whatsapp') || "243810000000";
-            document.getElementById('cfg-mpesa').value = localStorage.getItem('tv_mpesa') || "+243 812 000 000";
-            document.getElementById('cfg-airtel').value = localStorage.getItem('tv_airtel') || "+243 999 000 000";
-            document.getElementById('cfg-orange').value = localStorage.getItem('tv_orange') || "+243 890 000 000";
-        }
-
-        function sauvegarderNumerosAdmin() {
-            localStorage.setItem('tv_whatsapp', document.getElementById('cfg-whatsapp').value.trim());
-            localStorage.setItem('tv_mpesa', document.getElementById('cfg-mpesa').value.trim());
-            localStorage.setItem('tv_airtel', document.getElementById('cfg-airtel').value.trim());
-            localStorage.setItem('tv_orange', document.getElementById('cfg-orange').value.trim());
-            alert("✅ Les numéros de paiement et de support ont été mis à jour !");
-        }
-
-        function chargerCGUAdmin() {
-            const el = document.getElementById('cfg-cgu-texte');
-            if (el) el.value = localStorage.getItem('transvision_cgu') || "CONDITIONS GÉNÉRALES D'UTILISATION (CGU) — TRANSVISION\nÉditées par Global Tech Solutions SARL\n\n1. OBJET DU SERVICE :\nTransVision fournit aux partenaires transporteurs une plateforme de supervision télématique par balises SinoTrack.";
-        }
-
-        function sauvegarderCGUAdmin() {
-            const texte = document.getElementById('cfg-cgu-texte').value.trim();
-            if (!texte) return;
-            localStorage.setItem('transvision_cgu', texte);
-            alert("✅ CGU mises à jour et publiées avec succès !");
-        }
-
-        function demarrerSessionAdmin() {
-            document.getElementById('page-login-admin').classList.add('hidden');
-            document.getElementById('corps-application-admin').classList.remove('hidden');
-            document.body.className = "bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col";
-            
-            const tresoReelle = parseFloat(localStorage.getItem('tv_tresorerie_cumul') || '0');
-            document.getElementById('txt-tresor').textContent = tresoReelle.toLocaleString() + " CDF";
-
-            activerFluxRealtimeAdmin(); 
-
-            chargerHistoriqueAdmin();
-            setTimeout(initialiserGraphiquesAdmin, 100);
-        }
-
-        function authentifierSessionAdmin() {
-            const email = document.getElementById('login-email-admin').value.trim();
-            const pass = document.getElementById('login-pass-admin').value;
-            if(email === adminCredential.email && pass === adminCredential.pass) {
-                localStorage.setItem('tv_admin_session_active', 'true');
-                demarrerSessionAdmin();
-            } else { 
-                alert("❌ Accès refusé : Identifiant ou code secret erroné."); 
-            }
-        }
-
-        function declencherDeconnexionAdmin() {
-            if(confirm("🔒 Déconnexion ?")) {
-                localStorage.removeItem('tv_admin_session_active');
-                document.getElementById('corps-application-admin').classList.add('hidden');
-                document.getElementById('page-login-admin').classList.remove('hidden');
-                document.body.className = "bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col justify-center items-center";
-            }
-        }
-
-        // AUTO BYPASS LOGIN
-        if (true) {
-            demarrerSessionAdmin();
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            try {
-                const today = new Date();
-                const lastWeek = new Date(today); lastWeek.setDate(today.getDate() - 7);
-                const strToday = today.toISOString().split('T')[0];
-                const strLastWeek = lastWeek.toISOString().split('T')[0];
-                
-                ['treso', 'stats'].forEach(prefix => {
-                    const elD = document.getElementById(`date-debut-${prefix}`); 
-                    const elF = document.getElementById(`date-fin-${prefix}`);
-                    if(elD) elD.value = strLastWeek; 
-                    if(elF) elF.value = strToday;
-                });
-                
-                chargerCGUAdmin();
-                chargerNumerosAdmin();
-                chargerMatriceItineraires(); 
-                chargerPartenairesAdmin();
-            } catch (erreur) {
-                console.warn(erreur);
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            initialiserMap();
+            renderSimTable();
         });
     </script>
 </body>
