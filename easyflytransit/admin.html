@@ -69,7 +69,7 @@
                 <i class="fa-solid fa-user-plus text-indigo-400"></i> <span>1. Enregistrement</span>
             </button>
             <button onclick="navigateTab('pesee')" id="btn-tab-pesee" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
-                <i class="fa-solid fa-scale-balanced text-amber-400"></i> <span>2. Pesée & Caisse</span>
+                <i class="fa-solid fa-scale-balanced text-amber-400"></i> <span>2. Pesée Globale & Caisse</span>
             </button>
             <button onclick="navigateTab('surete')" id="btn-tab-surete" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
                 <i class="fa-solid fa-radiation text-rose-400"></i> <span>3. Scanner Rayon X</span>
@@ -110,12 +110,12 @@
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-amber-500 shadow-xl">
                     <span class="text-xs font-mono text-slate-400 uppercase">Poids Total Collecté</span>
                     <h3 id="stat-total-kg" class="text-3xl font-black text-slate-100 mt-2">0.00 kg</h3>
-                    <span class="text-[10px] text-amber-400 font-mono">Pesées certifiées PROCOKI</span>
+                    <span class="text-[10px] text-amber-400 font-mono">Pesées globales PROCOKI</span>
                 </div>
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-rose-500 shadow-xl">
                     <span class="text-xs font-mono text-slate-400 uppercase">Surtaxes Encaissées</span>
                     <h3 id="stat-total-cdf" class="text-3xl font-black text-slate-100 mt-2">0 CDF</h3>
-                    <span class="text-[10px] text-rose-400 font-mono">Tarif standard 42 000 CDF / kg</span>
+                    <span class="text-[10px] text-rose-400 font-mono">Excédent sur franchise cumulée</span>
                 </div>
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-emerald-500 shadow-xl">
                     <span class="text-xs font-mono text-slate-400 uppercase">Convois Scellés Prêts</span>
@@ -125,7 +125,7 @@
             </div>
         </section>
 
-        <!-- NOUVEAU MODULE STRATÉGIQUE : YIELD MANAGEMENT & CAPACITÉ -->
+        <!-- MODULE STRATÉGIQUE : YIELD MANAGEMENT & CAPACITÉ -->
         <section id="pane-yield-analytics" class="view-pane space-y-6">
             <div class="border-b border-slate-800 pb-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                 <div>
@@ -139,7 +139,6 @@
                 </button>
             </div>
 
-            <!-- KPIS YIELD & CHARGE -->
             <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
                 <div class="bg-gtscard border border-cyan-500/20 p-4 rounded-2xl shadow-md">
                     <span class="text-[10px] font-mono uppercase text-slate-400">Mix Collecte VIP</span>
@@ -149,12 +148,12 @@
                 <div class="bg-gtscard border border-slate-800 p-4 rounded-2xl shadow-md">
                     <span class="text-[10px] font-mono uppercase text-slate-400">Excédent / Passager Moyen</span>
                     <h3 class="text-2xl font-black text-slate-100 mt-1" id="kpi-avg-excess">0.00 kg</h3>
-                    <span class="text-[9px] text-amber-400 font-mono">Facturation extra-billet</span>
+                    <span class="text-[9px] text-amber-400 font-mono">Poids au-delà de la franchise</span>
                 </div>
                 <div class="bg-gtscard border border-emerald-500/20 p-4 rounded-2xl shadow-md">
                     <span class="text-[10px] font-mono uppercase text-slate-400">Taux Remplissage Fourgon</span>
                     <h3 class="text-2xl font-black text-emerald-300 mt-1" id="kpi-truck-fill">0%</h3>
-                    <span class="text-[9px] text-slate-500 font-mono">Sur capacité de 1 200 kg / convoi</span>
+                    <span class="text-[9px] text-slate-500 font-mono">Capacité 1 200 kg / convoi</span>
                 </div>
                 <div class="bg-gtscard border border-purple-500/20 p-4 rounded-2xl shadow-md">
                     <span class="text-[10px] font-mono uppercase text-slate-400">Majoration Yield Actuelle</span>
@@ -163,9 +162,7 @@
                 </div>
             </div>
 
-            <!-- ANALYSE CROISÉE : CANAUX ET COMPAGNIES -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- PANNEAU CANAUX DE COLLECTE -->
                 <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
                     <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
                         <h3 class="text-xs font-black uppercase text-slate-100 tracking-wider flex items-center gap-2">
@@ -173,16 +170,9 @@
                         </h3>
                         <span class="text-[10px] text-slate-500 font-mono">Dernières 24h</span>
                     </div>
-                    <div class="space-y-3" id="yield-channels-box">
-                        <!-- Rempli en JS -->
-                    </div>
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-850 text-xs text-slate-400 space-y-1">
-                        <span class="font-bold text-amber-300 block">💡 Règle de Yield Management :</span>
-                        <p>Pour tout enlèvement VIP demandé à moins de 8h du vol en heure de pointe (16h-20h), une surcote d'urgence de <strong>+20%</strong> est appliquée pour optimiser la tournée des chauffeurs.</p>
-                    </div>
+                    <div class="space-y-3" id="yield-channels-box"></div>
                 </div>
 
-                <!-- PANNEAU VOLUMÉTRIE PAR COMPAGNIE -->
                 <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
                     <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
                         <h3 class="text-xs font-black uppercase text-slate-100 tracking-wider flex items-center gap-2">
@@ -190,23 +180,20 @@
                         </h3>
                         <span class="text-[10px] text-slate-500 font-mono">Base Négociation B2B</span>
                     </div>
-                    <div class="space-y-2.5 max-h-[300px] overflow-y-auto pr-1" id="yield-airlines-box">
-                        <!-- Rempli en JS -->
-                    </div>
+                    <div class="space-y-2.5 max-h-[300px] overflow-y-auto pr-1" id="yield-airlines-box"></div>
                 </div>
             </div>
         </section>
 
-        <!-- 2. VUE ENREGISTREMENT GUICHET (SAISIE CLIENTS) -->
+        <!-- 2. VUE ENREGISTREMENT GUICHET -->
         <section id="pane-enregistrement" class="view-pane space-y-6">
             <div class="border-b border-slate-800 pb-3">
                 <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 1 : Fiche Voyageur & Vol</h2>
-                <p class="text-xs text-slate-400">Saisie des données administratives du client avant passage en balance et Rayon X.</p>
+                <p class="text-xs text-slate-400">Saisie administrative : le poids total autorisé du billet sert de référence exclusive de franchise.</p>
             </div>
 
             <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl">
                 <form id="clientRegisterForm" onsubmit="handleNewClient(event)" class="space-y-6">
-                    <!-- CANAL DE PRISE EN CHARGE (YIELD) -->
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
                         <label class="block text-xs font-mono uppercase text-cyan-400 font-bold">Canal de Prise en Charge *</label>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
@@ -221,7 +208,6 @@
                         </div>
                     </div>
 
-                    <!-- IDENTITÉ CLIENT -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Nom du passager *</label>
@@ -237,7 +223,6 @@
                         </div>
                     </div>
 
-                    <!-- VOL & RÉSERVATION -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Numéro Billet / PNR *</label>
@@ -264,57 +249,78 @@
                         </div>
                     </div>
 
-                    <!-- DESTINATION & FRANCHISE -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Destination Finale *</label>
                             <input type="text" id="reg-dest" required placeholder="ex: Paris-CDG (France)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Poids Autorisé Billet (kg) *</label>
-                            <input type="number" step="0.5" id="reg-allowed" value="23" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs font-mono text-amber-400 focus:outline-none focus:border-indigo-500">
+                            <label class="block text-xs font-mono text-emerald-400 mb-1.5 uppercase font-bold">Poids Total Accordé Billet (Franchise kg) *</label>
+                            <input type="number" step="0.5" id="reg-allowed" value="23" required class="w-full bg-slate-900 border border-emerald-500/50 rounded-xl px-4 py-2.5 text-xs font-mono text-emerald-300 font-bold focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Nombre Initial de Pièces (Sacs)</label>
+                            <input type="number" id="reg-piece-count" value="1" min="1" max="6" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-indigo-500">
                         </div>
                     </div>
 
                     <div class="flex justify-end pt-3 border-t border-slate-800">
                         <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase px-8 py-3.5 rounded-xl transition shadow-lg flex items-center gap-2">
-                            <i class="fa-solid fa-arrow-right"></i> Valider & Transférer à la Pesée
+                            <i class="fa-solid fa-arrow-right"></i> Valider & Transférer à la Pesée Globale
                         </button>
                     </div>
                 </form>
             </div>
         </section>
 
-        <!-- 3. VUE PESÉE, CAISSE & SURTAXE CDF -->
+        <!-- 3. VUE PESÉE MULTI-BAGAGES, CUMUL SUR FRANCHISE & ENCAISSEMENT -->
         <section id="pane-pesee" class="view-pane space-y-6">
             <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
-                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 2 : Pesée Certifiée, Franchise & Encaissement</h2>
-                    <p class="text-xs text-slate-400">Traitement de l'assiette d'excédent (42 000 CDF / kg) et délivrance de quittance thermique 80mm.</p>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 2 : Pesée Globale & Franchise Billet</h2>
+                    <p class="text-xs text-slate-400">Le calcul d'excédent s'applique sur la masse cumulée totale par rapport à la franchise accordée par le billet.</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <label class="text-xs font-mono text-slate-400">Dossier en traitement :</label>
-                    <select id="select-active-pax" onchange="loadPaxIntoWeigh(this.value)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-indigo-400 font-mono focus:outline-none">
-                    </select>
+                    <select id="select-active-pax" onchange="loadPaxIntoWeigh(this.value)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-indigo-400 font-mono focus:outline-none"></select>
                 </div>
             </div>
 
             <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
-                <!-- Récapitulatif du dossier sélectionné -->
+                <!-- Récapitulatif -->
                 <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
                     <div><span class="text-slate-500 block text-[10px] uppercase">Voyageur :</span><strong class="text-slate-100" id="weigh-lbl-nom">-</strong></div>
                     <div><span class="text-slate-500 block text-[10px] uppercase">Vol / Comp. :</span><strong class="text-slate-100" id="weigh-lbl-vol">-</strong></div>
                     <div><span class="text-slate-500 block text-[10px] uppercase">Code PNR :</span><strong class="text-indigo-400 font-bold" id="weigh-lbl-pnr">-</strong></div>
-                    <div><span class="text-slate-500 block text-[10px] uppercase">Franchise :</span><strong class="text-amber-400 font-bold" id="weigh-lbl-allowed">23.00 kg</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Franchise Globale :</span><strong class="text-emerald-400 font-bold" id="weigh-lbl-allowed">23.00 kg</strong></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- CONTENEUR DES PIÈCES MULTI-BAGAGES DYNAMIQUES -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-suitcase-rolling text-sky-400"></i> Détail des Bagages Physiques Déposés
+                        </label>
+                        <button type="button" onclick="ajouterPieceBagage()" class="bg-slate-800 hover:bg-slate-700 text-sky-400 text-xs px-3 py-1.5 rounded-lg font-bold border border-slate-700 transition">
+                            ＋ Ajouter un Sac / Colis
+                        </button>
+                    </div>
+
+                    <div id="liste-pieces-bagages" class="space-y-2.5">
+                        <!-- Lignes de bagages injectées dynamiquement -->
+                    </div>
+                </div>
+
+                <!-- TOTAL CUMULÉ & SURTAXE GLOBALE -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-slate-800">
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Masse Balance Certifiée (kg) *</label>
-                        <input type="number" id="weigh-input-kg" step="0.1" oninput="liveCalcExcess()" placeholder="0.00" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 font-mono text-2xl text-amber-300 font-bold focus:outline-none focus:border-indigo-500">
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Masse Cumulée Totale (kg)</label>
+                        <div id="weigh-total-display" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 font-mono text-2xl text-amber-300 font-bold h-[58px] flex items-center">
+                            0.00 kg
+                        </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Surtaxe Excédent (42 000 CDF / kg)</label>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Surtaxe Excédent (42 000 CDF / kg au-delà de la franchise)</label>
                         <div id="weigh-fee-box" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-2xl text-emerald-400 font-black h-[58px] flex items-center">
                             0 CDF (Conforme)
                         </div>
@@ -349,7 +355,7 @@
 
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
                     <button type="button" onclick="saveWeighRecord()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase px-8 py-3.5 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-floppy-disk"></i> Enregistrer Pesée & Envoyer Rayon X
+                        <i class="fa-solid fa-floppy-disk"></i> Enregistrer Pesée Globale & Envoyer Rayon X
                     </button>
                     <button type="button" id="btn-print-80mm" onclick="printThermalDoc()" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs px-5 py-3.5 rounded-xl transition border border-slate-700 flex items-center justify-center gap-2">
                         <i class="fa-solid fa-print"></i> Reçu Thermique 80mm
@@ -358,17 +364,16 @@
             </div>
         </section>
 
-        <!-- 4. VUE SCANNER RAYON X & SCELLÉS -->
+        <!-- 4. VUE SCANNER RAYON X & SCELLÉS MULTI-PIÈCES -->
         <section id="pane-surete" class="view-pane space-y-6">
             <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
-                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 3 : Contrôle Rayon X & Pose du Scellé</h2>
-                    <p class="text-xs text-slate-400">Imagerie de sécurité du bagage et scellement sous plombage inviolable.</p>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 3 : Contrôle Rayon X & Plombage Inviolable</h2>
+                    <p class="text-xs text-slate-400">Contrôle de sûreté individuel de chaque pièce et attribution des scellés de sécurité.</p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <label class="text-xs font-mono text-slate-400">Bagage en tunnel :</label>
-                    <select id="select-xray-pax" onchange="loadPaxIntoXray(this.value)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-indigo-400 font-mono focus:outline-none">
-                    </select>
+                    <label class="text-xs font-mono text-slate-400">Dossier en tunnel :</label>
+                    <select id="select-xray-pax" onchange="loadPaxIntoXray(this.value)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-indigo-400 font-mono focus:outline-none"></select>
                 </div>
             </div>
 
@@ -377,7 +382,7 @@
                     <div><span class="text-slate-500 block text-[10px] uppercase">Voyageur :</span><strong class="text-slate-100" id="xray-lbl-nom">-</strong></div>
                     <div><span class="text-slate-500 block text-[10px] uppercase">Destination :</span><strong class="text-slate-100" id="xray-lbl-dest">-</strong></div>
                     <div><span class="text-slate-500 block text-[10px] uppercase">Code PNR :</span><strong class="text-indigo-400 font-bold" id="xray-lbl-pnr">-</strong></div>
-                    <div><span class="text-slate-500 block text-[10px] uppercase">Poids Certifié :</span><strong class="text-amber-400 font-bold" id="xray-lbl-kg">-</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Poids Global Pesé :</span><strong class="text-amber-400 font-bold" id="xray-lbl-kg">-</strong></div>
                 </div>
 
                 <div class="space-y-3">
@@ -391,26 +396,26 @@
                         <button type="button" onclick="setXrayVote('Suspect')" id="btn-dec-alert" class="flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 hover:border-rose-500 transition-all">
                             <span class="text-3xl mb-1">🔴</span>
                             <span class="text-xs font-black uppercase text-slate-200">SUSPECT / ALERTE</span>
-                            <span class="text-[10px] text-slate-500">Matière douteuse (Ouverture requise)</span>
+                            <span class="text-[10px] text-slate-500">Ouverture et fouille manuelle requises</span>
                         </button>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    <div>
-                        <label class="block text-xs font-mono text-slate-400 uppercase mb-1">N° du Scellé Physique Inviolable *</label>
-                        <input type="text" id="xray-input-seal" placeholder="Scanner le code du plomb (ex: PL-9402)" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 font-mono text-xs text-emerald-400 uppercase focus:outline-none focus:border-indigo-500">
-                    </div>
-                    <div class="flex items-end">
-                        <button type="button" onclick="finalizeXray()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase p-3 rounded-xl transition shadow-md flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-lock"></i> Valider Plombage & Clôturer Dossier
-                        </button>
-                    </div>
+                <!-- SCELLÉS PAR PIÈCE PHYSIQUE -->
+                <div class="space-y-3 pt-2 border-t border-slate-800">
+                    <label class="block text-xs font-mono text-slate-400 uppercase">Numéros de Scellés Inviolables par Bagage Physique *</label>
+                    <div id="xray-seals-container" class="space-y-2"></div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="button" onclick="finalizeXray()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase p-3.5 rounded-xl transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-lock"></i> Valider Tous les Plombs & Clôturer Dossier
+                    </button>
                 </div>
             </div>
         </section>
 
-        <!-- 5. VUE REGISTRE GÉNÉRAL DES VOYAGEURS -->
+        <!-- 5. REGISTRE GÉNÉRAL -->
         <section id="pane-registre" class="view-pane space-y-6">
             <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
@@ -430,21 +435,20 @@
                                 <th class="py-3 px-4">Passager</th>
                                 <th class="py-3 px-4">Canal</th>
                                 <th class="py-3 px-4">Vol & PNR</th>
-                                <th class="py-3 px-4">Destination</th>
-                                <th class="py-3 px-4">Poids Constaté / Aut.</th>
+                                <th class="py-3 px-4">Colis</th>
+                                <th class="py-3 px-4">Poids Cumulé / Franchise</th>
                                 <th class="py-3 px-4">Surtaxe Encaissée</th>
-                                <th class="py-3 px-4">Statut Rayon X</th>
-                                <th class="py-3 px-4">N° Scellé</th>
+                                <th class="py-3 px-4">Rayon X</th>
+                                <th class="py-3 px-4">Scellés Plombs</th>
                             </tr>
                         </thead>
-                        <tbody id="pax-table-body" class="divide-y divide-slate-800/60 font-mono">
-                        </tbody>
+                        <tbody id="pax-table-body" class="divide-y divide-slate-800/60 font-mono"></tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- 6. VUE BATCH & CONVOI SCELLÉ N'DJILI -->
+        <!-- 6. CONVOI BATCH N'DJILI -->
         <section id="pane-batch" class="view-pane space-y-6">
             <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
@@ -460,7 +464,7 @@
                         <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">Prêt pour convoi</span>
                     </div>
                     <div class="space-y-2 text-xs font-mono">
-                        <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Bagages certifiés et scellés :</span><strong class="text-emerald-400" id="batch-pax-count">0 pièces</strong></div>
+                        <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Colis physiques scellés :</span><strong class="text-emerald-400" id="batch-pax-count">0 pièces</strong></div>
                         <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Masse globale transportée :</span><strong class="text-indigo-400" id="batch-pax-weight">0.00 kg</strong></div>
                         <div class="flex justify-between bg-slate-950 p-3 rounded-xl"><span>Destination :</span><strong class="text-slate-200">Terminal Départs N'Djili</strong></div>
                     </div>
@@ -479,11 +483,11 @@
             </div>
         </section>
 
-        <!-- 7. VUE CONFIGURATION & TARIFS -->
+        <!-- 7. CONFIGURATION DES TARIFS -->
         <section id="pane-config" class="view-pane space-y-8">
             <div class="border-b border-slate-800 pb-3">
                 <h2 class="text-xl md:text-2xl font-black text-slate-100">Gestionnaire des Tarifs & Paramètres</h2>
-                <p class="text-xs text-slate-400">Les modifications appliquées ici mettront à jour le simulateur client de réservation en ligne.</p>
+                <p class="text-xs text-slate-400">Les frais de prise en charge s'appliquent à la franchise globale du billet[cite: 1, 2].</p>
             </div>
 
             <div class="flex justify-between items-center bg-indigo-950/30 border border-indigo-500/20 p-4 rounded-2xl">
@@ -497,12 +501,10 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- COLONNE GAUCHE : Frais & Juridique -->
                 <div class="space-y-8">
-                    <!-- FRAIS DE SERVICE -->
                     <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl">
                         <h3 class="text-sm font-black uppercase text-slate-100 mb-5 flex items-center gap-2 border-b border-slate-800 pb-3">
-                            <i class="fa-solid fa-money-bill-wave text-emerald-400"></i> Frais de Prise en Charge (GTS)
+                            <i class="fa-solid fa-money-bill-wave text-emerald-400"></i> Frais de Prise en Charge par Franchise Billet (GTS)
                         </h3>
                         
                         <div class="space-y-6">
@@ -510,11 +512,11 @@
                                 <h4 class="text-xs font-bold text-slate-400 mb-3 uppercase">Dépôt en Agence Hub</h4>
                                 <div class="flex gap-4">
                                     <div class="flex-1">
-                                        <label class="block text-[10px] text-slate-500 mb-1">Vol National ($/sac)</label>
+                                        <label class="block text-[10px] text-slate-500 mb-1">Vol National ($/franchise)</label>
                                         <input type="number" id="fee-agency-nat" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:border-indigo-500 focus:outline-none">
                                     </div>
                                     <div class="flex-1">
-                                        <label class="block text-[10px] text-slate-500 mb-1">Vol International ($/sac)</label>
+                                        <label class="block text-[10px] text-slate-500 mb-1">Vol International ($/franchise)</label>
                                         <input type="number" id="fee-agency-int" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:border-indigo-500 focus:outline-none">
                                     </div>
                                 </div>
@@ -524,11 +526,11 @@
                                 <h4 class="text-xs font-bold text-slate-400 mb-3 uppercase text-amber-400">Collecte VIP Domicile</h4>
                                 <div class="flex gap-4">
                                     <div class="flex-1">
-                                        <label class="block text-[10px] text-slate-500 mb-1">Vol National ($/sac)</label>
+                                        <label class="block text-[10px] text-slate-500 mb-1">Vol National ($/franchise)</label>
                                         <input type="number" id="fee-vip-nat" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:border-amber-500 focus:outline-none">
                                     </div>
                                     <div class="flex-1">
-                                        <label class="block text-[10px] text-slate-500 mb-1">Vol International ($/sac)</label>
+                                        <label class="block text-[10px] text-slate-500 mb-1">Vol International ($/franchise)</label>
                                         <input type="number" id="fee-vip-int" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:border-amber-500 focus:outline-none">
                                     </div>
                                 </div>
@@ -536,51 +538,19 @@
                         </div>
                     </div>
 
-                    <!-- DECLARATION DE SURETE -->
                     <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl">
                         <h3 class="text-sm font-black uppercase text-slate-100 mb-5 flex items-center gap-2 border-b border-slate-800 pb-3">
                             <i class="fa-solid fa-scale-balanced text-rose-400"></i> Déclaration de Sûreté
                         </h3>
-                        <p class="text-[10px] text-slate-400 mb-3">Texte affiché à côté de la case à cocher obligatoire pour le client lors de la réservation.</p>
                         <textarea id="legal-text" rows="4" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-300 focus:border-rose-500 focus:outline-none leading-relaxed"></textarea>
                     </div>
                 </div>
 
-                <!-- COLONNE DROITE : Compagnies -->
                 <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl flex flex-col h-full">
                     <h3 class="text-sm font-black uppercase text-slate-100 mb-5 flex items-center gap-2 border-b border-slate-800 pb-3">
                         <i class="fa-solid fa-plane text-sky-400"></i> Compagnies & Tarifs d'Excédent
                     </h3>
-                    
-                    <!-- Ajouter une compagnie -->
-                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 mb-6">
-                        <h4 class="text-[10px] font-bold text-slate-400 mb-3 uppercase">Ajouter une compagnie</h4>
-                        <div class="flex gap-2 items-end">
-                            <div class="flex-1">
-                                <label class="block text-[10px] text-slate-500 mb-1">Type Vol</label>
-                                <select id="new-airline-type" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none">
-                                    <option value="INT">International</option>
-                                    <option value="NAT">National</option>
-                                </select>
-                            </div>
-                            <div class="flex-[2]">
-                                <label class="block text-[10px] text-slate-500 mb-1">Nom Compagnie</label>
-                                <input type="text" id="new-airline-name" placeholder="ex: Brussels Airlines" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none">
-                            </div>
-                            <div class="flex-1">
-                                <label class="block text-[10px] text-slate-500 mb-1">Tarif ($/kg)</label>
-                                <input type="number" id="new-airline-rate" placeholder="ex: 15" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none">
-                            </div>
-                            <button onclick="ajouterCompagnie()" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors">
-                                Ajouter
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Liste des compagnies -->
-                    <div class="flex-1 overflow-y-auto pr-2 space-y-4 max-h-[400px]" id="airlines-list">
-                        <!-- Rempli par le JavaScript -->
-                    </div>
+                    <div class="flex-1 overflow-y-auto pr-2 space-y-4 max-h-[400px]" id="airlines-list"></div>
                 </div>
             </div>
         </section>
@@ -589,20 +559,32 @@
 
     <!-- PIED DE PAGE -->
     <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-6 text-center text-xs text-slate-500 space-y-1">
-        <p><b>EasyFly Transit</b> — Console Intégrale Hub PROCOKI Kinshasa.</p>
-        <p class="text-[10px] font-mono">Connexion sécurisée passerelle aéroportuaire N'Djili.</p>
+        <p><b>EasyFly Transit</b> — Console Intégrale Hub PROCOKI Kinshasa[cite: 1, 2].</p>
+        <p class="text-[10px] font-mono">Facturation au poids global certifié • Synchronisation passerelle N'Djili[cite: 1, 2].</p>
     </footer>
 
-    <!-- LOGIQUE JAVASCRIPT & BASE DE DONNÉES EN MÉMOIRE -->
+    <!-- LOGIQUE JAVASCRIPT ET PESÉE MULTI-PIÈCES SUR FRANCHISE -->
     <script>
         const TARIFF_PER_KG = 42000;
         const CAMION_CAPACITE_KG = 1200;
 
-        // Base de données réactive initiale (Hub) enrichie du canal
         let PAX_DATABASE = [
-            { id: "pax-1", nom: "MUTOMBO", postnom: "ILUNGA", prenom: "Patrick", channel: "AGENCY", pnr: "AF-29401", compagnie: "Air France", date: "2026-10-03", heure: "21:45", destination: "Paris-CDG", allowedWeight: 23, measuredWeight: 21.8, excessFee: 0, payMethod: "Cash", payRef: "REC-001", xrayStatus: "Approved", sealNumber: "PL-9921" },
-            { id: "pax-2", nom: "BOKETSHU", postnom: "YONGO", prenom: "Mireille", channel: "VIP_HOME", pnr: "SN-88410", compagnie: "Brussels Airlines", date: "2026-10-03", heure: "20:30", destination: "Bruxelles BRU", allowedWeight: 23, measuredWeight: 26.5, excessFee: 147000, payMethod: "POS_Card", payRef: "REC-002", xrayStatus: "Pending", sealNumber: "" },
-            { id: "pax-3", nom: "KANKU", postnom: "KALALA", prenom: "Christian", channel: "VIP_HOME", pnr: "ET-49120", compagnie: "Ethiopian Airlines", date: "2026-10-04", heure: "13:15", destination: "Dubai DXB", allowedWeight: 23, measuredWeight: 28.2, excessFee: 218400, payMethod: "Mobile_Money", payRef: "REC-003", xrayStatus: "Approved", sealNumber: "PL-9922" }
+            { 
+                id: "pax-1", 
+                nom: "MUTOMBO", postnom: "ILUNGA", prenom: "Patrick", channel: "AGENCY", 
+                pnr: "AF-29401", compagnie: "Air France", date: "2026-10-03", heure: "21:45", destination: "Paris-CDG", 
+                allowedWeight: 23, 
+                pieces: [ { id: 1, weight: 12.5, seal: "PL-9921" }, { id: 2, weight: 9.3, seal: "PL-9922" } ],
+                measuredWeight: 21.8, excessFee: 0, payMethod: "Cash", payRef: "REC-001", xrayStatus: "Approved"
+            },
+            { 
+                id: "pax-2", 
+                nom: "BOKETSHU", postnom: "YONGO", prenom: "Mireille", channel: "VIP_HOME", 
+                pnr: "SN-88410", compagnie: "Brussels Airlines", date: "2026-10-03", heure: "20:30", destination: "Bruxelles BRU", 
+                allowedWeight: 23, 
+                pieces: [ { id: 1, weight: 26.5, seal: "" } ],
+                measuredWeight: 26.5, excessFee: 147000, payMethod: "POS_Card", payRef: "REC-002", xrayStatus: "Pending"
+            }
         ];
 
         let selectedWeighId = "pax-1";
@@ -615,7 +597,7 @@
                 INT: { defaultFranchise: 23, companies: { "Air France": 15, "Brussels Airlines": 15, "Ethiopian Airlines": 12, "Turkish Airlines": 13, "Kenya Airways": 12, "Autre Compagnie": 15 } },
                 NAT: { defaultFranchise: 20, companies: { "Congo Airways": 5, "Air Kasaï": 5, "Autre Compagnie": 5 } }
             },
-            legalText: "Tout excédent constaté au-delà de la franchise fait obligatoirement l'objet d'une facturation immédiate. Le passager s'engage à acquitter ces frais selon le barème officiel au kilo appliqué par sa compagnie aérienne."
+            legalText: "La facturation est établie sur la base de la franchise globale cumulée du billet. Tout kilogramme excédant le poids global autorisé par la compagnie fait l'objet d'une facturation immédiate au barème officiel au kilo."
         };
         let gtsConfig = JSON.parse(localStorage.getItem('gtsAdminConfig')) || defaultData;
 
@@ -629,119 +611,23 @@
             if (activePane) activePane.classList.add('active');
 
             const activeBtn = document.getElementById('btn-tab-' + tabName);
-            if (activeBtn) {
-                activeBtn.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
-            }
+            if (activeBtn) activeBtn.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
 
-            if(tabName === 'config') chargerFormulaireConfig();
-            if(tabName === 'yield-analytics') calculerYieldEtCapacite();
+            if (tabName === 'config') chargerFormulaireConfig();
+            if (tabName === 'yield-analytics') calculerYieldEtCapacite();
         }
 
-        /* --- LOGIQUE ANALYTIQUE YIELD & CAPACITÉ --- */
-        function calculerYieldEtCapacite() {
-            const totalPax = PAX_DATABASE.length;
-            if (totalPax === 0) return;
-
-            let vipCount = 0;
-            let agencyCount = 0;
-            let totalWeight = 0;
-            let totalExcessKg = 0;
-            const airlinesMap = {};
-
-            PAX_DATABASE.forEach(p => {
-                if (p.channel === 'VIP_HOME') vipCount++;
-                else agencyCount++;
-
-                const weight = p.measuredWeight || 0;
-                totalWeight += weight;
-
-                const excess = Math.max(0, weight - (p.allowedWeight || 23));
-                totalExcessKg += excess;
-
-                if (!airlinesMap[p.compagnie]) {
-                    airlinesMap[p.compagnie] = { count: 0, weight: 0, excessKg: 0 };
-                }
-                airlinesMap[p.compagnie].count++;
-                airlinesMap[p.compagnie].weight += weight;
-                airlinesMap[p.compagnie].excessKg += excess;
-            });
-
-            const vipRatio = Math.round((vipCount / totalPax) * 100);
-            const avgExcess = (totalExcessKg / totalPax).toFixed(2);
-            const truckFill = Math.min(100, Math.round((totalWeight / CAMION_CAPACITE_KG) * 100));
-
-            // Règle de Yield dynamique (Heure actuelle)
-            const currentHour = new Date().getHours();
-            const isPeak = currentHour >= 16 && currentHour <= 20;
-            const yieldSurge = isPeak ? 20 : 0;
-
-            document.getElementById('kpi-vip-ratio').textContent = `${vipRatio}% (${vipCount} pax)`;
-            document.getElementById('kpi-avg-excess').textContent = `${avgExcess} kg`;
-            document.getElementById('kpi-truck-fill').textContent = `${truckFill}% (${totalWeight.toFixed(1)} / ${CAMION_CAPACITE_KG} kg)`;
-            document.getElementById('kpi-yield-multiplier').textContent = `+${yieldSurge}%`;
-            document.getElementById('kpi-yield-status').textContent = isPeak ? 'Pic de soirée actif (Majoration +20%)' : 'Heures creuses (Tarif régulier)';
-
-            // Panneau Canaux
-            const channelsBox = document.getElementById('yield-channels-box');
-            channelsBox.innerHTML = `
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
-                    <div>
-                        <span class="font-bold text-slate-200">🏢 Dépôt Agence Hub (PROCOKI)</span>
-                        <span class="block text-[10px] text-slate-500 font-mono">${agencyCount} passagers enregistrés</span>
-                    </div>
-                    <span class="font-mono font-bold text-indigo-400">${Math.round((agencyCount/totalPax)*100)}% volume</span>
-                </div>
-                <div class="bg-slate-950 p-3 rounded-xl border border-amber-500/30 flex justify-between items-center text-xs">
-                    <div>
-                        <span class="font-bold text-amber-300">🚐 Collecte VIP à Domicile</span>
-                        <span class="block text-[10px] text-slate-500 font-mono">${vipCount} réservations premium</span>
-                    </div>
-                    <span class="font-mono font-bold text-amber-400">${vipRatio}% volume</span>
-                </div>
-            `;
-
-            // Panneau Compagnies
-            const airlinesBox = document.getElementById('yield-airlines-box');
-            airlinesBox.innerHTML = '';
-            Object.entries(airlinesMap).forEach(([cie, data]) => {
-                const cieShare = Math.round((data.weight / (totalWeight || 1)) * 100);
-                airlinesBox.innerHTML += `
-                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1.5 text-xs font-mono">
-                        <div class="flex justify-between items-center">
-                            <strong class="text-sky-400">${cie}</strong>
-                            <span class="text-slate-300 font-bold">${data.weight.toFixed(1)} kg (${cieShare}%)</span>
-                        </div>
-                        <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
-                            <div class="bg-sky-500 h-full rounded-full" style="width: ${cieShare}%"></div>
-                        </div>
-                        <div class="flex justify-between text-[10px] text-slate-400">
-                            <span>${data.count} billet(s)</span>
-                            <span class="text-rose-400 font-bold">Excédents : +${data.excessKg.toFixed(1)} kg</span>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function exporterYieldCsv() {
-            let csv = "\uFEFFPassager,Canal,Compagnie,PNR,Poids_Total_Kg,Excedent_Kg,Surtaxe_CDF\n";
-            PAX_DATABASE.forEach(p => {
-                const excess = Math.max(0, (p.measuredWeight || 0) - (p.allowedWeight || 23)).toFixed(1);
-                csv += `"${p.nom} ${p.prenom}","${p.channel || 'AGENCY'}","${p.compagnie}","${p.pnr}","${p.measuredWeight || 0}","${excess}","${p.excessFee || 0}"\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = `EasyFly_Yield_Capacite_${new Date().toISOString().slice(0, 10)}.csv`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        /* --- LOGIQUE OPÉRATIONNELLE DU HUB --- */
+        /* --- POSTE 1 : NOUVEAU CLIENT --- */
         function handleNewClient(e) {
             e.preventDefault();
             const channelVal = document.querySelector('input[name="regChannel"]:checked').value;
+            const pieceCount = parseInt(document.getElementById('reg-piece-count').value) || 1;
+            
+            let initialPieces = [];
+            for (let i = 1; i <= pieceCount; i++) {
+                initialPieces.push({ id: i, weight: 0, seal: "" });
+            }
+
             const newPax = {
                 id: "pax-" + (PAX_DATABASE.length + 1),
                 nom: document.getElementById('reg-nom').value.trim().toUpperCase(),
@@ -754,116 +640,152 @@
                 heure: document.getElementById('reg-heure').value,
                 destination: document.getElementById('reg-dest').value.trim(),
                 allowedWeight: parseFloat(document.getElementById('reg-allowed').value),
+                pieces: initialPieces,
                 measuredWeight: 0,
                 excessFee: 0,
                 payMethod: "Cash",
                 payRef: "",
-                xrayStatus: "Pending",
-                sealNumber: ""
+                xrayStatus: "Pending"
             };
+
             PAX_DATABASE.unshift(newPax);
             refreshAllUI();
             calculerYieldEtCapacite();
             document.getElementById('clientRegisterForm').reset();
-            alert(`Dossier ${newPax.nom} ${newPax.prenom} enregistré avec succès !\nCanal : ${newPax.channel === 'VIP_HOME' ? 'Collecte VIP Domicile' : 'Dépôt Agence Hub'}\nRedirection vers le poste de pesée.`);
+            alert(`Dossier ${newPax.nom} enregistré.\nFranchise accordée : ${newPax.allowedWeight} kg répartis sur ${newPax.pieces.length} sac(s).\nTransfert au poste de pesée.`);
             selectedWeighId = newPax.id;
             loadPaxIntoWeigh(newPax.id);
             navigateTab('pesee');
         }
 
-        function refreshAllUI() {
-            document.getElementById('stat-total-pax').textContent = PAX_DATABASE.length;
-            const totalKg = PAX_DATABASE.reduce((sum, p) => sum + (p.measuredWeight || 0), 0);
-            document.getElementById('stat-total-kg').textContent = totalKg.toFixed(2) + " kg";
-            const totalCdf = PAX_DATABASE.reduce((sum, p) => sum + (p.excessFee || 0), 0);
-            document.getElementById('stat-total-cdf').textContent = totalCdf.toLocaleString('fr-FR') + " CDF";
-            document.getElementById('reg-badge-count').textContent = PAX_DATABASE.length + " Passagers";
-            document.getElementById('batch-pax-count').textContent = PAX_DATABASE.length + " pièces";
-            document.getElementById('batch-pax-weight').textContent = totalKg.toFixed(2) + " kg";
-
-            const selWeigh = document.getElementById('select-active-pax');
-            const selXray = document.getElementById('select-xray-pax');
-            selWeigh.innerHTML = "";
-            selXray.innerHTML = "";
-
-            PAX_DATABASE.forEach(p => {
-                const opt1 = document.createElement('option'); opt1.value = p.id; opt1.textContent = `${p.nom} (${p.pnr})`; selWeigh.appendChild(opt1);
-                const opt2 = document.createElement('option'); opt2.value = p.id; opt2.textContent = `${p.nom} (${p.pnr})`; selXray.appendChild(opt2);
-            });
-
-            const tbody = document.getElementById('pax-table-body');
-            tbody.innerHTML = "";
-            PAX_DATABASE.forEach(p => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-800/30 transition-colors";
-                const xrayBadge = p.xrayStatus === 'Approved' ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">● Conforme</span>` : (p.xrayStatus === 'Suspect' ? `<span class="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 text-[10px] font-bold">● Suspect</span>` : `<span class="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold">⏳ Attente</span>`);
-                const channelBadge = p.channel === 'VIP_HOME' ? `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[9px] font-bold">VIP Dom.</span>` : `<span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[9px] font-bold">Hub Agence</span>`;
-                tr.innerHTML = `<td class="py-3 px-4 font-bold text-slate-100">${p.nom} ${p.prenom}</td><td class="py-3 px-4">${channelBadge}</td><td class="py-3 px-4 text-indigo-400 font-bold">${p.compagnie} • ${p.pnr}</td><td class="py-3 px-4">${p.destination}</td><td class="py-3 px-4"><span class="${p.measuredWeight > p.allowedWeight ? 'text-rose-400 font-bold' : 'text-emerald-400'}">${p.measuredWeight ? p.measuredWeight.toFixed(1) + ' kg' : 'Non pesé'}</span> / ${p.allowedWeight} kg</td><td class="py-3 px-4 text-rose-400 font-bold">${p.excessFee ? p.excessFee.toLocaleString('fr-FR') + ' CDF' : '0 CDF'}</td><td class="py-3 px-4">${xrayBadge}</td><td class="py-3 px-4 font-bold text-emerald-400">${p.sealNumber || '<span class="text-slate-500">Non scellé</span>'}</td>`;
-                tbody.appendChild(tr);
-            });
-        }
-
+        /* --- POSTE 2 : GESTION DE LA PESÉE MULTI-BAGAGES --- */
         function loadPaxIntoWeigh(paxId) {
             selectedWeighId = paxId;
             const pax = PAX_DATABASE.find(p => p.id === paxId);
             if (!pax) return;
+
             document.getElementById('weigh-lbl-nom').textContent = `${pax.nom} ${pax.postnom} ${pax.prenom}`;
             document.getElementById('weigh-lbl-vol').textContent = `${pax.compagnie}`;
             document.getElementById('weigh-lbl-pnr').textContent = pax.pnr;
             document.getElementById('weigh-lbl-allowed').textContent = pax.allowedWeight.toFixed(2) + " kg";
-            document.getElementById('weigh-input-kg').value = pax.measuredWeight || "";
             document.getElementById('select-active-pax').value = paxId;
-            liveCalcExcess();
+
+            renderPiecesPesee();
         }
 
-        function liveCalcExcess() {
+        function renderPiecesPesee() {
             const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
             if (!pax) return;
-            const inputKg = parseFloat(document.getElementById('weigh-input-kg').value) || 0;
-            const excess = Math.max(0, inputKg - pax.allowedWeight);
+            const container = document.getElementById('liste-pieces-bagages');
+            container.innerHTML = "";
+
+            pax.pieces.forEach((piece, index) => {
+                container.innerHTML += `
+                    <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                        <span class="text-xs font-mono font-bold text-slate-400 w-24">Bagage #${index + 1} :</span>
+                        <div class="flex-1">
+                            <input type="number" step="0.1" value="${piece.weight || ''}" placeholder="0.0 kg" oninput="updatePieceWeight(${index}, this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 font-mono text-amber-300 font-bold text-sm outline-none focus:border-indigo-500">
+                        </div>
+                        ${pax.pieces.length > 1 ? `
+                            <button type="button" onclick="supprimerPieceBagage(${index})" class="text-slate-500 hover:text-rose-400 p-2">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+            });
+
+            liveCalcGlobalExcess();
+        }
+
+        function ajouterPieceBagage() {
+            const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
+            if (!pax) return;
+            pax.pieces.push({ id: pax.pieces.length + 1, weight: 0, seal: "" });
+            renderPiecesPesee();
+        }
+
+        function supprimerPieceBagage(index) {
+            const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
+            if (!pax || pax.pieces.length <= 1) return;
+            pax.pieces.splice(index, 1);
+            renderPiecesPesee();
+        }
+
+        function updatePieceWeight(index, val) {
+            const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
+            if (!pax || !pax.pieces[index]) return;
+            pax.pieces[index].weight = parseFloat(val) || 0;
+            liveCalcGlobalExcess();
+        }
+
+        function liveCalcGlobalExcess() {
+            const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
+            if (!pax) return;
+
+            const totalKg = pax.pieces.reduce((sum, piece) => sum + (piece.weight || 0), 0);
+            pax.measuredWeight = totalKg;
+
+            document.getElementById('weigh-total-display').textContent = `${totalKg.toFixed(2)} kg (${pax.pieces.length} sac(s))`;
+
+            const excess = Math.max(0, totalKg - pax.allowedWeight);
             const fee = Math.round(excess * TARIFF_PER_KG);
+            pax.excessFee = fee;
+
             const feeBox = document.getElementById('weigh-fee-box');
             if (excess > 0) {
                 feeBox.textContent = `+ ${fee.toLocaleString('fr-FR')} CDF (+${excess.toFixed(1)} kg)`;
                 feeBox.className = "w-full bg-slate-950 border border-rose-500/40 rounded-xl p-3 font-mono text-2xl text-rose-400 font-black h-[58px] flex items-center";
             } else {
-                feeBox.textContent = "0 CDF (Conforme)";
+                feeBox.textContent = "0 CDF (Conforme Franchise)";
                 feeBox.className = "w-full bg-slate-950 border border-emerald-500/30 rounded-xl p-3 font-mono text-2xl text-emerald-400 font-bold h-[58px] flex items-center";
             }
         }
 
-        function togglePayRef(show) {
-            document.getElementById('box-pay-ref').classList.toggle('hidden', !show);
-            document.getElementById('box-pay-mobile').classList.toggle('hidden', show);
-        }
-
         function saveWeighRecord() {
             const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
-            const weight = parseFloat(document.getElementById('weigh-input-kg').value);
-            if (!weight || weight <= 0) return alert("Veuillez saisir le poids relevé sur la balance.");
-            pax.measuredWeight = weight;
-            pax.excessFee = Math.round(Math.max(0, weight - pax.allowedWeight) * TARIFF_PER_KG);
+            if (!pax || pax.measuredWeight <= 0) return alert("Veuillez peser au moins un bagage.");
+
             pax.payMethod = document.querySelector('input[name="payType"]:checked').value;
             pax.payRef = document.getElementById('weigh-input-ref').value.trim();
+
             refreshAllUI();
             calculerYieldEtCapacite();
-            alert(`Pesée enregistrée pour ${pax.nom} !\nTransfert au poste Rayon X.`);
+            alert(`Pesée globale validée : ${pax.measuredWeight.toFixed(1)} kg sur ${pax.allowedWeight} kg autorisés.\nTransfert au poste Rayon X.`);
             loadPaxIntoXray(pax.id);
             navigateTab('surete');
         }
 
+        /* --- POSTE 3 : RAYON X & SCELLÉS PAR SAC --- */
         function loadPaxIntoXray(paxId) {
             selectedXrayId = paxId;
             const pax = PAX_DATABASE.find(p => p.id === paxId);
             if (!pax) return;
+
             document.getElementById('xray-lbl-nom').textContent = `${pax.nom} ${pax.postnom} ${pax.prenom}`;
             document.getElementById('xray-lbl-dest').textContent = pax.destination;
             document.getElementById('xray-lbl-pnr').textContent = pax.pnr;
-            document.getElementById('xray-lbl-kg').textContent = pax.measuredWeight ? pax.measuredWeight.toFixed(2) + " kg" : "Non pesé";
-            document.getElementById('xray-input-seal').value = pax.sealNumber || "";
+            document.getElementById('xray-lbl-kg').textContent = `${pax.measuredWeight.toFixed(2)} kg (${pax.pieces.length} pièce(s))`;
             document.getElementById('select-xray-pax').value = paxId;
+
+            const sealsBox = document.getElementById('xray-seals-container');
+            sealsBox.innerHTML = "";
+            pax.pieces.forEach((piece, index) => {
+                sealsBox.innerHTML += `
+                    <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                        <span class="text-xs font-mono font-bold text-slate-300 w-36">Plomb Colis #${index + 1} (${piece.weight} kg) :</span>
+                        <input type="text" value="${piece.seal || ''}" placeholder="Scanner code plomb (ex: PL-${9900 + index})" oninput="updatePieceSeal(${index}, this.value)" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2 font-mono text-xs text-emerald-400 uppercase outline-none focus:border-indigo-500">
+                    </div>
+                `;
+            });
+
             currentXrayVote = pax.xrayStatus;
             updateXrayButtonsUI(pax.xrayStatus);
+        }
+
+        function updatePieceSeal(index, val) {
+            const pax = PAX_DATABASE.find(p => p.id === selectedXrayId);
+            if (pax && pax.pieces[index]) pax.pieces[index].seal = val.trim().toUpperCase();
         }
 
         function setXrayVote(vote) { currentXrayVote = vote; updateXrayButtonsUI(vote); }
@@ -878,19 +800,91 @@
         function finalizeXray() {
             const pax = PAX_DATABASE.find(p => p.id === selectedXrayId);
             if (!currentXrayVote || currentXrayVote === 'Pending') return alert("Sélectionnez une décision Rayon X.");
-            const seal = document.getElementById('xray-input-seal').value.trim();
-            if (currentXrayVote === 'Approved' && !seal) return alert("Le numéro de scellé est obligatoire pour valider.");
-            pax.xrayStatus = currentXrayVote; pax.sealNumber = seal;
+
+            if (currentXrayVote === 'Approved') {
+                const manqueSeal = pax.pieces.some(p => !p.seal || p.seal === "");
+                if (manqueSeal) return alert("Chaque colis doit avoir son numéro de plomb scellé.");
+            }
+
+            pax.xrayStatus = currentXrayVote;
             refreshAllUI();
-            alert(`Bagage certifié sous le scellé #${seal || 'AUCUN'} !`);
+            alert(`Dossier clôturé : ${pax.pieces.length} pièce(s) sécurisée(s) pour le vol.`);
             navigateTab('registre');
+        }
+
+        /* --- TICKETING & REFRESH GLOBAL --- */
+        function refreshAllUI() {
+            document.getElementById('stat-total-pax').textContent = PAX_DATABASE.length;
+            const totalKg = PAX_DATABASE.reduce((sum, p) => sum + (p.measuredWeight || 0), 0);
+            const totalPieces = PAX_DATABASE.reduce((sum, p) => sum + (p.pieces ? p.pieces.length : 1), 0);
+            const totalCdf = PAX_DATABASE.reduce((sum, p) => sum + (p.excessFee || 0), 0);
+
+            document.getElementById('stat-total-kg').textContent = totalKg.toFixed(2) + " kg";
+            document.getElementById('stat-total-cdf').textContent = totalCdf.toLocaleString('fr-FR') + " CDF";
+            document.getElementById('reg-badge-count').textContent = PAX_DATABASE.length + " Passagers";
+            document.getElementById('batch-pax-count').textContent = totalPieces + " pièces";
+            document.getElementById('batch-pax-weight').textContent = totalKg.toFixed(2) + " kg";
+
+            const selWeigh = document.getElementById('select-active-pax');
+            const selXray = document.getElementById('select-xray-pax');
+            selWeigh.innerHTML = ""; selXray.innerHTML = "";
+
+            PAX_DATABASE.forEach(p => {
+                const opt1 = document.createElement('option'); opt1.value = p.id; opt1.textContent = `${p.nom} (${p.pnr})`; selWeigh.appendChild(opt1);
+                const opt2 = document.createElement('option'); opt2.value = p.id; opt2.textContent = `${p.nom} (${p.pnr})`; selXray.appendChild(opt2);
+            });
+
+            const tbody = document.getElementById('pax-table-body');
+            tbody.innerHTML = "";
+            PAX_DATABASE.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/30 transition-colors";
+                const xrayBadge = p.xrayStatus === 'Approved' ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">● Conforme</span>` : (p.xrayStatus === 'Suspect' ? `<span class="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 text-[10px] font-bold">● Suspect</span>` : `<span class="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold">⏳ Attente</span>`);
+                const channelBadge = p.channel === 'VIP_HOME' ? `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[9px] font-bold">VIP Dom.</span>` : `<span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[9px] font-bold">Hub Agence</span>`;
+                
+                const sealsSummary = p.pieces && p.pieces.length > 0 
+                    ? p.pieces.map(pi => pi.seal ? `<b class="text-emerald-400">${pi.seal}</b>` : '<span class="text-slate-500">Non scellé</span>').join(', ')
+                    : '<span class="text-slate-500">Non scellé</span>';
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-bold text-slate-100">${p.nom} ${p.prenom}</td>
+                    <td class="py-3 px-4">${channelBadge}</td>
+                    <td class="py-3 px-4 text-indigo-400 font-bold">${p.compagnie} • ${p.pnr}</td>
+                    <td class="py-3 px-4 font-mono font-bold text-slate-200">${p.pieces ? p.pieces.length : 1} sac(s)</td>
+                    <td class="py-3 px-4"><span class="${p.measuredWeight > p.allowedWeight ? 'text-rose-400 font-bold' : 'text-emerald-400'}">${p.measuredWeight ? p.measuredWeight.toFixed(1) + ' kg' : '0 kg'}</span> / ${p.allowedWeight} kg</td>
+                    <td class="py-3 px-4 text-rose-400 font-bold">${p.excessFee ? p.excessFee.toLocaleString('fr-FR') + ' CDF' : '0 CDF'}</td>
+                    <td class="py-3 px-4">${xrayBadge}</td>
+                    <td class="py-3 px-4 text-[10px]">${sealsSummary}</td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
         function printThermalDoc() {
             const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
             if (!pax) return;
+
+            let detailsPiecesHtml = (pax.pieces || []).map((pi, i) => `<div>Sac #${i+1} : ${pi.weight} kg (Plomb: ${pi.seal || 'En cours'})</div>`).join('');
+
             const printWin = window.open('', '', 'width=340,height=550');
-            printWin.document.write(`<html><head><title>Ticket EasyFly</title><style>body{font-family:monospace;font-size:11px;width:260px;margin:0 auto;padding:10px;color:#000}.center{text-align:center}.bold{font-weight:bold}.line{border-bottom:1px dashed #000;margin:6px 0}</style></head><body onload="window.print(); window.close();"><div class="center bold">EASYFLY TRANSIT</div><div class="center" style="font-size:8px;">Hub PROCOKI - Kinshasa</div><div class="line"></div><div>CANAL : ${pax.channel === 'VIP_HOME' ? 'COLLECTE VIP' : 'AGENCE HUB'}</div><div>PASSAGER : ${pax.nom} ${pax.prenom}</div><div>PNR : ${pax.pnr}</div><div class="line"></div><div>FRANCHISE : ${pax.allowedWeight} kg</div><div>PESEE : ${pax.measuredWeight} kg</div><div class="bold">EXCEDENT : +${Math.max(0, pax.measuredWeight - pax.allowedWeight).toFixed(1)} kg</div><div class="bold" style="font-size:13px;">ENCAISSE : ${pax.excessFee.toLocaleString('fr-FR')} CDF</div><div class="line"></div><div>SURETE SCAN : ${pax.xrayStatus}</div><div class="bold">SCELLÉ PLOMB : ${pax.sealNumber || 'En cours'}</div><div class="line"></div><div class="center bold" style="margin-top:8px;">BON VOYAGE !</div></body></html>`);
+            printWin.document.write(`
+                <html><head><title>Ticket EasyFly</title><style>body{font-family:monospace;font-size:11px;width:260px;margin:0 auto;padding:10px;color:#000}.center{text-align:center}.bold{font-weight:bold}.line{border-bottom:1px dashed #000;margin:6px 0}</style></head><body onload="window.print(); window.close();">
+                <div class="center bold">EASYFLY TRANSIT</div>
+                <div class="center" style="font-size:8px;">Hub PROCOKI - Kinshasa</div>
+                <div class="line"></div>
+                <div>PASSAGER : ${pax.nom} ${pax.prenom}</div>
+                <div>PNR : ${pax.pnr} • ${pax.compagnie}</div>
+                <div class="line"></div>
+                <div>FRANCHISE BILLET : ${pax.allowedWeight} kg</div>
+                <div class="bold">POIDS TOTAL PESÉ : ${pax.measuredWeight} kg (${pax.pieces.length} sacs)</div>
+                ${detailsPiecesHtml}
+                <div class="line"></div>
+                <div class="bold">EXCÉDENT BILLET : +${Math.max(0, pax.measuredWeight - pax.allowedWeight).toFixed(1)} kg</div>
+                <div class="bold" style="font-size:13px;">SURTAXE : ${pax.excessFee.toLocaleString('fr-FR')} CDF</div>
+                <div class="line"></div>
+                <div class="center bold" style="margin-top:8px;">BON VOYAGE !</div>
+                </body></html>
+            `);
             printWin.document.close();
         }
 
@@ -901,50 +895,82 @@
             document.getElementById('truck-seal-input').value = "";
         }
 
-        /* --- LOGIQUE ONGLET CONFIGURATION --- */
+        function togglePayRef(show) {
+            document.getElementById('box-pay-ref').classList.toggle('hidden', !show);
+            document.getElementById('box-pay-mobile').classList.toggle('hidden', show);
+        }
+
+        /* --- YIELD ANALYTICS --- */
+        function calculerYieldEtCapacite() {
+            const totalPax = PAX_DATABASE.length;
+            if (totalPax === 0) return;
+
+            let vipCount = 0, agencyCount = 0, totalWeight = 0, totalExcessKg = 0;
+            const airlinesMap = {};
+
+            PAX_DATABASE.forEach(p => {
+                if (p.channel === 'VIP_HOME') vipCount++; else agencyCount++;
+                const weight = p.measuredWeight || 0;
+                totalWeight += weight;
+                const excess = Math.max(0, weight - (p.allowedWeight || 23));
+                totalExcessKg += excess;
+
+                if (!airlinesMap[p.compagnie]) airlinesMap[p.compagnie] = { count: 0, weight: 0, excessKg: 0 };
+                airlinesMap[p.compagnie].count++;
+                airlinesMap[p.compagnie].weight += weight;
+                airlinesMap[p.compagnie].excessKg += excess;
+            });
+
+            document.getElementById('kpi-vip-ratio').textContent = `${Math.round((vipCount/totalPax)*100)}% (${vipCount} pax)`;
+            document.getElementById('kpi-avg-excess').textContent = `${(totalExcessKg/totalPax).toFixed(2)} kg`;
+            document.getElementById('kpi-truck-fill').textContent = `${Math.min(100, Math.round((totalWeight/CAMION_CAPACITE_KG)*100))}% (${totalWeight.toFixed(1)} kg)`;
+
+            const channelsBox = document.getElementById('yield-channels-box');
+            channelsBox.innerHTML = `
+                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+                    <div><span class="font-bold text-slate-200">🏢 Dépôt Agence Hub</span><span class="block text-[10px] text-slate-500 font-mono">${agencyCount} passagers</span></div>
+                    <span class="font-mono font-bold text-indigo-400">${Math.round((agencyCount/totalPax)*100)}%</span>
+                </div>
+                <div class="bg-slate-950 p-3 rounded-xl border border-amber-500/30 flex justify-between items-center text-xs">
+                    <div><span class="font-bold text-amber-300">🚐 Collecte VIP Domicile</span><span class="block text-[10px] text-slate-500 font-mono">${vipCount} passagers</span></div>
+                    <span class="font-mono font-bold text-amber-400">${Math.round((vipCount/totalPax)*100)}%</span>
+                </div>
+            `;
+
+            const airlinesBox = document.getElementById('yield-airlines-box');
+            airlinesBox.innerHTML = '';
+            Object.entries(airlinesMap).forEach(([cie, data]) => {
+                airlinesBox.innerHTML += `
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 text-xs font-mono">
+                        <div class="flex justify-between"><strong class="text-sky-400">${cie}</strong><span>${data.weight.toFixed(1)} kg</span></div>
+                        <div class="flex justify-between text-[10px] text-slate-400"><span>${data.count} billet(s)</span><span class="text-rose-400">Excédent : +${data.excessKg.toFixed(1)} kg</span></div>
+                    </div>
+                `;
+            });
+        }
+
+        function exporterYieldCsv() {
+            let csv = "\uFEFFPassager,Canal,Compagnie,PNR,Colis,Poids_Total_Kg,Franchise_Kg,Excedent_Kg,Surtaxe_CDF\n";
+            PAX_DATABASE.forEach(p => {
+                const excess = Math.max(0, (p.measuredWeight || 0) - (p.allowedWeight || 23)).toFixed(1);
+                csv += `"${p.nom} ${p.prenom}","${p.channel || 'AGENCY'}","${p.compagnie}","${p.pnr}","${p.pieces ? p.pieces.length : 1}","${p.measuredWeight || 0}","${p.allowedWeight || 23}","${excess}","${p.excessFee || 0}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `EasyFly_Franchise_Poids_${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        /* --- CONFIGURATION --- */
         function chargerFormulaireConfig() {
             document.getElementById('fee-agency-nat').value = gtsConfig.serviceRates.AGENCY.NAT;
             document.getElementById('fee-agency-int').value = gtsConfig.serviceRates.AGENCY.INT;
             document.getElementById('fee-vip-nat').value = gtsConfig.serviceRates.VIP_HOME.NAT;
             document.getElementById('fee-vip-int').value = gtsConfig.serviceRates.VIP_HOME.INT;
             document.getElementById('legal-text').value = gtsConfig.legalText;
-            rendreListeCompagnies();
-        }
-
-        function rendreListeCompagnies() {
-            const listContainer = document.getElementById('airlines-list');
-            listContainer.innerHTML = '';
-            ['INT', 'NAT'].forEach(type => {
-                const title = document.createElement('div');
-                title.className = "text-[10px] font-black uppercase text-slate-500 mt-4 mb-2 tracking-widest border-b border-slate-800 pb-1";
-                title.textContent = type === 'INT' ? "Vols Internationaux" : "Vols Nationaux";
-                listContainer.appendChild(title);
-
-                Object.entries(gtsConfig.airlines[type].companies).forEach(([name, rate]) => {
-                    const item = document.createElement('div');
-                    item.className = "flex justify-between items-center bg-slate-900 border border-slate-800 p-3 rounded-lg";
-                    item.innerHTML = `<span class="text-xs text-slate-200 font-bold">${name}</span><div class="flex items-center gap-3"><span class="text-xs font-mono text-rose-400 font-bold">+${rate} $/kg</span><button onclick="supprimerCompagnie('${type}', '${name}')" class="text-slate-600 hover:text-rose-500 transition-colors" title="Supprimer"><i class="fa-solid fa-trash-can"></i></button></div>`;
-                    listContainer.appendChild(item);
-                });
-            });
-        }
-
-        function ajouterCompagnie() {
-            const type = document.getElementById('new-airline-type').value;
-            const name = document.getElementById('new-airline-name').value.trim();
-            const rate = parseFloat(document.getElementById('new-airline-rate').value);
-            if (name === '' || isNaN(rate)) return alert("Saisissez un nom et un tarif valide.");
-            gtsConfig.airlines[type].companies[name] = rate;
-            document.getElementById('new-airline-name').value = '';
-            document.getElementById('new-airline-rate').value = '';
-            rendreListeCompagnies();
-        }
-
-        function supprimerCompagnie(type, name) {
-            if(confirm(`Supprimer ${name} ?`)) {
-                delete gtsConfig.airlines[type].companies[name];
-                rendreListeCompagnies();
-            }
         }
 
         function sauvegarderConfig() {
@@ -955,7 +981,7 @@
             gtsConfig.legalText = document.getElementById('legal-text').value;
 
             localStorage.setItem('gtsAdminConfig', JSON.stringify(gtsConfig));
-            alert("✅ Configuration sauvegardée ! Le simulateur client utilisera ces nouveaux tarifs.");
+            alert("✅ Tarifs mis à jour par rapport à la franchise globale du billet.");
         }
 
         document.addEventListener('DOMContentLoaded', () => {
