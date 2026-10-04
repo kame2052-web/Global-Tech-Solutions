@@ -3,84 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Tech Solutions — Densité & Cartographie des Flux</title>
+    <title>Global Tech Solutions — Hub Central & Synergies</title>
     <link rel="icon" type="image/png" href="GLOBAL.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- LEAFLET CSS & JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        gtsdark: '#020617',
-                        gtscard: '#0f172a',
-                    }
-                }
-            }
+            theme: { extend: { colors: { gtsdark: '#020617', gtscard: '#0f172a' } } }
         }
     </script>
     <style>
         .view-pane { display: none; }
         .view-pane.active { display: block; animation: fadeIn 0.25s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-        #kinshasa-map {
-            height: 500px;
-            width: 100%;
-            border-radius: 1.5rem;
-            z-index: 10;
-        }
-        .leaflet-popup-content-wrapper {
-            background-color: #0f172a !important;
-            color: #f8fafc !important;
-            border: 1px solid #334155;
-            border-radius: 0.75rem;
-        }
+        #kinshasa-map { height: 500px; width: 100%; border-radius: 1.5rem; z-index: 10; }
+        .leaflet-popup-content-wrapper { background-color: #0f172a !important; color: #f8fafc !important; border: 1px solid #334155; }
         .leaflet-popup-tip { background-color: #0f172a !important; }
-
-        @media print {
-            header, nav, footer, #btn-export-excel, #btn-print-audit, #btn-tab-addapp, #pane-addapp, #pane-filiales, .no-print {
-                display: none !important;
-            }
-            body { background: white !important; color: black !important; }
-            .bg-gtscard, .bg-slate-900, .bg-slate-950 { background: white !important; color: black !important; border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
-            .text-white, .text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400 { color: black !important; }
-            .view-pane { display: block !important; }
-        }
     </style>
 </head>
 <body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
-    <!-- EN-TÊTE CENTRAL GTS -->
+    <!-- EN-TÊTE CENTRAL -->
     <header class="bg-slate-900/90 border-b border-slate-800 p-4 sticky top-0 z-50 backdrop-blur-md">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
                 <div class="h-11 w-11 rounded-xl overflow-hidden bg-white flex items-center justify-center p-1 shadow-sm flex-shrink-0">
-                    <img src="GLOBAL.png" alt="Global Tech Solutions" class="w-full h-full object-contain">
+                    <img src="GLOBAL.png" alt="GTS" class="w-full h-full object-contain">
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="bg-gradient-to-r from-indigo-500 to-sky-500 text-white font-black px-2.5 py-0.5 rounded text-xs tracking-wider">GTS CORE</span>
-                        <h1 class="text-sm font-bold text-slate-100 uppercase">Analyse Territoriale & Densité des Usagers</h1>
+                        <h1 class="text-sm font-bold text-slate-100 uppercase">Supervision & Intelligence Commerciale</h1>
                     </div>
-                    <p class="text-[10px] text-slate-400 font-mono">Cartographie des Zones d'Influence • Kinshasa, RDC</p>
+                    <p class="text-[10px] text-slate-400 font-mono">Cockpit Analytique • Kinshasa, RDC</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-3">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
-                    <span class="h-2 w-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span> Moteur Télémétrique Kinshasa
-                </span>
-                <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-black uppercase transition-all border border-slate-700 flex items-center gap-1.5">
-                    <i class="fa-solid fa-arrow-left"></i> Portail Public
-                </a>
-            </div>
+            <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-black uppercase transition-all border border-slate-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left"></i> Portail Public
+            </a>
         </div>
     </header>
 
@@ -88,13 +54,13 @@
     <nav class="w-full border-b border-slate-800 bg-slate-950/70 sticky top-[73px] z-40 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto px-4 md:px-6 flex items-center gap-2 overflow-x-auto py-2.5">
             <button onclick="navigateCentral('analytics')" id="btn-tab-analytics" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md">
-                <i class="fa-solid fa-fire text-amber-300"></i> <span>Zones de Forte Sollicitation</span>
+                <i class="fa-solid fa-fire text-amber-300"></i> <span>Densité & Carte</span>
+            </button>
+            <button onclick="navigateCentral('synergies')" id="btn-tab-synergies" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-diagram-project text-fuchsia-400"></i> <span>Synergies & CRM Global</span>
             </button>
             <button onclick="navigateCentral('filiales')" id="btn-tab-filiales" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
-                <i class="fa-solid fa-network-wired text-sky-400"></i> <span>Passerelles Postes (Admins)</span>
-            </button>
-            <button onclick="navigateCentral('addapp')" id="btn-tab-addapp" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
-                <i class="fa-solid fa-circle-plus text-emerald-400"></i> <span>Raccorder une Nouvelle App</span>
+                <i class="fa-solid fa-network-wired text-sky-400"></i> <span>Passerelles Admins</span>
             </button>
         </div>
     </nav>
@@ -102,317 +68,247 @@
     <!-- ZONE DE CONTENU -->
     <main class="max-w-7xl mx-auto p-4 md:p-6 flex-1 w-full space-y-6">
 
-        <!-- 1. VUE ANALYTIQUE DE DENSITÉ ET DE SOLLICITATION -->
+        <!-- 1. VUE ANALYTIQUE DE DENSITÉ -->
         <section id="pane-analytics" class="view-pane active space-y-6">
-            
             <div class="border-b border-slate-800 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Densité Territoriale & Zones à Forte Sollicitation</h2>
-                    <p class="text-xs text-slate-400">Identification des bassins de demande et localisation des concentrations d'utilisateurs actifs.</p>
+                    <h2 class="text-xl font-black text-slate-100">Densité Territoriale & Sollicitation</h2>
+                    <p class="text-xs text-slate-400">Identification des bassins de demande urbains.</p>
                 </div>
-                <div class="flex items-center gap-2 flex-wrap">
-                    <button id="btn-export-excel" onclick="exporterExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-lg flex items-center gap-2">
-                        <i class="fa-solid fa-file-excel"></i> Exporter (.CSV)
-                    </button>
-                    <button id="btn-print-audit" onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-print"></i> Imprimer
-                    </button>
-                </div>
-            </div>
-
-            <!-- CARTE HEATMAP & CLASSEMENT -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 bg-gtscard border border-slate-800 rounded-3xl p-5 shadow-2xl space-y-4">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                        <div>
-                            <h3 class="text-xs font-black uppercase tracking-wider text-slate-100 flex items-center gap-2">
-                                <i class="fa-solid fa-bullseye text-rose-500"></i> Rayon de Densité & Sollicitation
-                            </h3>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <label class="text-xs font-mono text-slate-400">Filtre :</label>
-                            <select id="map-filter-pole" onchange="changerFiltrePole(this.value)" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-amber-300 font-bold focus:outline-none">
-                                <option value="ALL">🌐 Tous les Pôles Réunis</option>
-                                <option value="easyfly">✈️ EasyFly Transit</option>
-                                <option value="transvision">📡 TransVision Protect</option>
-                                <option value="cleanapp">✨ Matt Clean'App</option>
-                                <option value="eyanomarket">🛍️ EyanoMarket</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="kinshasa-map" class="border border-slate-800 shadow-inner"></div>
-                </div>
-
-                <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 shadow-2xl flex flex-col justify-between space-y-4">
-                    <div>
-                        <div class="border-b border-slate-800 pb-3">
-                            <h3 class="text-sm font-black uppercase tracking-wider text-slate-100 flex items-center gap-2">
-                                <i class="fa-solid fa-ranking-star text-amber-400"></i> Top Communes
-                            </h3>
-                        </div>
-                        <div class="mt-4 space-y-3" id="top-communes-list"></div>
-                    </div>
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-xs font-mono space-y-2">
-                        <div class="flex justify-between items-center text-slate-400">
-                            <span>Bassin Principal :</span>
-                            <strong class="text-amber-400" id="lbl-top-zone">Gombe & Limete</strong>
-                        </div>
-                        <div class="flex justify-between items-center text-slate-400">
-                            <span>Part du Top 3 :</span>
-                            <strong class="text-emerald-400" id="lbl-top-percentage">72% de l'activité</strong>
-                        </div>
-                    </div>
+                <div class="flex items-center gap-2">
+                    <select id="map-filter-pole" onchange="changerFiltrePole(this.value)" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-amber-300 font-bold outline-none">
+                        <option value="ALL">🌐 Tous les Pôles Réunis</option>
+                        <option value="easyfly">✈️ EasyFly Transit</option>
+                        <option value="transvision">📡 TransVision Protect</option>
+                        <option value="cleanapp">✨ Matt Clean'App</option>
+                        <option value="eyanomarket">🛍️ EyanoMarket</option>
+                    </select>
                 </div>
             </div>
+            
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-5 shadow-2xl space-y-4">
+                <div id="kinshasa-map" class="border border-slate-800 shadow-inner"></div>
+            </div>
+        </section>
 
-            <!-- KPIS GLOBAUX -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- 2. NOUVELLE VUE : SYNERGIES & CRM GTS -->
+        <section id="pane-synergies" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Synergies GTS & Intelligence Commerciale</h2>
+                    <p class="text-xs text-slate-400">Analyse de l'engagement client basée sur l'identifiant unique (Numéro de Téléphone).</p>
+                </div>
+                <button onclick="exporterCRM()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-lg flex items-center gap-2">
+                    <i class="fa-solid fa-file-excel"></i> Extraire Opportunités
+                </button>
+            </div>
+
+            <!-- KPIs CRM -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-fuchsia-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Total Clients Uniques (GTS ID)</span>
+                    <h3 id="crm-total-clients" class="text-3xl font-black text-slate-100 mt-2">0</h3>
+                    <span class="text-[10px] text-fuchsia-400 font-mono">Comptes identifiés</span>
+                </div>
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-sky-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Taux de Croisement (Cross-Sell)</span>
+                    <h3 id="crm-taux-croisement" class="text-3xl font-black text-slate-100 mt-2">0%</h3>
+                    <span class="text-[10px] text-sky-400 font-mono">Utilisent 2+ services GTS</span>
+                </div>
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-emerald-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Volume Filtré</span>
-                    <h3 id="kpi-total-rev" class="text-3xl font-black text-slate-100 mt-2">1 850 000 CDF</h3>
+                    <span class="text-xs font-mono text-slate-400 uppercase">Valeur Écosystème (LTV)</span>
+                    <h3 id="crm-total-value" class="text-3xl font-black text-emerald-400 mt-2">0 CDF</h3>
+                    <span class="text-[10px] text-slate-400 font-mono">Générée par les profils multi-pôles</span>
                 </div>
-                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-indigo-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Transactions / 24h</span>
-                    <h3 id="kpi-total-ops" class="text-3xl font-black text-slate-100 mt-2">128 Actes</h3>
+            </div>
+
+            <!-- MOTEUR DE VENTES CROISÉES -->
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h4 class="text-sm font-black uppercase tracking-wider text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-bullseye text-rose-400"></i> Radar d'Opportunités d'Acquisition
+                    </h4>
+                    <span class="text-[10px] font-mono text-slate-400 bg-slate-900 px-2 py-1 rounded">Basé sur les manques par profil</span>
                 </div>
-                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-amber-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Usagers Actifs</span>
-                    <h3 id="kpi-total-users" class="text-3xl font-black text-amber-300 mt-2">342 Pax</h3>
-                </div>
-                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-purple-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Pôle Analysé</span>
-                    <h3 id="kpi-pole-name" class="text-3xl font-black text-slate-100 mt-2">Tous Pôles</h3>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-900 text-[10px] font-mono uppercase text-slate-400 border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">GTS ID (Téléphone)</th>
+                                <th class="py-3 px-4">Nom Profil</th>
+                                <th class="py-3 px-4">Services Actifs</th>
+                                <th class="py-3 px-4">Valeur Compte</th>
+                                <th class="py-3 px-4 text-right">🎯 Action Recommandée (Cross-Selling)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="crm-table-body" class="divide-y divide-slate-800/60 font-medium">
+                            <!-- Injecté par JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
 
-      <!-- 2. VUE ACCÈS AUX CONSOLES D'ADMINISTRATION -->
+        <!-- 3. PASSERELLES ADMIN -->
         <section id="pane-filiales" class="view-pane space-y-6">
             <div class="border-b border-slate-800 pb-3">
                 <h2 class="text-xl md:text-2xl font-black text-slate-100">Postes d'Administration par Filiale</h2>
-                <p class="text-xs text-slate-400">Liens directs vers les consoles de gestion dédiées de chaque pôle.</p>
+                <p class="text-xs text-slate-400">Accès direct aux guichets de gestion sans authentification.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                
-                <!-- Passerelle EasyFly Transit -->
                 <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
                     <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm flex-shrink-0">
-                            <img src="EASYFLY TRANSIT.jpg" alt="EasyFly Transit" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'">
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-black text-slate-100 uppercase">Admin EasyFly</h3>
-                            <p class="text-[10px] text-slate-400 font-mono">Poste Logistique & PROCOKI</p>
-                        </div>
+                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm"><img src="EASYFLY TRANSIT.jpg" alt="EasyFly" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'"></div>
+                        <div><h3 class="text-sm font-black text-slate-100 uppercase">Admin EasyFly</h3><p class="text-[10px] text-slate-400 font-mono">Poste Logistique</p></div>
                     </div>
-                    <a href="easyflytransit/admin.html" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all shadow-md">
-                        Ouvrir
-                    </a>
+                    <a href="easyflytransit/admin.html" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase">Ouvrir</a>
                 </div>
-
-                <!-- Passerelle TransVision Protect -->
                 <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
                     <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm flex-shrink-0">
-                            <img src="VISION.png" alt="TransVision Protect" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'">
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-black text-slate-100 uppercase">Admin TransVision</h3>
-                            <p class="text-[10px] text-slate-400 font-mono">Télématique & Flottes</p>
-                        </div>
+                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm"><img src="VISION.png" alt="TransVision" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'"></div>
+                        <div><h3 class="text-sm font-black text-slate-100 uppercase">Admin TransVision</h3><p class="text-[10px] text-slate-400 font-mono">Télématique</p></div>
                     </div>
-                    <a href="transvision/admin.html" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all shadow-md">
-                        Ouvrir
-                    </a>
+                    <a href="transvision/admin.html" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase">Ouvrir</a>
                 </div>
-
-                <!-- Passerelle Matt Clean'App -->
                 <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
                     <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm flex-shrink-0">
-                            <img src="cleanapp.png" alt="Matt Clean'App" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'">
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-black text-slate-100 uppercase">Admin Clean'App</h3>
-                            <p class="text-[10px] text-slate-400 font-mono">Assainissement Urbain</p>
-                        </div>
+                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm"><img src="cleanapp.png" alt="CleanApp" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'"></div>
+                        <div><h3 class="text-sm font-black text-slate-100 uppercase">Admin Clean'App</h3><p class="text-[10px] text-slate-400 font-mono">Salubrité</p></div>
                     </div>
-                    <a href="cleanapp/admin.html" class="bg-teal-600 hover:bg-teal-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all shadow-md">
-                        Ouvrir
-                    </a>
+                    <a href="cleanapp/admin.html" class="bg-teal-600 hover:bg-teal-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase">Ouvrir</a>
                 </div>
-
-                <!-- Passerelle EyanoMarket -->
                 <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
                     <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm flex-shrink-0">
-                            <img src="logo.png" alt="EyanoMarket" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'">
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-black text-slate-100 uppercase">Admin EyanoMarket</h3>
-                            <p class="text-[10px] text-slate-400 font-mono">Marketplace & Livraisons</p>
-                        </div>
+                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm"><img src="logo.png" alt="Eyano" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'"></div>
+                        <div><h3 class="text-sm font-black text-slate-100 uppercase">Admin EyanoMarket</h3><p class="text-[10px] text-slate-400 font-mono">Marketplace</p></div>
                     </div>
-                    <a href="eyanomarket/admin.html" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all shadow-md">
-                        Ouvrir
-                    </a>
+                    <a href="eyanomarket/admin.html" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase">Ouvrir</a>
                 </div>
-            </div>
-        </section>
-
-        <!-- 3. VUE AJOUT D'UNE APPLICATION -->
-        <section id="pane-addapp" class="view-pane space-y-6">
-            <div class="border-b border-slate-800 pb-3">
-                <h2 class="text-xl md:text-2xl font-black text-slate-100">Intégration d'un Nouveau Pôle</h2>
-            </div>
-
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 max-w-2xl shadow-xl">
-                <form id="newAppForm" onsubmit="handleAddNewApp(event)" class="space-y-5">
-                    <div>
-                        <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5">Nom Commercial du Service *</label>
-                        <input type="text" id="app-name" required placeholder="ex: GTS HealthPay" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-                    </div>
-                    <div class="flex justify-end pt-3 border-t border-slate-800">
-                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase px-8 py-3.5 rounded-xl transition shadow-lg">
-                            Déployer sur le Cockpit
-                        </button>
-                    </div>
-                </form>
             </div>
         </section>
 
     </main>
 
-    <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-6 text-center text-xs text-slate-500 space-y-1">
-        <p><b>Global Tech Solutions (GTS)</b> — Direction Générale & Superviseur Analytique Groupe.</p>
-        <p class="text-[10px] font-mono">Kinshasa, République Démocratique du Congo.</p>
-    </footer>
-
-    <!-- SCRIPT ANALYTIQUE, DENSITÉ PAR PÔLE & HEATMAP -->
     <script>
         let mapInstance = null;
         let mapLayersGroup = null;
-        let currentFilter = 'ALL';
 
-        const TERRITORIAL_DATA = [
-            {
-                commune: "Gombe", lat: -4.3032, lng: 15.3056,
-                poles: { easyfly: { users: 70, ops: 26, rev: 450000 }, transvision: { users: 40, ops: 18, rev: 280000 }, cleanapp: { users: 15, ops: 5, rev: 80000 }, eyanomarket: { users: 10, ops: 3, rev: 40000 } }
-            },
-            {
-                commune: "Limete", lat: -4.3547, lng: 15.3408,
-                poles: { easyfly: { users: 12, ops: 5, rev: 90000 }, transvision: { users: 20, ops: 8, rev: 120000 }, cleanapp: { users: 32, ops: 12, rev: 140000 }, eyanomarket: { users: 14, ops: 6, rev: 60000 } }
-            },
-            {
-                commune: "Ngaliema", lat: -4.3411, lng: 15.2530,
-                poles: { easyfly: { users: 18, ops: 7, rev: 110000 }, transvision: { users: 28, ops: 11, rev: 130000 }, cleanapp: { users: 10, ops: 4, rev: 35000 }, eyanomarket: { users: 6, ops: 2, rev: 15000 } }
-            }
-        ];
-
+        // 1. GESTION DES ONGLETS
         function navigateCentral(tabName) {
             document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(btn => {
                 btn.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60";
             });
-
-            const targetPane = document.getElementById('pane-' + tabName);
-            if (targetPane) targetPane.classList.add('active');
-
-            const activeBtn = document.getElementById('btn-tab-' + tabName);
-            if (activeBtn) {
-                activeBtn.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
-            }
-
-            if(tabName === 'analytics' && mapInstance) {
-                setTimeout(() => { mapInstance.invalidateSize(); }, 200);
-            }
+            document.getElementById('pane-' + tabName).classList.add('active');
+            
+            const btnActive = document.getElementById('btn-tab-' + tabName);
+            if (tabName === 'analytics') btnActive.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
+            if (tabName === 'synergies') btnActive.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-fuchsia-600 text-white shadow-md";
+            
+            if(tabName === 'analytics' && mapInstance) setTimeout(() => { mapInstance.invalidateSize(); }, 200);
         }
+
+        // 2. SIMULATION BASE DE DONNÉES UNIFIÉE (GTS ID = Téléphone)
+        const GTS_CRM_DATA = [
+            { phone: "+243813271112", name: "Direction KAM", apps: ["easyfly", "transvision", "cleanapp", "eyanomarket"], revenue: 2800000 },
+            { phone: "+243825556633", name: "Jean Mukendi", apps: ["transvision", "cleanapp"], revenue: 145000 },
+            { phone: "+243998877665", name: "Paul", apps: ["easyfly"], revenue: 95000 },
+            { phone: "+243812345678", name: "Aline", apps: ["cleanapp", "eyanomarket"], revenue: 62000 },
+            { phone: "+243845556677", name: "Société ABC", apps: ["transvision", "eyanomarket"], revenue: 520000 },
+            { phone: "+243890001122", name: "Marc Ilunga", apps: ["transvision"], revenue: 84000 }
+        ];
+
+        const APP_BADGES = {
+            'easyfly': '<span class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded text-[9px] uppercase">EasyFly</span>',
+            'transvision': '<span class="bg-sky-500/20 text-sky-300 border border-sky-500/30 px-2 py-0.5 rounded text-[9px] uppercase">TransVision</span>',
+            'cleanapp': '<span class="bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2 py-0.5 rounded text-[9px] uppercase">CleanApp</span>',
+            'eyanomarket': '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-[9px] uppercase">Eyano</span>'
+        };
+
+        function renderCRM() {
+            const tbody = document.getElementById('crm-table-body');
+            tbody.innerHTML = '';
+            
+            let multiAppCount = 0;
+            let multiAppValue = 0;
+
+            GTS_CRM_DATA.sort((a, b) => b.revenue - a.revenue).forEach(client => {
+                const isMulti = client.apps.length > 1;
+                if (isMulti) {
+                    multiAppCount++;
+                    multiAppValue += client.revenue;
+                }
+
+                // Logique de Recommandation Croisée (L'Intelligence Artificielle de votre CRM)
+                let recommendation = "";
+                let btnColor = "";
+                if (client.apps.includes('transvision') && !client.apps.includes('cleanapp')) {
+                    recommendation = "Proposer abonnement lavage de flotte (Clean'App)";
+                    btnColor = "bg-teal-600 hover:bg-teal-500";
+                } else if (client.apps.includes('cleanapp') && !client.apps.includes('eyanomarket')) {
+                    recommendation = "Envoyer promo livraison courses (EyanoMarket)";
+                    btnColor = "bg-amber-600 hover:bg-amber-500";
+                } else if (client.apps.includes('easyfly') && !client.apps.includes('transvision')) {
+                    recommendation = "Vendre tracker GPS pour véhicule (TransVision)";
+                    btnColor = "bg-sky-600 hover:bg-sky-500";
+                } else if (client.apps.length === 4) {
+                    recommendation = "⭐ Client VIP Écosystème Total";
+                    btnColor = "bg-slate-700 cursor-default";
+                } else {
+                    recommendation = "Proposer pré-enregistrement aéroport (EasyFly)";
+                    btnColor = "bg-indigo-600 hover:bg-indigo-500";
+                }
+
+                const badges = client.apps.map(app => APP_BADGES[app]).join(' ');
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/40 transition-colors">
+                        <td class="py-3 px-4 font-mono font-bold text-sky-400">${client.phone}</td>
+                        <td class="py-3 px-4 font-bold text-slate-200">${client.name}</td>
+                        <td class="py-3 px-4 flex flex-wrap gap-1">${badges}</td>
+                        <td class="py-3 px-4 font-mono font-black text-emerald-400">${client.revenue.toLocaleString('fr-FR')} CDF</td>
+                        <td class="py-3 px-4 text-right">
+                            <button class="${btnColor} text-white px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all shadow">
+                                ${recommendation}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            const totalClients = GTS_CRM_DATA.length;
+            const crossRate = Math.round((multiAppCount / totalClients) * 100);
+
+            document.getElementById('crm-total-clients').textContent = totalClients;
+            document.getElementById('crm-taux-croisement').textContent = crossRate + "%";
+            document.getElementById('crm-total-value').textContent = multiAppValue.toLocaleString('fr-FR') + " CDF";
+        }
+
+        // INIT CARTE DENSITÉ (Maintien de l'existant)
+        const TERRITORIAL_DATA = [
+            { commune: "Gombe", lat: -4.3032, lng: 15.3056, users: 70 },
+            { commune: "Limete", lat: -4.3547, lng: 15.3408, users: 32 },
+            { commune: "Ngaliema", lat: -4.3411, lng: 15.2530, users: 28 }
+        ];
 
         function initKinshasaMap() {
             mapInstance = L.map('kinshasa-map').setView([-4.3350, 15.3100], 12);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mapInstance);
             mapLayersGroup = L.layerGroup().addTo(mapInstance);
-            mettreAJourVueComplete('ALL');
-        }
-
-        function changerFiltrePole(poleKey) {
-            currentFilter = poleKey;
-            mettreAJourVueComplete(poleKey);
-        }
-
-        function getNomPole(key) {
-            if(key === 'easyfly') return 'EasyFly Transit';
-            if(key === 'transvision') return 'TransVision Protect';
-            if(key === 'cleanapp') return "Matt Clean'App";
-            if(key === 'eyanomarket') return 'EyanoMarket';
-            return 'Tous les Pôles Réunis';
-        }
-
-        function mettreAJourVueComplete(poleKey) {
-            mapLayersGroup.clearLayers();
-
-            const aggregatedZones = TERRITORIAL_DATA.map(item => {
-                let users = 0; let ops = 0; let rev = 0;
-                if (poleKey === 'ALL') {
-                    Object.values(item.poles).forEach(p => { users += p.users; ops += p.ops; rev += p.rev; });
-                } else if (item.poles[poleKey]) {
-                    users = item.poles[poleKey].users; ops = item.poles[poleKey].ops; rev = item.poles[poleKey].rev;
-                }
-                return { name: item.commune, lat: item.lat, lng: item.lng, users, ops, rev };
-            }).filter(z => z.users > 0);
-
-            const totalUsers = aggregatedZones.reduce((sum, z) => sum + z.users, 0);
-            const totalOps = aggregatedZones.reduce((sum, z) => sum + z.ops, 0);
-            const totalRev = aggregatedZones.reduce((sum, z) => sum + z.rev, 0);
-
-            aggregatedZones.forEach(zone => {
-                const ratio = totalUsers > 0 ? (zone.users / totalUsers) : 0;
-                const radiusSize = Math.max(12, Math.round(ratio * 75));
-                let fillColor = ratio > 0.30 ? "#f43f5e" : (ratio > 0.15 ? "#f59e0b" : "#38bdf8");
-
-                const circle = L.circleMarker([zone.lat, zone.lng], {
-                    radius: radiusSize, fillColor: fillColor, color: "#ffffff", weight: 2, opacity: 0.9, fillOpacity: 0.65
-                });
-                circle.bindPopup(`<strong style="color:${fillColor}">${zone.name}</strong><br>👥 ${zone.users} usagers<br>💰 ${zone.rev.toLocaleString()} CDF`);
+            
+            TERRITORIAL_DATA.forEach(zone => {
+                const circle = L.circleMarker([zone.lat, zone.lng], { radius: 25, fillColor: "#f43f5e", color: "#ffffff", weight: 2, opacity: 0.9, fillOpacity: 0.65 });
+                circle.bindPopup(`<strong style="color:#f43f5e">${zone.commune}</strong><br>👥 ${zone.users} usagers`);
                 mapLayersGroup.addLayer(circle);
             });
-
-            rendreTopCommunes(aggregatedZones, totalUsers);
-            
-            document.getElementById('kpi-total-rev').textContent = totalRev.toLocaleString('fr-FR') + " CDF";
-            document.getElementById('kpi-total-ops').textContent = totalOps + " Actes";
-            document.getElementById('kpi-total-users').textContent = totalUsers + " Pax";
-            document.getElementById('kpi-pole-name').textContent = getNomPole(poleKey);
         }
 
-        function rendreTopCommunes(zones, totalUsers) {
-            const container = document.getElementById('top-communes-list');
-            container.innerHTML = "";
-            const sorted = [...zones].sort((a, b) => b.users - a.users);
-
-            sorted.forEach((commune, index) => {
-                const percent = totalUsers > 0 ? Math.round((commune.users / totalUsers) * 100) : 0;
-                const card = document.createElement('div');
-                card.className = "bg-slate-900 border border-slate-800 p-3 rounded-2xl space-y-2";
-                card.innerHTML = `
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="font-black text-slate-100 uppercase">#${index+1} ${commune.name}</span>
-                        <span class="font-mono text-xs text-slate-200">${commune.users} usagers (${percent}%)</span>
-                    </div>
-                    <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden">
-                        <div class="bg-gradient-to-r from-indigo-500 to-rose-500 h-full rounded-full" style="width: ${percent}%"></div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function exporterExcel() {
-            alert("Export CSV simulé avec succès.");
-        }
-
-        document.addEventListener('DOMContentLoaded', () => { initKinshasaMap(); });
+        document.addEventListener('DOMContentLoaded', () => { 
+            initKinshasaMap(); 
+            renderCRM();
+        });
     </script>
 </body>
 </html>
