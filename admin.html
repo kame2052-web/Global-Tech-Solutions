@@ -130,15 +130,20 @@
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                         <div>
                             <h3 class="text-xs font-black uppercase tracking-wider text-slate-100 flex items-center gap-2">
-                                <i class="fa-solid fa-bullseye text-rose-500"></i> Rayon de Densité & Fréquence
+                                <i class="fa-solid fa-bullseye text-rose-500"></i> Rayon de Densité & Sollicitation
                             </h3>
                             <p class="text-[10px] text-slate-400 font-mono">Le diamètre du halo indique l'intensité de la sollicitation</p>
                         </div>
                         
+                        <!-- SÉLECTEUR INCLUANT LES 4 PÔLES ET TOUS -->
                         <div class="flex items-center gap-2">
-                            <select id="map-filter-mode" onchange="changerModeAffichageCarte(this.value)" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-amber-300 font-bold focus:outline-none">
-                                <option value="DENSITY">🔥 Vue Densité Globale (Volume d'usagers)</option>
-                                <option value="BY_POLE">🏢 Vue Différenciée par Filiale</option>
+                            <label class="text-xs font-mono text-slate-400">Rayon par Pôle :</label>
+                            <select id="map-filter-pole" onchange="changerFiltrePole(this.value)" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-amber-300 font-bold focus:outline-none">
+                                <option value="ALL">🌐 Tous les Pôles (Densité Consolidée GTS)</option>
+                                <option value="easyfly">✈️ EasyFly Transit</option>
+                                <option value="transvision">📡 TransVision Protect</option>
+                                <option value="cleanapp">✨ Matt Clean'App</option>
+                                <option value="eyanomarket">🛍️ EyanoMarket</option>
                             </select>
                         </div>
                     </div>
@@ -149,11 +154,11 @@
                     <!-- Légende dynamique -->
                     <div class="flex flex-wrap items-center justify-between gap-4 text-[11px] font-mono text-slate-400 border-t border-slate-800 pt-3">
                         <div class="flex items-center gap-4">
-                            <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-rose-500/80 border border-rose-300"></span> Zone Critique (> 30% flux)</span>
+                            <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-rose-500/80 border border-rose-300"></span> Zone Critique (&gt; 30% des usagers)</span>
                             <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-500/80 border border-amber-300"></span> Zone Forte (15-30%)</span>
                             <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-500/80 border border-sky-300"></span> Zone Modérée (&lt; 15%)</span>
                         </div>
-                        <span class="text-slate-500">Cliquez sur un halo pour les métriques détaillées.</span>
+                        <span class="text-slate-500">Cliquez sur un halo pour le détail.</span>
                     </div>
                 </div>
 
@@ -164,12 +169,11 @@
                             <h3 class="text-sm font-black uppercase tracking-wider text-slate-100 flex items-center gap-2">
                                 <i class="fa-solid fa-ranking-star text-amber-400"></i> Top Communes Sollicitées
                             </h3>
-                            <p class="text-[11px] text-slate-400">Classement selon le nombre d'usagers et d'actes enregistrés.</p>
+                            <p class="text-[11px] text-slate-400" id="lbl-top-subtitle">Classement global selon le nombre d'usagers actifs.</p>
                         </div>
 
                         <!-- Liste classée des communes -->
                         <div class="mt-4 space-y-3" id="top-communes-list">
-                            <!-- Rempli dynamiquement en JS -->
                         </div>
                     </div>
 
@@ -190,24 +194,24 @@
             <!-- KPIS GLOBAUX -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-emerald-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Volume d'Affaires Global</span>
+                    <span class="text-xs font-mono text-slate-400 uppercase">Volume d'Affaires Filtré</span>
                     <h3 id="kpi-total-rev" class="text-3xl font-black text-slate-100 mt-2">1 850 000 CDF</h3>
-                    <span class="text-[10px] text-emerald-400 font-mono">≈ 660.70 USD consolidés</span>
+                    <span class="text-[10px] text-emerald-400 font-mono" id="kpi-sub-rev">≈ 660.70 USD consolidés</span>
                 </div>
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-indigo-500 shadow-xl">
                     <span class="text-xs font-mono text-slate-400 uppercase">Transactions / Requêtes 24h</span>
                     <h3 id="kpi-total-ops" class="text-3xl font-black text-slate-100 mt-2">128 Actes</h3>
-                    <span class="text-[10px] text-indigo-400 font-mono">Toutes filiales confondues</span>
+                    <span class="text-[10px] text-indigo-400 font-mono" id="kpi-sub-ops">Toutes filiales confondues</span>
                 </div>
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-amber-500 shadow-xl">
                     <span class="text-xs font-mono text-slate-400 uppercase">Usagers Actifs Géolocalisés</span>
-                    <h3 class="text-3xl font-black text-amber-300 mt-2">342 Pax</h3>
-                    <span class="text-[10px] text-amber-400 font-mono">Sur 6 communes prioritaires</span>
+                    <h3 id="kpi-total-users" class="text-3xl font-black text-amber-300 mt-2">342 Pax</h3>
+                    <span class="text-[10px] text-amber-400 font-mono">Sur les communes actives</span>
                 </div>
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-purple-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Pôles Opérationnels</span>
-                    <h3 class="text-3xl font-black text-slate-100 mt-2">4 Filiales</h3>
-                    <span class="text-[10px] text-purple-400 font-mono">100% synchronisées</span>
+                    <span class="text-xs font-mono text-slate-400 uppercase">Pôle Analysé</span>
+                    <h3 id="kpi-pole-name" class="text-3xl font-black text-slate-100 mt-2">Tous Pôles</h3>
+                    <span class="text-[10px] text-purple-400 font-mono">GTS Core Supervision</span>
                 </div>
             </div>
 
@@ -353,29 +357,90 @@
         <p class="text-[10px] font-mono">Kinshasa, République Démocratique du Congo.</p>
     </footer>
 
-    <!-- SCRIPT ANALYTIQUE, DENSITÉ & HEATMAP -->
+    <!-- SCRIPT ANALYTIQUE, DENSITÉ PAR PÔLE & HEATMAP -->
     <script>
         let mapInstance = null;
         let mapLayersGroup = null;
+        let currentFilter = 'ALL';
 
-        // Base consolidée par commune : utilisateurs et volume de transactions
-        const COMMUNES_DATA = [
-            { name: "Gombe", lat: -4.3032, lng: 15.3056, users: 135, opsCount: 52, revenueCdf: 850000, mainPole: "EasyFly / TransVision", demandLevel: "Critique" },
-            { name: "Limete", lat: -4.3547, lng: 15.3408, users: 78, opsCount: 31, revenueCdf: 410000, mainPole: "Matt Clean'App / Eyano", demandLevel: "Forte" },
-            { name: "Ngaliema", lat: -4.3411, lng: 15.2530, users: 62, opsCount: 24, revenueCdf: 290000, mainPole: "TransVision / EasyFly", demandLevel: "Forte" },
-            { name: "N'Djili", lat: -4.4371, lng: 15.3853, users: 38, opsCount: 16, revenueCdf: 340000, mainPole: "EasyFly Convois Fret", demandLevel: "Modérée" },
-            { name: "Bandalungwa", lat: -4.3394, lng: 15.2892, users: 21, opsCount: 9, revenueCdf: 70000, mainPole: "EyanoMarket Proximité", demandLevel: "Modérée" },
-            { name: "Kalamu", lat: -4.3491, lng: 15.3175, users: 18, opsCount: 7, revenueCdf: 90000, mainPole: "TransVision Flottes", demandLevel: "Modérée" }
+        // Données territoriales découpées par pôle et par commune
+        const TERRITORIAL_DATA = [
+            {
+                commune: "Gombe",
+                lat: -4.3032,
+                lng: 15.3056,
+                poles: {
+                    easyfly:     { users: 70, ops: 26, rev: 450000, demand: "Critique" },
+                    transvision: { users: 40, ops: 18, rev: 280000, demand: "Forte" },
+                    cleanapp:    { users: 15, ops: 5,  rev: 80000,  demand: "Modérée" },
+                    eyanomarket: { users: 10, ops: 3,  rev: 40000,  demand: "Modérée" }
+                }
+            },
+            {
+                commune: "Limete",
+                lat: -4.3547,
+                lng: 15.3408,
+                poles: {
+                    easyfly:     { users: 12, ops: 5,  rev: 90000,  demand: "Modérée" },
+                    transvision: { users: 20, ops: 8,  rev: 120000, demand: "Modérée" },
+                    cleanapp:    { users: 32, ops: 12, rev: 140000, demand: "Forte" },
+                    eyanomarket: { users: 14, ops: 6,  rev: 60000,  demand: "Modérée" }
+                }
+            },
+            {
+                commune: "Ngaliema",
+                lat: -4.3411,
+                lng: 15.2530,
+                poles: {
+                    easyfly:     { users: 18, ops: 7,  rev: 110000, demand: "Modérée" },
+                    transvision: { users: 28, ops: 11, rev: 130000, demand: "Forte" },
+                    cleanapp:    { users: 10, ops: 4,  rev: 35000,  demand: "Modérée" },
+                    eyanomarket: { users: 6,  ops: 2,  rev: 15000,  demand: "Modérée" }
+                }
+            },
+            {
+                commune: "N'Djili",
+                lat: -4.4371,
+                lng: 15.3853,
+                poles: {
+                    easyfly:     { users: 30, ops: 14, rev: 310000, demand: "Forte" },
+                    transvision: { users: 4,  ops: 1,  rev: 15000,  demand: "Faible" },
+                    cleanapp:    { users: 2,  ops: 0,  rev: 0,      demand: "Faible" },
+                    eyanomarket: { users: 2,  ops: 1,  rev: 15000,  demand: "Faible" }
+                }
+            },
+            {
+                commune: "Bandalungwa",
+                lat: -4.3394,
+                lng: 15.2892,
+                poles: {
+                    easyfly:     { users: 2,  ops: 1,  rev: 12000,  demand: "Faible" },
+                    transvision: { users: 5,  ops: 2,  rev: 22000,  demand: "Faible" },
+                    cleanapp:    { users: 4,  ops: 1,  rev: 16000,  demand: "Faible" },
+                    eyanomarket: { users: 10, ops: 5,  rev: 20000,  demand: "Modérée" }
+                }
+            },
+            {
+                commune: "Kalamu",
+                lat: -4.3491,
+                lng: 15.3175,
+                poles: {
+                    easyfly:     { users: 0,  ops: 0,  rev: 0,      demand: "Faible" },
+                    transvision: { users: 12, ops: 5,  rev: 65000,  demand: "Modérée" },
+                    cleanapp:    { users: 3,  ops: 1,  rev: 15000,  demand: "Faible" },
+                    eyanomarket: { users: 3,  ops: 1,  rev: 10000,  demand: "Faible" }
+                }
+            }
         ];
 
         // Journal complet des opérations géolocalisées
         const GTS_GEO_FLOWS = [
-            { time: "09:42", date: "04/10/2026", commune: "Gombe", lat: -4.3032, lng: 15.3056, poleId: "easyfly", poleName: "EasyFly Transit", ref: "EF-9041", details: "Hub PROCOKI — Pesée certifiée 21.8 kg (AF-29401 Paris) - Scellé PL-9921", status: "Scellé Conforme", amountCdf: 112000, color: "#6366f1" },
-            { time: "09:15", date: "04/10/2026", commune: "Ngaliema", lat: -4.3411, lng: 15.2530, poleId: "transvision", poleName: "TransVision Protect", ref: "TR-8812", details: "Kintambo/Macampagne — Coupure moteur préventive véhicule 1420AB19", status: "Sécurisé", amountCdf: 84000, color: "#38bdf8" },
-            { time: "08:50", date: "04/10/2026", commune: "Limete", lat: -4.3547, lng: 15.3408, poleId: "cleanapp", poleName: "Matt Clean'App", ref: "CL-3019", details: "Résidentiel 7ème Rue — Équipe pressing & assainissement déployée", status: "En cours", amountCdf: 56000, color: "#2dd4bf" },
-            { time: "08:30", date: "04/10/2026", commune: "Bandalungwa", lat: -4.3394, lng: 15.2892, poleId: "eyanomarket", poleName: "EyanoMarket", ref: "EY-4421", details: "Bandal Moulaert — Distribution vivres et pharmacie express", status: "Livré", amountCdf: 42000, color: "#fbbf24" },
-            { time: "07:55", date: "04/10/2026", commune: "N'Djili", lat: -4.4371, lng: 15.3853, poleId: "easyfly", poleName: "EasyFly Transit", ref: "EF-9040", details: "Terminal Fret N'Djili — Réception Convoi Batch BT-2026-093 blindé", status: "Convoi Scellé", amountCdf: 338000, color: "#6366f1" },
-            { time: "07:10", date: "04/10/2026", commune: "Kalamu", lat: -4.3491, lng: 15.3175, poleId: "transvision", poleName: "TransVision Protect", ref: "TR-8811", details: "Victoire/Matonge — Télématique 5 minibus en rotation", status: "En rotation", amountCdf: 736000, color: "#38bdf8" }
+            { time: "09:42", date: "04/10/2026", commune: "Gombe", lat: -4.3032, lng: 15.3056, poleId: "easyfly", poleName: "EasyFly Transit", ref: "EF-9041", details: "Hub PROCOKI — Pesée certifiée 21.8 kg (AF-29401 Paris) - Scellé PL-9921", status: "Scellé Conforme", amountCdf: 112000 },
+            { time: "09:15", date: "04/10/2026", commune: "Ngaliema", lat: -4.3411, lng: 15.2530, poleId: "transvision", poleName: "TransVision Protect", ref: "TR-8812", details: "Kintambo/Macampagne — Coupure moteur préventive véhicule 1420AB19", status: "Sécurisé", amountCdf: 84000 },
+            { time: "08:50", date: "04/10/2026", commune: "Limete", lat: -4.3547, lng: 15.3408, poleId: "cleanapp", poleName: "Matt Clean'App", ref: "CL-3019", details: "Résidentiel 7ème Rue — Équipe pressing & assainissement déployée", status: "En cours", amountCdf: 56000 },
+            { time: "08:30", date: "04/10/2026", commune: "Bandalungwa", lat: -4.3394, lng: 15.2892, poleId: "eyanomarket", poleName: "EyanoMarket", ref: "EY-4421", details: "Bandal Moulaert — Distribution vivres et pharmacie express", status: "Livré", amountCdf: 42000 },
+            { time: "07:55", date: "04/10/2026", commune: "N'Djili", lat: -4.4371, lng: 15.3853, poleId: "easyfly", poleName: "EasyFly Transit", ref: "EF-9040", details: "Terminal Fret N'Djili — Réception Convoi Batch BT-2026-093 blindé", status: "Convoi Scellé", amountCdf: 338000 },
+            { time: "07:10", date: "04/10/2026", commune: "Kalamu", lat: -4.3491, lng: 15.3175, poleId: "transvision", poleName: "TransVision Protect", ref: "TR-8811", details: "Victoire/Matonge — Télématique 5 minibus en rotation", status: "En rotation", amountCdf: 736000 }
         ];
 
         function navigateCentral(tabName) {
@@ -406,33 +471,70 @@
             }).addTo(mapInstance);
 
             mapLayersGroup = L.layerGroup().addTo(mapInstance);
-            rendreCarteDensite();
-            rendreTopCommunes();
-            renderFlowTable();
+            mettreAJourVueComplete('ALL');
         }
 
-        // Rendu de la carte en mode Heatmap / Rayon de sollicitation
-        function rendreCarteDensite() {
+        // Bascule de filtre par pôle
+        function changerFiltrePole(poleKey) {
+            currentFilter = poleKey;
+            mettreAJourVueComplete(poleKey);
+        }
+
+        // Recalcule et actualise Carte + Top Communes + Tableaux + KPIs
+        function mettreAJourVueComplete(poleKey) {
             mapLayersGroup.clearLayers();
 
-            const totalUsers = COMMUNES_DATA.reduce((sum, c) => sum + c.users, 0);
+            // Agrégation des données selon le pôle choisi
+            const aggregatedZones = TERRITORIAL_DATA.map(item => {
+                let users = 0;
+                let ops = 0;
+                let rev = 0;
 
-            COMMUNES_DATA.forEach(zone => {
-                const ratio = zone.users / totalUsers;
-                // Calcul du rayon selon le volume d'usagers
-                const radiusSize = Math.max(14, Math.round(ratio * 70));
+                if (poleKey === 'ALL') {
+                    Object.values(item.poles).forEach(p => {
+                        users += p.users;
+                        ops += p.ops;
+                        rev += p.rev;
+                    });
+                } else if (item.poles[poleKey]) {
+                    users = item.poles[poleKey].users;
+                    ops = item.poles[poleKey].ops;
+                    rev = item.poles[poleKey].rev;
+                }
+
+                return {
+                    name: item.commune,
+                    lat: item.lat,
+                    lng: item.lng,
+                    users: users,
+                    ops: ops,
+                    rev: rev
+                };
+            }).filter(z => z.users > 0);
+
+            const totalUsers = aggregatedZones.reduce((sum, z) => sum + z.users, 0);
+            const totalOps = aggregatedZones.reduce((sum, z) => sum + z.ops, 0);
+            const totalRev = aggregatedZones.reduce((sum, z) => sum + z.rev, 0);
+
+            // 1. Rendu des halos thermiques sur la carte
+            aggregatedZones.forEach(zone => {
+                const ratio = totalUsers > 0 ? (zone.users / totalUsers) : 0;
+                const radiusSize = Math.max(12, Math.round(ratio * 75));
 
                 let fillColor = "#38bdf8"; // Bleu modéré
                 let strokeColor = "#0284c7";
+                let demandText = "Modérée";
+
                 if (ratio > 0.30) {
-                    fillColor = "#f43f5e"; // Rouge vif pour les zones critiques
+                    fillColor = "#f43f5e"; // Rouge vif
                     strokeColor = "#be123c";
+                    demandText = "Critique / Forte";
                 } else if (ratio > 0.15) {
-                    fillColor = "#f59e0b"; // Ambre / Orange pour forte demande
+                    fillColor = "#f59e0b"; // Orange / Ambre
                     strokeColor = "#b45309";
+                    demandText = "Soutenue";
                 }
 
-                // Halo de chaleur
                 const circle = L.circleMarker([zone.lat, zone.lng], {
                     radius: radiusSize,
                     fillColor: fillColor,
@@ -444,44 +546,13 @@
 
                 const popupHtml = `
                     <div style="font-family: sans-serif; font-size: 11px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                            <strong style="font-size: 13px; color: ${fillColor}; text-transform: uppercase;">Commune : ${zone.name}</strong>
-                        </div>
-                        <span style="color: #94a3b8;">Niveau de Sollicitation : <b style="color:#fff;">${zone.demandLevel}</b></span><br>
+                        <strong style="font-size: 13px; color: ${fillColor}; text-transform: uppercase;">Commune : ${zone.name}</strong><br>
+                        <span style="color: #94a3b8;">Filtre Pôle : <b>${getNomPole(poleKey)}</b></span><br>
+                        <span style="color: #94a3b8;">Sollicitation : <b style="color:#fff;">${demandText}</b></span>
                         <div style="margin: 6px 0; padding: 6px; background:#020617; border-radius: 6px; border: 1px solid #1e293b;">
-                            <div>👥 <b>${zone.users} usagers actifs</b> (${Math.round(ratio*100)}% du total)</div>
-                            <div>⚡ <b>${zone.opsCount} requêtes 24h</b></div>
-                            <div style="color:#10b981; font-weight:bold;">💰 ${zone.revenueCdf.toLocaleString('fr-FR')} CDF</div>
-                        </div>
-                        <span style="font-size: 10px; color:#cbd5e1;">Pôles dominants : ${zone.mainPole}</span>
-                    </div>
-                `;
-
-                circle.bindPopup(popupHtml);
-                mapLayersGroup.addLayer(circle);
-            });
-        }
-
-        // Rendu de la carte en mode Filiale individuelle
-        function rendreCarteParPole() {
-            mapLayersGroup.clearLayers();
-            GTS_GEO_FLOWS.forEach(item => {
-                const circle = L.circleMarker([item.lat, item.lng], {
-                    radius: 10,
-                    fillColor: item.color,
-                    color: '#ffffff',
-                    weight: 2,
-                    opacity: 1,
-                    fillOpacity: 0.85
-                });
-
-                const popupHtml = `
-                    <div style="font-family: sans-serif; font-size: 11px;">
-                        <strong style="color: ${item.color}; font-size: 12px;">${item.poleName}</strong><br>
-                        <span style="color: #94a3b8;">Zone : <b>${item.commune}</b></span><br>
-                        <span>${item.details}</span><br>
-                        <div style="margin-top: 5px; font-weight: bold; color: #10b981;">
-                            Flux : ${item.amountCdf.toLocaleString('fr-FR')} CDF
+                            <div>👥 <b>${zone.users} usagers actifs</b> (${Math.round(ratio*100)}% de ce pôle)</div>
+                            <div>⚡ <b>${zone.ops} requêtes 24h</b></div>
+                            <div style="color:#10b981; font-weight:bold;">💰 ${zone.rev.toLocaleString('fr-FR')} CDF</div>
                         </div>
                     </div>
                 `;
@@ -489,28 +560,46 @@
                 circle.bindPopup(popupHtml);
                 mapLayersGroup.addLayer(circle);
             });
+
+            // 2. Rendu du classement Top Communes
+            rendreTopCommunes(aggregatedZones, totalUsers);
+
+            // 3. Mise à jour des KPIs
+            document.getElementById('kpi-total-rev').textContent = totalRev.toLocaleString('fr-FR') + " CDF";
+            document.getElementById('kpi-sub-rev').textContent = `≈ ${(totalRev / 2800).toFixed(2)} USD consolidés`;
+            document.getElementById('kpi-total-ops').textContent = totalOps + " Actes";
+            document.getElementById('kpi-sub-ops').textContent = `Flux : ${getNomPole(poleKey)}`;
+            document.getElementById('kpi-total-users').textContent = totalUsers + " Pax";
+            document.getElementById('kpi-pole-name').textContent = getNomPoleCourt(poleKey);
+
+            // 4. Rendu du tableau des flux
+            renderFlowTable(poleKey);
         }
 
-        function changerModeAffichageCarte(mode) {
-            if (mode === 'DENSITY') {
-                rendreCarteDensite();
-            } else {
-                rendreCarteParPole();
-            }
+        function getNomPole(key) {
+            if(key === 'easyfly') return 'EasyFly Transit';
+            if(key === 'transvision') return 'TransVision Protect';
+            if(key === 'cleanapp') return "Matt Clean'App";
+            if(key === 'eyanomarket') return 'EyanoMarket';
+            return 'Tous les Pôles Réunis';
         }
 
-        // Rendu du Palmarès des Communes
-        function rendreTopCommunes() {
+        function getNomPoleCourt(key) {
+            if(key === 'easyfly') return 'EasyFly';
+            if(key === 'transvision') return 'TransVision';
+            if(key === 'cleanapp') return "Clean'App";
+            if(key === 'eyanomarket') return 'Eyano';
+            return 'Tous Pôles';
+        }
+
+        function rendreTopCommunes(zones, totalUsers) {
             const container = document.getElementById('top-communes-list');
             container.innerHTML = "";
 
-            const totalUsers = COMMUNES_DATA.reduce((sum, c) => sum + c.users, 0);
-            
-            // Tri décroissant selon le nombre d'utilisateurs
-            const sorted = [...COMMUNES_DATA].sort((a, b) => b.users - a.users);
+            const sorted = [...zones].sort((a, b) => b.users - a.users);
 
             sorted.forEach((commune, index) => {
-                const percent = Math.round((commune.users / totalUsers) * 100);
+                const percent = totalUsers > 0 ? Math.round((commune.users / totalUsers) * 100) : 0;
                 let badgeColor = "bg-slate-800 text-slate-300";
                 if (index === 0) badgeColor = "bg-rose-500/20 text-rose-400 border border-rose-500/30";
                 else if (index === 1) badgeColor = "bg-amber-500/20 text-amber-400 border border-amber-500/30";
@@ -530,25 +619,34 @@
                         <div class="bg-gradient-to-r from-indigo-500 to-rose-500 h-full rounded-full transition-all duration-500" style="width: ${percent}%"></div>
                     </div>
                     <div class="flex justify-between text-[10px] font-mono text-slate-400">
-                        <span>${commune.opsCount} actes enregistrés</span>
-                        <span class="text-emerald-400 font-bold">${commune.revenueCdf.toLocaleString('fr-FR')} CDF</span>
+                        <span>${commune.ops} actes enregistrés</span>
+                        <span class="text-emerald-400 font-bold">${commune.rev.toLocaleString('fr-FR')} CDF</span>
                     </div>
                 `;
                 container.appendChild(card);
             });
 
-            const top3Sum = sorted.slice(0, 3).reduce((acc, c) => acc + c.users, 0);
-            const top3Percent = Math.round((top3Sum / totalUsers) * 100);
-            document.getElementById('lbl-top-zone').textContent = `${sorted[0].name}, ${sorted[1].name} & ${sorted[2].name}`;
-            document.getElementById('lbl-top-percentage').textContent = `${top3Percent}% du trafic global`;
+            if(sorted.length > 0) {
+                const top3Sum = sorted.slice(0, 3).reduce((acc, c) => acc + c.users, 0);
+                const top3Percent = totalUsers > 0 ? Math.round((top3Sum / totalUsers) * 100) : 0;
+                const zoneNoms = sorted.slice(0, 3).map(c => c.name).join(', ');
+                document.getElementById('lbl-top-zone').textContent = zoneNoms;
+                document.getElementById('lbl-top-percentage').textContent = `${top3Percent}% du pôle analysé`;
+            } else {
+                document.getElementById('lbl-top-zone').textContent = "Aucune zone";
+                document.getElementById('lbl-top-percentage').textContent = "0%";
+            }
         }
 
-        // Tableau journalier
-        function renderFlowTable() {
+        function renderFlowTable(filter) {
             const tbody = document.getElementById('flow-table-body');
             tbody.innerHTML = "";
 
-            GTS_GEO_FLOWS.forEach(item => {
+            const filteredData = filter === 'ALL' 
+                ? GTS_GEO_FLOWS 
+                : GTS_GEO_FLOWS.filter(item => item.poleId === filter);
+
+            filteredData.forEach(item => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-800/40 transition-colors";
                 tr.innerHTML = `
@@ -564,20 +662,25 @@
             });
         }
 
-        // Exportation Excel/CSV
+        // Export Excel / CSV
         function exporterExcel() {
-            let csvContent = "\uFEFFCommune;Usagers_Actifs;Requetes_24h;Part_Pourcentage;Volume_Affaires_CDF;Poles_Dominants\n";
-            const totalUsers = COMMUNES_DATA.reduce((sum, c) => sum + c.users, 0);
-
-            COMMUNES_DATA.forEach(row => {
-                const pct = Math.round((row.users / totalUsers) * 100);
-                csvContent += `${row.name};${row.users};${row.opsCount};${pct}%;${row.revenueCdf};${row.mainPole}\n`;
+            let csvContent = "\uFEFFPole_Analyse;Commune;Usagers_Actifs;Requetes_24h;Chiffre_Affaires_CDF\n";
+            
+            TERRITORIAL_DATA.forEach(row => {
+                if (currentFilter === 'ALL') {
+                    Object.entries(row.poles).forEach(([pKey, pVal]) => {
+                        csvContent += `${getNomPole(pKey)};${row.commune};${pVal.users};${pVal.ops};${pVal.rev}\n`;
+                    });
+                } else if (row.poles[currentFilter]) {
+                    const pVal = row.poles[currentFilter];
+                    csvContent += `${getNomPole(currentFilter)};${row.commune};${pVal.users};${pVal.ops};${pVal.rev}\n`;
+                }
             });
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `GTS_Densite_Communes_Kinshasa_${new Date().toISOString().slice(0,10)}.csv`);
+            link.setAttribute("download", `GTS_Densite_${currentFilter}_${new Date().toISOString().slice(0,10)}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
