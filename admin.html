@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Tech Solutions — Densité & Cartographie des Flux</title>
+    <title>Global Tech Solutions — Console Centrale & Postes Opérationnels</title>
     <link rel="icon" type="image/png" href="GLOBAL.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -32,7 +32,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
         #kinshasa-map {
-            height: 500px;
+            height: 480px;
             width: 100%;
             border-radius: 1.5rem;
             z-index: 10;
@@ -43,14 +43,10 @@
             border: 1px solid #334155;
             border-radius: 0.75rem;
         }
-        .leaflet-popup-tip {
-            background-color: #0f172a !important;
-        }
+        .leaflet-popup-tip { background-color: #0f172a !important; }
 
         @media print {
-            header, nav, footer, #btn-export-excel, #btn-print-audit, #btn-tab-addapp, #pane-addapp, #pane-filiales, .no-print {
-                display: none !important;
-            }
+            header, nav, footer, #btn-export-excel, #btn-print-audit, .no-print { display: none !important; }
             body { background: white !important; color: black !important; }
             .bg-gtscard, .bg-slate-900, .bg-slate-950 { background: white !important; color: black !important; border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
             .text-white, .text-slate-100, .text-slate-200, .text-slate-300, .text-slate-400 { color: black !important; }
@@ -70,14 +66,14 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="bg-gradient-to-r from-indigo-500 to-sky-500 text-white font-black px-2.5 py-0.5 rounded text-xs tracking-wider">GTS CORE</span>
-                        <h1 class="text-sm font-bold text-slate-100 uppercase">Analyse Territoriale & Densité des Usagers</h1>
+                        <h1 class="text-sm font-bold text-slate-100 uppercase">Supervision Centrale & Pupitres Admin</h1>
                     </div>
-                    <p class="text-[10px] text-slate-400 font-mono">Cartographie des Zones d'Influence • Kinshasa, RDC</p>
+                    <p class="text-[10px] text-slate-400 font-mono">Consoles Opérationnelles Multi-Pôles • Kinshasa, RDC</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
-                    <span class="h-2 w-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span> Moteur Télémétrique Kinshasa
+                    <span class="h-2 w-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span> 4 Postes Admin Actifs
                 </span>
                 <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-black uppercase transition-all border border-slate-700 flex items-center gap-1.5">
                     <i class="fa-solid fa-arrow-left"></i> Portail Public
@@ -86,17 +82,23 @@
         </div>
     </header>
 
-    <!-- BARRE DE NAVIGATION -->
+    <!-- BARRE DE NAVIGATION VERS LES VRAIS POSTES ADMIN -->
     <nav class="w-full border-b border-slate-800 bg-slate-950/70 sticky top-[73px] z-40 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto px-4 md:px-6 flex items-center gap-2 overflow-x-auto py-2.5">
             <button onclick="navigateCentral('analytics')" id="btn-tab-analytics" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md">
-                <i class="fa-solid fa-fire text-amber-300"></i> <span>Zones de Forte Sollicitation</span>
+                <i class="fa-solid fa-chart-line"></i> <span>Cockpit Analytique & Carte</span>
             </button>
-            <button onclick="navigateCentral('filiales')" id="btn-tab-filiales" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
-                <i class="fa-solid fa-network-wired text-sky-400"></i> <span>Passerelles Postes</span>
+            <a href="easyflytransit/admin.html" class="px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-indigo-400 hover:text-indigo-200 border border-slate-700/60">
+                <i class="fa-solid fa-plane-departure"></i> <span>Admin EasyFly (Hub PROCOKI)</span>
+            </a>
+            <button onclick="navigateCentral('admin-transvision')" id="btn-tab-admin-transvision" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-satellite-dish text-sky-400"></i> <span>Admin TransVision</span>
             </button>
-            <button onclick="navigateCentral('addapp')" id="btn-tab-addapp" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
-                <i class="fa-solid fa-circle-plus text-emerald-400"></i> <span>Raccorder une Nouvelle App</span>
+            <button onclick="navigateCentral('admin-cleanapp')" id="btn-tab-admin-cleanapp" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-spray-can-sparkles text-teal-400"></i> <span>Admin Matt Clean'App</span>
+            </button>
+            <button onclick="navigateCentral('admin-eyano')" id="btn-tab-admin-eyano" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-store text-amber-400"></i> <span>Admin EyanoMarket</span>
             </button>
         </div>
     </nav>
@@ -104,13 +106,13 @@
     <!-- ZONE DE CONTENU -->
     <main class="max-w-7xl mx-auto p-4 md:p-6 flex-1 w-full space-y-6">
 
-        <!-- 1. VUE ANALYTIQUE DE DENSITÉ ET DE SOLLICITATION -->
+        <!-- 1. VUE ANALYTIQUE DE DENSITÉ & CARTOGRAPHIE DES FLUX -->
         <section id="pane-analytics" class="view-pane active space-y-6">
             
             <div class="border-b border-slate-800 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Densité Territoriale & Zones à Forte Sollicitation</h2>
-                    <p class="text-xs text-slate-400">Identification des bassins de demande et localisation des concentrations d'utilisateurs actifs.</p>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Densité Territoriale & Cartographie des Flux</h2>
+                    <p class="text-xs text-slate-400">Supervision analytique consolidée et zonage de l'activité sur Kinshasa.</p>
                 </div>
                 <div class="flex items-center gap-2 flex-wrap">
                     <button id="btn-export-excel" onclick="exporterExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-lg flex items-center gap-2">
@@ -122,10 +124,8 @@
                 </div>
             </div>
 
-            <!-- CARTE HEATMAP & CLASSEMENT EN DOUBLE COLONNE -->
+            <!-- CARTE HEATMAP & CLASSEMENT TOP COMMUNES -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <!-- CARTE INTERACTIVE LEAFLET (2/3 de l'écran) -->
                 <div class="lg:col-span-2 bg-gtscard border border-slate-800 rounded-3xl p-5 shadow-2xl space-y-4">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                         <div>
@@ -134,12 +134,10 @@
                             </h3>
                             <p class="text-[10px] text-slate-400 font-mono">Le diamètre du halo indique l'intensité de la sollicitation</p>
                         </div>
-                        
-                        <!-- SÉLECTEUR INCLUANT LES 4 PÔLES ET TOUS -->
                         <div class="flex items-center gap-2">
-                            <label class="text-xs font-mono text-slate-400">Rayon par Pôle :</label>
+                            <label class="text-xs font-mono text-slate-400">Filtrer par Pôle :</label>
                             <select id="map-filter-pole" onchange="changerFiltrePole(this.value)" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-amber-300 font-bold focus:outline-none">
-                                <option value="ALL">🌐 Tous les Pôles (Densité Consolidée GTS)</option>
+                                <option value="ALL">🌐 Tous les Pôles Réunis</option>
                                 <option value="easyfly">✈️ EasyFly Transit</option>
                                 <option value="transvision">📡 TransVision Protect</option>
                                 <option value="cleanapp">✨ Matt Clean'App</option>
@@ -147,37 +145,20 @@
                             </select>
                         </div>
                     </div>
-
-                    <!-- Carte -->
                     <div id="kinshasa-map" class="border border-slate-800 shadow-inner"></div>
-
-                    <!-- Légende dynamique -->
-                    <div class="flex flex-wrap items-center justify-between gap-4 text-[11px] font-mono text-slate-400 border-t border-slate-800 pt-3">
-                        <div class="flex items-center gap-4">
-                            <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded-full bg-rose-500/80 border border-rose-300"></span> Zone Critique (&gt; 30% des usagers)</span>
-                            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-500/80 border border-amber-300"></span> Zone Forte (15-30%)</span>
-                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-500/80 border border-sky-300"></span> Zone Modérée (&lt; 15%)</span>
-                        </div>
-                        <span class="text-slate-500">Cliquez sur un halo pour le détail.</span>
-                    </div>
                 </div>
 
-                <!-- TOP ZONES / PALMARÈS DES COMMUNES (1/3 de l'écran) -->
                 <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 shadow-2xl flex flex-col justify-between space-y-4">
                     <div>
                         <div class="border-b border-slate-800 pb-3">
                             <h3 class="text-sm font-black uppercase tracking-wider text-slate-100 flex items-center gap-2">
                                 <i class="fa-solid fa-ranking-star text-amber-400"></i> Top Communes Sollicitées
                             </h3>
-                            <p class="text-[11px] text-slate-400" id="lbl-top-subtitle">Classement global selon le nombre d'usagers actifs.</p>
+                            <p class="text-[11px] text-slate-400">Classement selon le volume d'usagers actifs.</p>
                         </div>
-
-                        <!-- Liste classée des communes -->
-                        <div class="mt-4 space-y-3" id="top-communes-list">
-                        </div>
+                        <div class="mt-4 space-y-3" id="top-communes-list"></div>
                     </div>
 
-                    <!-- Indice de concentration urbaine -->
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-xs font-mono space-y-2">
                         <div class="flex justify-between items-center text-slate-400">
                             <span>Bassin Principal :</span>
@@ -191,37 +172,12 @@
                 </div>
             </div>
 
-            <!-- KPIS GLOBAUX -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-emerald-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Volume d'Affaires Filtré</span>
-                    <h3 id="kpi-total-rev" class="text-3xl font-black text-slate-100 mt-2">1 850 000 CDF</h3>
-                    <span class="text-[10px] text-emerald-400 font-mono" id="kpi-sub-rev">≈ 660.70 USD consolidés</span>
-                </div>
-                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-indigo-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Transactions / Requêtes 24h</span>
-                    <h3 id="kpi-total-ops" class="text-3xl font-black text-slate-100 mt-2">128 Actes</h3>
-                    <span class="text-[10px] text-indigo-400 font-mono" id="kpi-sub-ops">Toutes filiales confondues</span>
-                </div>
-                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-amber-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Usagers Actifs Géolocalisés</span>
-                    <h3 id="kpi-total-users" class="text-3xl font-black text-amber-300 mt-2">342 Pax</h3>
-                    <span class="text-[10px] text-amber-400 font-mono">Sur les communes actives</span>
-                </div>
-                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-purple-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Pôle Analysé</span>
-                    <h3 id="kpi-pole-name" class="text-3xl font-black text-slate-100 mt-2">Tous Pôles</h3>
-                    <span class="text-[10px] text-purple-400 font-mono">GTS Core Supervision</span>
-                </div>
-            </div>
-
-            <!-- TABLEAU DÉTAILLÉ DES FLUX -->
+            <!-- TABLEAU DES FLUX -->
             <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                     <h4 class="text-sm font-black uppercase tracking-wider text-slate-100">Journal Détaillé des Flux Territoriaux</h4>
                     <span class="text-[10px] font-mono text-slate-400">Classé par horodatage</span>
                 </div>
-
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs text-slate-300">
                         <thead class="bg-slate-900/80 text-[10px] font-mono uppercase text-slate-400 border-b border-slate-800">
@@ -235,117 +191,194 @@
                                 <th class="py-3 px-4 text-right">Montant CDF</th>
                             </tr>
                         </thead>
-                        <tbody id="flow-table-body" class="divide-y divide-slate-800/60 font-mono">
+                        <tbody id="flow-table-body" class="divide-y divide-slate-800/60 font-mono"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. CONSOLE ADMIN DÉDIÉE : TRANSVISION PROTECT -->
+        <section id="pane-admin-transvision" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-sky-400 uppercase">Pupitre Supervision — TransVision Protect</h2>
+                    <p class="text-xs text-slate-400">Pôle 1 • Gestion des balises GPS, coupures moteur à distance et télématique de flotte.</p>
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-mono bg-sky-500/10 text-sky-400 border border-sky-500/20 font-bold">
+                    38 Balises Connectées
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Flotte Actives en Ligne</span>
+                    <h3 class="text-2xl font-black text-slate-100 mt-1">36 / 38</h3>
+                    <span class="text-[10px] text-emerald-400 font-mono">94.7% de disponibilité</span>
+                </div>
+                <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Alertes Hors-Zone (24h)</span>
+                    <h3 class="text-2xl font-black text-rose-400 mt-1">02 Événements</h3>
+                    <span class="text-[10px] text-rose-400 font-mono">Coupure moteur appliquée</span>
+                </div>
+                <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Abonnements Encaissés</span>
+                    <h3 class="text-2xl font-black text-emerald-400 mt-1">820 000 CDF</h3>
+                    <span class="text-[10px] text-slate-400 font-mono">Facturation POS & Mobile Money</span>
+                </div>
+            </div>
+
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+                <h4 class="text-xs font-black uppercase tracking-wider text-slate-200">Tableau de Commandes des Véhicules Équipés</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-900 text-[10px] font-mono uppercase text-slate-400 border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">Plaque / ID</th>
+                                <th class="py-3 px-4">Propriétaire</th>
+                                <th class="py-3 px-4">Commune Actuelle</th>
+                                <th class="py-3 px-4">Vitesse</th>
+                                <th class="py-3 px-4">Relais Moteur</th>
+                                <th class="py-3 px-4 text-right">Action Admin</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60 font-mono">
+                            <tr class="hover:bg-slate-800/40">
+                                <td class="py-3 px-4 font-bold text-sky-400">1420AB19</td>
+                                <td class="py-3 px-4">Kabuya Transport Sarl</td>
+                                <td class="py-3 px-4">Ngaliema (Macampagne)</td>
+                                <td class="py-3 px-4 text-amber-300">0 km/h (Arrêt)</td>
+                                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 text-[10px]">Coupé</span></td>
+                                <td class="py-3 px-4 text-right"><button onclick="alert('Relais réarmé avec succès.')" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-lg text-emerald-400 text-[10px] font-bold">Rétablir</button></td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/40">
+                                <td class="py-3 px-4 font-bold text-sky-400">3099BB21</td>
+                                <td class="py-3 px-4">Express Minibus 04</td>
+                                <td class="py-3 px-4">Kalamu (Victoire)</td>
+                                <td class="py-3 px-4 text-emerald-400">42 km/h</td>
+                                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px]">Actif</span></td>
+                                <td class="py-3 px-4 text-right"><button onclick="alert('Commande de coupure moteur envoyée par satellite.')" class="bg-rose-900/40 hover:bg-rose-900 text-rose-300 px-3 py-1 rounded-lg text-[10px] font-bold">Couper</button></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- 2. VUE ACCÈS POSTES SPÉCIFIQUES -->
-        <section id="pane-filiales" class="view-pane space-y-6">
-            <div class="border-b border-slate-800 pb-3">
-                <h2 class="text-xl md:text-2xl font-black text-slate-100">Passerelles d'Administration Spécifiques</h2>
-                <p class="text-xs text-slate-400">Accès direct aux consoles et guichets spécialisés de chaque filiale.</p>
+        <!-- 3. CONSOLE ADMIN DÉDIÉE : MATT CLEAN'APP -->
+        <section id="pane-admin-cleanapp" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-teal-400 uppercase">Pupitre Opérationnel — Matt Clean'App</h2>
+                    <p class="text-xs text-slate-400">Pôle 3 • Assainissement urbain, dispatch d'équipes de terrain et pressing pro.</p>
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-mono bg-teal-500/10 text-teal-400 border border-teal-500/20 font-bold">
+                    12 Agents Déployés
+                </span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-indigo-950/60 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-2xl">
-                            <i class="fa-solid fa-plane-departure"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-black text-slate-100 uppercase">EasyFly Transit — Hub PROCOKI</h3>
-                            <p class="text-xs text-slate-400">Postes Guichet, Pesée balance certifiée, Rayon X et Convois N'Djili.</p>
-                        </div>
-                    </div>
-                    <a href="easyflytransit/admin.html" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all shadow-md">
-                        Ouvrir
-                    </a>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Missions en cours</span>
+                    <h3 class="text-2xl font-black text-slate-100 mt-1">05 Chantiers</h3>
+                    <span class="text-[10px] text-teal-400 font-mono">Gombe & Limete</span>
                 </div>
-
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-sky-950/60 border border-sky-500/30 flex items-center justify-center text-sky-400 text-2xl">
-                            <i class="fa-solid fa-satellite-dish"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-black text-slate-100 uppercase">TransVision Protect</h3>
-                            <p class="text-xs text-slate-400">Télématique de flotte, traçabilité GPS et coupure moteur à distance.</p>
-                        </div>
-                    </div>
-                    <a href="transvision/index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all">
-                        Ouvrir
-                    </a>
+                <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Lots Pressing Clôturés</span>
+                    <h3 class="text-2xl font-black text-slate-100 mt-1">18 Lots</h3>
+                    <span class="text-[10px] text-emerald-400 font-mono">100% conformité livrée</span>
                 </div>
-
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-teal-950/60 border border-teal-500/30 flex items-center justify-center text-teal-400 text-2xl">
-                            <i class="fa-solid fa-spray-can-sparkles"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-black text-slate-100 uppercase">Matt Clean'App</h3>
-                            <p class="text-xs text-slate-400">Assainissement urbain, pressing express et dispatch d'agents.</p>
-                        </div>
-                    </div>
-                    <a href="cleanapp/index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all">
-                        Ouvrir
-                    </a>
+                <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Encaissements Prestations</span>
+                    <h3 class="text-2xl font-black text-emerald-400 mt-1">310 000 CDF</h3>
+                    <span class="text-[10px] text-slate-400 font-mono">Recouvrement direct</span>
                 </div>
+            </div>
 
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-amber-950/60 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl">
-                            <i class="fa-solid fa-store"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-black text-slate-100 uppercase">EyanoMarket</h3>
-                            <p class="text-xs text-slate-400">Commerce de proximité géolocalisé et gestion des marchands.</p>
-                        </div>
-                    </div>
-                    <a href="eyanomarket/index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all">
-                        Ouvrir
-                    </a>
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+                <h4 class="text-xs font-black uppercase tracking-wider text-slate-200">Dispatch des Équipes & Missions</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-900 text-[10px] font-mono uppercase text-slate-400 border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">Réf Mission</th>
+                                <th class="py-3 px-4">Client / Entreprise</th>
+                                <th class="py-3 px-4">Lieu / Commune</th>
+                                <th class="py-3 px-4">Équipe Affectée</th>
+                                <th class="py-3 px-4">Statut Prestation</th>
+                                <th class="py-3 px-4 text-right">Validation</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60 font-mono">
+                            <tr class="hover:bg-slate-800/40">
+                                <td class="py-3 px-4 font-bold text-teal-400">CL-3019</td>
+                                <td class="py-3 px-4">Résidence Lumumba</td>
+                                <td class="py-3 px-4">Limete (7ème Rue)</td>
+                                <td class="py-3 px-4">Équipe Alpha (2 agents)</td>
+                                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px]">Nettoyage en cours</span></td>
+                                <td class="py-3 px-4 text-right"><button onclick="alert('Mission validée et clôturée avec succès.')" class="bg-teal-600 hover:bg-teal-500 text-white px-3 py-1 rounded-lg text-[10px] font-bold">Clôturer</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
 
-        <!-- 3. VUE AJOUT D'UNE APPLICATION -->
-        <section id="pane-addapp" class="view-pane space-y-6">
-            <div class="border-b border-slate-800 pb-3">
-                <h2 class="text-xl md:text-2xl font-black text-slate-100">Intégration d'un Nouveau Pôle Applicatif GTS</h2>
-                <p class="text-xs text-slate-400">Connectez un futur service sans modifier l'architecture centrale.</p>
+        <!-- 4. CONSOLE ADMIN DÉDIÉE : EYANOMARKET -->
+        <section id="pane-admin-eyano" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-amber-400 uppercase">Pupitre Gestion — EyanoMarket</h2>
+                    <p class="text-xs text-slate-400">Pôle 4 • Place de marché géolocalisée, suivi des marchands et livraisons prioritaires.</p>
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-mono bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">
+                    24 Marchands Homologués
+                </span>
             </div>
 
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 max-w-2xl shadow-xl">
-                <form id="newAppForm" onsubmit="handleAddNewApp(event)" class="space-y-5">
-                    <div>
-                        <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5">Nom Commercial du Service *</label>
-                        <input type="text" id="app-name" required placeholder="ex: GTS HealthPay" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5">Code Pôle / Catégorie *</label>
-                            <input type="text" id="app-code" required placeholder="ex: PÔLE 5 • FINTECH" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs font-mono uppercase text-indigo-400 focus:outline-none focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Icône FontAwesome *</label>
-                            <input type="text" id="app-icon" required value="fa-solid fa-cube" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs font-mono text-slate-300 focus:outline-none focus:border-indigo-500">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Chemin / Lien de l'application *</label>
-                        <input type="text" id="app-link" required placeholder="ex: healthpay/index.html" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs font-mono text-slate-300 focus:outline-none focus:border-indigo-500">
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Commandes Actives</span>
+                    <h3 class="text-2xl font-black text-slate-100 mt-1">14 Paniers</h3>
+                    <span class="text-[10px] text-amber-400 font-mono">En cours d'acheminement</span>
+                </div>
+                <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Délai Moyen Livraison</span>
+                    <h3 class="text-2xl font-black text-slate-100 mt-1">34 Minutes</h3>
+                    <span class="text-[10px] text-emerald-400 font-mono">Bandalungwa & Limete</span>
+                </div>
+                <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Volume Ventes Marchands</span>
+                    <h3 class="text-2xl font-black text-emerald-400 mt-1">270 000 CDF</h3>
+                    <span class="text-[10px] text-slate-400 font-mono">Commission GTS déduite</span>
+                </div>
+            </div>
 
-                    <div class="flex justify-end pt-3 border-t border-slate-800">
-                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase px-8 py-3.5 rounded-xl transition shadow-lg flex items-center gap-2">
-                            <i class="fa-solid fa-plus"></i> Déployer sur le Cockpit
-                        </button>
-                    </div>
-                </form>
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+                <h4 class="text-xs font-black uppercase tracking-wider text-slate-200">Suivi des Livraisons Prioritaires de Proximité</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-900 text-[10px] font-mono uppercase text-slate-400 border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">Commande</th>
+                                <th class="py-3 px-4">Marchand Partenaire</th>
+                                <th class="py-3 px-4">Destination Commune</th>
+                                <th class="py-3 px-4">Articles</th>
+                                <th class="py-3 px-4">Livreur Dédié</th>
+                                <th class="py-3 px-4 text-right">Validation</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60 font-mono">
+                            <tr class="hover:bg-slate-800/40">
+                                <td class="py-3 px-4 font-bold text-amber-400">EY-4421</td>
+                                <td class="py-3 px-4">Pharmacie Centrale</td>
+                                <td class="py-3 px-4">Bandalungwa (Moulaert)</td>
+                                <td class="py-3 px-4">Kit d'urgence médicale</td>
+                                <td class="py-3 px-4 text-slate-200">Motard Express #03</td>
+                                <td class="py-3 px-4 text-right"><button onclick="alert('Livraison acquittée par le destinataire.')" class="bg-amber-600 hover:bg-amber-500 text-slate-950 px-3 py-1 rounded-lg text-[10px] font-black">Valider Remise</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
@@ -357,23 +390,22 @@
         <p class="text-[10px] font-mono">Kinshasa, République Démocratique du Congo.</p>
     </footer>
 
-    <!-- SCRIPT ANALYTIQUE, DENSITÉ PAR PÔLE & HEATMAP -->
+    <!-- SCRIPT GESTION ONGLETS & ANALYTICS -->
     <script>
         let mapInstance = null;
         let mapLayersGroup = null;
         let currentFilter = 'ALL';
 
-        // Données territoriales découpées par pôle et par commune
         const TERRITORIAL_DATA = [
             {
                 commune: "Gombe",
                 lat: -4.3032,
                 lng: 15.3056,
                 poles: {
-                    easyfly:     { users: 70, ops: 26, rev: 450000, demand: "Critique" },
-                    transvision: { users: 40, ops: 18, rev: 280000, demand: "Forte" },
-                    cleanapp:    { users: 15, ops: 5,  rev: 80000,  demand: "Modérée" },
-                    eyanomarket: { users: 10, ops: 3,  rev: 40000,  demand: "Modérée" }
+                    easyfly:     { users: 70, ops: 26, rev: 450000 },
+                    transvision: { users: 40, ops: 18, rev: 280000 },
+                    cleanapp:    { users: 15, ops: 5,  rev: 80000 },
+                    eyanomarket: { users: 10, ops: 3,  rev: 40000 }
                 }
             },
             {
@@ -381,10 +413,10 @@
                 lat: -4.3547,
                 lng: 15.3408,
                 poles: {
-                    easyfly:     { users: 12, ops: 5,  rev: 90000,  demand: "Modérée" },
-                    transvision: { users: 20, ops: 8,  rev: 120000, demand: "Modérée" },
-                    cleanapp:    { users: 32, ops: 12, rev: 140000, demand: "Forte" },
-                    eyanomarket: { users: 14, ops: 6,  rev: 60000,  demand: "Modérée" }
+                    easyfly:     { users: 12, ops: 5,  rev: 90000 },
+                    transvision: { users: 20, ops: 8,  rev: 120000 },
+                    cleanapp:    { users: 32, ops: 12, rev: 140000 },
+                    eyanomarket: { users: 14, ops: 6,  rev: 60000 }
                 }
             },
             {
@@ -392,10 +424,10 @@
                 lat: -4.3411,
                 lng: 15.2530,
                 poles: {
-                    easyfly:     { users: 18, ops: 7,  rev: 110000, demand: "Modérée" },
-                    transvision: { users: 28, ops: 11, rev: 130000, demand: "Forte" },
-                    cleanapp:    { users: 10, ops: 4,  rev: 35000,  demand: "Modérée" },
-                    eyanomarket: { users: 6,  ops: 2,  rev: 15000,  demand: "Modérée" }
+                    easyfly:     { users: 18, ops: 7,  rev: 110000 },
+                    transvision: { users: 28, ops: 11, rev: 130000 },
+                    cleanapp:    { users: 10, ops: 4,  rev: 35000 },
+                    eyanomarket: { users: 6,  ops: 2,  rev: 15000 }
                 }
             },
             {
@@ -403,10 +435,10 @@
                 lat: -4.4371,
                 lng: 15.3853,
                 poles: {
-                    easyfly:     { users: 30, ops: 14, rev: 310000, demand: "Forte" },
-                    transvision: { users: 4,  ops: 1,  rev: 15000,  demand: "Faible" },
-                    cleanapp:    { users: 2,  ops: 0,  rev: 0,      demand: "Faible" },
-                    eyanomarket: { users: 2,  ops: 1,  rev: 15000,  demand: "Faible" }
+                    easyfly:     { users: 30, ops: 14, rev: 310000 },
+                    transvision: { users: 4,  ops: 1,  rev: 15000 },
+                    cleanapp:    { users: 2,  ops: 0,  rev: 0 },
+                    eyanomarket: { users: 2,  ops: 1,  rev: 15000 }
                 }
             },
             {
@@ -414,10 +446,10 @@
                 lat: -4.3394,
                 lng: 15.2892,
                 poles: {
-                    easyfly:     { users: 2,  ops: 1,  rev: 12000,  demand: "Faible" },
-                    transvision: { users: 5,  ops: 2,  rev: 22000,  demand: "Faible" },
-                    cleanapp:    { users: 4,  ops: 1,  rev: 16000,  demand: "Faible" },
-                    eyanomarket: { users: 10, ops: 5,  rev: 20000,  demand: "Modérée" }
+                    easyfly:     { users: 2,  ops: 1,  rev: 12000 },
+                    transvision: { users: 5,  ops: 2,  rev: 22000 },
+                    cleanapp:    { users: 4,  ops: 1,  rev: 16000 },
+                    eyanomarket: { users: 10, ops: 5,  rev: 20000 }
                 }
             },
             {
@@ -425,22 +457,21 @@
                 lat: -4.3491,
                 lng: 15.3175,
                 poles: {
-                    easyfly:     { users: 0,  ops: 0,  rev: 0,      demand: "Faible" },
-                    transvision: { users: 12, ops: 5,  rev: 65000,  demand: "Modérée" },
-                    cleanapp:    { users: 3,  ops: 1,  rev: 15000,  demand: "Faible" },
-                    eyanomarket: { users: 3,  ops: 1,  rev: 10000,  demand: "Faible" }
+                    easyfly:     { users: 0,  ops: 0,  rev: 0 },
+                    transvision: { users: 12, ops: 5,  rev: 65000 },
+                    cleanapp:    { users: 3,  ops: 1,  rev: 15000 },
+                    eyanomarket: { users: 3,  ops: 1,  rev: 10000 }
                 }
             }
         ];
 
-        // Journal complet des opérations géolocalisées
         const GTS_GEO_FLOWS = [
-            { time: "09:42", date: "04/10/2026", commune: "Gombe", lat: -4.3032, lng: 15.3056, poleId: "easyfly", poleName: "EasyFly Transit", ref: "EF-9041", details: "Hub PROCOKI — Pesée certifiée 21.8 kg (AF-29401 Paris) - Scellé PL-9921", status: "Scellé Conforme", amountCdf: 112000 },
-            { time: "09:15", date: "04/10/2026", commune: "Ngaliema", lat: -4.3411, lng: 15.2530, poleId: "transvision", poleName: "TransVision Protect", ref: "TR-8812", details: "Kintambo/Macampagne — Coupure moteur préventive véhicule 1420AB19", status: "Sécurisé", amountCdf: 84000 },
-            { time: "08:50", date: "04/10/2026", commune: "Limete", lat: -4.3547, lng: 15.3408, poleId: "cleanapp", poleName: "Matt Clean'App", ref: "CL-3019", details: "Résidentiel 7ème Rue — Équipe pressing & assainissement déployée", status: "En cours", amountCdf: 56000 },
-            { time: "08:30", date: "04/10/2026", commune: "Bandalungwa", lat: -4.3394, lng: 15.2892, poleId: "eyanomarket", poleName: "EyanoMarket", ref: "EY-4421", details: "Bandal Moulaert — Distribution vivres et pharmacie express", status: "Livré", amountCdf: 42000 },
-            { time: "07:55", date: "04/10/2026", commune: "N'Djili", lat: -4.4371, lng: 15.3853, poleId: "easyfly", poleName: "EasyFly Transit", ref: "EF-9040", details: "Terminal Fret N'Djili — Réception Convoi Batch BT-2026-093 blindé", status: "Convoi Scellé", amountCdf: 338000 },
-            { time: "07:10", date: "04/10/2026", commune: "Kalamu", lat: -4.3491, lng: 15.3175, poleId: "transvision", poleName: "TransVision Protect", ref: "TR-8811", details: "Victoire/Matonge — Télématique 5 minibus en rotation", status: "En rotation", amountCdf: 736000 }
+            { time: "09:42", date: "04/10/2026", commune: "Gombe", poleId: "easyfly", poleName: "EasyFly Transit", ref: "EF-9041", details: "Pesée certifiée 21.8 kg (AF-29401 Paris) - Scellé PL-9921", status: "Scellé Conforme", amountCdf: 112000 },
+            { time: "09:15", date: "04/10/2026", commune: "Ngaliema", poleId: "transvision", poleName: "TransVision Protect", ref: "TR-8812", details: "Coupure moteur préventive véhicule 1420AB19", status: "Sécurisé", amountCdf: 84000 },
+            { time: "08:50", date: "04/10/2026", commune: "Limete", poleId: "cleanapp", poleName: "Matt Clean'App", ref: "CL-3019", details: "Résidentiel 7ème Rue — Équipe pressing & assainissement déployée", status: "En cours", amountCdf: 56000 },
+            { time: "08:30", date: "04/10/2026", commune: "Bandalungwa", poleId: "eyanomarket", poleName: "EyanoMarket", ref: "EY-4421", details: "Bandal Moulaert — Distribution vivres et pharmacie express", status: "Livré", amountCdf: 42000 },
+            { time: "07:55", date: "04/10/2026", commune: "N'Djili", poleId: "easyfly", poleName: "EasyFly Transit", ref: "EF-9040", details: "Terminal Fret N'Djili — Réception Convoi Batch BT-2026-093 blindé", status: "Convoi Scellé", amountCdf: 338000 },
+            { time: "07:10", date: "04/10/2026", commune: "Kalamu", poleId: "transvision", poleName: "TransVision Protect", ref: "TR-8811", details: "Victoire/Matonge — Télématique 5 minibus en rotation", status: "En rotation", amountCdf: 736000 }
         ];
 
         function navigateCentral(tabName) {
@@ -464,7 +495,6 @@
 
         function initKinshasaMap() {
             mapInstance = L.map('kinshasa-map').setView([-4.3350, 15.3100], 12);
-
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: '© OpenStreetMap contributors'
@@ -474,153 +504,72 @@
             mettreAJourVueComplete('ALL');
         }
 
-        // Bascule de filtre par pôle
         function changerFiltrePole(poleKey) {
             currentFilter = poleKey;
             mettreAJourVueComplete(poleKey);
         }
 
-        // Recalcule et actualise Carte + Top Communes + Tableaux + KPIs
         function mettreAJourVueComplete(poleKey) {
             mapLayersGroup.clearLayers();
 
-            // Agrégation des données selon le pôle choisi
             const aggregatedZones = TERRITORIAL_DATA.map(item => {
-                let users = 0;
-                let ops = 0;
-                let rev = 0;
-
+                let users = 0; let ops = 0; let rev = 0;
                 if (poleKey === 'ALL') {
-                    Object.values(item.poles).forEach(p => {
-                        users += p.users;
-                        ops += p.ops;
-                        rev += p.rev;
-                    });
+                    Object.values(item.poles).forEach(p => { users += p.users; ops += p.ops; rev += p.rev; });
                 } else if (item.poles[poleKey]) {
-                    users = item.poles[poleKey].users;
-                    ops = item.poles[poleKey].ops;
-                    rev = item.poles[poleKey].rev;
+                    users = item.poles[poleKey].users; ops = item.poles[poleKey].ops; rev = item.poles[poleKey].rev;
                 }
-
-                return {
-                    name: item.commune,
-                    lat: item.lat,
-                    lng: item.lng,
-                    users: users,
-                    ops: ops,
-                    rev: rev
-                };
+                return { name: item.commune, lat: item.lat, lng: item.lng, users, ops, rev };
             }).filter(z => z.users > 0);
 
             const totalUsers = aggregatedZones.reduce((sum, z) => sum + z.users, 0);
-            const totalOps = aggregatedZones.reduce((sum, z) => sum + z.ops, 0);
-            const totalRev = aggregatedZones.reduce((sum, z) => sum + z.rev, 0);
 
-            // 1. Rendu des halos thermiques sur la carte
             aggregatedZones.forEach(zone => {
                 const ratio = totalUsers > 0 ? (zone.users / totalUsers) : 0;
                 const radiusSize = Math.max(12, Math.round(ratio * 75));
 
-                let fillColor = "#38bdf8"; // Bleu modéré
-                let strokeColor = "#0284c7";
-                let demandText = "Modérée";
-
-                if (ratio > 0.30) {
-                    fillColor = "#f43f5e"; // Rouge vif
-                    strokeColor = "#be123c";
-                    demandText = "Critique / Forte";
-                } else if (ratio > 0.15) {
-                    fillColor = "#f59e0b"; // Orange / Ambre
-                    strokeColor = "#b45309";
-                    demandText = "Soutenue";
-                }
+                let fillColor = ratio > 0.30 ? "#f43f5e" : (ratio > 0.15 ? "#f59e0b" : "#38bdf8");
 
                 const circle = L.circleMarker([zone.lat, zone.lng], {
                     radius: radiusSize,
                     fillColor: fillColor,
-                    color: strokeColor,
+                    color: "#ffffff",
                     weight: 2,
                     opacity: 0.9,
                     fillOpacity: 0.65
                 });
 
-                const popupHtml = `
-                    <div style="font-family: sans-serif; font-size: 11px;">
-                        <strong style="font-size: 13px; color: ${fillColor}; text-transform: uppercase;">Commune : ${zone.name}</strong><br>
-                        <span style="color: #94a3b8;">Filtre Pôle : <b>${getNomPole(poleKey)}</b></span><br>
-                        <span style="color: #94a3b8;">Sollicitation : <b style="color:#fff;">${demandText}</b></span>
-                        <div style="margin: 6px 0; padding: 6px; background:#020617; border-radius: 6px; border: 1px solid #1e293b;">
-                            <div>👥 <b>${zone.users} usagers actifs</b> (${Math.round(ratio*100)}% de ce pôle)</div>
-                            <div>⚡ <b>${zone.ops} requêtes 24h</b></div>
-                            <div style="color:#10b981; font-weight:bold;">💰 ${zone.rev.toLocaleString('fr-FR')} CDF</div>
-                        </div>
+                circle.bindPopup(`
+                    <div style="font-family:sans-serif;font-size:11px;">
+                        <strong style="color:${fillColor};text-transform:uppercase;">${zone.name}</strong><br>
+                        <span>👥 <b>${zone.users} usagers</b> (${Math.round(ratio*100)}%)</span><br>
+                        <span>⚡ <b>${zone.ops} opérations</b></span><br>
+                        <span style="color:#10b981;font-weight:bold;">💰 ${zone.rev.toLocaleString('fr-FR')} CDF</span>
                     </div>
-                `;
-
-                circle.bindPopup(popupHtml);
+                `);
                 mapLayersGroup.addLayer(circle);
             });
 
-            // 2. Rendu du classement Top Communes
             rendreTopCommunes(aggregatedZones, totalUsers);
-
-            // 3. Mise à jour des KPIs
-            document.getElementById('kpi-total-rev').textContent = totalRev.toLocaleString('fr-FR') + " CDF";
-            document.getElementById('kpi-sub-rev').textContent = `≈ ${(totalRev / 2800).toFixed(2)} USD consolidés`;
-            document.getElementById('kpi-total-ops').textContent = totalOps + " Actes";
-            document.getElementById('kpi-sub-ops').textContent = `Flux : ${getNomPole(poleKey)}`;
-            document.getElementById('kpi-total-users').textContent = totalUsers + " Pax";
-            document.getElementById('kpi-pole-name').textContent = getNomPoleCourt(poleKey);
-
-            // 4. Rendu du tableau des flux
             renderFlowTable(poleKey);
-        }
-
-        function getNomPole(key) {
-            if(key === 'easyfly') return 'EasyFly Transit';
-            if(key === 'transvision') return 'TransVision Protect';
-            if(key === 'cleanapp') return "Matt Clean'App";
-            if(key === 'eyanomarket') return 'EyanoMarket';
-            return 'Tous les Pôles Réunis';
-        }
-
-        function getNomPoleCourt(key) {
-            if(key === 'easyfly') return 'EasyFly';
-            if(key === 'transvision') return 'TransVision';
-            if(key === 'cleanapp') return "Clean'App";
-            if(key === 'eyanomarket') return 'Eyano';
-            return 'Tous Pôles';
         }
 
         function rendreTopCommunes(zones, totalUsers) {
             const container = document.getElementById('top-communes-list');
             container.innerHTML = "";
-
             const sorted = [...zones].sort((a, b) => b.users - a.users);
 
             sorted.forEach((commune, index) => {
                 const percent = totalUsers > 0 ? Math.round((commune.users / totalUsers) * 100) : 0;
-                let badgeColor = "bg-slate-800 text-slate-300";
-                if (index === 0) badgeColor = "bg-rose-500/20 text-rose-400 border border-rose-500/30";
-                else if (index === 1) badgeColor = "bg-amber-500/20 text-amber-400 border border-amber-500/30";
-                else if (index === 2) badgeColor = "bg-sky-500/20 text-sky-400 border border-sky-500/30";
-
                 const card = document.createElement('div');
                 card.className = "bg-slate-900 border border-slate-800 p-3 rounded-2xl space-y-2";
                 card.innerHTML = `
                     <div class="flex justify-between items-center text-xs">
-                        <span class="font-black text-slate-100 uppercase flex items-center gap-2">
-                            <span class="w-5 h-5 rounded-full ${badgeColor} flex items-center justify-center text-[10px] font-mono font-bold">#${index+1}</span>
-                            ${commune.name}
-                        </span>
-                        <span class="font-mono text-xs font-bold text-slate-200">${commune.users} usagers (${percent}%)</span>
+                        <span class="font-black text-slate-100 uppercase">#${index+1} ${commune.name}</span>
+                        <span class="font-mono text-xs text-slate-200">${commune.users} usagers (${percent}%)</span>
                     </div>
                     <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden">
-                        <div class="bg-gradient-to-r from-indigo-500 to-rose-500 h-full rounded-full transition-all duration-500" style="width: ${percent}%"></div>
-                    </div>
-                    <div class="flex justify-between text-[10px] font-mono text-slate-400">
-                        <span>${commune.ops} actes enregistrés</span>
-                        <span class="text-emerald-400 font-bold">${commune.rev.toLocaleString('fr-FR')} CDF</span>
+                        <div class="bg-gradient-to-r from-indigo-500 to-rose-500 h-full rounded-full" style="width: ${percent}%"></div>
                     </div>
                 `;
                 container.appendChild(card);
@@ -628,73 +577,47 @@
 
             if(sorted.length > 0) {
                 const top3Sum = sorted.slice(0, 3).reduce((acc, c) => acc + c.users, 0);
-                const top3Percent = totalUsers > 0 ? Math.round((top3Sum / totalUsers) * 100) : 0;
-                const zoneNoms = sorted.slice(0, 3).map(c => c.name).join(', ');
-                document.getElementById('lbl-top-zone').textContent = zoneNoms;
-                document.getElementById('lbl-top-percentage').textContent = `${top3Percent}% du pôle analysé`;
-            } else {
-                document.getElementById('lbl-top-zone').textContent = "Aucune zone";
-                document.getElementById('lbl-top-percentage').textContent = "0%";
+                document.getElementById('lbl-top-zone').textContent = sorted.slice(0, 3).map(c => c.name).join(', ');
+                document.getElementById('lbl-top-percentage').textContent = `${Math.round((top3Sum / totalUsers) * 100)}% de l'activité`;
             }
         }
 
         function renderFlowTable(filter) {
             const tbody = document.getElementById('flow-table-body');
             tbody.innerHTML = "";
-
-            const filteredData = filter === 'ALL' 
-                ? GTS_GEO_FLOWS 
-                : GTS_GEO_FLOWS.filter(item => item.poleId === filter);
+            const filteredData = filter === 'ALL' ? GTS_GEO_FLOWS : GTS_GEO_FLOWS.filter(item => item.poleId === filter);
 
             filteredData.forEach(item => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-800/40 transition-colors";
+                tr.className = "hover:bg-slate-800/40";
                 tr.innerHTML = `
                     <td class="py-3 px-4 text-slate-400">${item.date} à ${item.time}</td>
                     <td class="py-3 px-4 font-bold text-amber-300">📍 ${item.commune}</td>
                     <td class="py-3 px-4 font-bold text-indigo-400">${item.poleName}</td>
-                    <td class="py-3 px-4 text-slate-300 font-bold">${item.ref}</td>
+                    <td class="py-3 px-4 text-slate-300">${item.ref}</td>
                     <td class="py-3 px-4 text-slate-200">${item.details}</td>
-                    <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-[10px] text-emerald-400 font-bold">● ${item.status}</span></td>
+                    <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full bg-slate-800 text-[10px] text-emerald-400 font-bold">● ${item.status}</span></td>
                     <td class="py-3 px-4 text-right font-black text-emerald-400">${item.amountCdf.toLocaleString('fr-FR')} CDF</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // Export Excel / CSV
         function exporterExcel() {
-            let csvContent = "\uFEFFPole_Analyse;Commune;Usagers_Actifs;Requetes_24h;Chiffre_Affaires_CDF\n";
-            
-            TERRITORIAL_DATA.forEach(row => {
-                if (currentFilter === 'ALL') {
-                    Object.entries(row.poles).forEach(([pKey, pVal]) => {
-                        csvContent += `${getNomPole(pKey)};${row.commune};${pVal.users};${pVal.ops};${pVal.rev}\n`;
-                    });
-                } else if (row.poles[currentFilter]) {
-                    const pVal = row.poles[currentFilter];
-                    csvContent += `${getNomPole(currentFilter)};${row.commune};${pVal.users};${pVal.ops};${pVal.rev}\n`;
-                }
+            let csvContent = "\uFEFFDate;Heure;Commune;Pole;Reference;Details;Statut;Montant_CDF\n";
+            GTS_GEO_FLOWS.forEach(row => {
+                csvContent += `${row.date};${row.time};${row.commune};${row.poleName};${row.ref};${row.details.replace(/;/g, ',')};${row.status};${row.amountCdf}\n`;
             });
-
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `GTS_Densite_${currentFilter}_${new Date().toISOString().slice(0,10)}.csv`);
+            link.setAttribute("download", `GTS_Flux_${new Date().toISOString().slice(0,10)}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        function handleAddNewApp(e) {
-            e.preventDefault();
-            alert("Nouveau pôle enregistré avec succès !");
-            navigateCentral('analytics');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initKinshasaMap();
-        });
+        document.addEventListener('DOMContentLoaded', () => { initKinshasaMap(); });
     </script>
 </body>
 </html>
