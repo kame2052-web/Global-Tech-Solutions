@@ -2117,7 +2117,7 @@
             }
         }
 
-        window.onload = function() {
+        window.onload = function() { ouvrirConsoleAdmin();
             const selCommune = document.getElementById('admin-filter-commune');
             if (selCommune) {
                 selCommune.innerHTML = '<option value="Toutes">Toutes les Communes</option>' + communesList.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
@@ -2131,4 +2131,5 @@
     </script>
 </body>
 </html>
+
 
