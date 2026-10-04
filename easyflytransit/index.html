@@ -25,6 +25,7 @@
 </head>
 <body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
+    <!-- EN-TÊTE ÉPURÉ CLIENT (Sans liens d'accès direct console/portail) -->
     <header class="w-full border-b border-slate-800 bg-slate-900/85 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -33,16 +34,13 @@
                 </div>
                 <div>
                     <h1 class="text-sm md:text-base font-black tracking-wider uppercase text-slate-100">EasyFly Transit</h1>
-                    <p class="text-[9px] md:text-[10px] font-mono text-indigo-400 tracking-widest uppercase font-bold">Un service de Global Tech Solutions (GTS) SARL</p>
+                    <p class="text-[9px] md:text-[10px] font-mono text-indigo-400 tracking-widest uppercase font-bold">Marque déposée de Global Tech Solutions (GTS)</p>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <a href="../index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all border border-slate-700">
-                    <i class="fa-solid fa-house mr-1.5"></i> Portail GTS
-                </a>
-                <a href="admin.html" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md">
-                    <i class="fa-solid fa-lock mr-1.5"></i> Espace Agent
-                </a>
+            <div>
+                <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-bold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Service Client Ouvert
+                </span>
             </div>
         </div>
     </header>
@@ -67,7 +65,6 @@
                 <i class="fa-solid fa-qrcode text-indigo-400"></i> Suivi de Bagages & Statut du Lot
             </h3>
             
-            <!-- Formulaire de recherche -->
             <div id="searchFormBloc" class="flex flex-col sm:flex-row gap-3">
                 <input type="text" id="quickSearchInput" placeholder="N° de scellé ou référence PNR (ex: AF-29401)" class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs md:text-sm text-slate-100 uppercase font-mono focus:outline-none focus:border-indigo-500">
                 <button type="button" onclick="consulterStatutRapide()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl text-xs font-black uppercase transition-all shadow-md flex items-center justify-center gap-2">
@@ -76,7 +73,6 @@
             </div>
             <p id="searchHelpText" class="text-[11px] text-slate-500 font-mono">Conforme aux normes RVA / IATA et traçabilité par scellé inviolable.</p>
 
-            <!-- Résultat : Timeline Verticale (Cachée par défaut) -->
             <div id="trackingResult" class="hidden mt-6 pt-6 border-t border-slate-800 space-y-6">
                 <div class="flex justify-between items-center bg-slate-900 p-4 rounded-xl border border-slate-800">
                     <span class="text-xs font-mono font-bold text-slate-300">Dossier : <span id="trackedNumber" class="text-indigo-400 uppercase text-sm ml-1"></span></span>
@@ -84,25 +80,21 @@
                 </div>
                 
                 <div class="relative pl-6 border-l-2 border-slate-700 ml-4 space-y-8 text-xs font-mono">
-                    <!-- Etape 1 -->
                     <div class="relative">
                         <span class="absolute -left-[35px] top-0 bg-emerald-500 text-slate-950 rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black shadow-[0_0_10px_rgba(16,185,129,0.4)]"><i class="fa-solid fa-check"></i></span>
                         <h4 class="font-bold text-emerald-400 text-sm">Prise en charge & Scellé posé</h4>
                         <p class="text-[10px] text-slate-400 mt-1">Pesée certifiée et scellé inviolable appliqué sur vos bagages.</p>
                     </div>
-                    <!-- Etape 2 -->
                     <div class="relative">
                         <span class="absolute -left-[35px] top-0 bg-blue-500 text-slate-950 rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black shadow-[0_0_10px_rgba(59,130,246,0.4)]"><i class="fa-solid fa-check"></i></span>
                         <h4 class="font-bold text-blue-400 text-sm">Inspection Sûreté (X-Ray)</h4>
                         <p class="text-[10px] text-slate-400 mt-1">Validation de l'imagerie de sûreté passée avec succès au Hub PROCOKI.</p>
                     </div>
-                    <!-- Etape 3 -->
                     <div class="relative">
                         <span class="absolute -left-[35px] top-0 bg-slate-900 border-2 border-amber-500 text-amber-500 rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black"><i class="fa-solid fa-truck-fast"></i></span>
                         <h4 class="font-bold text-amber-400 text-sm">En transit vers N'Djili</h4>
                         <p class="text-[10px] text-slate-400 mt-1">Convoi blindé sous escorte. Suivi GPS actif (Lot: BT-2026-093).</p>
                     </div>
-                    <!-- Etape 4 -->
                     <div class="relative opacity-40">
                         <span class="absolute -left-[35px] top-0 bg-slate-800 text-slate-500 rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black"><i class="fa-solid fa-plane"></i></span>
                         <h4 class="font-bold text-slate-400 text-sm">Remis à la compagnie</h4>
@@ -117,7 +109,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-4">
-            
             <div class="lg:col-span-2 space-y-8">
                 <div class="bg-gtscard border border-slate-800 p-6 md:p-8 rounded-3xl shadow-xl space-y-6">
                     <div class="flex items-center justify-between border-b border-slate-800 pb-4">
@@ -128,7 +119,6 @@
                     </div>
 
                     <form id="bookingForm" class="space-y-6" onsubmit="event.preventDefault(); validerDossierClient();">
-                        
                         <div>
                             <label class="block text-xs font-mono text-slate-300 uppercase mb-3 font-bold">1. Mode de Prise en Charge *</label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -345,6 +335,11 @@
         </div>
     </main>
 
+    <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-6 text-center text-xs text-slate-500 space-y-1">
+        <p><b>EasyFly Transit</b> — Marque déposée de Global Tech Solutions (GTS).</p>
+        <p class="text-[10px] font-mono">Concession logistique urbaine déportée • Kinshasa, RDC.</p>
+    </footer>
+
     <!-- SCRIPT LOGIQUE MÉTIER -->
     <script>
         const USD_EXCHANGE_RATE = 2800;
@@ -382,24 +377,18 @@
         let totalGlobalUsd = 0;
         let totalGlobalCdf = 0;
 
-        // Fonction d'affichage de la timeline (Remplacement de l'alerte)
         function consulterStatutRapide() {
             const query = document.getElementById('quickSearchInput').value.trim();
             if (!query) {
                 alert("Veuillez saisir votre référence PNR ou numéro de scellé.");
                 return;
             }
-            
-            // On affiche le numéro recherché
             document.getElementById('trackedNumber').textContent = query;
-            
-            // On cache la zone de recherche pour afficher la timeline avec animation
             document.getElementById('searchFormBloc').classList.add('hidden');
             document.getElementById('searchHelpText').classList.add('hidden');
             document.getElementById('trackingResult').classList.remove('hidden');
         }
 
-        // Fonction pour refaire une recherche
         function nouvelleRecherche() {
             document.getElementById('quickSearchInput').value = '';
             document.getElementById('trackingResult').classList.add('hidden');
