@@ -186,22 +186,24 @@
             </div>
         </section>
 
-        <!-- 2. VUE ACCÈS AUX CONSOLES D'ADMINISTRATION -->
+      <!-- 2. VUE ACCÈS AUX CONSOLES D'ADMINISTRATION -->
         <section id="pane-filiales" class="view-pane space-y-6">
             <div class="border-b border-slate-800 pb-3">
                 <h2 class="text-xl md:text-2xl font-black text-slate-100">Postes d'Administration par Filiale</h2>
-                <p class="text-xs text-slate-400">Liens directs vers les fichiers <code>admin.html</code> dédiés de chaque application.</p>
+                <p class="text-xs text-slate-400">Liens directs vers les consoles de gestion dédiées de chaque pôle.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between">
+                
+                <!-- Passerelle EasyFly Transit -->
+                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
                     <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-indigo-950/60 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-2xl">
-                            <i class="fa-solid fa-plane-departure"></i>
+                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm flex-shrink-0">
+                            <img src="EASYFLY TRANSIT.jpg" alt="EasyFly Transit" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'">
                         </div>
                         <div>
                             <h3 class="text-sm font-black text-slate-100 uppercase">Admin EasyFly</h3>
-                            <p class="text-[10px] text-slate-400 font-mono">Dossier: /easyflytransit/admin.html</p>
+                            <p class="text-[10px] text-slate-400 font-mono">Poste Logistique & PROCOKI</p>
                         </div>
                     </div>
                     <a href="easyflytransit/admin.html" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all shadow-md">
@@ -209,14 +211,15 @@
                     </a>
                 </div>
 
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between">
+                <!-- Passerelle TransVision Protect -->
+                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
                     <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-sky-950/60 border border-sky-500/30 flex items-center justify-center text-sky-400 text-2xl">
-                            <i class="fa-solid fa-satellite-dish"></i>
+                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm flex-shrink-0">
+                            <img src="VISION.png" alt="TransVision Protect" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'">
                         </div>
                         <div>
                             <h3 class="text-sm font-black text-slate-100 uppercase">Admin TransVision</h3>
-                            <p class="text-[10px] text-slate-400 font-mono">Dossier: /transvision/admin.html</p>
+                            <p class="text-[10px] text-slate-400 font-mono">Télématique & Flottes</p>
                         </div>
                     </div>
                     <a href="transvision/admin.html" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all shadow-md">
@@ -224,14 +227,15 @@
                     </a>
                 </div>
 
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between">
+                <!-- Passerelle Matt Clean'App -->
+                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
                     <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-teal-950/60 border border-teal-500/30 flex items-center justify-center text-teal-400 text-2xl">
-                            <i class="fa-solid fa-spray-can-sparkles"></i>
+                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm flex-shrink-0">
+                            <img src="cleanapp.png" alt="Matt Clean'App" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'">
                         </div>
                         <div>
-                            <h3 class="text-sm font-black text-slate-100 uppercase">Admin Matt Clean'App</h3>
-                            <p class="text-[10px] text-slate-400 font-mono">Dossier: /cleanapp/admin.html</p>
+                            <h3 class="text-sm font-black text-slate-100 uppercase">Admin Clean'App</h3>
+                            <p class="text-[10px] text-slate-400 font-mono">Assainissement Urbain</p>
                         </div>
                     </div>
                     <a href="cleanapp/admin.html" class="bg-teal-600 hover:bg-teal-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all shadow-md">
@@ -239,14 +243,15 @@
                     </a>
                 </div>
 
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between">
+                <!-- Passerelle EyanoMarket -->
+                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
                     <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-amber-950/60 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl">
-                            <i class="fa-solid fa-store"></i>
+                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm flex-shrink-0">
+                            <img src="logo.png" alt="EyanoMarket" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'">
                         </div>
                         <div>
                             <h3 class="text-sm font-black text-slate-100 uppercase">Admin EyanoMarket</h3>
-                            <p class="text-[10px] text-slate-400 font-mono">Dossier: /eyanomarket/admin.html</p>
+                            <p class="text-[10px] text-slate-400 font-mono">Marketplace & Livraisons</p>
                         </div>
                     </div>
                     <a href="eyanomarket/admin.html" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all shadow-md">
