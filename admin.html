@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Tech Solutions — Super Admin Hub</title>
+    <title>Global Tech Solutions — Console Centrale & Cockpit Analytique</title>
     <link rel="icon" type="image/png" href="GLOBAL.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,213 +23,390 @@
         }
     </script>
     <style>
-        .page-fade { animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .glow-card:hover { box-shadow: 0 0 25px rgba(14, 165, 233, 0.15); border-color: rgba(56, 189, 248, 0.4); }
+        .view-pane { display: none; }
+        .view-pane.active { display: block; animation: fadeIn 0.25s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-slate-950">
+<body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
-    <!-- EN-TÊTE ADMIN -->
-    <header class="w-full border-b border-slate-800 bg-slate-900/85 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="h-12 w-12 rounded-xl overflow-hidden bg-white flex items-center justify-center p-1 shadow-sm flex-shrink-0">
-                    <img src="GLOBAL.png" alt="Global Tech Solutions" class="w-full h-full object-contain scale-105" onerror="this.parentElement.style.display='none'">
+    <!-- EN-TÊTE CENTRAL GTS -->
+    <header class="bg-slate-900/90 border-b border-slate-800 p-4 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="h-11 w-11 rounded-xl overflow-hidden bg-white flex items-center justify-center p-1 shadow-sm flex-shrink-0">
+                    <img src="GLOBAL.png" alt="Global Tech Solutions" class="w-full h-full object-contain">
                 </div>
                 <div>
-                    <h1 class="text-sm md:text-base font-black tracking-wider uppercase text-slate-100">Super Admin Hub</h1>
-                    <p class="text-[9px] md:text-[10px] font-mono text-rose-400 tracking-widest uppercase font-bold">Sécurité Centrale • GTS</p>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-gradient-to-r from-indigo-500 to-sky-500 text-white font-black px-2.5 py-0.5 rounded text-xs tracking-wider">GTS CORE</span>
+                        <h1 class="text-sm font-bold text-slate-100 uppercase">Direction Générale & Supervision Multi-Pôles</h1>
+                    </div>
+                    <p class="text-[10px] text-slate-400 font-mono">Cockpit Analytique Consolidé • Kinshasa, RDC</p>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <span class="hidden md:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-bold">
-                    <i class="fa-solid fa-shield-halved"></i> Mode Superviseur
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+                    <span class="h-2 w-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span> Hub 4 Filiales Connectées
                 </span>
-                <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all border border-slate-700">
-                    <i class="fa-solid fa-house mr-1.5"></i> Portail Public
+                <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-black uppercase transition-all border border-slate-700 flex items-center gap-1.5">
+                    <i class="fa-solid fa-arrow-left"></i> Portail Public
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- CONTENU PRINCIPAL -->
-    <main class="flex-1 max-w-7xl mx-auto px-6 py-12 space-y-12 page-fade w-full">
-        
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-6">
-            <div>
-                <h2 class="text-2xl md:text-3xl font-black text-slate-100">Tableau de Bord Centralisé</h2>
-                <p class="text-xs md:text-sm text-slate-400 mt-1">Sélectionnez le pôle dont vous souhaitez piloter l'administration opérationnelle.</p>
-            </div>
-            <div class="text-xs font-mono text-sky-400 bg-sky-500/10 border border-sky-500/20 px-3.5 py-2 rounded-xl">
-                Statut Supabase : <span class="text-emerald-400 font-bold">● Connecté (Centralisé)</span>
-            </div>
+    <!-- BARRE DE NAVIGATION SUPÉRIEURE -->
+    <nav class="w-full border-b border-slate-800 bg-slate-950/70 sticky top-[73px] z-40 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 flex items-center gap-2 overflow-x-auto py-2.5">
+            <button onclick="navigateCentral('analytics')" id="btn-tab-analytics" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md">
+                <i class="fa-solid fa-chart-line"></i> <span>Cockpit Analytique & Flux</span>
+            </button>
+            <button onclick="navigateCentral('filiales')" id="btn-tab-filiales" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-network-wired text-sky-400"></i> <span>Postes Dédiés & Passerelles</span>
+            </button>
+            <button onclick="navigateCentral('addapp')" id="btn-tab-addapp" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-circle-plus text-emerald-400"></i> <span>Raccorder une Nouvelle App</span>
+            </button>
         </div>
+    </nav>
 
-        <!-- GRILLE DES CONSOLES ADMIN -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            <!-- ADMIN PÔLE 1 : TRANSVISION -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
-                <div class="space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
-                            <img src="VISION.png" alt="TransVision" class="w-full h-full object-contain scale-110" onerror="this.style.display='none'">
-                        </div>
-                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-sky-400 font-bold uppercase">Pôle 1 • Télématique</span>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-black text-slate-100">TransVision Admin</h3>
-                        <p class="text-xs font-mono text-sky-400 italic mt-0.5">Supervision Flotte & Recettes</p>
-                    </div>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Accès au suivi GPS en temps réel, audit des recettes journalières, gestion des balises d'arrêts et commandes de coupure moteur à distance.
-                    </p>
+    <!-- ZONE DE CONTENU CENTRAL -->
+    <main class="max-w-7xl mx-auto p-4 md:p-6 flex-1 w-full">
+
+        <!-- 1. VUE ANALYTIQUE & FLUX GLOBALE (PAR DÉFAUT) -->
+        <section id="pane-analytics" class="view-pane active space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Métriques Agrégées du Groupe GTS</h2>
+                    <p class="text-xs text-slate-400">Flux consolidés des opérations, transactions financières et volumétries en temps réel.</p>
                 </div>
-                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                    <span class="text-[10px] text-slate-400 font-mono">Routes / Télématique</span>
-                    <a href="transvision/admin.html" class="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-slate-950 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md">
-                        Ouvrir le Back-office <i class="fa-solid fa-arrow-right"></i>
-                    </a>
+                <button onclick="actualiserDonnees()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-2 transition-all">
+                    <i class="fa-solid fa-rotate"></i> Actualiser Flux
+                </button>
+            </div>
+
+            <!-- KPIS CONSOLIDÉS GROUPE -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-emerald-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Volume d'Affaires Global</span>
+                    <h3 id="kpi-total-rev" class="text-3xl font-black text-slate-100 mt-2">1 850 000 CDF</h3>
+                    <span class="text-[10px] text-emerald-400 font-mono">≈ 660.70 USD consolidés</span>
+                </div>
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-indigo-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Transactions / Requêtes 24h</span>
+                    <h3 id="kpi-total-ops" class="text-3xl font-black text-slate-100 mt-2">128 Actes</h3>
+                    <span class="text-[10px] text-indigo-400 font-mono">Toutes filiales confondues</span>
+                </div>
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-sky-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Trafic Actif (Usagers)</span>
+                    <h3 id="kpi-active-users" class="text-3xl font-black text-slate-100 mt-2">342 Actifs</h3>
+                    <span class="text-[10px] text-sky-400 font-mono">+18% vs moyenne hebdomadaire</span>
+                </div>
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-purple-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Pôles Opérationnels</span>
+                    <h3 id="kpi-apps-count" class="text-3xl font-black text-slate-100 mt-2">4 Filiales</h3>
+                    <span class="text-[10px] text-purple-400 font-mono">100% connectées au Core</span>
                 </div>
             </div>
 
-            <!-- ADMIN PÔLE 2 : EASYFLY TRANSIT (AVEC VERROUILLAGE) -->
-            <div id="card-easyfly" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
-                <div class="space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
-                            <img src="EASYFLY%20TRANSIT.jpg" alt="EasyFly Transit" class="w-full h-full object-contain scale-110">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span id="badge-status-easyfly" class="text-[10px] font-mono bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full text-emerald-400 font-bold uppercase">
-                                ● Actif
-                            </span>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-black text-slate-100">EasyFly Transit Admin</h3>
-                        <p class="text-xs font-mono text-indigo-400 italic mt-0.5">Gestion Pré-enregistrement Bagages</p>
-                    </div>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Supervision des collectes urbaines, validation des check-ins déportés (72h avant vol) et traitement agrégé en bloc (Batch) pour N'djili.
-                    </p>
-                </div>
-
-                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
-                    <button type="button" onclick="toggleLockPole('easyfly')" id="btn-lock-easyfly" class="text-slate-400 hover:text-rose-400 text-xs font-mono border border-slate-800 hover:border-rose-500/30 px-3 py-2 rounded-xl transition-all flex items-center gap-1.5">
-                        <i class="fa-solid fa-lock-open" id="icon-lock-easyfly"></i>
-                        <span id="label-lock-easyfly">Verrouiller</span>
-                    </button>
-
-                    <a id="link-easyfly" href="easyflytransit/admin.html" class="inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md">
-                        Ouvrir le Back-office <i class="fa-solid fa-arrow-right"></i>
-                    </a>
+            <!-- ANALYSE PAR PÔLE OPÉRATIONNEL -->
+            <div class="border-t border-slate-800 pt-6">
+                <h3 class="text-base font-black text-slate-100 uppercase mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-cubes-stacked text-indigo-400"></i> Performance Détaillée par Filiale
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5" id="apps-metrics-grid">
+                    <!-- Généré dynamiquement en JS pour accepter les futures apps -->
                 </div>
             </div>
 
-            <!-- ADMIN PÔLE 3 : MATT CLEAN'APP -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
-                <div class="space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1 shadow-md flex-shrink-0">
-                            <img src="cleanapp.png" alt="Matt Clean'App" class="w-full h-full object-contain scale-110" onerror="this.style.display='none'">
-                        </div>
-                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-emerald-400 font-bold uppercase">Pôle 3 • Salubrité</span>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-black text-slate-100">Matt Clean'App Admin</h3>
-                        <p class="text-xs font-mono text-emerald-400 italic mt-0.5">Supervision des Interventions</p>
-                    </div>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Validation des prestations de nettoyage (habitat, véhicules, plomberie), arbitrage de qualité par preuves visuelles « Avant/Après » et répartition des équipes terrain.
-                    </p>
+            <!-- RÉPARTITION COMPARATIVE DES FLUX -->
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-slate-200">Part des Filiales dans l'Activité Globale</h4>
+                    <span class="text-[10px] font-mono text-slate-400">Calcul basé sur les requêtes 24h</span>
                 </div>
-                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                    <span class="text-[10px] text-slate-400 font-mono">Services à la demande</span>
-                    <a href="cleanapp/admin.html" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md">
-                        Ouvrir le Back-office <i class="fa-solid fa-arrow-right"></i>
+                <div class="space-y-3 font-mono text-xs" id="distribution-bars">
+                    <!-- Barres de proportion injectées par JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. VUE ACCÈS POSTES SPÉCIFIQUES -->
+        <section id="pane-filiales" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3">
+                <h2 class="text-xl md:text-2xl font-black text-slate-100">Passerelles d'Administration Spécifiques</h2>
+                <p class="text-xs text-slate-400">Accès direct aux consoles et guichets spécialisés de chaque filiale.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="h-12 w-12 rounded-xl bg-indigo-950/60 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-2xl">
+                            <i class="fa-solid fa-plane-departure"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black text-slate-100 uppercase">EasyFly Transit — Hub PROCOKI</h3>
+                            <p class="text-xs text-slate-400">Postes Guichet, Pesée balance certifiée, Rayon X et Convois N'Djili.</p>
+                        </div>
+                    </div>
+                    <a href="easyflytransit/admin.html" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all shadow-md">
+                        Ouvrir
+                    </a>
+                </div>
+
+                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="h-12 w-12 rounded-xl bg-sky-950/60 border border-sky-500/30 flex items-center justify-center text-sky-400 text-2xl">
+                            <i class="fa-solid fa-satellite-dish"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black text-slate-100 uppercase">TransVision Protect</h3>
+                            <p class="text-xs text-slate-400">Télématique de flotte, traçabilité GPS et coupure moteur à distance.</p>
+                        </div>
+                    </div>
+                    <a href="transvision/index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all">
+                        Ouvrir
+                    </a>
+                </div>
+
+                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="h-12 w-12 rounded-xl bg-teal-950/60 border border-teal-500/30 flex items-center justify-center text-teal-400 text-2xl">
+                            <i class="fa-solid fa-spray-can-sparkles"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black text-slate-100 uppercase">Matt Clean'App</h3>
+                            <p class="text-xs text-slate-400">Assainissement urbain, pressing express et dispatch d'agents.</p>
+                        </div>
+                    </div>
+                    <a href="cleanapp/index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all">
+                        Ouvrir
+                    </a>
+                </div>
+
+                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="h-12 w-12 rounded-xl bg-amber-950/60 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl">
+                            <i class="fa-solid fa-store"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black text-slate-100 uppercase">EyanoMarket</h3>
+                            <p class="text-xs text-slate-400">Commerce de proximité géolocalisé et gestion des marchands.</p>
+                        </div>
+                    </div>
+                    <a href="eyanomarket/index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-4 py-2.5 rounded-xl text-xs font-black uppercase transition-all">
+                        Ouvrir
                     </a>
                 </div>
             </div>
+        </section>
 
-            <!-- ADMIN PÔLE 4 : EYANOMARKET -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
-                <div class="space-y-4">
-                    <div class="flex justify-between items-start">
-                        <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
-                            <img src="eyano.png" alt="Eyanomarket" class="w-full h-full object-contain scale-110" onerror="this.style.display='none'">
-                        </div>
-                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-amber-400 font-bold uppercase">Pôle 4 • Commerce Essentiel</span>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-black text-slate-100">Eyanomarket Admin</h3>
-                        <p class="text-xs font-mono text-amber-400 italic mt-0.5">Gestion Marketplace & Stocks</p>
-                    </div>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Contrôle des flux d'approvisionnement urgent (gaz, eau, pharmacie), gestion des marchands partenaires géolocalisés et suivi des commandes en temps réel.
-                    </p>
-                </div>
-                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                    <span class="text-[10px] text-slate-400 font-mono">Marketplace de proximité</span>
-                    <a href="eyanomarket/admin.html" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md">
-                        Ouvrir le Back-office <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
+        <!-- 3. VUE AJOUT DYNAMIQUE DE NOUVELLE APPLICATION -->
+        <section id="pane-addapp" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3">
+                <h2 class="text-xl md:text-2xl font-black text-slate-100">Intégration d'un Nouveau Pôle Applicatif GTS</h2>
+                <p class="text-xs text-slate-400">Connectez instantanément un futur service sans modifier l'architecture centrale.</p>
             </div>
 
-        </div>
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 max-w-2xl shadow-xl">
+                <form id="newAppForm" onsubmit="handleAddNewApp(event)" class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5">Nom Commercial du Service *</label>
+                        <input type="text" id="app-name" required placeholder="ex: GTS HealthPay" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 uppercase mb-1.5">Code Pôle / Catégorie *</label>
+                            <input type="text" id="app-code" required placeholder="ex: PÔLE 5 • FINTECH" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs font-mono uppercase text-indigo-400 focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Icône FontAwesome *</label>
+                            <input type="text" id="app-icon" required value="fa-solid fa-cube" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs font-mono text-slate-300 focus:outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Chemin / Lien de l'application *</label>
+                        <input type="text" id="app-link" required placeholder="ex: healthpay/index.html" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs font-mono text-slate-300 focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Description d'activité *</label>
+                        <textarea id="app-desc" required rows="2" placeholder="Description courte des flux traités..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-300 focus:outline-none focus:border-indigo-500"></textarea>
+                    </div>
+
+                    <div class="flex justify-end pt-3 border-t border-slate-800">
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase px-8 py-3.5 rounded-xl transition shadow-lg flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Déployer sur le Cockpit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
     </main>
 
-    <!-- PIED DE PAGE -->
-    <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-8 mt-16 text-center text-xs text-slate-500 space-y-2">
-        <p><b>Global Tech Solutions SARL</b> — Console d'Administration Centralisée.</p>
-        <p class="text-[10px] font-mono">Accès restreint aux gestionnaires habilités.</p>
+    <!-- PIED DE PAGE GTS -->
+    <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-6 text-center text-xs text-slate-500 space-y-1">
+        <p><b>Global Tech Solutions (GTS)</b> — Direction Générale & Superviseur Analytique Groupe.</p>
+        <p class="text-[10px] font-mono">Kinshasa, République Démocratique du Congo.</p>
     </footer>
 
-    <!-- SCRIPT DU VERROUILLAGE DYNAMIQUE -->
+    <!-- SCRIPT DE GESTION ANALYTIQUE UNIFIÉE -->
     <script>
-        function toggleLockPole(poleId) {
-            const isLocked = localStorage.getItem('lock_' + poleId) === 'true';
-            const newStatus = !isLocked;
-            localStorage.setItem('lock_' + poleId, newStatus);
-            applyLockUI(poleId, newStatus);
-        }
+        // Données modèles par défaut
+        const INITIAL_APPS = [
+            {
+                id: "easyfly",
+                name: "EasyFly Transit",
+                pole: "PÔLE 2 • LOGISTIQUE AÉRO",
+                icon: "fa-plane-departure",
+                color: "indigo",
+                vol: "42 bagages / 2 convois",
+                revCdf: 450000,
+                opsCount: 42,
+                status: "Opérationnel",
+                link: "easyflytransit/admin.html"
+            },
+            {
+                id: "transvision",
+                name: "TransVision Protect",
+                pole: "PÔLE 1 • TÉLÉMATIQUE",
+                icon: "fa-satellite-dish",
+                color: "sky",
+                vol: "38 balises GPS actives",
+                revCdf: 820000,
+                opsCount: 54,
+                status: "Opérationnel",
+                link: "transvision/index.html"
+            },
+            {
+                id: "cleanapp",
+                name: "Matt Clean'App",
+                pole: "PÔLE 3 • SALUBRITÉ",
+                icon: "fa-spray-can-sparkles",
+                color: "teal",
+                vol: "12 interventions validées",
+                revCdf: 310000,
+                opsCount: 18,
+                status: "Opérationnel",
+                link: "cleanapp/index.html"
+            },
+            {
+                id: "eyanomarket",
+                name: "EyanoMarket",
+                pole: "PÔLE 4 • COMMERCE ESSENTIEL",
+                icon: "fa-store",
+                color: "amber",
+                vol: "14 livraisons clôturées",
+                revCdf: 270000,
+                opsCount: 14,
+                status: "Opérationnel",
+                link: "eyanomarket/index.html"
+            }
+        ];
 
-        function applyLockUI(poleId, locked) {
-            const badge = document.getElementById('badge-status-' + poleId);
-            const link = document.getElementById('link-' + poleId);
-            const icon = document.getElementById('icon-lock-' + poleId);
-            const label = document.getElementById('label-lock-' + poleId);
+        let gtsApps = JSON.parse(localStorage.getItem('gts_connected_apps')) || INITIAL_APPS;
 
-            if (!badge || !link || !icon || !label) return;
+        function navigateCentral(tabName) {
+            document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60";
+            });
 
-            if (locked) {
-                badge.className = "text-[10px] font-mono bg-rose-500/10 border border-rose-500/20 px-3 py-1 rounded-full text-rose-400 font-bold uppercase";
-                badge.innerHTML = "● Verrouillé";
-                
-                link.removeAttribute('href');
-                link.className = "inline-flex items-center gap-2 bg-slate-800 text-slate-500 px-4 py-2 rounded-xl text-xs font-black uppercase cursor-not-allowed border border-slate-700 pointer-events-none";
-                link.innerHTML = '<i class="fa-solid fa-ban mr-1"></i> Accès Suspendu';
-                
-                icon.className = "fa-solid fa-lock text-rose-400";
-                label.textContent = "Déverrouiller";
-            } else {
-                badge.className = "text-[10px] font-mono bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full text-emerald-400 font-bold uppercase";
-                badge.innerHTML = "● Actif";
-                
-                link.setAttribute('href', 'easyflytransit/admin.html');
-                link.className = "inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-md";
-                link.innerHTML = 'Ouvrir le Back-office <i class="fa-solid fa-arrow-right"></i>';
-                
-                icon.className = "fa-solid fa-lock-open";
-                label.textContent = "Verrouiller";
+            const targetPane = document.getElementById('pane-' + tabName);
+            if (targetPane) targetPane.classList.add('active');
+
+            const activeBtn = document.getElementById('btn-tab-' + tabName);
+            if (activeBtn) {
+                activeBtn.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
             }
         }
 
+        function actualiserDonnees() {
+            renderCockpit();
+        }
+
+        function renderCockpit() {
+            const grid = document.getElementById('apps-metrics-grid');
+            const barsContainer = document.getElementById('distribution-bars');
+            grid.innerHTML = "";
+            barsContainer.innerHTML = "";
+
+            let totalRev = 0;
+            let totalOps = 0;
+
+            gtsApps.forEach(app => {
+                totalRev += app.revCdf;
+                totalOps += app.opsCount;
+
+                // Construction carte par pôle
+                const card = document.createElement('div');
+                card.className = "bg-gtscard border border-slate-800 p-5 rounded-2xl space-y-3 relative overflow-hidden";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <span class="text-[9px] font-mono font-bold uppercase text-slate-400">${app.pole}</span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    </div>
+                    <div class="flex items-center gap-2.5">
+                        <i class="fa-solid ${app.icon} text-lg text-indigo-400"></i>
+                        <h4 class="text-xs font-black uppercase text-slate-100">${app.name}</h4>
+                    </div>
+                    <div class="pt-2 border-t border-slate-800/80 space-y-1 font-mono text-[11px]">
+                        <div class="flex justify-between text-slate-400"><span>Activité :</span><strong class="text-slate-200">${app.vol}</strong></div>
+                        <div class="flex justify-between text-slate-400"><span>Flux Caisse :</span><strong class="text-emerald-400">${app.revCdf.toLocaleString('fr-FR')} CDF</strong></div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            // Métriques KPIs globaux
+            document.getElementById('kpi-total-rev').textContent = totalRev.toLocaleString('fr-FR') + " CDF";
+            document.getElementById('kpi-total-ops').textContent = totalOps + " Actes";
+            document.getElementById('kpi-apps-count').textContent = gtsApps.length + " Filiales";
+
+            // Barres de répartition proportionnelle
+            gtsApps.forEach(app => {
+                const percent = totalOps > 0 ? Math.round((app.opsCount / totalOps) * 100) : 0;
+                const row = document.createElement('div');
+                row.className = "space-y-1";
+                row.innerHTML = `
+                    <div class="flex justify-between">
+                        <span class="text-slate-300 font-bold">${app.name}</span>
+                        <span class="text-slate-400">${percent}% (${app.opsCount} ops)</span>
+                    </div>
+                    <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden">
+                        <div class="bg-indigo-500 h-full rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                    </div>
+                `;
+                barsContainer.appendChild(row);
+            });
+        }
+
+        function handleAddNewApp(e) {
+            e.preventDefault();
+            const newApp = {
+                id: "app-" + (gtsApps.length + 1),
+                name: document.getElementById('app-name').value.trim(),
+                pole: document.getElementById('app-code').value.trim().toUpperCase(),
+                icon: document.getElementById('app-icon').value.trim(),
+                color: "indigo",
+                vol: "En phase d'intégration",
+                revCdf: 0,
+                opsCount: 0,
+                status: "Initialisé",
+                link: document.getElementById('app-link').value.trim()
+            };
+
+            gtsApps.push(newApp);
+            localStorage.setItem('gts_connected_apps', JSON.stringify(gtsApps));
+            document.getElementById('newAppForm').reset();
+            renderCockpit();
+            alert(`Pôle "${newApp.name}" raccordé avec succès au cockpit central GTS !`);
+            navigateCentral('analytics');
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            const isEasyFlyLocked = localStorage.getItem('lock_easyfly') === 'true';
-            applyLockUI('easyfly', isEasyFlyLocked);
+            renderCockpit();
         });
     </script>
 </body>
