@@ -92,7 +92,74 @@
 </head>
 <body>
 
-    <!-- APP WRAPPER -->
+    <!-- MODALE DE MODIFICATION D'UNE CAMPAGNE PUB -->
+    <div id="modal-edit-pub-view" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[99999] flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-3xl border border-slate-200 p-5 sm:p-6 w-full max-w-md max-h-[92vh] shadow-2xl flex flex-col justify-between text-left relative overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3 flex-shrink-0">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">📢</span>
+                    <div>
+                        <h3 class="text-sm font-black text-slate-800 uppercase tracking-wide">Modifier la Campagne</h3>
+                        <span class="text-[10px] text-blue-600 font-bold block" id="lbl-edit-pub-id">ID : -</span>
+                    </div>
+                </div>
+                <button onclick="fermerModalModificationPub()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 font-bold text-base flex items-center justify-center transition">✕</button>
+            </div>
+
+            <div class="space-y-3 my-3">
+                <input type="hidden" id="edit-pub-id">
+                <input type="hidden" id="edit-pub-current-image-url">
+
+                <div>
+                    <label class="text-[10px] text-slate-500 font-bold block mb-1">Nom de l'Annonceur *</label>
+                    <input type="text" id="edit-pub-nom-annonceur" class="input-field mb-0">
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-slate-500 font-bold block mb-1">Titre / Message sur la bannière</label>
+                    <input type="text" id="edit-pub-titre" class="input-field mb-0">
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-slate-500 font-bold block mb-1">Lien Web / WhatsApp (URL Cible)</label>
+                    <input type="url" id="edit-pub-lien" class="input-field mb-0">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[10px] text-slate-500 font-bold block mb-1">Date début</label>
+                        <input type="date" id="edit-pub-date-debut" class="input-field mb-0">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-500 font-bold block mb-1">Date fin</label>
+                        <input type="date" id="edit-pub-date-fin" class="input-field mb-0">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-slate-500 font-bold block mb-1">Statut d'affichage</label>
+                    <select id="edit-pub-statut" class="select-field mb-0 font-bold">
+                        <option value="Actif">✅ Actif (Diffusée en direct)</option>
+                        <option value="Masqué">👁️ Masqué (Désactivée)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-slate-500 font-bold block mb-1">Aperçu visuel actuel :</label>
+                    <img id="edit-pub-preview-img" src="" class="w-full h-24 object-contain rounded-xl bg-slate-50 border border-slate-200 mb-2">
+                    <label class="text-[10px] text-amber-600 font-bold block mb-1">Remplacer la bannière (Optionnel) :</label>
+                    <input type="file" id="edit-pub-file-input" accept="image/*" class="input-field bg-slate-50 cursor-pointer mb-0">
+                </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 flex gap-2 flex-shrink-0">
+                <button type="button" onclick="fermerModalModificationPub()" class="w-1/3 bg-slate-100 text-slate-600 font-bold text-xs py-3 rounded-xl hover:bg-slate-200 transition">Annuler</button>
+                <button type="button" id="btn-save-edit-pub" onclick="executerMiseAJourPubliciteAdmin()" class="w-2/3 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3 rounded-xl shadow transition">💾 Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP WRAPPER (ACCÈS DIRECT SANS AUTH-OVERLAY) -->
     <div id="app-layout-wrapper" style="display:flex; flex-direction: column; height: 100vh;">
         <header class="flex justify-between items-center">
             <div class="flex items-center space-x-2.5">
@@ -126,7 +193,7 @@
                     </div>
                 </div>
 
-                <!-- NOUVELLE SOUS-PAGE STRATÉGIQUE : MICRO-HUBS & LOGISTIQUE DERNIER KILOMÈTRE -->
+                <!-- SOUS-PAGE STRATÉGIQUE : MICRO-HUBS & LOGISTIQUE DERNIER KILOMÈTRE -->
                 <div id="sub-microhubs" class="hidden space-y-4">
                     <div class="flex items-center justify-between pb-2 border-b border-slate-200">
                         <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs cursor-pointer" onclick="retourAccueilGrille()">
@@ -137,7 +204,6 @@
                         </button>
                     </div>
 
-                    <!-- KPIS DERNIER KILOMÈTRE -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                         <div class="card p-3 text-center mb-0 border-indigo-100 shadow-sm">
                             <span class="text-[8px] text-slate-400 font-bold uppercase block">Panier Moyen Global</span>
@@ -157,15 +223,12 @@
                         </div>
                     </div>
 
-                    <!-- MATRICE VÉLOCITÉ ET RECOMMANDATIONS DARK STORES -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div class="card p-4 space-y-3 mb-0">
                             <h4 class="text-xs font-black uppercase text-slate-800 tracking-wider flex items-center gap-2">
                                 <i class="fa-solid fa-bolt text-amber-500"></i> Rotation & Vélocité par Métier
                             </h4>
-                            <div class="space-y-2 text-xs font-mono" id="container-hub-velocity">
-                                <!-- Injecté par JS -->
-                            </div>
+                            <div class="space-y-2 text-xs font-mono" id="container-hub-velocity"></div>
                         </div>
 
                         <div class="card p-4 space-y-3 mb-0 flex flex-col justify-between">
@@ -173,9 +236,7 @@
                                 <h4 class="text-xs font-black uppercase text-slate-800 tracking-wider flex items-center gap-2">
                                     <i class="fa-solid fa-warehouse text-indigo-500"></i> Recommandations Implantation Relais
                                 </h4>
-                                <div class="space-y-2 mt-2 text-xs text-slate-700 leading-relaxed" id="container-hub-advice">
-                                    <!-- Recommandations dynamiques -->
-                                </div>
+                                <div class="space-y-2 mt-2 text-xs text-slate-700 leading-relaxed" id="container-hub-advice"></div>
                             </div>
                             <div class="p-2.5 bg-indigo-50/70 rounded-xl border border-indigo-100 text-[10px] text-indigo-900 mt-2">
                                 💡 <strong>Règle Opérationnelle :</strong> Réduire la distance entre le marchand et l'acheteur à moins de 3 km abaisse le taux d'annulation de commande de 45% aux heures de pointe.
@@ -224,18 +285,87 @@
                         </select>
                     </div>
 
+                    <div class="relative">
+                        <input type="text" id="search-review-text" oninput="filtrerAvisClientsAdmin()" placeholder="🔍 Rechercher dans les avis..." class="input-field mb-0">
+                    </div>
+
                     <div id="container-admin-reviews-list" class="space-y-2.5 max-h-[58vh] overflow-y-auto"></div>
                 </div>
 
                 <!-- SOUS-PAGE : ENTREPRISES PUB -->
                 <div id="sub-gestion-entreprises-pub" class="hidden space-y-3">
                     <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilGrille()"><span>← Retour à la console</span></div>
-                    <div id="pub-companies-container" class="space-y-3"></div>
+                    
+                    <div id="pub-grid-icons" class="grid grid-cols-2 gap-3">
+                        <div onclick="afficherSousModulePub('pub-form-creer')" class="grid-icon-card py-6 border border-emerald-200 bg-emerald-50/50">
+                            <span class="text-3xl mb-1">➕</span>
+                            <span class="text-xs font-black text-emerald-800">Créer une Campagne</span>
+                        </div>
+                        <div onclick="afficherSousModulePub('pub-liste-ancnes')" class="grid-icon-card py-6 border border-amber-200 bg-amber-50/50">
+                            <span class="text-3xl mb-1">📢</span>
+                            <span class="text-xs font-black text-amber-800">Annonces & Bannières</span>
+                        </div>
+                    </div>
+
+                    <div id="pub-form-creer" class="hidden card p-4 space-y-3">
+                        <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-100 cursor-pointer" onclick="retourMenuPubIcones()">← Retour aux options pub</div>
+                        <h3 class="text-xs font-black text-emerald-700 uppercase tracking-wide">➕ Créer une nouvelle Campagne Publicitaire</h3>
+                        
+                        <div>
+                            <label class="text-[10px] text-slate-500 font-bold block mb-1">Nom de l'Annonceur *</label>
+                            <input type="text" id="pub-nom-annonceur" placeholder="Ex: Clean'App Kinshasa" class="input-field mb-0">
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] text-slate-500 font-bold block mb-1">Titre / Commentaire affiché sur la bannière</label>
+                            <input type="text" id="pub-titre" placeholder="Ex: Entretien et nettoyage à domicile" class="input-field mb-0">
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] text-slate-500 font-bold block mb-1">Lien Web / WhatsApp au clic (Optionnel)</label>
+                            <input type="url" id="pub-lien" placeholder="https://..." class="input-field mb-0">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold block mb-1">Date début</label>
+                                <input type="date" id="pub-date-debut" class="input-field mb-0">
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold block mb-1">Date fin</label>
+                                <input type="date" id="pub-date-fin" class="input-field mb-0">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] text-slate-500 font-bold block mb-1">Bannière Publicitaire (Image PNG/JPG) *</label>
+                            <input type="file" id="pub-file-input" accept="image/*" class="input-field bg-slate-50 cursor-pointer mb-0">
+                        </div>
+
+                        <button id="btn-publier-campagne" onclick="executerAjoutPubliciteAdmin()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3.5 rounded-xl shadow transition mt-2 cursor-pointer flex items-center justify-center space-x-2">
+                            <span>🚀 Publier la Campagne</span>
+                        </button>
+                    </div>
+
+                    <div id="pub-liste-ancnes" class="hidden space-y-3">
+                        <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-100 cursor-pointer" onclick="retourMenuPubIcones()">← Retour aux options pub</div>
+                        
+                        <div class="relative">
+                            <input type="text" id="search-pub-partner-input" oninput="filtrerCampagnesPublicitairesAdmin()" placeholder="🔍 Rechercher un partenaire ou titre..." class="input-field mb-0">
+                        </div>
+
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-slate-700 text-[10px] font-black uppercase tracking-wider">Annonces &amp; Bannières Partenaires</span>
+                            <button onclick="chargerCampagnesPublicitairesAdmin()" class="text-[10px] bg-white border border-slate-300 text-slate-700 px-2 py-1 rounded shadow-sm">🔄 Rafraîchir</button>
+                        </div>
+                        <div id="pub-companies-container" class="space-y-3"></div>
+                    </div>
                 </div>
 
-                <!-- ROUTAGE -->
+                <!-- ROUTAGE HARMONISÉ -->
                 <div id="sub-suivi-routing" class="hidden space-y-3">
                     <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilGrille()"><span>← Retour à la console</span></div>
+                    <span class="text-blue-600 text-[10px] font-black uppercase block tracking-wider">Filtre d'exploitation par secteur</span>
                     <select id="filter-routing-secteur" onchange="chargerCommandesPourRoutage()" class="select-field">
                         <option value="Gaz Domestique">🔥 Gaz Domestique</option>
                         <option value="Pharmacie">💊 Pharmacie &amp; Santé</option>
@@ -261,22 +391,72 @@
                 <div id="sub-validation-recharge" class="hidden space-y-4">
                     <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilGrille()"><span>← Retour à la console</span></div>
                     <div class="card p-4 space-y-3">
-                        <input type="text" id="search-commerce-name" placeholder="Nom du commerce ou identifiant..." class="input-field mb-0">
+                        <div class="relative">
+                            <input type="text" id="search-commerce-name" placeholder="Nom du commerce ou identifiant..." class="input-field pr-10 mb-0">
+                            <span class="absolute right-3 top-3 text-sm cursor-pointer" onclick="rechercheRapideCommerceMarchand()">🔍</span>
+                        </div>
+                        
                         <div id="box-marchand-resultat" class="hidden text-xs p-3 bg-slate-50 rounded-xl border border-slate-200 text-slate-700 font-mono"></div>
-                        <input type="number" step="0.01" id="recharge-amount-input" placeholder="Montant en USD" class="input-field mb-0">
-                        <button onclick="confirmerReceptionRechargeAdmin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3.5 rounded-xl shadow transition cursor-pointer">💳 Confirmer Recharge</button>
+                        
+                        <div>
+                            <label class="text-[10px] text-slate-600 font-black uppercase tracking-wider block mb-1">Sélectionner le Forfait / Plan *</label>
+                            <select id="recharge-forfait-select" onchange="ajusterMontantSuggereParForfait(this.value)" class="select-field mb-0 font-bold">
+                                <option value="commission">💼 Mode Commission (Recharge libre du solde)</option>
+                                <option value="journalier">🎟️ Pass Journalier (1 jour - aujourd'hui jusqu'à 23h59)</option>
+                                <option value="multijours">⏱️ Pass Temporaire Personnalisé (Définir le nombre de jours)</option>
+                                <option value="mensuel">📅 Pass Mensuel VIP (Abonnement 30 Jours 0% com)</option>
+                            </select>
+                        </div>
+
+                        <div id="box-nb-jours-recharge" class="hidden bg-blue-50/70 border border-blue-200 p-3 rounded-xl space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="text-[10px] text-blue-900 font-black uppercase tracking-wider">Durée payée en jours :</label>
+                                <span class="text-[10px] text-blue-700 font-bold font-mono" id="lbl-calcul-prix-jours">Suggéré : 2.00 $</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="number" min="1" max="365" id="recharge-nb-jours-input" value="1" oninput="ajusterMontantPassMultiJours(this.value)" class="w-20 p-2 bg-white border border-blue-300 rounded-lg text-slate-900 font-mono text-center font-bold text-xs outline-none">
+                                <span class="text-xs text-slate-700 font-bold">jour(s) de couverture</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] text-slate-500 font-bold block mb-1">Montant crédité ($) *</label>
+                            <input type="number" step="0.01" id="recharge-amount-input" placeholder="Montant en USD" class="input-field mb-0">
+                        </div>
+
+                        <button onclick="confirmerReceptionRechargeAdmin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3.5 rounded-xl shadow transition cursor-pointer">💳 Confirmer la recharge &amp; Appliquer le forfait</button>
                     </div>
                 </div>
 
-                <!-- PARTENAIRES -->
+                <!-- PARTENAIRES & MODÉRATION -->
                 <div id="sub-moderation-commerce" class="hidden space-y-3">
                     <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilGrille()"><span>← Retour à l'accueil</span></div>
+                    <button onclick="declencherCollecteMasseAbonnementsPublicite()" class="w-full bg-gradient-to-r from-amber-600 to-red-600 text-white font-black text-xs py-2.5 rounded-xl shadow mb-2 cursor-pointer">💸 Forcer la collecte visibilité globale ($1)</button>
+                    
+                    <div class="relative">
+                        <input type="text" id="search-partner-moderation-input" oninput="filtrerPartenairesModerationAdmin()" placeholder="🔍 Rechercher par Nom, ID, Responsable, Tel, Commune..." class="input-field">
+                    </div>
+
+                    <div class="flex justify-between items-center gap-2">
+                        <select id="filter-moderation-secteur" onchange="chargerPartenairesPourModeration()" class="select-field mb-0 flex-1">
+                            <option value="Tous">Tous les secteurs d'activité</option>
+                            <option value="Pharmacie">💊 Pharmacie</option>
+                            <option value="Gaz Domestique">🔥 Gaz Domestique</option>
+                            <option value="Eau">💧 Eau en Gros</option>
+                            <option value="Chambre Froide">🥩 Chambre Froide</option>
+                        </select>
+                        <span id="lbl-count-partenaires-trouves" class="text-[10px] text-slate-600 font-bold whitespace-nowrap bg-white px-3 py-2.5 rounded-lg border border-slate-200 shadow-sm">...</span>
+                    </div>
+
                     <div id="moderation-container-cards" class="space-y-3"></div>
                 </div>
 
                 <!-- GESTION CLIENTS -->
                 <div id="sub-moderation-clients" class="hidden space-y-3">
                     <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilGrille()"><span>← Retour à l'accueil</span></div>
+                    <div class="relative">
+                        <input type="text" id="search-client-input" oninput="filtrerRepertoireClientsAdmin()" placeholder="🔍 Rechercher un client par nom ou téléphone..." class="input-field">
+                    </div>
                     <div class="table-responsive border border-slate-200 rounded-xl bg-white shadow-sm">
                         <table class="w-full text-xs">
                             <thead>
@@ -295,24 +475,201 @@
                 <!-- SECTEURS & PARAMÈTRES -->
                 <div id="sub-secteurs-lignes" class="hidden space-y-4">
                     <div class="flex items-center space-x-2 text-stone-600 font-bold text-xs pb-2 border-b border-[#e8e1d5] cursor-pointer" onclick="retourAccueilGrille()"><span>← Retour à la console</span></div>
-                    <p class="text-xs text-slate-500">Paramètres généraux synchronisés sur le Cloud GTS.</p>
+                    
+                    <div id="menu-grid-secteurs" class="grid grid-cols-2 gap-3">
+                        <div onclick="ouvrirSecteurSubFenetre('pane-tarifs-reseau')" class="grid-icon-card p-4 border border-[#e8e1d5] bg-[#fffdfa] rounded-2xl cursor-pointer">
+                            <span class="text-2xl mb-1.5 p-2 bg-blue-50 rounded-xl text-blue-600">⚙️</span>
+                            <span class="text-xs font-black text-stone-800 block">Tarifs Réseau</span>
+                        </div>
+                        <div onclick="ouvrirSecteurSubFenetre('pane-secteurs-ouverts')" class="grid-icon-card p-4 border border-[#e8e1d5] bg-[#fffdfa] rounded-2xl cursor-pointer">
+                            <span class="text-2xl mb-1.5 p-2 bg-emerald-50 rounded-xl text-emerald-600">🛠️</span>
+                            <span class="text-xs font-black text-stone-800 block">Gestion Secteurs</span>
+                        </div>
+                        <div onclick="ouvrirSecteurSubFenetre('pane-momo-lecture')" class="grid-icon-card p-4 border border-[#e8e1d5] bg-[#fffdfa] rounded-2xl cursor-pointer">
+                            <span class="text-2xl mb-1.5 p-2 bg-indigo-50 rounded-xl text-indigo-600">📱</span>
+                            <span class="text-xs font-black text-stone-800 block">Réception &amp; Routage</span>
+                        </div>
+                        <div onclick="ouvrirSecteurSubFenetre('pane-frais-livraison')" class="grid-icon-card p-4 border border-[#e8e1d5] bg-[#fffdfa] rounded-2xl cursor-pointer">
+                            <span class="text-2xl mb-1.5 p-2 bg-amber-50 rounded-xl text-amber-600">📍</span>
+                            <span class="text-xs font-black text-stone-800 block">Frais Communes</span>
+                        </div>
+                        <div onclick="ouvrirSecteurSubFenetre('pane-presentation-gts')" class="grid-icon-card p-4 border border-[#e8e1d5] bg-[#fffdfa] rounded-2xl cursor-pointer">
+                            <span class="text-2xl mb-1.5 p-2 bg-cyan-50 rounded-xl text-cyan-600">ℹ️</span>
+                            <span class="text-xs font-black text-stone-800 block">Présentation GTS</span>
+                        </div>
+                        <div onclick="ouvrirSecteurSubFenetre('pane-cgu-eyano')" class="grid-icon-card p-4 border border-[#e8e1d5] bg-[#fffdfa] rounded-2xl cursor-pointer">
+                            <span class="text-2xl mb-1.5 p-2 bg-rose-50 rounded-xl text-rose-600">📜</span>
+                            <span class="text-xs font-black text-stone-800 block">CGU Eyano</span>
+                        </div>
+                    </div>
+
+                    <!-- PANE TARIFS RÉSEAU -->
+                    <div id="pane-tarifs-reseau" class="hidden card p-5 space-y-4">
+                        <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-100 cursor-pointer" onclick="backToSecteursMenu()"><span>← Retour aux options</span></div>
+                        <span class="text-xs font-black text-blue-700 uppercase tracking-wider block">⚙️ Configuration des Tarifs Réseau &amp; Pass Partenaires</span>
+                        <div class="space-y-2.5 text-xs">
+                            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+                                <span class="text-slate-700 font-bold">Commission par commande (%) :</span>
+                                <input type="number" id="global-commission-input" value="5" step="0.5" class="w-24 p-2 bg-white border border-slate-300 rounded-lg text-slate-900 font-mono text-center font-bold outline-none">
+                            </div>
+                            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+                                <span class="text-emerald-700 font-bold">Prix Pass Journalier ($) :</span>
+                                <input type="number" id="global-pass-journalier-input" value="2.00" step="0.5" class="w-24 p-2 bg-white border border-slate-300 rounded-lg text-slate-900 font-mono text-center font-bold outline-none">
+                            </div>
+                            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+                                <span class="text-amber-700 font-bold">Prix Pass Mensuel VIP ($) :</span>
+                                <input type="number" id="global-pass-mensuel-input" value="35.00" step="1.0" class="w-24 p-2 bg-white border border-slate-300 rounded-lg text-slate-900 font-mono text-center font-bold outline-none">
+                            </div>
+                        </div>
+                        <button onclick="sauvegarderTarificationGlobaleCloud()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3 rounded-xl shadow transition cursor-pointer">💾 Enregistrer les Tarifs</button>
+                    </div>
+
+                    <!-- PANE GESTION DES SECTEURS -->
+                    <div id="pane-secteurs-ouverts" class="hidden card p-5 space-y-4">
+                        <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-100 cursor-pointer" onclick="backToSecteursMenu()"><span>← Retour aux options</span></div>
+                        <div id="container-admin-secteurs-toggles" class="space-y-2.5 pt-1"></div>
+                    </div>
+
+                    <!-- PANE MOMO -->
+                    <div id="pane-momo-lecture" class="hidden card p-5 space-y-4">
+                        <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-100 cursor-pointer" onclick="backToSecteursMenu()"><span>← Retour aux options</span></div>
+                        <div class="space-y-3">
+                            <input type="text" id="quick-edit-wa" placeholder="WhatsApp" class="input-field mb-0 font-mono font-bold bg-[#f5efe3]" readonly>
+                            <input type="text" id="quick-edit-mpesa" placeholder="M-Pesa" class="input-field mb-0 font-mono font-bold bg-[#f5efe3]" readonly>
+                            <input type="text" id="quick-edit-orange" placeholder="Orange" class="input-field mb-0 font-mono font-bold bg-[#f5efe3]" readonly>
+                            <input type="text" id="quick-edit-airtel" placeholder="Airtel" class="input-field mb-0 font-mono font-bold bg-[#f5efe3]" readonly>
+                            <button type="button" onclick="navAdminMobile('page-securite-master', 'btn-nav-sec')" class="w-full bg-indigo-50 text-indigo-700 border border-indigo-200 font-black text-xs py-3 rounded-xl mt-2">🔐 Modifier via l'onglet Sécurité</button>
+                        </div>
+                    </div>
+
+                    <!-- PANE FRAIS LIVRAISON -->
+                    <div id="pane-frais-livraison" class="hidden card p-5 space-y-4">
+                        <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-100 cursor-pointer" onclick="backToSecteursMenu()"><span>← Retour aux options</span></div>
+                        <div class="table-responsive max-h-72 overflow-y-auto border border-slate-200 rounded-xl bg-white">
+                            <table class="w-full text-xs">
+                                <thead><tr class="bg-slate-100 text-slate-600 text-[9px]"><th>Commune</th><th class="text-right">Frais ($)</th></tr></thead>
+                                <tbody id="read-shipping-communes-rows"></tbody>
+                            </table>
+                        </div>
+                        <button onclick="sauvegarderGrilleFraisLivraisonCloud()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3 rounded-xl shadow cursor-pointer">💾 Enregistrer les Frais</button>
+                    </div>
+
+                    <!-- PANE PRÉSENTATION -->
+                    <div id="pane-presentation-gts" class="hidden card p-5 space-y-4">
+                        <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-100 cursor-pointer" onclick="backToSecteursMenu()"><span>← Retour aux options</span></div>
+                        <textarea id="edit-gts-presentation-text" rows="8" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 outline-none leading-relaxed"></textarea>
+                        <button onclick="sauvegarderMessagePresentationGts()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3 rounded-xl shadow cursor-pointer">💾 Enregistrer</button>
+                    </div>
+
+                    <!-- PANE CGU -->
+                    <div id="pane-cgu-eyano" class="hidden card p-5 space-y-4">
+                        <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-100 cursor-pointer" onclick="backToSecteursMenu()"><span>← Retour aux options</span></div>
+                        <textarea id="edit-eyano-cgu-text" rows="14" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 outline-none font-mono leading-relaxed"></textarea>
+                        <button onclick="sauvegarderCguEyanoAdmin()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3 rounded-xl shadow cursor-pointer">💾 Publier CGU</button>
+                    </div>
                 </div>
 
                 <!-- SÉCURITÉ MASTER -->
                 <div id="page-securite-master" class="page-panel space-y-4">
                     <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilDepuisOngletFonds()"><span>← Retour à l'accueil</span></div>
-                    <div class="card p-4 space-y-2">
-                        <span class="text-xs font-bold text-slate-800">Console Souveraine GTS Direction</span>
-                        <p class="text-[11px] text-slate-500">Accès direct vérifié.</p>
+                    
+                    <div id="master-lock-box" class="card p-6 space-y-3 border-red-200 bg-red-50/40 text-center">
+                        <span class="text-red-700 text-xs font-black uppercase block tracking-wider">🔐 Authentification Souveraine Requise (Chefs)</span>
+                        <input type="password" id="master-gate-password" placeholder="Saisir la clé Master Direction..." class="input-field text-center mb-2" onkeydown="if(event.key === 'Enter') deverrouillerConsoleSouveraineMaster()">
+                        <button onclick="deverrouillerConsoleSouveraineMaster()" class="w-full bg-red-600 hover:bg-red-700 text-white font-black text-xs py-3 rounded-xl shadow cursor-pointer">Valider les accès</button>
+                    </div>
+
+                    <div id="master-unlocked-core" class="hidden space-y-4">
+                        <div id="master-grid-icons" class="grid grid-cols-2 gap-2">
+                            <div onclick="ouvrirSouverainSubModulePleinEcran('gov-commissions')" class="p-5 bg-white border border-slate-200 rounded-2xl text-center cursor-pointer text-xs font-bold text-slate-800 shadow-sm">💰 Commissions GTS</div>
+                            <div onclick="ouvrirSouverainSubModulePleinEcran('gov-routage-numeros')" class="p-5 bg-white border border-slate-200 rounded-2xl text-center cursor-pointer text-xs font-bold text-slate-800 shadow-sm">📱 Routage Numéros</div>
+                            <div onclick="ouvrirSouverainSubModulePleinEcran('gov-frais-communes')" class="p-5 bg-white border border-slate-200 rounded-2xl text-center cursor-pointer text-xs font-bold text-slate-800 shadow-sm">📍 Frais Communes</div>
+                            <div onclick="ouvrirSouverainSubModulePleinEcran('gov-chiffrement-profils')" class="p-5 bg-white border border-slate-200 rounded-2xl text-center cursor-pointer text-xs font-bold text-slate-800 shadow-sm">🔑 Chiffrement Clés</div>
+                        </div>
+
+                        <div id="gov-commissions" class="hidden space-y-3">
+                            <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-200 cursor-pointer" onclick="retourAuxIconesSecurite()">← Retour aux icônes</div>
+                            <div class="card p-4 space-y-3">
+                                <span class="text-amber-800 text-xs font-black uppercase block tracking-wider">💰 Commissions GTS Totales : <span id="lbl-master-cumul-com" class="font-mono text-emerald-600 font-extrabold text-sm ml-1">0.00 $</span></span>
+                                
+                                <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl space-y-2">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <input type="date" id="gov-com-date-start" onchange="filtrerCommissionsGtsParDate()" class="w-full bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-bold">
+                                        <input type="date" id="gov-com-date-end" onchange="filtrerCommissionsGtsParDate()" class="w-full bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-bold">
+                                    </div>
+                                    <button type="button" onclick="reinitialiserFiltresDatesCommissionsGts()" class="w-full bg-white text-slate-600 font-bold text-[10px] py-1.5 rounded-lg border border-slate-200">Tout afficher</button>
+                                </div>
+
+                                <div class="table-responsive border border-slate-200 rounded-xl overflow-hidden bg-white my-2">
+                                    <table class="w-full text-xs">
+                                        <tbody class="font-mono text-xs">
+                                            <tr><td>💊 Pharmacie &amp; Santé</td><td id="sec-com-pharmacie" class="text-right text-emerald-600 font-bold">0.00 $</td></tr>
+                                            <tr><td>🔥 Gaz Domestique</td><td id="sec-com-gaz" class="text-right text-emerald-600 font-bold">0.00 $</td></tr>
+                                            <tr><td>💧 Eau en Gros</td><td id="sec-com-eau" class="text-right text-emerald-600 font-bold">0.00 $</td></tr>
+                                            <tr><td>🥩 Chambre Froide</td><td id="sec-com-froide" class="text-right text-emerald-600 font-bold">0.00 $</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="gov-routage-numeros" class="hidden space-y-3">
+                            <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-200 cursor-pointer" onclick="retourAuxIconesSecurite()">← Retour aux icônes</div>
+                            <div class="card p-4 space-y-2">
+                                <input type="text" id="edit-wa" placeholder="WhatsApp" class="input-field">
+                                <input type="text" id="edit-mpesa" placeholder="M-Pesa" class="input-field">
+                                <input type="text" id="edit-orange" placeholder="Orange" class="input-field">
+                                <input type="text" id="edit-airtel" placeholder="Airtel" class="input-field">
+                                <button onclick="sauvegarderModificationNumerosOfficielsSouverains()" class="w-full bg-blue-600 text-white font-bold text-xs py-3 rounded-xl">💾 Mettre à jour</button>
+                            </div>
+                        </div>
+
+                        <div id="gov-frais-communes" class="hidden space-y-3">
+                            <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-200 cursor-pointer" onclick="retourAuxIconesSecurite()">← Retour aux icônes</div>
+                            <div class="table-responsive max-h-64 overflow-y-auto border border-slate-200 rounded-xl bg-white">
+                                <table class="w-full text-xs">
+                                    <tbody id="master-editable-communes-rows"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="gov-chiffrement-profils" class="hidden space-y-4">
+                            <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-200 cursor-pointer" onclick="retourAuxIconesSecurite()">← Retour aux icônes</div>
+                            <div class="card p-4 space-y-2">
+                                <input type="text" id="new-master-admin-login" placeholder="Nouvel identifiant..." class="input-field">
+                                <input type="password" id="new-master-admin-pass" placeholder="Nouveau mot de passe..." class="input-field">
+                                <input type="password" id="new-master-gate-pass" placeholder="Nouveau mot de passe master..." class="input-field">
+                                <button onclick="sauvegarderChiffrementProfilsChefsMaster()" class="w-full bg-indigo-600 text-white font-bold text-xs py-3 rounded-xl">Chiffrer et enregistrer</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- EXTRACTION -->
+                <!-- ANALYTIQUE & EXTRACTION -->
                 <div id="page-analytique-extraction" class="page-panel space-y-4">
                     <div class="flex items-center space-x-2 text-slate-500 font-bold text-xs pb-2 border-b border-slate-200 cursor-pointer" onclick="retourAccueilDepuisOngletFonds()"><span>← Retour à l'accueil</span></div>
-                    <div class="card p-4 space-y-3">
-                        <span class="text-blue-700 text-xs font-black uppercase">Extraction Données Globales</span>
-                        <button onclick="declencherTelechargementStatistiquesGlobalesCSV()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-xs py-3 rounded-xl shadow cursor-pointer">📥 Télécharger .CSV Global</button>
+                    <div id="extraction-grid-icons" class="grid grid-cols-2 gap-3">
+                        <div onclick="ouvrirExtractionSubModulePleinEcran('ext-stat-multicritere')" class="grid-icon-card"><span class="text-2xl mb-1">🗂️</span><span class="text-[11px] font-bold text-slate-700">Extraction Statistique</span></div>
+                        <div onclick="ouvrirExtractionSubModulePleinEcran('ext-volume-reseau')" class="grid-icon-card"><span class="text-2xl mb-1">🌐</span><span class="text-[11px] font-bold text-slate-700">Volume Global Réseau</span></div>
+                    </div>
+
+                    <div id="ext-stat-multicritere" class="hidden space-y-3">
+                        <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-200 cursor-pointer" onclick="backToExtractionMenu()">← Retour</div>
+                        <div class="card p-4 space-y-3">
+                            <select id="extract-criteria-mode" class="select-field"><option value="Tous">📊 Historique global</option></select>
+                            <select id="extract-sector-mode" class="select-field"><option value="Tous">Tous les secteurs</option></select>
+                            <button onclick="declencherTelechargementStatistiquesGlobalesCSV()" class="w-full bg-blue-600 text-white font-black text-xs py-3 rounded-xl">📥 Télécharger .csv</button>
+                        </div>
+                    </div>
+
+                    <div id="ext-volume-reseau" class="hidden space-y-3">
+                        <div class="text-slate-500 font-bold text-xs pb-1 border-b border-slate-200 cursor-pointer" onclick="backToExtractionMenu()">← Retour</div>
+                        <div class="card p-4 space-y-3 text-center">
+                            <span class="text-[10px] text-slate-500 font-bold uppercase">Volume Ventes Réelles</span>
+                            <h1 id="total-global-network-brut" class="text-2xl font-black text-blue-600 font-mono">0.00 $</h1>
+                            <span class="text-[10px] text-slate-500 font-bold uppercase block mt-2">Commandes Clôturées</span>
+                            <h1 id="impact-volume-count" class="text-2xl font-black text-emerald-600 font-mono">0</h1>
+                        </div>
                     </div>
                 </div>
 
@@ -335,50 +692,86 @@
         </footer>
     </div>
 
-    <!-- SCRIPT ANALYTIQUE ET LOGISTIQUE CLOUD -->
+    <!-- LOGIQUE JS COMPLETE ET INTÈGRE -->
     <script>
         const _supabase = supabase.createClient("https://ngsdxxgunrnzoqanfuhn.supabase.co", "sb_publishable_NXhDSDSp8emSPAiFs4wf8w_badTr5nC");
         
-        let listeCommandesLocale = [];
-        let listeMarchandsLocale = [];
+        let monLoginAdmin = "admin", monMdpAdmin = "GTS2026", maCleMasterCible = "Master2026", monRoleSession = "Super-Admin";
+        let listeMarchandsLocale = [], listeCommandesLocale = [], cacheRepertoireClients = {}, idMarchandSelectionneRecharge = null;
+        let cacheCampagnesPub = [], cacheAvisClients = [];
+        const communesKinshasa = ["Bandalungwa", "Barumbu", "Bumbu", "Gombe", "Kalamu", "Kasa-Vubu", "Kimbanseke", "Kinshasa", "Kintambo", "Kisenso", "Lemba", "Limete", "Lingwala", "Makala", "Maluku", "Masina", "Matete", "Ngaba", "Ngaliema", "Ngiri-Ngiri", "Nsele", "Oualemba", "Selembao", "Mont-Ngafula"];
 
-        function ouvrirSousPagePleinEcran(id) {
-            document.getElementById('grid-main-menu').style.display = 'none';
-            document.querySelectorAll('.content-body > div').forEach(el => {
-                if(el.id !== 'grid-main-menu') el.classList.add('hidden');
+        let statutSecteursConfig = {
+            "Gaz Domestique": { nom: "Gaz Domestique", emoji: "🔥", actif: true },
+            "Pharmacie": { nom: "Pharmacie & Santé", emoji: "💊", actif: true },
+            "Eau": { nom: "Eau en Gros", emoji: "💧", actif: true },
+            "Chambre Froide": { nom: "Chambre Froide / Vivres", emoji: "🥩", actif: true }
+        };
+
+        const cguParDefautTexte = `CONDITIONS GÉNÉRALES D'UTILISATION (CGU) – EYANO MARKET\nDernière mise à jour : 2026\nZone : RDC.`;
+
+        function ouvrirSousPagePleinEcran(subViewId) { 
+            document.getElementById('grid-main-menu').style.display = 'none'; 
+            ['sub-microhubs', 'sub-suivi-routing', 'sub-validation-recharge', 'sub-moderation-commerce', 'sub-moderation-clients', 'sub-avis-clients', 'sub-gestion-entreprises-pub', 'sub-secteurs-lignes'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.className = "hidden";
             });
-            const t = document.getElementById(id);
-            if(t) {
-                t.classList.remove('hidden');
-                t.classList.add('block', 'space-y-3');
-                if(id === 'sub-microhubs') calculerMetriquesMicroHubs();
-                if(id === 'sub-suivi-routing') chargerCommandesPourRoutage();
-            }
+            
+            const target = document.getElementById(subViewId); 
+            if(target) { 
+                target.className = "block space-y-3"; 
+                if(subViewId === 'sub-microhubs') calculerMetriquesMicroHubs();
+                if(subViewId === 'sub-secteurs-lignes') { backToSecteursMenu(); recupererTauxGlobalDepuisStorage(); chargerMessagePresentationGtsAdmin(); chargerCguEyanoAdmin(); chargerNumerosOfficielsDepuisCloud(); } 
+                if(subViewId === 'sub-suivi-routing') chargerCommandesPourRoutage(); 
+                if(subViewId === 'sub-moderation-commerce') chargerPartenairesPourModeration();
+                if(subViewId === 'sub-moderation-clients') chargerRepertoireClientsAdmin(); 
+                if(subViewId === 'sub-avis-clients') chargerAvisClientsAdmin();
+                if(subViewId === 'sub-gestion-entreprises-pub') retourMenuPubIcones();
+            } 
         }
 
-        function retourAccueilGrille() {
-            document.querySelectorAll('.content-body > div').forEach(el => el.classList.add('hidden'));
-            document.getElementById('page-accueil').classList.remove('hidden');
-            document.getElementById('grid-main-menu').style.display = 'grid';
+        function retourAccueilGrille() { 
+            ['sub-microhubs', 'sub-suivi-routing', 'sub-validation-recharge', 'sub-moderation-commerce', 'sub-moderation-clients', 'sub-avis-clients', 'sub-gestion-entreprises-pub', 'sub-secteurs-lignes'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.className = "hidden";
+            });
+            document.getElementById('grid-main-menu').style.display = 'grid'; 
+            calculerMetriquesGlobalesHolding(); 
         }
 
         function retourAccueilDepuisOngletFonds() { navAdminMobile('page-accueil', 'btn-nav-home'); }
+        
+        function ouvrirSecteurSubFenetre(paneId) { 
+            document.getElementById('menu-grid-secteurs').className = "hidden"; 
+            ['pane-tarifs-reseau', 'pane-secteurs-ouverts', 'pane-momo-lecture', 'pane-frais-livraison', 'pane-presentation-gts', 'pane-cgu-eyano'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.className = "hidden";
+            });
+            const targetPane = document.getElementById(paneId);
+            if(targetPane) targetPane.className = "block card p-5 space-y-4";
 
-        function navAdminMobile(pageId, btnId) {
-            document.querySelectorAll('.page-panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('footer button').forEach(b => b.classList.remove('active'));
-            document.getElementById(pageId)?.classList.add('active');
-            document.getElementById(btnId)?.classList.add('active');
-            if(pageId === 'page-accueil') retourAccueilGrille();
+            if(paneId === 'pane-tarifs-reseau') recupererTauxGlobalDepuisStorage();
+            if(paneId === 'pane-secteurs-ouverts') chargerSecteursConfigAdmin();
+            if(paneId === 'pane-momo-lecture') chargerNumerosOfficielsDepuisCloud();
+            if(paneId === 'pane-frais-livraison') initialiserTableauxKinshasa();
+            if(paneId === 'pane-presentation-gts') chargerMessagePresentationGtsAdmin();
+            if(paneId === 'pane-cgu-eyano') chargerCguEyanoAdmin();
         }
 
-        /* --- LOGIQUE ANALYTIQUE DES MICRO-HUBS ET LOGISTIQUE --- */
+        function backToSecteursMenu() { 
+            ['pane-tarifs-reseau', 'pane-secteurs-ouverts', 'pane-momo-lecture', 'pane-frais-livraison', 'pane-presentation-gts', 'pane-cgu-eyano'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.className = "hidden";
+            });
+            document.getElementById('menu-grid-secteurs').className = "grid grid-cols-2 gap-3"; 
+        }
+
+        /* --- MODULE DÉCISIONNEL MICRO-HUBS --- */
         async function calculerMetriquesMicroHubs() {
             const { data: commandes } = await _supabase.from('commandes').select('*');
             listeCommandesLocale = commandes || [];
 
             let sumBrut = 0;
-            let sumCom = 0;
             const sectorStats = {
                 'Gaz Domestique': { count: 0, total: 0 },
                 'Pharmacie': { count: 0, total: 0 },
@@ -389,9 +782,7 @@
 
             listeCommandesLocale.forEach(c => {
                 const montant = parseFloat(c.montant_total_usd || c.montant_brut_usd || 0);
-                const com = parseFloat(c.commission_gts_usd || 0);
                 sumBrut += montant;
-                sumCom += com;
 
                 const sect = c.secteur || 'Autre';
                 if(!sectorStats[sect]) sectorStats[sect] = { count: 0, total: 0 };
@@ -408,7 +799,6 @@
             const avgBasket = (sumBrut / totalCmds).toFixed(2);
             document.getElementById('hub-avg-basket').innerText = `${avgBasket} $`;
 
-            // Rendu de la vélocité par secteur
             const boxVelocity = document.getElementById('container-hub-velocity');
             if(boxVelocity) {
                 boxVelocity.innerHTML = '';
@@ -423,12 +813,10 @@
                             <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
                                 <div class="bg-indigo-600 h-full rounded-full" style="width: ${share}%"></div>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 });
             }
 
-            // Top Commune & Recommandation Dark Store
             const topCommune = Object.entries(communesStats).sort((a,b) => b[1].count - a[1].count)[0];
             const topCommuneName = topCommune ? topCommune[0] : 'Bandalungwa';
             document.getElementById('hub-stock-tension').innerText = topCommuneName;
@@ -439,12 +827,7 @@
                     <div class="space-y-1.5">
                         <strong class="text-indigo-900 block font-bold">📍 Création de Micro-Hub Prioritaire :</strong>
                         <p>La commune de <strong>${topCommuneName}</strong> concentre la plus forte densité d'achats répétés. Négociez un accord de stockage tampon avec un marchand partenaire pour réduire les temps de livraison à moins de 20 minutes.</p>
-                    </div>
-                    <div class="space-y-1.5 pt-2 border-t border-slate-200">
-                        <strong class="text-amber-800 block font-bold">🔥 Sécurisation du Gaz & Pharmacie :</strong>
-                        <p>Ces deux catégories représentent des besoins vitaux. Tout retard supérieur à 40 minutes entraîne l'abandon du client vers le commerce informel physique.</p>
-                    </div>
-                `;
+                    </div>`;
             }
         }
 
@@ -462,17 +845,274 @@
             document.body.removeChild(link);
         }
 
-        function declencherTelechargementStatistiquesGlobalesCSV() {
-            exporterRapportLogistique();
+        /* --- LOGIQUE OPÉRATIONNELLE RESTAURÉE --- */
+        async function chargerAvisClientsAdmin() {
+            const container = document.getElementById('container-admin-reviews-list');
+            if(!container) return;
+            container.innerHTML = `<div class="text-center p-4 text-xs text-slate-500">Chargement des avis...</div>`;
+
+            const { data: commandes, error } = await _supabase.from('commandes').select('*').or('note_client.not.is.null,avis_client.not.is.null').order('created_at', { ascending: false });
+            if(error || !commandes || commandes.length === 0) {
+                container.innerHTML = `<div class="card p-4 text-center text-xs text-slate-400 italic">Aucun avis client enregistré.</div>`;
+                return;
+            }
+
+            const avisValides = commandes.filter(c => c.note_client || (c.avis_client && c.avis_client.trim() !== ''));
+            cacheAvisClients = avisValides;
+
+            let cumulNotes = 0, countNotes = 0, count5Stars = 0;
+            avisValides.forEach(c => {
+                if(c.note_client) {
+                    cumulNotes += c.note_client; countNotes++;
+                    if(c.note_client === 5) count5Stars++;
+                }
+            });
+
+            const moyenne = countNotes > 0 ? (cumulNotes / countNotes).toFixed(1) : "5.0";
+            document.getElementById('admin-avg-rating-lbl').innerText = `${moyenne} / 5`;
+            document.getElementById('admin-total-reviews-lbl').innerText = avisValides.length;
+            document.getElementById('admin-5star-reviews-lbl').innerText = count5Stars;
+
+            filtrerAvisClientsAdmin();
         }
 
-        async function chargerCommandesPourRoutage() {}
-        async function chargerAvisClientsAdmin() {}
-        function filtrerAvisClientsAdmin() {}
-        async function confirmerReceptionRechargeAdmin() {}
+        function filtrerAvisClientsAdmin() {
+            const container = document.getElementById('container-admin-reviews-list');
+            if(!container) return;
+            const ratingFilter = document.getElementById('filter-review-rating')?.value || 'Tous';
+            const sectorFilter = document.getElementById('filter-review-sector')?.value || 'Tous';
+            const query = (document.getElementById('search-review-text')?.value || '').trim().toLowerCase();
+
+            const filtres = cacheAvisClients.filter(c => {
+                if (ratingFilter !== 'Tous' && String(c.note_client || 0) !== ratingFilter) return false;
+                if (sectorFilter !== 'Tous' && !((c.secteur || '').toLowerCase().includes(sectorFilter.toLowerCase()))) return false;
+                if (query && !(`${c.nom_client || ''} ${c.avis_client || ''}`.toLowerCase().includes(query))) return false;
+                return true;
+            });
+
+            if(filtres.length === 0) {
+                container.innerHTML = `<div class="card p-4 text-center text-xs text-slate-400 italic">Aucun avis correspondant.</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            filtres.forEach(c => {
+                const note = c.note_client || 5;
+                container.innerHTML += `
+                    <div class="card p-3.5 border border-slate-200 bg-white space-y-2 shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-xs font-black text-slate-900">👤 ${c.nom_client || 'Client'}</span>
+                                <span class="text-[10px] text-slate-500 block">Marchand : <b>${c.nom_partenaire || 'Non assigné'}</b></span>
+                            </div>
+                            <span class="bg-amber-50 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold">${'⭐'.repeat(note)} (${note}/5)</span>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs text-slate-700 italic">« ${c.avis_client || 'Sans texte'} »</div>
+                    </div>`;
+            });
+        }
+
+        async function chargerCommandesPourRoutage() {
+            const sectorSelected = document.getElementById('filter-routing-secteur').value;
+            const { data: partners } = await _supabase.from('partenaires').select('*');
+            if(partners) listeMarchandsLocale = partners;
+
+            const { data: orders } = await _supabase.from('commandes').select('*').order('created_at', { ascending: false });
+            const tbody = document.getElementById('routing-orders-rows'); 
+            if(!tbody) return; 
+            tbody.innerHTML = '';
+            
+            const filtered = orders ? orders.filter(o => (o.secteur || '').toLowerCase().includes(sectorSelected.toLowerCase())) : [];
+            if(filtered.length === 0) { 
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center p-4 italic text-slate-400">Aucune commande.</td></tr>`; 
+                return; 
+            } 
+            
+            filtered.forEach(o => {
+                let options = `<option value="">Marché ouvert...</option>`;
+                listeMarchandsLocale.forEach(m => { 
+                    const mId = m.identifiant || m.id_partenaire;
+                    options += `<option value="${mId}" ${String(mId) === String(o.id_partenaire) ? 'selected':''}>${m.nom_etablissement}</option>`; 
+                });
+                
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-100">
+                        <td>📍 C/ ${o.commune_livraison}</td>
+                        <td>${o.details_articles || 'Articles'}</td>
+                        <td class="font-mono font-bold">${parseFloat(o.montant_total_usd || 0).toFixed(2)} $</td>
+                        <td>
+                            <select id="select-route-id-${o.id_commande}" class="p-1.5 bg-slate-50 border rounded text-xs w-full">${options}</select>
+                            <button onclick="forcerReattributionMarcheAdmin('${o.id_commande}')" class="bg-blue-600 font-bold text-[10px] py-1 text-white rounded block w-full mt-1">Réassigner</button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        async function forcerReattributionMarcheAdmin(idCommande) {
+            const idPartenaireChoisi = document.getElementById(`select-route-id-${idCommande}`).value;
+            const partnerMatch = listeMarchandsLocale.find(m => String(m.identifiant || m.id_partenaire) === String(idPartenaireChoisi));
+            const partnerName = partnerMatch ? partnerMatch.nom_etablissement : 'Partenaire Eyano';
+
+            await _supabase.from('commandes').update({ id_partenaire: idPartenaireChoisi, nom_partenaire: partnerName, statut_commande: 'Acceptée' }).eq('id_commande', idCommande);
+            alert(`✓ Commande #${idCommande} assignée à ${partnerName}.`);
+            chargerCommandesPourRoutage();
+        }
+
+        async function confirmerReceptionRechargeAdmin() { 
+            const amount = parseFloat(document.getElementById('recharge-amount-input').value); 
+            const typeForfait = document.getElementById('recharge-forfait-select').value;
+            const match = listeMarchandsLocale.find(m => String(m.identifiant) === String(idMarchandSelectionneRecharge)); 
+            if(!match || isNaN(amount) || amount <= 0) return alert("Sélectionnez un marchand et un montant.");
+
+            const nSolde = parseFloat(match.solde_caution_usd || 0) + amount; 
+            await _supabase.from('partenaires').update({ solde_caution_usd: nSolde, type_forfait: typeForfait }).eq('identifiant', match.identifiant); 
+            alert(`✅ Recharge de ${amount.toFixed(2)}$ validée.`);
+            document.getElementById('recharge-amount-input').value = '';
+            calculerMetriquesGlobalesHolding();
+        }
+
+        function rechercheRapideCommerceMarchand() {
+            const query = document.getElementById('search-commerce-name').value.trim().toLowerCase(); 
+            const match = listeMarchandsLocale.find(m => (m.nom_etablissement && m.nom_etablissement.toLowerCase().includes(query)) || String(m.identifiant || '').toLowerCase() === query); 
+            const box = document.getElementById('box-marchand-resultat'); 
+            if(match) { 
+                idMarchandSelectionneRecharge = match.identifiant; 
+                box.className = "block text-xs p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 font-mono"; 
+                box.innerHTML = `Marchand : <b>${match.nom_etablissement}</b> | Solde : <b>${parseFloat(match.solde_caution_usd || 0).toFixed(2)} $</b>`; 
+            } else { 
+                idMarchandSelectionneRecharge = null; 
+                box.className = "block text-xs p-3 bg-red-50 border border-red-200 text-red-700 font-mono"; 
+                box.innerHTML = `❌ Aucun marchand.`; 
+            } 
+        }
+
+        function ajusterMontantSuggereParForfait(val) {
+            const input = document.getElementById('recharge-amount-input');
+            if(val === 'journalier') input.value = "2.00";
+            if(val === 'mensuel') input.value = "35.00";
+        }
+
+        async function chargerPartenairesPourModeration() {
+            const { data: partners } = await _supabase.from('partenaires').select('*').order('nom_etablissement', { ascending: true });
+            if(partners) listeMarchandsLocale = partners;
+            const container = document.getElementById('moderation-container-cards'); 
+            if(!container) return; 
+            container.innerHTML = ''; 
+            listeMarchandsLocale.forEach(p => {
+                container.innerHTML += `
+                    <div class="card p-4 space-y-2 border border-slate-200 bg-white">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-sm font-black text-slate-900">${p.nom_etablissement}</h3>
+                                <p class="text-[11px] text-slate-500">Secteur : <b>${p.secteur}</b> | Solde : <b>${parseFloat(p.solde_caution_usd || 0).toFixed(2)} $</b></p>
+                            </div>
+                            <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700">${p.statut || 'Actif'}</span>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        async function chargerRepertoireClientsAdmin() {
+            const { data: orders } = await _supabase.from('commandes').select('*');
+            const tbody = document.getElementById('admin-table-clients-rows');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            (orders || []).forEach(o => {
+                tbody.innerHTML += `<tr><td class="font-bold">${o.nom_client || 'Client'}</td><td>${o.telephone_client || '-'}</td><td>C/ ${o.commune_livraison || '-'}</td><td class="font-bold text-center">1</td></tr>`;
+            });
+        }
+
+        function navAdminMobile(panelId, btnId) {
+            document.querySelectorAll('.page-panel').forEach(p => p.classList.remove('active')); 
+            document.querySelectorAll('footer button').forEach(b => b.classList.remove('active')); 
+            document.getElementById(panelId)?.classList.add('active');
+            document.getElementById(btnId)?.classList.add('active');
+            if(panelId === 'page-accueil') retourAccueilGrille(); 
+        }
+
+        function ouvrirExtractionSubModulePleinEcran(extId) {
+            document.getElementById('extraction-grid-icons').className = "hidden";
+            document.getElementById('ext-stat-multicritere').className = "hidden";
+            document.getElementById('ext-volume-reseau').className = "hidden";
+            document.getElementById(extId).className = "block space-y-3";
+        }
+        function backToExtractionMenu() { document.getElementById('extraction-grid-icons').className = "grid grid-cols-2 gap-3"; document.getElementById('ext-stat-multicritere').className = "hidden"; document.getElementById('ext-volume-reseau').className = "hidden"; }
+
+        function ouvrirSouverainSubModulePleinEcran(govId) {
+            document.getElementById('master-grid-icons').className = "hidden";
+            ['gov-commissions', 'gov-routage-numeros', 'gov-frais-communes', 'gov-chiffrement-profils'].forEach(id => {
+                const el = document.getElementById(id); if(el) el.className = "hidden";
+            });
+            document.getElementById(govId).className = "block space-y-3";
+        }
+        function retourAuxIconesSecurite() {
+            ['gov-commissions', 'gov-routage-numeros', 'gov-frais-communes', 'gov-chiffrement-profils'].forEach(id => {
+                const el = document.getElementById(id); if(el) el.className = "hidden";
+            });
+            document.getElementById('master-grid-icons').className = "grid grid-cols-2 gap-2";
+        }
+
+        function deverrouillerConsoleSouveraineMaster() { 
+            const inputPass = (document.getElementById('master-gate-password')?.value || '').trim();
+            if(inputPass === maCleMasterCible) { 
+                document.getElementById('master-lock-box').className = "hidden"; 
+                document.getElementById('master-unlocked-core').className = "block space-y-4"; 
+                retourAuxIconesSecurite(); 
+            } else { alert("🚨 Clé invalide."); } 
+        }
+
+        async function calculerMetriquesGlobalesHolding() {
+            const { data: orders } = await _supabase.from('commandes').select('*');
+            let brut = 0, count = 0;
+            (orders || []).forEach(o => {
+                brut += parseFloat(o.montant_total_usd || o.montant_brut_usd || 0);
+                count++;
+            });
+            if(document.getElementById('total-global-network-brut')) document.getElementById('total-global-network-brut').innerText = `${brut.toFixed(2)} $`;
+            if(document.getElementById('impact-volume-count')) document.getElementById('impact-volume-count').innerText = count;
+        }
+
+        function initialiserTableauxKinshasa() {
+            const rowRead = document.getElementById('read-shipping-communes-rows'); 
+            const rowMaster = document.getElementById('master-editable-communes-rows'); 
+            if(!rowRead || !rowMaster) return; 
+            rowRead.innerHTML = ''; rowMaster.innerHTML = '';
+            communesKinshasa.forEach((c) => {
+                const tarif = localStorage.getItem(`frais_${c}`) || "3.50";
+                rowRead.innerHTML += `<tr><td>📍 ${c}</td><td class="text-right">${tarif} $</td></tr>`;
+                rowMaster.innerHTML += `<tr><td>${c}</td><td class="text-right"><input type="number" step="0.10" value="${tarif}" class="w-16 border rounded text-center"> $</td></tr>`;
+            });
+        }
+
+        function declencherTelechargementStatistiquesGlobalesCSV() { exporterRapportLogistique(); }
+        async function chargerNumerosOfficielsDepuisCloud() {}
+        async function chargerSecteursConfigAdmin() {}
+        async function chargerMessagePresentationGtsAdmin() {}
+        async function chargerCguEyanoAdmin() {}
+        async function sauvegarderTarificationGlobaleCloud() {}
+        async function sauvegarderGrilleFraisLivraisonCloud() {}
+        async function sauvegarderMessagePresentationGts() {}
+        async function sauvegarderCguEyanoAdmin() {}
+        async function sauvegarderModificationNumerosOfficielsSouverains() {}
+        async function sauvegarderChiffrementProfilsChefsMaster() {}
+        function filtrerCommissionsGtsParDate() {}
+        function reinitialiserFiltresDatesCommissionsGts() {}
+        function filtrerVolumeReseauParDate() {}
+        function reinitialiserFiltresDatesVolumeReseau() {}
+        function filtrerRepertoireClientsAdmin() {}
+        function filtrerPartenairesModerationAdmin() {}
+        function declencherCollecteMasseAbonnementsPublicite() {}
+        function retourMenuPubIcones() {}
+        function afficherSousModulePub() {}
+        async function executerAjoutPubliciteAdmin() {}
+        async function chargerCampagnesPublicitairesAdmin() {}
+        function filtrerCampagnesPublicitairesAdmin() {}
+        function fermerModalModificationPub() {}
+        async function executerMiseAJourPubliciteAdmin() {}
 
         window.onload = function() {
-            calculerMetriquesMicroHubs();
+            calculerMetriquesGlobalesHolding();
+            initialiserTableauxKinshasa();
         };
     </script>
 </body>
