@@ -70,7 +70,7 @@
         <div class="bg-slate-900 border-b border-slate-800 p-3 text-center flex flex-wrap gap-2 justify-between items-center px-6 w-full z-50 no-print">
             <div class="flex items-center gap-3">
                 <span class="text-xs font-bold text-indigo-400">TransVision Control Panel PROD</span>
-                <!-- SÉLECTEUR CENTRAL DU RÉGIME D'USAGE -->
+                <!-- SELECTEUR CENTRAL DU REGIME D'USAGE -->
                 <div class="flex items-center gap-1.5 bg-slate-950 px-2 py-1 rounded-xl border border-slate-800 text-[10px]">
                     <span class="text-slate-500 font-bold uppercase">Régime Actif :</span>
                     <select id="select-global-regime" onchange="changerRegimeGlobal(this.value)" class="bg-transparent text-emerald-400 font-black outline-none cursor-pointer">
@@ -99,17 +99,17 @@
                     </div>
 
                     <nav class="space-y-1 text-xs">
-                        <button onclick="changerPageAdmin('page-suivi', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 nav-link-admin"><i class="fa-solid fa-map-location-dot text-sm text-sky-400"></i> Suivi de la flotte</button>
-                        <button onclick="changerPageAdmin('page-gestion-flotte', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-shield-halved text-sm text-emerald-400"></i> Flotte & Exploitation</button>
-                        <button onclick="changerPageAdmin('page-sim-telecoms', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-sim-card text-sm text-cyan-400"></i> Parc SIMs & Télécoms</button>
-                        <button onclick="changerPageAdmin('page-partenaires', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-users text-sm text-indigo-400"></i> Base Partenaires</button>
+                        <button onclick="changerPageAdmin('page-suivi', this)" id="nav-btn-suivi" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 nav-link-admin"><i class="fa-solid fa-map-location-dot text-sm text-sky-400"></i> Suivi de la flotte</button>
+                        <button onclick="changerPageAdmin('page-gestion-flotte', this)" id="nav-btn-gestion-flotte" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-shield-halved text-sm text-emerald-400"></i> Flotte & Exploitation</button>
+                        <button onclick="changerPageAdmin('page-sim-telecoms', this)" id="nav-btn-sim-telecoms" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-sim-card text-sm text-cyan-400"></i> Parc SIMs & Télécoms</button>
+                        <button onclick="changerPageAdmin('page-partenaires', this)" id="nav-btn-partenaires" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-users text-sm text-indigo-400"></i> Base Partenaires</button>
                         
-                        <!-- ONGLETS RÉSERVÉS AU COMMERCIAL (MASQUÉS SI PERSONNEL) -->
+                        <!-- ONGLETS RÉSERVÉS AU COMMERCIAL (VERROUILLÉS SI PERSONNEL) -->
                         <button id="nav-btn-itineraires" onclick="changerPageAdmin('page-itineraires', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-route text-sm text-teal-400"></i> Matrice des Lignes</button>
                         <button id="nav-btn-tresorerie" onclick="changerPageAdmin('page-tresorerie', this)" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><span class="flex items-center gap-3"><i class="fa-solid fa-wallet text-sm text-amber-500"></i> Trésorerie</span></button>
                         
-                        <button onclick="changerPageAdmin('page-stats-croisees', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-chart-pie text-sm text-fuchsia-400"></i> Statistiques & Graphiques</button>
-                        <button onclick="changerPageAdmin('page-parametres', this)" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-sliders text-sm text-slate-400"></i> Paramètres & Numéros</button>
+                        <button onclick="changerPageAdmin('page-stats-croisees', this)" id="nav-btn-stats-croisees" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-chart-pie text-sm text-fuchsia-400"></i> Statistiques & Graphiques</button>
+                        <button onclick="changerPageAdmin('page-parametres', this)" id="nav-btn-parametres" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin"><i class="fa-solid fa-sliders text-sm text-slate-400"></i> Paramètres & Numéros</button>
                     </nav>
                 </div>
 
@@ -209,7 +209,7 @@
                                     <th class="py-2.5 text-right">Coupe-Circuit Antivol</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-850" id="table-vehicules-body">
+                            <tbody class="divide-y border-slate-850" id="table-vehicules-body">
                                 <tr><td colspan="6" class="py-4 text-center text-slate-500 font-sans italic">En attente des données GPS...</td></tr>
                             </tbody>
                         </table>
@@ -262,7 +262,7 @@
                                     <th class="py-2.5 text-right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-850" id="table-sims-body"></tbody>
+                            <tbody class="divide-y border-slate-850" id="table-sims-body"></tbody>
                         </table>
                     </div>
                 </div>
@@ -298,7 +298,7 @@
                                     <th class="py-3 text-right">Actions Gestion</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-850 text-slate-300 print-text" id="table-partenaires-body">
+                            <tbody class="divide-y border-slate-850 text-slate-300 print-text" id="table-partenaires-body">
                                 <tr><td colspan="5" class="py-4 text-center text-slate-500 font-sans italic">Chargement des partenaires...</td></tr>
                             </tbody>
                         </table>
@@ -432,7 +432,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE FILTRAGE ADAPTATIF -->
+    <!-- SCRIPT DE FILTRAGE VERROUILLÉ EN PERMANENCE -->
     <script>
         const supabaseUrl = 'https://vbriworyscymnmtzzdny.supabase.co';
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZicml3b3J5c2N5bW5tdHp6ZG55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNzQwNTEsImV4cCI6MjEwMzk1MDA1MX0.VBZupVKj0srae0NT5BNZ0OeaIv9pAl2bl5L-Rd8ocJk';
@@ -447,69 +447,63 @@
         let adminPolylines = {};
         let regimeGlobal = "TOUS";
 
-        function changerRegimeGlobal(regime) {
-            regimeGlobal = regime;
-            
+        // FONCTION DE VERROUILLAGE DES ONGLETS SELON LE RÉGIME
+        function appliquerVerrouillageNavigation(regime) {
             const btnItineraires = document.getElementById('nav-btn-itineraires');
             const btnTresorerie = document.getElementById('nav-btn-tresorerie');
             const cardRotations = document.getElementById('card-kpi-commercial-rot');
             const cardRecettes = document.getElementById('card-kpi-commercial-rev');
             const cardCoupes = document.getElementById('card-kpi-personnel-coupes');
             const cardSec = document.getElementById('card-kpi-personnel-sec');
+
+            if (regime === 'personnel') {
+                if (btnItineraires) btnItineraires.style.display = 'none';
+                if (btnTresorerie) btnTresorerie.style.display = 'none';
+
+                if (cardRotations) cardRotations.classList.add('hidden');
+                if (cardRecettes) cardRecettes.classList.add('hidden');
+                if (cardCoupes) cardCoupes.classList.remove('hidden');
+                if (cardSec) cardSec.classList.remove('hidden');
+            } else {
+                if (btnItineraires) btnItineraires.style.display = 'flex';
+                if (btnTresorerie) btnTresorerie.style.display = 'flex';
+
+                if (cardRotations) cardRotations.classList.remove('hidden');
+                if (cardRecettes) cardRecettes.classList.remove('hidden');
+                if (cardCoupes) cardCoupes.classList.add('hidden');
+                if (cardSec) cardSec.classList.add('hidden');
+            }
+        }
+
+        function changerRegimeGlobal(regime) {
+            regimeGlobal = regime;
+            
             const thItineraire = document.getElementById('th-col-itineraire');
             const thActivite = document.getElementById('th-col-activite');
             const titreFlotte = document.getElementById('titre-vue-flotte');
             const descFlotte = document.getElementById('desc-vue-flotte');
 
+            // Applique le verrouillage
+            appliquerVerrouillageNavigation(regime);
+
             if (regime === 'personnel') {
-                // 1. MASQUER LES ONGLETS COMMERCIAUX : ITINÉRAIRES & TRÉSORERIE
-                if (btnItineraires) btnItineraires.classList.add('hidden');
-                if (btnTresorerie) btnTresorerie.classList.add('hidden');
-                
-                // Si l'utilisateur était sur une page commerciale, le rediriger vers le suivi
+                // Rediriger immédiatement si on est sur un onglet commercial interdit
                 const pageItin = document.getElementById('page-itineraires');
                 const pageTreso = document.getElementById('page-tresorerie');
                 if ((pageItin && !pageItin.classList.contains('hidden')) || (pageTreso && !pageTreso.classList.contains('hidden'))) {
-                    changerPageAdmin('page-suivi', document.querySelectorAll('.nav-link-admin')[0]);
+                    changerPageAdmin('page-suivi', document.getElementById('nav-btn-suivi'));
                 }
 
-                // 2. MASQUER LES KPIS DE RENTABILITÉ COMMERCIALE
-                if (cardRotations) cardRotations.classList.add('hidden');
-                if (cardRecettes) cardRecettes.classList.add('hidden');
-                
-                // 3. AFFICHER LES KPIS DE SÉCURITÉ ANTIVOL
-                if (cardCoupes) cardCoupes.classList.remove('hidden');
-                if (cardSec) cardSec.classList.remove('hidden');
-                
                 if (thItineraire) thItineraire.textContent = "Commune & Quartier";
                 if (thActivite) thActivite.textContent = "Statut Antivol";
                 if (titreFlotte) titreFlotte.textContent = "🚗 Flotte Particulier & Antivol";
                 if (descFlotte) descFlotte.textContent = "Surveillance du coupe-circuit, alarmes antivol et niveau de risque des véhicules privés.";
             } else if (regime === 'commercial') {
-                // AFFICHER LES ONGLETS ET LES KPIS COMMERCIAUX
-                if (btnItineraires) btnItineraires.classList.remove('hidden');
-                if (btnTresorerie) btnTresorerie.classList.remove('hidden');
-                
-                if (cardRotations) cardRotations.classList.remove('hidden');
-                if (cardRecettes) cardRecettes.classList.remove('hidden');
-                
-                if (cardCoupes) cardCoupes.classList.add('hidden');
-                if (cardSec) cardSec.classList.add('hidden');
-                
                 if (thItineraire) thItineraire.textContent = "Ligne Assignée";
                 if (thActivite) thActivite.textContent = "Rotations & Recettes";
                 if (titreFlotte) titreFlotte.textContent = "🚌 Flotte Commerciale & Lignes";
                 if (descFlotte) descFlotte.textContent = "Suivi des rotations, du kilométrage de ligne et des recettes réelles en direct.";
             } else {
-                // MODE TOUS (FLOTTE GLOBALE)
-                if (btnItineraires) btnItineraires.classList.remove('hidden');
-                if (btnTresorerie) btnTresorerie.classList.remove('hidden');
-                
-                if (cardRotations) cardRotations.classList.remove('hidden');
-                if (cardRecettes) cardRecettes.classList.remove('hidden');
-                if (cardCoupes) cardCoupes.classList.add('hidden');
-                if (cardSec) cardSec.classList.add('hidden');
-                
                 if (thItineraire) thItineraire.textContent = "Ligne / Localisation";
                 if (thActivite) thActivite.textContent = "Activité / Gains";
                 if (titreFlotte) titreFlotte.textContent = "🌐 Flotte TransVision Complète";
@@ -518,7 +512,6 @@
 
             majTableauFlotteAdmin();
 
-            // Filtrage sur la carte
             if (mapAdmin) {
                 flotteGlobale.forEach(v => {
                     const estMatch = (regime === 'TOUS') || (v.type_contrat === regime);
@@ -528,6 +521,29 @@
                     }
                 });
             }
+        }
+
+        // NAVIGATION ENTRE ONGLETS AVEC SÉCURITÉ DE REGIME
+        function changerPageAdmin(idPage, btn) {
+            // Empêche l'ouverture d'un onglet commercial si le régime est personnel
+            if (regimeGlobal === 'personnel' && (idPage === 'page-itineraires' || idPage === 'page-tresorerie')) {
+                idPage = 'page-suivi';
+                btn = document.getElementById('nav-btn-suivi');
+            }
+
+            document.querySelectorAll('.class-page-admin').forEach(p => p.classList.add('hidden'));
+            const pageCible = document.getElementById(idPage);
+            if (pageCible) pageCible.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-link-admin').forEach(l => {
+                l.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin";
+            });
+            if (btn) btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 nav-link-admin";
+
+            // MAINTIENT LE MASQUAGE STRICT À CHAQUE NAVIGATION
+            appliquerVerrouillageNavigation(regimeGlobal);
+
+            if (idPage === 'page-suivi' && mapAdmin) setTimeout(() => { mapAdmin.invalidateSize(); }, 150);
         }
 
         function calculerScoreEcoConduite(kmJour, rotations) {
@@ -605,12 +621,6 @@
             try {
                 if (!window.supabase) return;
 
-                const { data: partenairesData } = await supabaseClient.from('tv_partenaires').select('*');
-                const partenairesMap = {};
-                (partenairesData || []).forEach(p => {
-                    partenairesMap[p.tel] = p.type_contrat || 'personnel';
-                });
-
                 const { data } = await supabaseClient
                     .from('transvision_positions_gps')
                     .select('*')
@@ -680,16 +690,6 @@
                 majTableauFlotteAdmin();
                 alert(`Ordre transmis au boîtier ${v.plaque}.`);
             }
-        }
-
-        function changerPageAdmin(idPage, btn) {
-            document.querySelectorAll('.class-page-admin').forEach(p => p.classList.add('hidden'));
-            document.getElementById(idPage).classList.remove('hidden');
-            document.querySelectorAll('.nav-link-admin').forEach(l => {
-                l.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-slate-400 hover:bg-slate-850 hover:text-slate-200 transition-all nav-link-admin";
-            });
-            btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/10 nav-link-admin";
-            if (idPage === 'page-suivi' && mapAdmin) setTimeout(() => { mapAdmin.invalidateSize(); }, 150);
         }
 
         function centrerMapAdmin() {
