@@ -6,6 +6,14 @@
     <title>Global Tech Solutions (GTS) — Hub Technologique & Innovations</title>
     <link rel="icon" type="image/png" href="GLOBAL.png">
     
+    <!-- CONFIGURATION PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#020617">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GTS Hub">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -172,8 +180,69 @@
 
     <!-- PIED DE PAGE -->
     <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-8 mt-16 text-center text-xs text-slate-500 space-y-2">
-        <p><b>Global Tech Solutions SARL</b> — Kinshasa, République Démocratique du Congo.</p>
-        <p class="text-[10px] font-mono">Plateforme d'innovations technologiques urbaines.</p>
+        <p><b>Global Tech Solutions SARL</b> — Kinshasa, République Démocratique du Congo[cite: 4].</p>
+        <p class="text-[10px] font-mono">Plateforme d'innovations technologiques urbaines[cite: 4].</p>
     </footer>
+
+    <!-- BANDEAU D'INSTALLATION AUTOMATIQUE PWA (SMARTPHONE & PC) -->
+    <div id="pwa-install-banner" class="hidden fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md bg-slate-900/95 border-2 border-sky-500/40 backdrop-blur-md p-4 rounded-2xl shadow-2xl z-50 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+            <div class="h-11 w-11 rounded-xl overflow-hidden bg-white p-1 flex-shrink-0 flex items-center justify-center shadow-sm">
+                <img src="GLOBAL.png" alt="GTS" class="w-full h-full object-contain">
+            </div>
+            <div>
+                <h4 class="text-xs font-black uppercase text-white">Installer Global Tech Solutions</h4>
+                <p class="text-[10px] text-slate-300">Ajouter l'application sur votre écran d'accueil</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button type="button" onclick="document.getElementById('pwa-install-banner').classList.add('hidden')" class="text-slate-400 hover:text-white p-1 text-xs">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <button type="button" id="btn-pwa-install" class="bg-sky-500 hover:bg-sky-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs uppercase shadow-md transition-all">
+                Installer
+            </button>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE GESTION SERVICE WORKER & DÉTECTION PWA -->
+    <script>
+        let deferredPrompt;
+
+        // Enregistrement du Service Worker à la racine
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('Service Worker GTS actif :', reg.scope))
+                    .catch(err => console.warn('Erreur Service Worker :', err));
+            });
+        }
+
+        // Interception de l'événement d'installation Android/Chrome/Edge
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const banner = document.getElementById('pwa-install-banner');
+            if (banner) banner.classList.remove('hidden');
+        });
+
+        // Déclencheur du bouton d'installation
+        document.getElementById('btn-pwa-install')?.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                const banner = document.getElementById('pwa-install-banner');
+                if (banner) banner.classList.add('hidden');
+            }
+            deferredPrompt = null;
+        });
+
+        // Masquage une fois installée
+        window.addEventListener('appinstalled', () => {
+            const banner = document.getElementById('pwa-install-banner');
+            if (banner) banner.classList.add('hidden');
+        });
+    </script>
 </body>
 </html>
