@@ -8,7 +8,6 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SDK SUPABASE OFFICIEL -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -27,7 +26,6 @@
 </head>
 <body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
-    <!-- EN-TÊTE ÉPURÉ CLIENT -->
     <header class="w-full border-b border-slate-800 bg-slate-900/85 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -48,7 +46,7 @@
     </header>
 
     <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16 w-full">
-        <!-- HERO TITLE -->
+        <!-- HERO -->
         <div class="text-center max-w-3xl mx-auto space-y-6">
             <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono font-bold">
                 <i class="fa-solid fa-plane-departure"></i> Voyagez léger, votre check-in bagage est déjà fait
@@ -58,18 +56,18 @@
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-400 to-amber-300">embarquez sans stress à N'djili.</span>
             </h2>
             <p class="text-sm md:text-base text-slate-400 leading-relaxed">
-                Anticipez votre départ : plus vous déposez tôt, moins vous payez ! Pesée certifiée, audit rayon X, plombage inviolable et convoi sécurisé vers l'aéroport.
+                Au Hub PROCOKI ou à votre domicile : plus vous déposez tôt, moins vous payez ! Pesée certifiée, audit rayon X, plombage inviolable et convoi sécurisé vers l'aéroport.
             </p>
         </div>
 
-        <!-- VITRINE DES TARIFS PAR ANTICIPATION (DYNAMIC SUPABASE) -->
+        <!-- GRILLE COMPARATIVE AGENCE & VIP PAR ANTICIPATION -->
         <div class="space-y-4">
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="text-base md:text-lg font-black uppercase tracking-wider text-slate-200 flex items-center gap-2">
-                        <i class="fa-solid fa-tags text-indigo-400"></i> Grille Tarifaire par Anticipation
+                        <i class="fa-solid fa-tags text-indigo-400"></i> Grille Tarifaire : Agence vs Collecte VIP
                     </h3>
-                    <p class="text-xs text-slate-400">Tarification dégressive appliquée selon le nombre de jours précédant votre vol.</p>
+                    <p class="text-xs text-slate-400">Tarification dégressive selon votre anticipation avant le décollage.</p>
                 </div>
                 <span class="text-[11px] font-mono text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1 rounded-xl" id="lbl-taux-indicatif">
                     Taux : 1 $ = 2 850 CDF
@@ -83,11 +81,17 @@
                         <span class="text-[10px] font-mono font-bold uppercase bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/30">≥ 3 Jours avant le vol</span>
                         <span class="text-xs text-emerald-400 font-black">🔥 ÉCO-ANTICIPÉ</span>
                     </div>
-                    <div class="space-y-1">
-                        <div class="text-2xl font-black text-white" id="card-j3-forfait">15 $ <span class="text-xs text-slate-400 font-normal">/ franchise</span></div>
-                        <p class="text-[11px] text-slate-400" id="card-j3-excedent">Excédent : +2.0 $ / kg supplémentaire</p>
+                    <div class="space-y-2 pt-1 border-t border-slate-800/80 text-xs font-mono">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400">🏢 Agence Hub :</span>
+                            <strong class="text-emerald-400 text-lg" id="card-j3-agence">15 $</strong>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-300">🚐 VIP Domicile :</span>
+                            <strong class="text-amber-400 text-lg" id="card-j3-vip">25 $</strong>
+                        </div>
+                        <p class="text-[10px] text-slate-500 pt-1" id="card-j3-excedent">Excédent : +2.0 $ / kg supplémentaire</p>
                     </div>
-                    <p class="text-[10px] text-slate-500 leading-relaxed">Idéal pour voyager l'esprit tranquille tout en bénéficiant du tarif le plus bas.</p>
                 </div>
 
                 <!-- Palier J-2 -->
@@ -96,11 +100,17 @@
                         <span class="text-[10px] font-mono font-bold uppercase bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30">2 Jours avant le vol</span>
                         <span class="text-xs text-amber-400 font-black">STANDARD</span>
                     </div>
-                    <div class="space-y-1">
-                        <div class="text-2xl font-black text-white" id="card-j2-forfait">25 $ <span class="text-xs text-slate-400 font-normal">/ franchise</span></div>
-                        <p class="text-[11px] text-slate-400" id="card-j2-excedent">Excédent : +3.5 $ / kg supplémentaire</p>
+                    <div class="space-y-2 pt-1 border-t border-slate-800/80 text-xs font-mono">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400">🏢 Agence Hub :</span>
+                            <strong class="text-white text-lg" id="card-j2-agence">25 $</strong>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-300">🚐 VIP Domicile :</span>
+                            <strong class="text-amber-400 text-lg" id="card-j2-vip">40 $</strong>
+                        </div>
+                        <p class="text-[10px] text-slate-500 pt-1" id="card-j2-excedent">Excédent : +3.5 $ / kg supplémentaire</p>
                     </div>
-                    <p class="text-[10px] text-slate-500 leading-relaxed">Traitement régulier 48 heures avant votre convocation à l'aéroport.</p>
                 </div>
 
                 <!-- Palier J-1 -->
@@ -109,16 +119,22 @@
                         <span class="text-[10px] font-mono font-bold uppercase bg-rose-500/20 text-rose-300 px-2.5 py-0.5 rounded-full border border-rose-500/30">≤ 1 Jour / Veille</span>
                         <span class="text-xs text-rose-400 font-black">DERNIÈRE MINUTE</span>
                     </div>
-                    <div class="space-y-1">
-                        <div class="text-2xl font-black text-white" id="card-j1-forfait">40 $ <span class="text-xs text-slate-400 font-normal">/ franchise</span></div>
-                        <p class="text-[11px] text-slate-400" id="card-j1-excedent">Excédent : +5.0 $ / kg supplémentaire</p>
+                    <div class="space-y-2 pt-1 border-t border-slate-800/80 text-xs font-mono">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400">🏢 Agence Hub :</span>
+                            <strong class="text-rose-400 text-lg" id="card-j1-agence">40 $</strong>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-amber-300">🚐 VIP Domicile :</span>
+                            <strong class="text-amber-400 text-lg" id="card-j1-vip">65 $</strong>
+                        </div>
+                        <p class="text-[10px] text-slate-500 pt-1" id="card-j1-excedent">Excédent : +5.0 $ / kg supplémentaire</p>
                     </div>
-                    <p class="text-[10px] text-slate-500 leading-relaxed">Gestion express et réservation d'espace d'urgence en convoi blindé.</p>
                 </div>
             </div>
         </div>
 
-        <!-- RECHERCHE RAPIDE PNR & STATUT EN TEMPS RÉEL DANS GTS -->
+        <!-- RECHERCHE STATUT CLOUD -->
         <div class="max-w-2xl mx-auto bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-5">
             <h3 class="text-base md:text-lg font-black text-slate-100 flex items-center gap-2">
                 <i class="fa-solid fa-qrcode text-indigo-400"></i> Suivi en Ligne de vos Bagages
@@ -169,7 +185,7 @@
             </div>
         </div>
 
-        <!-- FORMULAIRE DE PRÉ-ENREGISTREMENT AVEC CALCULATEUR D'ANTICIPATION -->
+        <!-- SIMULATEUR & PRÉ-ENREGISTREMENT -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-4">
             <div class="lg:col-span-2 space-y-8">
                 <div class="bg-gtscard border border-slate-800 p-6 md:p-8 rounded-3xl shadow-xl space-y-6">
@@ -193,7 +209,7 @@
                                         <i class="fa-solid fa-circle-check text-indigo-400 text-sm check-icon"></i>
                                     </div>
                                     <p class="text-[11px] text-slate-400">Dépôt personnel dans nos locaux sécurisés sur le Boulevard du 30 Juin.</p>
-                                    <span class="mt-3 text-[10px] font-mono text-indigo-300 font-bold">Tarif au barème d'anticipation</span>
+                                    <span class="mt-3 text-[10px] font-mono text-indigo-300 font-bold" id="mode-agency-pricing-label">Dès 15 $ selon anticipation</span>
                                 </label>
 
                                 <label class="relative flex flex-col p-4 rounded-2xl border-2 border-slate-800 bg-slate-900/60 hover:border-amber-500/50 cursor-pointer transition-all" id="card-mode-vip">
@@ -204,13 +220,12 @@
                                         </span>
                                         <i class="fa-regular fa-circle text-slate-600 text-sm check-icon"></i>
                                     </div>
-                                    <p class="text-[11px] text-slate-400">Fourgon blindé, balance mobile et pesée scellée chez vous à Kinshasa.</p>
-                                    <span class="mt-3 text-[10px] font-mono text-amber-400 font-bold">+10 $ forfait logistique domicile</span>
+                                    <p class="text-[11px] text-slate-400">Fourgon blindé, balance certifiée et pesée scellée à votre domicile.</p>
+                                    <span class="mt-3 text-[10px] font-mono text-amber-400 font-bold" id="mode-vip-pricing-label">Dès 25 $ selon anticipation</span>
                                 </label>
                             </div>
                         </div>
 
-                        <!-- IDENTITÉ DU PASSAGER -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                             <div>
                                 <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Nom de Famille *</label>
@@ -226,7 +241,6 @@
                             </div>
                         </div>
 
-                        <!-- VOL ET ANTICIPATION -->
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
                                 <label class="block text-xs font-mono text-slate-400 mb-2 uppercase">Numéro Billet / PNR *</label>
@@ -253,7 +267,7 @@
                             </div>
                         </div>
 
-                        <!-- BANDEAU DE DÉTECTION EN DIRECT DU PALIER SELON LA DATE -->
+                        <!-- BANDEAU ANTICIPATION DYNAMIQUE -->
                         <div id="anticipationLiveBanner" class="bg-indigo-950/40 border border-indigo-500/30 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-mono">
                             <div class="flex items-center gap-3">
                                 <i class="fa-solid fa-clock-rotate-left text-cyan-400 text-lg"></i>
@@ -265,7 +279,6 @@
                             <span id="badgeAnticipationPalier" class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-slate-800 text-slate-400 border border-slate-700">En attente</span>
                         </div>
 
-                        <!-- PESÉE ESTIMÉE & FRANCHISE GLOBALE DU BILLET -->
                         <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-4">
                             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                                 <div class="flex items-center gap-2">
@@ -296,14 +309,14 @@
                             </div>
                         </div>
 
-                        <!-- SECTION ADRESSE VIP (SI SÉLECTIONNÉ) -->
+                        <!-- SECTION ADRESSE VIP -->
                         <div id="section-vip" class="hidden bg-slate-950/70 border border-amber-500/30 rounded-2xl p-5 space-y-4">
                             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                                 <div class="flex items-center gap-2">
                                     <i class="fa-solid fa-van-shuttle text-amber-400"></i>
                                     <h4 class="text-xs font-black uppercase text-amber-400 tracking-wider">Adresse de Collecte VIP à Kinshasa</h4>
                                 </div>
-                                <span class="text-[10px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold">+10 $ Déplacement Inclus</span>
+                                <span class="text-[10px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full font-bold">Déplacement Inclus</span>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -327,16 +340,12 @@
                         <!-- SIMULATEUR FINANCIER DÉTAILLÉ -->
                         <div class="rounded-2xl p-5 border border-indigo-500/30 bg-slate-950 font-mono text-xs space-y-2.5" id="box-pricing-summary">
                             <div class="flex justify-between text-slate-300">
-                                <span>1. Forfait Prise en Charge Billet (<span id="lblPalierNomSummary">Dépôt Éco J-3+</span>) :</span>
+                                <span>1. Forfait Prise en Charge (<span id="lblPalierNomSummary">Dépôt Éco J-3+</span>) :</span>
                                 <strong id="lblFeePriseEnCharge">15.00 USD</strong>
                             </div>
                             <div class="flex justify-between text-slate-300">
                                 <span>2. Excédent de Poids Estimé (<span id="lblDetailExcedent">0 kg x 2.0 $</span>) :</span>
                                 <strong class="text-emerald-400" id="lblFeeSurplusCompagnie">0.00 USD</strong>
-                            </div>
-                            <div id="row-fee-vip" class="hidden flex justify-between text-amber-300">
-                                <span>3. Option Collecte Mobile VIP à Domicile :</span>
-                                <strong>+10.00 USD</strong>
                             </div>
                             <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-sm">
                                 <span class="font-bold text-white uppercase">Estimation Totale à Régler :</span>
@@ -347,14 +356,13 @@
                             </div>
                         </div>
 
-                        <!-- DÉCHARGE JURIDIQUE -->
                         <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-3">
                             <h4 class="text-xs font-black uppercase tracking-wider text-rose-400 flex items-center gap-2">
                                 <i class="fa-solid fa-triangle-exclamation"></i> Déclaration de Sûreté & Clauses IATA
                             </h4>
                             <ul class="text-[11px] text-slate-400 space-y-1.5 list-disc pl-4 leading-relaxed">
                                 <li><b>Marchandises Prohibées :</b> Les batteries lithium amovibles (Powerbanks), aérosols et liquides inflammables sont rigoureusement interdits en soute.</li>
-                                <li><b>Pesée Réelle au Hub :</b> La facture définitive sera réajustée sur la balance certifiée du hub PROCOKI lors de la pose effective des scellés.</li>
+                                <li><b>Pesée Réelle au Hub :</b> La facture définitive sera réajustée sur la balance certifiée lors de la pose effective des scellés.</li>
                             </ul>
 
                             <label class="inline-flex items-center gap-2 pt-2 cursor-pointer border-t border-slate-800/80 w-full">
@@ -370,7 +378,7 @@
                 </div>
             </div>
 
-            <!-- COLONNE SUIVI & TICKET QR PASS -->
+            <!-- TICKET QR PASS -->
             <div class="lg:col-span-1">
                 <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl sticky top-28 space-y-6">
                     <div class="flex items-center justify-between border-b border-slate-800 pb-4">
@@ -383,7 +391,7 @@
 
                     <div id="attenteSuivi" class="text-center py-12 space-y-3">
                         <i class="fa-solid fa-barcode text-slate-700 text-6xl block"></i>
-                        <p class="text-xs text-slate-400 px-4">Remplissez le formulaire pour générer votre fiche de passage prioritaire au hub PROCOKI.</p>
+                        <p class="text-xs text-slate-400 px-4">Remplissez le formulaire pour générer votre fiche de passage prioritaire.</p>
                     </div>
 
                     <div id="blocSuivi" class="hidden space-y-6">
@@ -397,6 +405,10 @@
                                 <div class="flex justify-between text-slate-400">
                                     <span>Voyageur :</span>
                                     <strong id="recapNomPax" class="text-slate-200">-</strong>
+                                </div>
+                                <div class="flex justify-between text-slate-400">
+                                    <span>Canal :</span>
+                                    <strong id="recapCanal" class="text-amber-400">Agence Hub</strong>
                                 </div>
                                 <div class="flex justify-between text-slate-400">
                                     <span>Palier Anticipation :</span>
@@ -414,7 +426,7 @@
                         </div>
 
                         <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-[11px] text-slate-400 leading-relaxed font-mono">
-                            📍 <b>Présentez ce QR Pass</b> à l'entrée de la concession PROCOKI (Boulevard du 30 Juin) pour votre pesée prioritaire.
+                            📍 <b>Présentez ce QR Pass</b> à nos agents lors de la prise en charge pour un traitement prioritaire.
                         </div>
                     </div>
                 </div>
@@ -424,21 +436,18 @@
 
     <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-6 text-center text-xs text-slate-500 space-y-1">
         <p><b>EasyFly Transit</b> — Marque déposée de Global Tech Solutions (GTS).</p>
-        <p class="text-[10px] font-mono">Hub Logistique Urbain Déporté • Kinshasa, RDC[cite: 1, 2, 6].</p>
+        <p class="text-[10px] font-mono">Hub Logistique Urbain Déporté • Kinshasa, RDC[cite: 1, 2].</p>
     </footer>
 
-    <!-- LOGIQUE JAVASCRIPT ET CONNEXION CLOUD GTS SUPABASE -->
     <script>
-        // CONNEXION UNIQUE SUPABASE DE PRODUCTION (PROJET GTS)
         const supabaseUrl = 'https://vbriworyscymnmtzzdny.supabase.co';
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZicml3b3J5c2N5bW5tdHp6ZG55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNzQwNTEsImV4cCI6MjEwMzk1MDA1MX0.VBZupVKj0srae0NT5BNZ0OeaIv9pAl2bl5L-Rd8ocJk';
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-        // GRILLE LOCALE DE SECOURS (ÉCRASÉE PAR ef_tarifs_config)
         let TARIFS_CONFIG = [
-            { id: 'J3_PLUS', libelle: 'Dépôt éco-anticipé (≥ 3 jours)', jours_min: 3, forfait_base_usd: 15.00, prix_kg_excedent_usd: 2.00, taux_echange_cdf: 2850, actif: true },
-            { id: 'J2',      libelle: 'Dépôt standard (2 jours)',      jours_min: 2, forfait_base_usd: 25.00, prix_kg_excedent_usd: 3.50, taux_echange_cdf: 2850, actif: true },
-            { id: 'J1',      libelle: 'Dépôt dernière minute (≤ 1 jour)', jours_min: 0, forfait_base_usd: 40.00, prix_kg_excedent_usd: 5.00, taux_echange_cdf: 2850, actif: true }
+            { id: 'J3_PLUS', libelle: 'Dépôt éco-anticipé (≥ 3 jours)', jours_min: 3, forfait_base_usd: 15.00, forfait_vip_usd: 25.00, prix_kg_excedent_usd: 2.00, taux_echange_cdf: 2850, actif: true },
+            { id: 'J2',      libelle: 'Dépôt standard (2 jours)',      jours_min: 2, forfait_base_usd: 25.00, forfait_vip_usd: 40.00, prix_kg_excedent_usd: 3.50, taux_echange_cdf: 2850, actif: true },
+            { id: 'J1',      libelle: 'Dépôt dernière minute (≤ 1 jour)', jours_min: 0, forfait_base_usd: 40.00, forfait_vip_usd: 65.00, prix_kg_excedent_usd: 5.00, taux_echange_cdf: 2850, actif: true }
         ];
 
         let currentServiceMode = 'AGENCY';
@@ -448,12 +457,10 @@
             forfaitUsd: 15,
             excedentKg: 0,
             surplusUsd: 0,
-            vipFeeUsd: 0,
             totalUsd: 15,
             totalCdf: 42750
         };
 
-        /* --- 1. CHARGEMENT DYNAMIQUE DES PRIX DEPUIS SUPABASE --- */
         async function chargerTarifsCloud() {
             try {
                 const { data, error } = await supabaseClient
@@ -468,6 +475,7 @@
                         libelle: d.libelle,
                         jours_min: parseInt(d.jours_min),
                         forfait_base_usd: parseFloat(d.forfait_base_usd),
+                        forfait_vip_usd: parseFloat(d.forfait_vip_usd || (d.forfait_base_usd + 15)),
                         prix_kg_excedent_usd: parseFloat(d.prix_kg_excedent_usd),
                         taux_echange_cdf: parseFloat(d.taux_echange_cdf) || 2850,
                         actif: d.actif
@@ -475,7 +483,6 @@
                 }
                 mettreAJourAffichageVitrineTarifs();
             } catch(e) {
-                console.warn("Utilisation tarifs locaux :", e);
                 mettreAJourAffichageVitrineTarifs();
             }
         }
@@ -486,23 +493,28 @@
             const j1 = TARIFS_CONFIG.find(t => t.id === 'J1') || TARIFS_CONFIG[2];
             const taux = (TARIFS_CONFIG[0] && TARIFS_CONFIG[0].taux_echange_cdf) || 2850;
 
-            document.getElementById('card-j3-forfait').innerHTML = `${j3.forfait_base_usd} $ <span class="text-xs text-slate-400 font-normal">/ franchise</span>`;
+            document.getElementById('card-j3-agence').textContent = `${j3.forfait_base_usd} $`;
+            document.getElementById('card-j3-vip').textContent = `${j3.forfait_vip_usd} $`;
             document.getElementById('card-j3-excedent').textContent = `Excédent : +${j3.prix_kg_excedent_usd} $ / kg supplémentaire`;
 
-            document.getElementById('card-j2-forfait').innerHTML = `${j2.forfait_base_usd} $ <span class="text-xs text-slate-400 font-normal">/ franchise</span>`;
+            document.getElementById('card-j2-agence').textContent = `${j2.forfait_base_usd} $`;
+            document.getElementById('card-j2-vip').textContent = `${j2.forfait_vip_usd} $`;
             document.getElementById('card-j2-excedent').textContent = `Excédent : +${j2.prix_kg_excedent_usd} $ / kg supplémentaire`;
 
-            document.getElementById('card-j1-forfait').innerHTML = `${j1.forfait_base_usd} $ <span class="text-xs text-slate-400 font-normal">/ franchise</span>`;
+            document.getElementById('card-j1-agence').textContent = `${j1.forfait_base_usd} $`;
+            document.getElementById('card-j1-vip').textContent = `${j1.forfait_vip_usd} $`;
             document.getElementById('card-j1-excedent').textContent = `Excédent : +${j1.prix_kg_excedent_usd} $ / kg supplémentaire`;
 
             document.getElementById('lbl-taux-indicatif').textContent = `Taux : 1 $ = ${taux.toLocaleString('fr-FR')} CDF`;
 
+            document.getElementById('mode-agency-pricing-label').textContent = `Dès ${j3.forfait_base_usd} $ selon anticipation`;
+            document.getElementById('mode-vip-pricing-label').textContent = `Dès ${j3.forfait_vip_usd} $ selon anticipation`;
+
             calculerDevisEnDirect();
         }
 
-        /* --- 2. CALCUL DYNAMIQUE DU DÉLAI D'ANTICIPATION --- */
         function calculerJoursAnticipation(dateVolStr) {
-            if (!dateVolStr) return 3; // Valeur par défaut
+            if (!dateVolStr) return 3;
             const now = new Date();
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             const [y, m, d] = dateVolStr.split('-').map(Number);
@@ -519,7 +531,6 @@
             return tri[tri.length - 1];
         }
 
-        /* --- 3. MOTEUR DU SIMULATEUR CLIENT --- */
         function calculerDevisEnDirect() {
             const dateVol = document.getElementById('flightDate').value;
             const jours = calculerJoursAnticipation(dateVol);
@@ -527,7 +538,10 @@
             currentDevis.palier = palier;
             currentDevis.jours = jours;
 
-            // Mise à jour visuelle du bandeau d'anticipation
+            const isVip = currentServiceMode === 'VIP_HOME';
+            const canalLibelle = isVip ? "Collecte VIP Domicile" : "Dépôt Agence Hub";
+            const forfaitApplique = isVip ? (palier.forfait_vip_usd || (palier.forfait_base_usd + 15)) : palier.forfait_base_usd;
+
             const lblTitre = document.getElementById('lblAnticipationTitre');
             const lblDesc = document.getElementById('lblAnticipationDesc');
             const badgePalier = document.getElementById('badgeAnticipationPalier');
@@ -538,23 +552,22 @@
                 badgePalier.textContent = "En attente";
                 badgePalier.className = "px-3 py-1 rounded-full text-[10px] font-black uppercase bg-slate-800 text-slate-400 border border-slate-700";
             } else if (jours >= 3) {
-                lblTitre.textContent = `Dépôt à J-${jours} : Barème Éco-Anticipé Appliqué`;
-                lblDesc.textContent = `Forfait : ${palier.forfait_base_usd} $ jusqu'à votre franchise totale (+${palier.prix_kg_excedent_usd} $/kg au-delà).`;
+                lblTitre.textContent = `${canalLibelle} à J-${jours} : Barème Éco-Anticipé`;
+                lblDesc.textContent = `Forfait : ${forfaitApplique} $ jusqu'à votre franchise totale (+${palier.prix_kg_excedent_usd} $/kg au-delà).`;
                 badgePalier.textContent = "Éco-Anticipé (J-3+)";
                 badgePalier.className = "px-3 py-1 rounded-full text-[10px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
             } else if (jours === 2) {
-                lblTitre.textContent = `Dépôt à J-2 : Barème Standard Appliqué`;
-                lblDesc.textContent = `Forfait : ${palier.forfait_base_usd} $ jusqu'à votre franchise totale (+${palier.prix_kg_excedent_usd} $/kg au-delà).`;
+                lblTitre.textContent = `${canalLibelle} à J-2 : Barème Standard`;
+                lblDesc.textContent = `Forfait : ${forfaitApplique} $ jusqu'à votre franchise totale (+${palier.prix_kg_excedent_usd} $/kg au-delà).`;
                 badgePalier.textContent = "Standard (J-2)";
                 badgePalier.className = "px-3 py-1 rounded-full text-[10px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30";
             } else {
-                lblTitre.textContent = `Dépôt à J-${jours <= 0 ? 0 : 1} : Barème Dernière Minute Appliqué`;
-                lblDesc.textContent = `Forfait : ${palier.forfait_base_usd} $ jusqu'à votre franchise totale (+${palier.prix_kg_excedent_usd} $/kg au-delà).`;
+                lblTitre.textContent = `${canalLibelle} à J-${jours <= 0 ? 0 : 1} : Barème Dernière Minute`;
+                lblDesc.textContent = `Forfait : ${forfaitApplique} $ jusqu'à votre franchise totale (+${palier.prix_kg_excedent_usd} $/kg au-delà).`;
                 badgePalier.textContent = "Urgence (J-1/J-0)";
                 badgePalier.className = "px-3 py-1 rounded-full text-[10px] font-black uppercase bg-rose-500/20 text-rose-300 border border-rose-500/30";
             }
 
-            // Calcul des masses et excédents
             const franchiseTotale = parseFloat(document.getElementById('franchiseBillet').value) || 23;
             const poidsTotal = parseFloat(document.getElementById('poidsTotalEstime').value) || 0;
             const excedentKg = Math.max(0, poidsTotal - franchiseTotale);
@@ -572,33 +585,22 @@
                 lblExcedent.className = "text-emerald-400 font-bold";
             }
 
-            // Calcul des montants
-            currentDevis.forfaitUsd = palier.forfait_base_usd;
+            currentDevis.forfaitUsd = forfaitApplique;
             currentDevis.surplusUsd = excedentKg * rateKilo;
-            currentDevis.vipFeeUsd = currentServiceMode === 'VIP_HOME' ? 10 : 0;
-            currentDevis.totalUsd = currentDevis.forfaitUsd + currentDevis.surplusUsd + currentDevis.vipFeeUsd;
+            currentDevis.totalUsd = currentDevis.forfaitUsd + currentDevis.surplusUsd;
             
             const taux = palier.taux_echange_cdf || 2850;
             currentDevis.totalCdf = Math.round(currentDevis.totalUsd * taux);
 
-            // Mise à jour de la boîte de résumé financier
-            document.getElementById('lblPalierNomSummary').textContent = palier.libelle;
+            document.getElementById('lblPalierNomSummary').textContent = `${isVip ? 'Collecte VIP' : 'Hub Agence'} - ${palier.libelle}`;
             document.getElementById('lblFeePriseEnCharge').textContent = `${currentDevis.forfaitUsd.toFixed(2)} USD`;
             document.getElementById('lblDetailExcedent').textContent = `${excedentKg.toFixed(1)} kg x ${rateKilo} $`;
             document.getElementById('lblFeeSurplusCompagnie').textContent = `${currentDevis.surplusUsd.toFixed(2)} USD`;
             
-            const rowVip = document.getElementById('row-fee-vip');
-            if (currentServiceMode === 'VIP_HOME') {
-                rowVip.classList.remove('hidden');
-            } else {
-                rowVip.classList.add('hidden');
-            }
-
             document.getElementById('lblTotalUsd').textContent = `${currentDevis.totalUsd.toFixed(2)} USD`;
             document.getElementById('lblTotalCdf').textContent = `≈ ${currentDevis.totalCdf.toLocaleString('fr-FR')} CDF`;
         }
 
-        /* --- 4. BASCULE DU CANAL (AGENCE VS VIP DOMICILE) --- */
         function basculerMode(mode) {
             currentServiceMode = mode;
             const cardAgency = document.getElementById('card-mode-agency');
@@ -624,10 +626,9 @@
             calculerDevisEnDirect();
         }
 
-        /* --- 5. VALIDATION DU DOSSIER & SYNCHRONISATION SUPABASE --- */
         async function validerDossierClient() {
             const btn = document.getElementById('btnSubmitForm');
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Pré-enregistrement GTS en cours...`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Pré-enregistrement GTS...`;
             btn.disabled = true;
 
             const pnr = document.getElementById('formPnr').value.trim().toUpperCase();
@@ -643,7 +644,6 @@
             const palier = currentDevis.palier || getPalierPourJours(currentDevis.jours);
 
             try {
-                // Insertion dans ef_voyageurs sur le projet central Supabase
                 const { error: errV } = await supabaseClient.from('ef_voyageurs').insert([{
                     id: newId,
                     nom: nom,
@@ -669,7 +669,6 @@
 
                 if (errV) console.warn("Notice Supabase:", errV);
 
-                // Initialisation des sacs dans ef_pieces_bagages
                 const piecesPayload = [];
                 for (let i = 1; i <= nbValises; i++) {
                     piecesPayload.push({
@@ -682,16 +681,16 @@
                 await supabaseClient.from('ef_pieces_bagages').insert(piecesPayload);
 
             } catch (err) {
-                console.warn("Enregistrement hors-ligne / fallback local:", err);
+                console.warn("Fallback local:", err);
             }
 
-            // Affichage du QR Pass à droite
             document.getElementById('attenteSuivi').classList.add('hidden');
             document.getElementById('blocSuivi').classList.remove('hidden');
             document.getElementById('badgeStatut').className = "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono px-3 py-1 rounded-full font-bold uppercase";
             document.getElementById('badgeStatut').textContent = "Pré-enregistré";
             document.getElementById('pnrClient').textContent = 'REF : ' + pnr;
             document.getElementById('recapNomPax').textContent = nom + ' ' + prenom;
+            document.getElementById('recapCanal').textContent = currentServiceMode === 'VIP_HOME' ? 'Collecte VIP Domicile' : 'Dépôt Agence Hub';
             document.getElementById('recapPalier').textContent = palier.libelle;
             document.getElementById('recapPoidsKg').textContent = `${document.getElementById('poidsTotalEstime').value} kg`;
             document.getElementById('recapTotalFinal').textContent = `${currentDevis.totalUsd.toFixed(2)} USD (≈ ${currentDevis.totalCdf.toLocaleString('fr-FR')} CDF)`;
@@ -699,10 +698,9 @@
             btn.innerHTML = `<i class="fa-solid fa-barcode"></i> Pré-enregistrer mon Dossier & Générer mon QR Pass`;
             btn.disabled = false;
 
-            alert(`✅ Félicitations ${prenom} !\nVotre pré-enregistrement au barème "${palier.libelle}" est validé.\nVotre fiche a été transmise aux agents du Hub PROCOKI.`);
+            alert(`✅ Félicitations ${prenom} !\nVotre pré-enregistrement pour (${currentServiceMode === 'VIP_HOME' ? 'Collecte VIP Domicile' : 'Dépôt Agence Hub'}) au barème "${palier.libelle}" est validé.\nTotal estimé : ${currentDevis.totalUsd.toFixed(2)} $`);
         }
 
-        /* --- 6. SUIVI EN DIRECT SUR LE CLOUD GTS (RECHERCHE RAPIDE) --- */
         async function consulterStatutCloud() {
             const query = document.getElementById('quickSearchInput').value.trim().toUpperCase();
             if (!query) return alert("Veuillez saisir votre référence PNR ou identifiant dossier.");
@@ -712,7 +710,6 @@
             btn.disabled = true;
 
             try {
-                // Recherche dans ef_voyageurs par PNR ou ID
                 const { data: paxList, error } = await supabaseClient
                     .from('ef_voyageurs')
                     .select('*')
@@ -729,7 +726,6 @@
                 const pax = paxList[0];
                 document.getElementById('trackedNumber').textContent = `${pax.pnr} (${pax.nom} ${pax.prenom})`;
                 
-                // Actualisation des étapes de suivi
                 const stepWeigh = document.getElementById('step-weigh');
                 const stepXray = document.getElementById('step-xray');
                 const stepBatch = document.getElementById('step-batch');
@@ -745,7 +741,6 @@
                     stepXray.querySelector('.step-bullet').innerHTML = `<i class="fa-solid fa-check"></i>`;
                     document.getElementById('step-xray-desc').textContent = "Contrôle scanner Rayon X certifié conforme. Scellés inviolables appliqués.";
                     
-                    // Passage convoi
                     stepBatch.querySelector('.step-bullet').className = "absolute -left-[35px] top-0 bg-blue-500 text-slate-950 rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black";
                     stepBatch.querySelector('.step-bullet').innerHTML = `<i class="fa-solid fa-truck-fast"></i>`;
                     document.getElementById('step-batch-desc').textContent = "Bagages regroupés en lot sécurisé pour transfert N'Djili.";
@@ -770,9 +765,7 @@
             document.getElementById('searchHelpText').classList.remove('hidden');
         }
 
-        // INITIALISATION AU CHARGEMENT DE LA PAGE
         document.addEventListener('DOMContentLoaded', () => {
-            // Définir la date du vol par défaut à J+3
             const d = new Date();
             d.setDate(d.getDate() + 3);
             document.getElementById('flightDate').value = d.toISOString().split('T')[0];
