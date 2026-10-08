@@ -1,0 +1,22 @@
+{
+  "name": "Global Tech Solutions — EasyFly Transit",
+  "short_name": "EasyFly GTS",
+  "description": "Station logistique et bagagerie urbaine déportée à Kinshasa",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#0f172a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "GLOBAL.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "GLOBAL.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
