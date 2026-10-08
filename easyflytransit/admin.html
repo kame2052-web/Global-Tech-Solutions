@@ -70,7 +70,7 @@
                 <i class="fa-solid fa-user-plus text-indigo-400"></i> <span>1. Enregistrement</span>
             </button>
             <button onclick="navigateTab('pesee')" id="btn-tab-pesee" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
-                <i class="fa-solid fa-scale-balanced text-amber-400"></i> <span>2. Pesée Globale & Caisse</span>
+                <i class="fa-solid fa-scale-balanced text-amber-400"></i> <span>2. Pesée & Facturation</span>
             </button>
             <button onclick="navigateTab('surete')" id="btn-tab-surete" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
                 <i class="fa-solid fa-radiation text-rose-400"></i> <span>3. Scanner Rayon X</span>
@@ -82,7 +82,7 @@
                 <i class="fa-solid fa-truck-fast text-emerald-400"></i> <span>Convoi Batch N'djili</span>
             </button>
             <button onclick="navigateTab('config')" id="btn-tab-config" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
-                <i class="fa-solid fa-sliders text-purple-400"></i> <span>Tarifs & Config</span>
+                <i class="fa-solid fa-sliders text-purple-400"></i> <span>Grille Tarifs & Config</span>
             </button>
         </div>
     </nav>
@@ -95,7 +95,7 @@
             <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
                     <h2 class="text-xl md:text-2xl font-black text-slate-100">Supervision Globale du Hub Urbain</h2>
-                    <p class="text-xs text-slate-400">Suivi temps réel des volumes collectés, scellés et synchronisés dans le Cloud GTS.</p>
+                    <p class="text-xs text-slate-400">Suivi temps réel des volumes collectés, scellés et des recettes selon l'anticipation des dépôts.</p>
                 </div>
                 <div class="flex gap-2">
                     <button onclick="chargerDossiersDepuisCloud()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-slate-700">
@@ -111,22 +111,22 @@
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-indigo-500 shadow-xl">
                     <span class="text-xs font-mono text-slate-400 uppercase">Voyageurs Enregistrés</span>
                     <h3 id="stat-total-pax" class="text-3xl font-black text-slate-100 mt-2">0</h3>
-                    <span class="text-[10px] text-indigo-400 font-mono">Dossiers ouverts aujourd'hui</span>
+                    <span class="text-[10px] text-indigo-400 font-mono">Dossiers actifs dans la base GTS</span>
                 </div>
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-amber-500 shadow-xl">
                     <span class="text-xs font-mono text-slate-400 uppercase">Poids Total Collecté</span>
                     <h3 id="stat-total-kg" class="text-3xl font-black text-slate-100 mt-2">0.00 kg</h3>
-                    <span class="text-[10px] text-amber-400 font-mono">Pesées globales PROCOKI</span>
-                </div>
-                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-rose-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Surtaxes Encaissées</span>
-                    <h3 id="stat-total-cdf" class="text-3xl font-black text-slate-100 mt-2">0 CDF</h3>
-                    <span class="text-[10px] text-rose-400 font-mono">Excédent sur franchise cumulée</span>
+                    <span class="text-[10px] text-amber-400 font-mono">Pesées certifiées au hub PROCOKI</span>
                 </div>
                 <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-emerald-500 shadow-xl">
+                    <span class="text-xs font-mono text-slate-400 uppercase">Total Facturation Hub</span>
+                    <h3 id="stat-total-usd" class="text-3xl font-black text-emerald-400 mt-2">0 $</h3>
+                    <span id="stat-total-cdf-sub" class="text-[10px] text-slate-400 font-mono">≈ 0 CDF encaissés</span>
+                </div>
+                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-cyan-500 shadow-xl">
                     <span class="text-xs font-mono text-slate-400 uppercase">Colis Prêts pour Convoi</span>
                     <h3 class="text-3xl font-black text-slate-100 mt-2" id="stat-total-convois">0 Colis</h3>
-                    <span class="text-[10px] text-emerald-400 font-mono">Scellés et inspectés</span>
+                    <span class="text-[10px] text-cyan-400 font-mono">Scellés et inspectés Rayon X</span>
                 </div>
             </div>
         </section>
@@ -136,9 +136,9 @@
             <div class="border-b border-slate-800 pb-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                 <div>
                     <h2 class="text-xl md:text-2xl font-black text-cyan-400 uppercase flex items-center gap-2">
-                        <i class="fa-solid fa-chart-line"></i> Yield Management & Capacité Logistique
+                        <i class="fa-solid fa-chart-line"></i> Yield Management & Anticipation des Vols
                     </h2>
-                    <p class="text-xs text-slate-400">Optimisation tarifaire des canaux de collecte et anticipation du tonnage pour les convois N'Djili.</p>
+                    <p class="text-xs text-slate-400">Analyse de la répartition des dépôts selon le délai d'anticipation (J-3+, J-2, J-1) et capacité fourgon.</p>
                 </div>
                 <button onclick="exporterYieldCsv()" class="bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-black px-4 py-2 rounded-xl text-xs uppercase transition shadow flex items-center gap-2">
                     <i class="fa-solid fa-file-csv"></i> Exporter Rapport Yield
@@ -146,25 +146,25 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                <div class="bg-gtscard border border-cyan-500/20 p-4 rounded-2xl shadow-md">
-                    <span class="text-[10px] font-mono uppercase text-slate-400">Mix Collecte VIP</span>
-                    <h3 class="text-2xl font-black text-cyan-300 mt-1" id="kpi-vip-ratio">0%</h3>
-                    <span class="text-[9px] text-slate-500 font-mono">Cible rentabilité : &gt; 35%</span>
+                <div class="bg-gtscard border border-emerald-500/30 p-4 rounded-2xl shadow-md">
+                    <span class="text-[10px] font-mono uppercase text-slate-400">Dépôts Anticipés (J-3+)</span>
+                    <h3 class="text-2xl font-black text-emerald-400 mt-1" id="kpi-j3-ratio">0%</h3>
+                    <span class="text-[9px] text-slate-400 font-mono">Meilleur lissage logistique</span>
                 </div>
-                <div class="bg-gtscard border border-slate-800 p-4 rounded-2xl shadow-md">
-                    <span class="text-[10px] font-mono uppercase text-slate-400">Excédent / Passager Moyen</span>
-                    <h3 class="text-2xl font-black text-slate-100 mt-1" id="kpi-avg-excess">0.00 kg</h3>
-                    <span class="text-[9px] text-amber-400 font-mono">Poids au-delà de la franchise</span>
+                <div class="bg-gtscard border border-amber-500/30 p-4 rounded-2xl shadow-md">
+                    <span class="text-[10px] font-mono uppercase text-slate-400">Dépôts Standards (J-2)</span>
+                    <h3 class="text-2xl font-black text-amber-300 mt-1" id="kpi-j2-ratio">0%</h3>
+                    <span class="text-[9px] text-slate-400 font-mono">Délai standard 48h</span>
                 </div>
-                <div class="bg-gtscard border border-emerald-500/20 p-4 rounded-2xl shadow-md">
-                    <span class="text-[10px] font-mono uppercase text-slate-400">Taux Remplissage Fourgon</span>
-                    <h3 class="text-2xl font-black text-emerald-300 mt-1" id="kpi-truck-fill">0%</h3>
+                <div class="bg-gtscard border border-rose-500/30 p-4 rounded-2xl shadow-md">
+                    <span class="text-[10px] font-mono uppercase text-slate-400">Dernière Minute (J-1)</span>
+                    <h3 class="text-2xl font-black text-rose-400 mt-1" id="kpi-j1-ratio">0%</h3>
+                    <span class="text-[9px] text-rose-400 font-mono">Flux critique d'urgence</span>
+                </div>
+                <div class="bg-gtscard border border-indigo-500/30 p-4 rounded-2xl shadow-md">
+                    <span class="text-[10px] font-mono uppercase text-slate-400">Remplissage Fourgon</span>
+                    <h3 class="text-2xl font-black text-indigo-300 mt-1" id="kpi-truck-fill">0%</h3>
                     <span class="text-[9px] text-slate-500 font-mono">Capacité 1 200 kg / convoi</span>
-                </div>
-                <div class="bg-gtscard border border-purple-500/20 p-4 rounded-2xl shadow-md">
-                    <span class="text-[10px] font-mono uppercase text-slate-400">Majoration Yield Actuelle</span>
-                    <h3 class="text-2xl font-black text-purple-300 mt-1" id="kpi-yield-multiplier">+0%</h3>
-                    <span class="text-[9px] text-purple-400 font-mono" id="kpi-yield-status">Tarif standard</span>
                 </div>
             </div>
 
@@ -172,19 +172,19 @@
                 <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
                     <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
                         <h3 class="text-xs font-black uppercase text-slate-100 tracking-wider flex items-center gap-2">
-                            <i class="fa-solid fa-layer-group text-amber-400"></i> Canaux : Agence vs Domicile VIP
+                            <i class="fa-solid fa-clock-rotate-left text-cyan-400"></i> Ventilation par Palier d'Anticipation
                         </h3>
-                        <span class="text-[10px] text-slate-500 font-mono">Données consolidées</span>
+                        <span class="text-[10px] text-slate-500 font-mono">Règle des 3 jours</span>
                     </div>
-                    <div class="space-y-3" id="yield-channels-box"></div>
+                    <div class="space-y-3" id="yield-paliers-box"></div>
                 </div>
 
                 <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl space-y-4">
                     <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
                         <h3 class="text-xs font-black uppercase text-slate-100 tracking-wider flex items-center gap-2">
-                            <i class="fa-solid fa-plane-departure text-sky-400"></i> Charge & Tonnage par Compagnie
+                            <i class="fa-solid fa-plane-departure text-sky-400"></i> Tonnage & Recettes par Compagnie
                         </h3>
-                        <span class="text-[10px] text-slate-500 font-mono">Base Négociation B2B</span>
+                        <span class="text-[10px] text-slate-500 font-mono">Cumul Poids & Surtaxes</span>
                     </div>
                     <div class="space-y-2.5 max-h-[300px] overflow-y-auto pr-1" id="yield-airlines-box"></div>
                 </div>
@@ -194,8 +194,8 @@
         <!-- 2. VUE ENREGISTREMENT GUICHET -->
         <section id="pane-enregistrement" class="view-pane space-y-6">
             <div class="border-b border-slate-800 pb-3">
-                <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 1 : Fiche Voyageur & Vol</h2>
-                <p class="text-xs text-slate-400">Saisie administrative : le poids total autorisé du billet sert de référence exclusive de franchise.</p>
+                <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 1 : Fiche Voyageur & Date du Vol</h2>
+                <p class="text-xs text-slate-400">Le calcul de la tarification s'adapte automatiquement à l'anticipation entre la date du vol et le dépôt d'aujourd'hui.</p>
             </div>
 
             <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl">
@@ -247,12 +247,21 @@
                         </div>
                         <div>
                             <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Date du Vol *</label>
-                            <input type="date" id="reg-date" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                            <input type="date" id="reg-date" required onchange="verifierAnticipationSaisie()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
                         </div>
                         <div>
                             <label class="block text-xs font-mono text-slate-400 mb-1.5 uppercase">Heure du Vol *</label>
                             <input type="time" id="reg-heure" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
                         </div>
+                    </div>
+
+                    <!-- BANDEAU DE DÉTECTION DU PALIER EN DIRECT -->
+                    <div id="reg-anticipation-banner" class="bg-indigo-950/40 border border-indigo-500/30 rounded-2xl p-3.5 flex items-center justify-between text-xs font-mono">
+                        <span class="text-slate-300 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-check text-cyan-400"></i>
+                            <span id="reg-anticipation-text">Renseignez la date du vol pour prévisualiser le barème d'anticipation.</span>
+                        </span>
+                        <span id="reg-anticipation-badge" class="px-3 py-1 rounded-full text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700">En attente</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -261,7 +270,7 @@
                             <input type="text" id="reg-dest" required placeholder="ex: Paris-CDG (France)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-mono text-emerald-400 mb-1.5 uppercase font-bold">Poids Total Accordé Billet (Franchise kg) *</label>
+                            <label class="block text-xs font-mono text-emerald-400 mb-1.5 uppercase font-bold">Franchise Globale Billet (kg) *</label>
                             <input type="number" step="0.5" id="reg-allowed" value="23" required class="w-full bg-slate-900 border border-emerald-500/50 rounded-xl px-4 py-2.5 text-xs font-mono text-emerald-300 font-bold focus:outline-none focus:border-emerald-500">
                         </div>
                         <div>
@@ -279,26 +288,27 @@
             </div>
         </section>
 
-        <!-- 3. VUE PESÉE MULTI-BAGAGES, CUMUL SUR FRANCHISE & ENCAISSEMENT -->
+        <!-- 3. VUE PESÉE MULTI-BAGAGES, CUMUL SUR FRANCHISE & FACTURATION SELON DATE VOL -->
         <section id="pane-pesee" class="view-pane space-y-6">
             <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
-                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 2 : Pesée Globale & Franchise Billet</h2>
-                    <p class="text-xs text-slate-400">Le calcul d'excédent s'applique sur la masse cumulée totale par rapport à la franchise accordée par le billet.</p>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Poste 2 : Pesée Globale & Facturation par Anticipation</h2>
+                    <p class="text-xs text-slate-400">Le forfait de prise en charge et le tarif d'excédent s'appliquent selon les jours restants avant le départ.</p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <label class="text-xs font-mono text-slate-400">Dossier en traitement :</label>
+                    <label class="text-xs font-mono text-slate-400">Dossier actif :</label>
                     <select id="select-active-pax" onchange="loadPaxIntoWeigh(this.value)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-indigo-400 font-mono focus:outline-none"></select>
                 </div>
             </div>
 
             <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
                 <!-- Récapitulatif -->
-                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
+                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 grid grid-cols-2 md:grid-cols-5 gap-4 text-xs font-mono">
                     <div><span class="text-slate-500 block text-[10px] uppercase">Voyageur :</span><strong class="text-slate-100" id="weigh-lbl-nom">-</strong></div>
                     <div><span class="text-slate-500 block text-[10px] uppercase">Vol / Comp. :</span><strong class="text-slate-100" id="weigh-lbl-vol">-</strong></div>
                     <div><span class="text-slate-500 block text-[10px] uppercase">Code PNR :</span><strong class="text-indigo-400 font-bold" id="weigh-lbl-pnr">-</strong></div>
-                    <div><span class="text-slate-500 block text-[10px] uppercase">Franchise Globale :</span><strong class="text-emerald-400 font-bold" id="weigh-lbl-allowed">23.00 kg</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Franchise Billet :</span><strong class="text-emerald-400 font-bold" id="weigh-lbl-allowed">23.00 kg</strong></div>
+                    <div><span class="text-slate-500 block text-[10px] uppercase">Délai Vol :</span><strong class="text-cyan-400 font-bold" id="weigh-lbl-anticipation">-</strong></div>
                 </div>
 
                 <!-- CONTENEUR DES PIÈCES MULTI-BAGAGES DYNAMIQUES -->
@@ -315,20 +325,45 @@
                     <div id="liste-pieces-bagages" class="space-y-2.5"></div>
                 </div>
 
-                <!-- TOTAL CUMULÉ & SURTAXE GLOBALE -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-slate-800">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Masse Cumulée Totale (kg)</label>
-                        <div id="weigh-total-display" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 font-mono text-2xl text-amber-300 font-bold h-[58px] flex items-center">
+                <!-- DÉTAIL FINANCIER COMPLET : FORFAIT D'ANTICIPATION + EXCÉDENT AU KILO -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-slate-800">
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4">
+                        <span class="block text-[10px] font-mono text-slate-400 uppercase font-bold">1. Masse Cumulée Totale</span>
+                        <div id="weigh-total-display" class="font-mono text-2xl text-amber-300 font-black mt-1">
                             0.00 kg
                         </div>
+                        <span id="weigh-pieces-count" class="text-[10px] text-slate-500 font-mono">0 sac(s) physique(s)</span>
                     </div>
+
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4">
+                        <span class="block text-[10px] font-mono text-slate-400 uppercase font-bold">2. Forfait Base & Palier</span>
+                        <div id="weigh-base-fee-display" class="font-mono text-2xl text-indigo-400 font-black mt-1">
+                            0.00 $
+                        </div>
+                        <span id="weigh-palier-name" class="text-[10px] text-indigo-300 font-mono">Palier détecté</span>
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4">
+                        <span class="block text-[10px] font-mono text-slate-400 uppercase font-bold">3. Excédent sur Franchise Billet</span>
+                        <div id="weigh-excess-display" class="font-mono text-2xl text-rose-400 font-black mt-1">
+                            +0.00 $
+                        </div>
+                        <span id="weigh-excess-kg-lbl" class="text-[10px] text-rose-400 font-mono">+0.0 kg d'excédent</span>
+                    </div>
+                </div>
+
+                <!-- TOTAL GLOBAL FACTURÉ EN USD ET CDF -->
+                <div class="bg-gradient-to-r from-slate-900 to-indigo-950/60 p-5 rounded-2xl border border-indigo-500/30 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Surtaxe Excédent (42 000 CDF / kg au-delà de la franchise)</label>
-                        <div id="weigh-fee-box" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-2xl text-emerald-400 font-black h-[58px] flex items-center">
-                            0 CDF (Conforme Franchise)
+                        <span class="text-xs font-mono uppercase text-slate-400 block font-bold">Total Facturation Hub Urbain :</span>
+                        <div class="flex items-baseline gap-3 mt-1">
+                            <span id="weigh-total-usd-banner" class="text-3xl font-black text-emerald-400 font-mono">0.00 $</span>
+                            <span id="weigh-total-cdf-banner" class="text-xl font-bold text-slate-300 font-mono">≈ 0 CDF</span>
                         </div>
                     </div>
+                    <span id="weigh-badge-status" class="px-3.5 py-1.5 rounded-full text-xs font-bold font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        Prêt pour encaissement
+                    </span>
                 </div>
 
                 <!-- Panneau de Caisse -->
@@ -424,7 +459,7 @@
             <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
                     <h2 class="text-xl md:text-2xl font-black text-slate-100">Registre Général des Voyageurs</h2>
-                    <p class="text-xs text-slate-400">Contrôle de chaque étape de traitement pour chaque passager enregistré.</p>
+                    <p class="text-xs text-slate-400">Contrôle de chaque étape de traitement, anticipation du vol et facturation consolidée.</p>
                 </div>
                 <span id="reg-badge-count" class="text-xs font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-3.5 py-1 rounded-full font-bold">
                     0 Passagers
@@ -437,11 +472,11 @@
                         <thead class="bg-slate-900/80 text-[10px] font-mono uppercase text-slate-400 border-b border-slate-800">
                             <tr>
                                 <th class="py-3 px-4">Passager</th>
-                                <th class="py-3 px-4">Canal</th>
                                 <th class="py-3 px-4">Vol & PNR</th>
+                                <th class="py-3 px-4">Anticipation</th>
                                 <th class="py-3 px-4">Colis</th>
                                 <th class="py-3 px-4">Poids Cumulé / Franchise</th>
-                                <th class="py-3 px-4">Surtaxe Encaissée</th>
+                                <th class="py-3 px-4">Total Facturé ($ / CDF)</th>
                                 <th class="py-3 px-4">Rayon X</th>
                                 <th class="py-3 px-4">Scellés Plombs</th>
                             </tr>
@@ -487,74 +522,88 @@
             </div>
         </section>
 
-        <!-- 7. CONFIGURATION DES TARIFS -->
+        <!-- 7. CONFIGURATION DES TARIFS SELON DATE VOL (DYNAMIC SUPABASE) -->
         <section id="pane-config" class="view-pane space-y-8">
-            <div class="border-b border-slate-800 pb-3">
-                <h2 class="text-xl md:text-2xl font-black text-slate-100">Gestionnaire des Tarifs & Paramètres</h2>
-                <p class="text-xs text-slate-400">Les frais de prise en charge s'appliquent à la franchise globale du billet[cite: 1, 2].</p>
-            </div>
-
-            <div class="flex justify-between items-center bg-indigo-950/30 border border-indigo-500/20 p-4 rounded-2xl">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
-                    <h3 class="text-sm font-black text-indigo-400 uppercase">Synchronisation Active</h3>
-                    <p class="text-[10px] text-slate-400 mt-1">Mémoire locale & Cloud GTS connectés.</p>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Grille des Prix selon l'Anticipation du Vol</h2>
+                    <p class="text-xs text-slate-400">Configuration en direct synchronisée avec la table <code>ef_tarifs_config</code> de Supabase.</p>
                 </div>
-                <button onclick="sauvegarderConfig()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-floppy-disk"></i> Enregistrer les modifications
+                <button onclick="sauvegarderTarifsCloud()" id="btn-save-tarifs" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-floppy-disk"></i> Enregistrer dans le Cloud
                 </button>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="space-y-8">
-                    <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl">
-                        <h3 class="text-sm font-black uppercase text-slate-100 mb-5 flex items-center gap-2 border-b border-slate-800 pb-3">
-                            <i class="fa-solid fa-money-bill-wave text-emerald-400"></i> Frais de Prise en Charge par Franchise Billet (GTS)
-                        </h3>
-                        
-                        <div class="space-y-6">
-                            <div>
-                                <h4 class="text-xs font-bold text-slate-400 mb-3 uppercase">Dépôt en Agence Hub</h4>
-                                <div class="flex gap-4">
-                                    <div class="flex-1">
-                                        <label class="block text-[10px] text-slate-500 mb-1">Vol National ($/franchise)</label>
-                                        <input type="number" id="fee-agency-nat" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:border-indigo-500 focus:outline-none">
-                                    </div>
-                                    <div class="flex-1">
-                                        <label class="block text-[10px] text-slate-500 mb-1">Vol International ($/franchise)</label>
-                                        <input type="number" id="fee-agency-int" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:border-indigo-500 focus:outline-none">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <h4 class="text-xs font-bold text-slate-400 mb-3 uppercase text-amber-400">Collecte VIP Domicile</h4>
-                                <div class="flex gap-4">
-                                    <div class="flex-1">
-                                        <label class="block text-[10px] text-slate-500 mb-1">Vol National ($/franchise)</label>
-                                        <input type="number" id="fee-vip-nat" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:border-amber-500 focus:outline-none">
-                                    </div>
-                                    <div class="flex-1">
-                                        <label class="block text-[10px] text-slate-500 mb-1">Vol International ($/franchise)</label>
-                                        <input type="number" id="fee-vip-int" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:border-amber-500 focus:outline-none">
-                                    </div>
-                                </div>
-                            </div>
+            <!-- Taux de change global -->
+            <div class="bg-gtscard border border-slate-800 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                    <h3 class="text-xs font-black uppercase text-indigo-400">Taux de Conversion Officiel (CDF pour 1 USD)</h3>
+                    <p class="text-[10px] text-slate-400">Appliqué pour le calcul automatique de la facture en Francs Congolais au guichet.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-mono text-slate-400">1 USD =</span>
+                    <input type="number" id="cfg-taux-cdf" value="2850" class="bg-slate-950 border border-indigo-500/40 rounded-xl px-3 py-2 text-xs font-mono text-emerald-400 font-bold w-32 focus:outline-none">
+                    <span class="text-xs font-mono text-slate-400">CDF</span>
+                </div>
+            </div>
+
+            <!-- Cartes des 3 paliers d'anticipation -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Palier J-3+ (Moins cher) -->
+                <div class="bg-gtscard border-2 border-emerald-500/40 p-6 rounded-3xl space-y-4 shadow-xl">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <span class="text-xs font-black uppercase text-emerald-400">Dépôt Éco-Anticipé</span>
+                        <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">≥ 3 Jours</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[10px] font-mono uppercase text-slate-400 mb-1">Forfait Base Franchise ($)</label>
+                            <input type="number" step="0.5" id="cfg-j3-forfait" value="15" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 font-mono text-white text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-mono uppercase text-slate-400 mb-1">Prix par kg supplémentaire ($ / kg)</label>
+                            <input type="number" step="0.1" id="cfg-j3-excedent" value="2.0" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 font-mono text-amber-300 text-xs">
                         </div>
                     </div>
-
-                    <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl">
-                        <h3 class="text-sm font-black uppercase text-slate-100 mb-5 flex items-center gap-2 border-b border-slate-800 pb-3">
-                            <i class="fa-solid fa-scale-balanced text-rose-400"></i> Déclaration de Sûreté
-                        </h3>
-                        <textarea id="legal-text" rows="4" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-300 focus:border-rose-500 focus:outline-none leading-relaxed"></textarea>
-                    </div>
+                    <p class="text-[10px] text-slate-500 leading-tight">Tarif le plus bas pour encourager le dépôt très tôt et désengorger la chaîne.</p>
                 </div>
 
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl shadow-xl flex flex-col h-full">
-                    <h3 class="text-sm font-black uppercase text-slate-100 mb-5 flex items-center gap-2 border-b border-slate-800 pb-3">
-                        <i class="fa-solid fa-plane text-sky-400"></i> Compagnies & Tarifs d'Excédent
-                    </h3>
-                    <div class="flex-1 overflow-y-auto pr-2 space-y-4 max-h-[400px]" id="airlines-list"></div>
+                <!-- Palier J-2 (Assez cher) -->
+                <div class="bg-gtscard border-2 border-amber-500/40 p-6 rounded-3xl space-y-4 shadow-xl">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <span class="text-xs font-black uppercase text-amber-400">Dépôt Standard</span>
+                        <span class="text-[10px] font-mono bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/30">2 Jours</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[10px] font-mono uppercase text-slate-400 mb-1">Forfait Base Franchise ($)</label>
+                            <input type="number" step="0.5" id="cfg-j2-forfait" value="25" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 font-mono text-white text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-mono uppercase text-slate-400 mb-1">Prix par kg supplémentaire ($ / kg)</label>
+                            <input type="number" step="0.1" id="cfg-j2-excedent" value="3.5" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 font-mono text-amber-300 text-xs">
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-slate-500 leading-tight">Flux standard de préparation logistique 48h avant le décollage.</p>
+                </div>
+
+                <!-- Palier J-1 (Cher / Dernière minute) -->
+                <div class="bg-gtscard border-2 border-rose-500/40 p-6 rounded-3xl space-y-4 shadow-xl">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <span class="text-xs font-black uppercase text-rose-400">Dernière Minute / Veille</span>
+                        <span class="text-[10px] font-mono bg-rose-500/10 text-rose-300 px-2 py-0.5 rounded-full border border-rose-500/30">≤ 1 Jour</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[10px] font-mono uppercase text-slate-400 mb-1">Forfait Base Franchise ($)</label>
+                            <input type="number" step="0.5" id="cfg-j1-forfait" value="40" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 font-mono text-white text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-mono uppercase text-slate-400 mb-1">Prix par kg supplémentaire ($ / kg)</label>
+                            <input type="number" step="0.1" id="cfg-j1-excedent" value="5.0" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 font-mono text-amber-300 text-xs">
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-slate-500 leading-tight">Mobilisation logistique d'urgence et réservation de volume sous haute pression.</p>
                 </div>
             </div>
         </section>
@@ -564,12 +613,11 @@
     <!-- PIED DE PAGE -->
     <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-6 text-center text-xs text-slate-500 space-y-1">
         <p><b>EasyFly Transit</b> — Console Intégrale Hub PROCOKI Kinshasa[cite: 1, 2].</p>
-        <p class="text-[10px] font-mono">Facturation au poids global certifié • Synchronisation Cloud GTS[cite: 1, 2].</p>
+        <p class="text-[10px] font-mono">Facturation dynamique selon date de vol & Poids global certifié • Synchronisation Cloud GTS[cite: 1, 2].</p>
     </footer>
 
     <!-- LOGIQUE JAVASCRIPT & CONNEXION SUPABASE PROD -->
     <script>
-        const TARIFF_PER_KG = 42000;
         const CAMION_CAPACITE_KG = 1200;
 
         // INITIALISATION UNIQUE SUPABASE DE PRODUCTION (PROJET CENTRAL GTS)
@@ -582,15 +630,12 @@
         let selectedXrayId = null;
         let currentXrayVote = null;
 
-        const defaultData = {
-            serviceRates: { AGENCY: { NAT: 10, INT: 20 }, VIP_HOME: { NAT: 15, INT: 30 } },
-            airlines: {
-                INT: { defaultFranchise: 23, companies: { "Air France": 15, "Brussels Airlines": 15, "Ethiopian Airlines": 12, "Turkish Airlines": 13, "Kenya Airways": 12, "Autre Compagnie": 15 } },
-                NAT: { defaultFranchise: 20, companies: { "Congo Airways": 5, "Air Kasaï": 5, "Autre Compagnie": 5 } }
-            },
-            legalText: "La facturation est établie sur la base de la franchise globale cumulée du billet. Tout kilogramme excédant le poids global autorisé par la compagnie fait l'objet d'une facturation immédiate au barème officiel au kilo."
-        };
-        let gtsConfig = JSON.parse(localStorage.getItem('gtsAdminConfig')) || defaultData;
+        // GRILLE TARIFAIRE DYNAMIQUE (PAR DÉFAUT SI OFFLINE / MISE À JOUR VIA ef_tarifs_config)
+        let TARIFS_CONFIG = [
+            { id: 'J3_PLUS', libelle: 'Dépôt éco-anticipé (≥ 3 jours)', jours_min: 3, forfait_base_usd: 15.00, prix_kg_excedent_usd: 2.00, taux_echange_cdf: 2850, actif: true },
+            { id: 'J2',      libelle: 'Dépôt standard (2 jours)',      jours_min: 2, forfait_base_usd: 25.00, prix_kg_excedent_usd: 3.50, taux_echange_cdf: 2850, actif: true },
+            { id: 'J1',      libelle: 'Dépôt dernière minute (≤ 1 jour)', jours_min: 0, forfait_base_usd: 40.00, prix_kg_excedent_usd: 5.00, taux_echange_cdf: 2850, actif: true }
+        ];
 
         function navigateTab(tabName) {
             document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
@@ -604,15 +649,92 @@
             const activeBtn = document.getElementById('btn-tab-' + tabName);
             if (activeBtn) activeBtn.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
 
-            if (tabName === 'config') chargerFormulaireConfig();
+            if (tabName === 'config') chargerFormulaireConfigUI();
             if (tabName === 'yield-analytics') calculerYieldEtCapacite();
         }
 
-        /* --- CHARGEMENT CLOUD SUPABASE (MODE PRODUCTION) --- */
+        /* --- MOTEUR DE CALCUL DU DÉLAI D'ANTICIPATION & DU PALIER --- */
+        function calculerJoursAnticipation(dateVolStr) {
+            if (!dateVolStr) return 0;
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const [y, m, d] = dateVolStr.split('-').map(Number);
+            const dateVol = new Date(y, m - 1, d);
+            const diffMs = dateVol - today;
+            const diffJours = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+            return diffJours;
+        }
+
+        function getPalierPourJours(jours) {
+            // Tri décroissant sur jours_min
+            const tri = [...TARIFS_CONFIG].sort((a, b) => b.jours_min - a.jours_min);
+            for (let palier of tri) {
+                if (jours >= palier.jours_min) {
+                    return palier;
+                }
+            }
+            return tri[tri.length - 1];
+        }
+
+        function verifierAnticipationSaisie() {
+            const dateVol = document.getElementById('reg-date').value;
+            const bannerText = document.getElementById('reg-anticipation-text');
+            const bannerBadge = document.getElementById('reg-anticipation-badge');
+            if (!dateVol) return;
+
+            const jours = calculerJoursAnticipation(dateVol);
+            const palier = getPalierPourJours(jours);
+
+            if (jours >= 3) {
+                bannerText.innerHTML = `💡 Vol prévu dans <b>${jours} jours</b> : <b>${palier.libelle}</b>. Forfait base : <b>${palier.forfait_base_usd} $</b> | Excédent : <b>${palier.prix_kg_excedent_usd} $/kg</b>.`;
+                bannerBadge.textContent = "Éco-Anticipé (J-3+)";
+                bannerBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+            } else if (jours === 2) {
+                bannerText.innerHTML = `⏳ Vol prévu dans <b>2 jours</b> : <b>${palier.libelle}</b>. Forfait base : <b>${palier.forfait_base_usd} $</b> | Excédent : <b>${palier.prix_kg_excedent_usd} $/kg</b>.`;
+                bannerBadge.textContent = "Standard (J-2)";
+                bannerBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30";
+            } else {
+                bannerText.innerHTML = `🚨 Vol prévu dans <b>${jours <= 0 ? "le jour même" : "1 jour (demain)"}</b> : <b>${palier.libelle}</b>. Forfait base : <b>${palier.forfait_base_usd} $</b> | Excédent : <b>${palier.prix_kg_excedent_usd} $/kg</b>.`;
+                bannerBadge.textContent = "Urgence (J-1/J-0)";
+                bannerBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30";
+            }
+        }
+
+        /* --- CHARGEMENT DES TARIFS DEPUIS SUPABASE (ef_tarifs_config) --- */
+        async function chargerTarifsDepuisCloud() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('ef_tarifs_config')
+                    .select('*')
+                    .eq('actif', true)
+                    .order('jours_min', { ascending: false });
+
+                if (!error && data && data.length > 0) {
+                    TARIFS_CONFIG = data.map(d => ({
+                        id: d.id,
+                        libelle: d.libelle,
+                        jours_min: parseInt(d.jours_min),
+                        forfait_base_usd: parseFloat(d.forfait_base_usd),
+                        prix_kg_excedent_usd: parseFloat(d.prix_kg_excedent_usd),
+                        taux_echange_cdf: parseFloat(d.taux_echange_cdf) || 2850,
+                        actif: d.actif
+                    }));
+                    localStorage.setItem('ef_tarifs_cache', JSON.stringify(TARIFS_CONFIG));
+                }
+            } catch(e) {
+                console.warn("Utilisation de la grille locale en cache :", e);
+                const local = localStorage.getItem('ef_tarifs_cache');
+                if (local) TARIFS_CONFIG = JSON.parse(local);
+            }
+        }
+
+        /* --- CHARGEMENT DOSSIERS CLOUD SUPABASE --- */
         async function chargerDossiersDepuisCloud() {
             try {
                 const badge = document.getElementById('cloud-sync-badge');
                 if (badge) badge.innerHTML = `<span class="h-2 w-2 rounded-full bg-amber-400 mr-2 animate-ping"></span> Synchronisation...`;
+
+                await chargerTarifsDepuisCloud();
 
                 const { data: voyageurs, error: errV } = await supabaseClient
                     .from('ef_voyageurs')
@@ -647,15 +769,21 @@
                             destination: v.destination,
                             allowedWeight: parseFloat(v.allowed_weight) || 23,
                             pieces: mesPieces.length > 0 ? mesPieces : [{ id: 1, weight: parseFloat(v.measured_weight) || 0, seal: "" }],
-                            measuredWeight: parseFloat(v.measured_weight) || 0,
-                            excessFee: parseFloat(v.excess_fee) || 0,
+                            measuredWeight: parseFloat(v.poids_total_pesee_kg || v.measured_weight) || 0,
+                            poidsExcedentKg: parseFloat(v.poids_excedent_kg) || 0,
+                            palierId: v.palier_applique_id || '',
+                            joursAnticipation: v.jours_anticipation !== null ? parseInt(v.jours_anticipation) : calculerJoursAnticipation(v.date_vol),
+                            tarifForfaitUsd: parseFloat(v.tarif_forfait_applique_usd) || 0,
+                            tarifKiloExcedentUsd: parseFloat(v.tarif_kilo_excedent_applique_usd) || 0,
+                            totalFactureUsd: parseFloat(v.total_facture_usd) || 0,
+                            totalFactureCdf: parseFloat(v.total_facture_cdf || v.excess_fee) || 0,
+                            excessFee: parseFloat(v.total_facture_cdf || v.excess_fee) || 0,
                             payMethod: v.pay_method || 'Cash',
                             payRef: v.pay_ref || '',
                             xrayStatus: v.xray_status || 'Pending'
                         };
                     });
                 } else {
-                    // Chargement du fallback local si la table est vide
                     PAX_DATABASE = JSON.parse(localStorage.getItem('ef_local_pax')) || [];
                 }
 
@@ -677,7 +805,7 @@
             }
         }
 
-        /* --- POSTE 1 : NOUVEAU CLIENT --- */
+        /* --- POSTE 1 : ENREGISTREMENT --- */
         async function handleNewClient(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-submit-reg');
@@ -693,6 +821,10 @@
                 initialPieces.push({ id: i, weight: 0, seal: "" });
             }
 
+            const dateVol = document.getElementById('reg-date').value;
+            const jours = calculerJoursAnticipation(dateVol);
+            const palier = getPalierPourJours(jours);
+
             const newPax = {
                 id: newId,
                 nom: document.getElementById('reg-nom').value.trim().toUpperCase(),
@@ -701,12 +833,19 @@
                 channel: channelVal,
                 pnr: document.getElementById('reg-pnr').value.trim().toUpperCase(),
                 compagnie: document.getElementById('reg-compagnie').value,
-                date: document.getElementById('reg-date').value,
+                date: dateVol,
                 heure: document.getElementById('reg-heure').value,
                 destination: document.getElementById('reg-dest').value.trim(),
                 allowedWeight: parseFloat(document.getElementById('reg-allowed').value),
                 pieces: initialPieces,
                 measuredWeight: 0,
+                poidsExcedentKg: 0,
+                palierId: palier.id,
+                joursAnticipation: jours,
+                tarifForfaitUsd: palier.forfait_base_usd,
+                tarifKiloExcedentUsd: palier.prix_kg_excedent_usd,
+                totalFactureUsd: palier.forfait_base_usd,
+                totalFactureCdf: Math.round(palier.forfait_base_usd * palier.taux_echange_cdf),
                 excessFee: 0,
                 payMethod: "Cash",
                 payRef: "",
@@ -714,7 +853,6 @@
             };
 
             try {
-                // Écriture Cloud Supabase
                 const { error: errV } = await supabaseClient.from('ef_voyageurs').insert([{
                     id: newPax.id,
                     nom: newPax.nom,
@@ -727,8 +865,14 @@
                     heure_vol: newPax.heure,
                     destination: newPax.destination,
                     allowed_weight: newPax.allowedWeight,
-                    measured_weight: 0,
-                    excess_fee: 0,
+                    palier_applique_id: newPax.palierId,
+                    jours_anticipation: newPax.joursAnticipation,
+                    tarif_forfait_applique_usd: newPax.tarifForfaitUsd,
+                    tarif_kilo_excedent_applique_usd: newPax.tarifKiloExcedentUsd,
+                    poids_total_pesee_kg: 0,
+                    poids_excedent_kg: 0,
+                    total_facture_usd: newPax.totalFactureUsd,
+                    total_facture_cdf: newPax.totalFactureCdf,
                     xray_status: 'Pending'
                 }]);
 
@@ -753,17 +897,18 @@
             refreshAllUI();
             calculerYieldEtCapacite();
             document.getElementById('clientRegisterForm').reset();
+            document.getElementById('reg-anticipation-banner').innerHTML = `<span class="text-slate-300 flex items-center gap-2"><i class="fa-solid fa-calendar-check text-cyan-400"></i> Renseignez la date du vol pour prévisualiser le barème d'anticipation.</span><span class="px-3 py-1 rounded-full text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700">En attente</span>`;
             
             btn.innerHTML = `<i class="fa-solid fa-arrow-right"></i> Valider & Transférer à la Pesée Globale`;
             btn.disabled = false;
 
-            alert(`✅ Dossier ${newPax.nom} synchronisé.\nFranchise autorisée : ${newPax.allowedWeight} kg.\nTransfert au poste de pesée.`);
+            alert(`✅ Dossier ${newPax.nom} enregistré.\nAnticipation : ${newPax.joursAnticipation} jour(s) avant le vol.\nForfait base : ${newPax.tarifForfaitUsd} $ (Palier : ${palier.libelle}).`);
             selectedWeighId = newPax.id;
             loadPaxIntoWeigh(newPax.id);
             navigateTab('pesee');
         }
 
-        /* --- POSTE 2 : PESÉE MULTI-BAGAGES --- */
+        /* --- POSTE 2 : PESÉE & CALCUL TARIFAIRE SELON DATE DU VOL --- */
         function loadPaxIntoWeigh(paxId) {
             selectedWeighId = paxId;
             const pax = PAX_DATABASE.find(p => p.id === paxId);
@@ -773,6 +918,9 @@
             document.getElementById('weigh-lbl-vol').textContent = `${pax.compagnie}`;
             document.getElementById('weigh-lbl-pnr').textContent = pax.pnr;
             document.getElementById('weigh-lbl-allowed').textContent = pax.allowedWeight.toFixed(2) + " kg";
+            
+            const jours = calculerJoursAnticipation(pax.date);
+            document.getElementById('weigh-lbl-anticipation').textContent = `J-${jours} (${jours >= 3 ? "Éco" : (jours === 2 ? "Standard" : "Urgent")})`;
             document.getElementById('select-active-pax').value = paxId;
 
             renderPiecesPesee();
@@ -828,23 +976,51 @@
             const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
             if (!pax) return;
 
+            // Recalcul du délai d'anticipation par rapport à la date du vol
+            const jours = calculerJoursAnticipation(pax.date);
+            const palier = getPalierPourJours(jours);
+
             const totalKg = pax.pieces.reduce((sum, piece) => sum + (piece.weight || 0), 0);
             pax.measuredWeight = totalKg;
 
-            document.getElementById('weigh-total-display').textContent = `${totalKg.toFixed(2)} kg (${pax.pieces.length} sac(s))`;
+            const excessKg = Math.max(0, totalKg - pax.allowedWeight);
+            pax.poidsExcedentKg = excessKg;
 
-            const excess = Math.max(0, totalKg - pax.allowedWeight);
-            const fee = Math.round(excess * TARIFF_PER_KG);
-            pax.excessFee = fee;
+            const baseFeeUsd = palier.forfait_base_usd;
+            const excessFeeUsd = excessKg * palier.prix_kg_excedent_usd;
+            const totalUsd = baseFeeUsd + excessFeeUsd;
+            const tauxCdf = palier.taux_echange_cdf || 2850;
+            const totalCdf = Math.round(totalUsd * tauxCdf);
 
-            const feeBox = document.getElementById('weigh-fee-box');
-            if (excess > 0) {
-                feeBox.textContent = `+ ${fee.toLocaleString('fr-FR')} CDF (+${excess.toFixed(1)} kg)`;
-                feeBox.className = "w-full bg-slate-950 border border-rose-500/40 rounded-xl p-3 font-mono text-2xl text-rose-400 font-black h-[58px] flex items-center";
+            pax.palierId = palier.id;
+            pax.joursAnticipation = jours;
+            pax.tarifForfaitUsd = baseFeeUsd;
+            pax.tarifKiloExcedentUsd = palier.prix_kg_excedent_usd;
+            pax.totalFactureUsd = totalUsd;
+            pax.totalFactureCdf = totalCdf;
+            pax.excessFee = totalCdf;
+
+            // Affichage UI
+            document.getElementById('weigh-total-display').textContent = `${totalKg.toFixed(2)} kg`;
+            document.getElementById('weigh-pieces-count').textContent = `${pax.pieces.length} sac(s) cumulé(s)`;
+
+            document.getElementById('weigh-base-fee-display').textContent = `${baseFeeUsd.toFixed(2)} $`;
+            document.getElementById('weigh-palier-name').textContent = `${palier.libelle}`;
+
+            if (excessKg > 0) {
+                document.getElementById('weigh-excess-display').textContent = `+${excessFeeUsd.toFixed(2)} $`;
+                document.getElementById('weigh-excess-kg-lbl').textContent = `+${excessKg.toFixed(1)} kg (${palier.prix_kg_excedent_usd} $/kg)`;
+                document.getElementById('weigh-badge-status').textContent = `Surtaxe excédent appliquée (${excessKg.toFixed(1)} kg)`;
+                document.getElementById('weigh-badge-status').className = "px-3.5 py-1.5 rounded-full text-xs font-bold font-mono bg-rose-500/10 text-rose-400 border border-rose-500/20";
             } else {
-                feeBox.textContent = "0 CDF (Conforme Franchise)";
-                feeBox.className = "w-full bg-slate-950 border border-emerald-500/30 rounded-xl p-3 font-mono text-2xl text-emerald-400 font-bold h-[58px] flex items-center";
+                document.getElementById('weigh-excess-display').textContent = `0.00 $`;
+                document.getElementById('weigh-excess-kg-lbl').textContent = `Conforme franchise (${pax.allowedWeight} kg)`;
+                document.getElementById('weigh-badge-status').textContent = `Conforme franchise billet`;
+                document.getElementById('weigh-badge-status').className = "px-3.5 py-1.5 rounded-full text-xs font-bold font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
             }
+
+            document.getElementById('weigh-total-usd-banner').textContent = `${totalUsd.toFixed(2)} $`;
+            document.getElementById('weigh-total-cdf-banner').textContent = `≈ ${totalCdf.toLocaleString('fr-FR')} CDF`;
         }
 
         async function saveWeighRecord() {
@@ -859,16 +1035,24 @@
             pax.payRef = document.getElementById('weigh-input-ref').value.trim();
 
             try {
-                // Mise à jour de la table principale
+                // Mise à jour complète de la fiche voyageur avec les nouveaux champs paramétrables
                 await supabaseClient.from('ef_voyageurs').update({
                     measured_weight: pax.measuredWeight,
-                    excess_fee: pax.excessFee,
+                    poids_total_pesee_kg: pax.measuredWeight,
+                    poids_excedent_kg: pax.poidsExcedentKg,
+                    palier_applique_id: pax.palierId,
+                    jours_anticipation: pax.joursAnticipation,
+                    tarif_forfait_applique_usd: pax.tarifForfaitUsd,
+                    tarif_kilo_excedent_applique_usd: pax.tarifKiloExcedentUsd,
+                    total_facture_usd: pax.totalFactureUsd,
+                    total_facture_cdf: pax.totalFactureCdf,
+                    excess_fee: pax.totalFactureCdf,
                     pay_method: pax.payMethod,
                     pay_ref: pax.payRef,
                     updated_at: new Date().toISOString()
                 }).eq('id', pax.id);
 
-                // Réécriture propre des pièces dans le Cloud
+                // Réécriture des pièces physiques dans ef_pieces_bagages
                 await supabaseClient.from('ef_pieces_bagages').delete().eq('voyageur_id', pax.id);
                 const payloadPieces = pax.pieces.map((p, idx) => ({
                     voyageur_id: pax.id,
@@ -889,7 +1073,7 @@
             btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Enregistrer Pesée Globale & Synchroniser`;
             btn.disabled = false;
 
-            alert(`✅ Pesée globale enregistrée : ${pax.measuredWeight.toFixed(1)} kg sur ${pax.allowedWeight} kg autorisés.\nTransfert au poste Rayon X.`);
+            alert(`✅ Pesée enregistrée pour ${pax.nom} !\nTotal facturé : ${pax.totalFactureUsd.toFixed(2)} $ (${pax.totalFactureCdf.toLocaleString('fr-FR')} CDF).\nTransfert au Poste 3 (Scanner Rayon X).`);
             loadPaxIntoXray(pax.id);
             navigateTab('surete');
         }
@@ -930,9 +1114,16 @@
 
         function updateXrayButtonsUI(vote) {
             const btnOk = document.getElementById('btn-dec-ok'), btnAlert = document.getElementById('btn-dec-alert');
-            if (vote === 'Approved') { btnOk.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-emerald-500 bg-emerald-950/30 transition-all"; btnAlert.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 opacity-40 transition-all"; }
-            else if (vote === 'Suspect') { btnAlert.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-rose-500 bg-rose-950/30 transition-all"; btnOk.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 opacity-40 transition-all"; }
-            else { btnOk.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 hover:border-emerald-500 transition-all"; btnAlert.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 hover:border-rose-500 transition-all"; }
+            if (vote === 'Approved') { 
+                btnOk.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-emerald-500 bg-emerald-950/30 transition-all"; 
+                btnAlert.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 opacity-40 transition-all"; 
+            } else if (vote === 'Suspect') { 
+                btnAlert.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-rose-500 bg-rose-950/30 transition-all"; 
+                btnOk.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 opacity-40 transition-all"; 
+            } else { 
+                btnOk.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 hover:border-emerald-500 transition-all"; 
+                btnAlert.className = "flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-slate-800 bg-slate-900 hover:border-rose-500 transition-all"; 
+            }
         }
 
         async function finalizeXray() {
@@ -975,15 +1166,17 @@
             navigateTab('registre');
         }
 
-        /* --- UI REFRESH & TICKETING --- */
+        /* --- UI REFRESH & TICKETING 80MM --- */
         function refreshAllUI() {
             document.getElementById('stat-total-pax').textContent = PAX_DATABASE.length;
             const totalKg = PAX_DATABASE.reduce((sum, p) => sum + (p.measuredWeight || 0), 0);
             const totalPieces = PAX_DATABASE.reduce((sum, p) => sum + (p.pieces ? p.pieces.length : 1), 0);
-            const totalCdf = PAX_DATABASE.reduce((sum, p) => sum + (p.excessFee || 0), 0);
+            const totalUsd = PAX_DATABASE.reduce((sum, p) => sum + (p.totalFactureUsd || 0), 0);
+            const totalCdf = PAX_DATABASE.reduce((sum, p) => sum + (p.totalFactureCdf || p.excessFee || 0), 0);
 
             document.getElementById('stat-total-kg').textContent = totalKg.toFixed(2) + " kg";
-            document.getElementById('stat-total-cdf').textContent = totalCdf.toLocaleString('fr-FR') + " CDF";
+            document.getElementById('stat-total-usd').textContent = totalUsd.toFixed(2) + " $";
+            document.getElementById('stat-total-cdf-sub').textContent = `≈ ${totalCdf.toLocaleString('fr-FR')} CDF`;
             document.getElementById('stat-total-convois').textContent = totalPieces + " Colis";
             document.getElementById('reg-badge-count').textContent = PAX_DATABASE.length + " Passagers";
             document.getElementById('batch-pax-count').textContent = totalPieces + " pièces";
@@ -1004,19 +1197,23 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-800/30 transition-colors";
                 const xrayBadge = p.xrayStatus === 'Approved' ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">● Conforme</span>` : (p.xrayStatus === 'Suspect' ? `<span class="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 text-[10px] font-bold">● Suspect</span>` : `<span class="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-bold">⏳ Attente</span>`);
-                const channelBadge = p.channel === 'VIP_HOME' ? `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[9px] font-bold">VIP Dom.</span>` : `<span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[9px] font-bold">Hub Agence</span>`;
+                
+                const jours = p.joursAnticipation !== undefined ? p.joursAnticipation : calculerJoursAnticipation(p.date);
+                const anticipBadge = jours >= 3 
+                    ? `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-bold">J-${jours} (Éco)</span>`
+                    : (jours === 2 ? `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[9px] font-bold">J-2 (Standard)</span>` : `<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[9px] font-bold">J-${jours} (Urgent)</span>`);
                 
                 const sealsSummary = p.pieces && p.pieces.length > 0 
-                    ? p.pieces.map(pi => pi.seal ? `<b class="text-emerald-400">${pi.seal}</b>` : '<span class="text-slate-500">Non scellé</span>').join(', ')
+                    ? p.pieces.map(pi => pi.seal ? `<b class="text-emerald-400">${pi.seal}</b>` : '<span class="text-slate-500">En attente</span>').join(', ')
                     : '<span class="text-slate-500">Non scellé</span>';
 
                 tr.innerHTML = `
                     <td class="py-3 px-4 font-bold text-slate-100">${p.nom} ${p.prenom}</td>
-                    <td class="py-3 px-4">${channelBadge}</td>
                     <td class="py-3 px-4 text-indigo-400 font-bold">${p.compagnie} • ${p.pnr}</td>
+                    <td class="py-3 px-4">${anticipBadge}</td>
                     <td class="py-3 px-4 font-mono font-bold text-slate-200">${p.pieces ? p.pieces.length : 1} sac(s)</td>
                     <td class="py-3 px-4"><span class="${p.measuredWeight > p.allowedWeight ? 'text-rose-400 font-bold' : 'text-emerald-400'}">${p.measuredWeight ? p.measuredWeight.toFixed(1) + ' kg' : '0 kg'}</span> / ${p.allowedWeight} kg</td>
-                    <td class="py-3 px-4 text-rose-400 font-bold">${p.excessFee ? p.excessFee.toLocaleString('fr-FR') + ' CDF' : '0 CDF'}</td>
+                    <td class="py-3 px-4 font-bold text-emerald-400">${p.totalFactureUsd ? p.totalFactureUsd.toFixed(2) + ' $' : (p.excessFee ? p.excessFee.toLocaleString('fr-FR') + ' CDF' : '0 $')}</td>
                     <td class="py-3 px-4">${xrayBadge}</td>
                     <td class="py-3 px-4 text-[10px]">${sealsSummary}</td>
                 `;
@@ -1028,25 +1225,34 @@
             const pax = PAX_DATABASE.find(p => p.id === selectedWeighId);
             if (!pax) return;
 
-            let detailsPiecesHtml = (pax.pieces || []).map((pi, i) => `<div>Sac #${i+1} : ${pi.weight} kg (Plomb: ${pi.seal || 'En cours'})</div>`).join('');
+            const jours = pax.joursAnticipation !== undefined ? pax.joursAnticipation : calculerJoursAnticipation(pax.date);
+            const palier = getPalierPourJours(jours);
+            let detailsPiecesHtml = (pax.pieces || []).map((pi, i) => `<div>Sac #${i+1} : ${pi.weight} kg (Plomb : ${pi.seal || 'En attente'})</div>`).join('');
 
-            const printWin = window.open('', '', 'width=340,height=550');
+            const printWin = window.open('', '', 'width=340,height=600');
             printWin.document.write(`
                 <html><head><title>Ticket EasyFly</title><style>body{font-family:monospace;font-size:11px;width:260px;margin:0 auto;padding:10px;color:#000}.center{text-align:center}.bold{font-weight:bold}.line{border-bottom:1px dashed #000;margin:6px 0}</style></head><body onload="window.print(); window.close();">
                 <div class="center bold">EASYFLY TRANSIT</div>
-                <div class="center" style="font-size:8px;">Hub PROCOKI - Kinshasa</div>
+                <div class="center" style="font-size:8px;">Hub Logistique PROCOKI - Kinshasa</div>
                 <div class="line"></div>
                 <div>PASSAGER : ${pax.nom} ${pax.prenom}</div>
                 <div>PNR : ${pax.pnr} • ${pax.compagnie}</div>
+                <div>DATE DU VOL : ${pax.date} (Déposé à J-${jours})</div>
                 <div class="line"></div>
-                <div>FRANCHISE BILLET : ${pax.allowedWeight} kg</div>
-                <div class="bold">POIDS TOTAL PESÉ : ${pax.measuredWeight} kg (${pax.pieces.length} sacs)</div>
+                <div>BARÈME : ${palier.libelle}</div>
+                <div>FORFAIT BASE FRANCHISE : ${pax.tarifForfaitUsd || palier.forfait_base_usd} USD</div>
+                <div class="line"></div>
+                <div>FRANCHISE GLOBALE : ${pax.allowedWeight} kg</div>
+                <div class="bold">POIDS PESÉ : ${pax.measuredWeight} kg (${pax.pieces.length} sac(s))</div>
                 ${detailsPiecesHtml}
                 <div class="line"></div>
-                <div class="bold">EXCÉDENT BILLET : +${Math.max(0, pax.measuredWeight - pax.allowedWeight).toFixed(1)} kg</div>
-                <div class="bold" style="font-size:13px;">SURTAXE : ${pax.excessFee.toLocaleString('fr-FR')} CDF</div>
+                ${pax.poidsExcedentKg > 0 ? `<div>EXCÉDENT : +${pax.poidsExcedentKg.toFixed(1)} kg (${pax.tarifKiloExcedentUsd \vert{}\vert{} palier.prix_kg_excedent_usd}$/kg)</div>` : '<div>EXCÉDENT : 0 kg (Conforme Franchise)</div>'}
                 <div class="line"></div>
-                <div class="center bold" style="margin-top:8px;">BON VOYAGE !</div>
+                <div class="bold" style="font-size:12px;">TOTAL FACTURÉ :</div>
+                <div class="bold" style="font-size:14px;">${pax.totalFactureUsd || 0} USD</div>
+                <div style="font-size:10px;">≈ ${(pax.totalFactureCdf || pax.excessFee || 0).toLocaleString('fr-FR')} CDF</div>
+                <div class="line"></div>
+                <div class="center bold" style="margin-top:8px;">BON VOYAGE AVEC EASYFLY !</div>
                 </body></html>
             `);
             printWin.document.close();
@@ -1075,40 +1281,50 @@
             document.getElementById('box-pay-mobile').classList.toggle('hidden', show);
         }
 
-        /* --- YIELD ANALYTICS --- */
+        /* --- YIELD ANALYTICS PAR ANTICIPATION & COMPAGNIES --- */
         function calculerYieldEtCapacite() {
             const totalPax = PAX_DATABASE.length;
             if (totalPax === 0) return;
 
-            let vipCount = 0, agencyCount = 0, totalWeight = 0, totalExcessKg = 0;
+            let j3Count = 0, j2Count = 0, j1Count = 0;
+            let totalWeight = 0;
             const airlinesMap = {};
 
             PAX_DATABASE.forEach(p => {
-                if (p.channel === 'VIP_HOME') vipCount++; else agencyCount++;
+                const jours = p.joursAnticipation !== undefined ? p.joursAnticipation : calculerJoursAnticipation(p.date);
+                if (jours >= 3) j3Count++;
+                else if (jours === 2) j2Count++;
+                else j1Count++;
+
                 const weight = p.measuredWeight || 0;
                 totalWeight += weight;
-                const excess = Math.max(0, weight - (p.allowedWeight || 23));
-                totalExcessKg += excess;
+                const excess = p.poidsExcedentKg || Math.max(0, weight - (p.allowedWeight || 23));
 
-                if (!airlinesMap[p.compagnie]) airlinesMap[p.compagnie] = { count: 0, weight: 0, excessKg: 0 };
+                if (!airlinesMap[p.compagnie]) airlinesMap[p.compagnie] = { count: 0, weight: 0, excessKg: 0, totalUsd: 0 };
                 airlinesMap[p.compagnie].count++;
                 airlinesMap[p.compagnie].weight += weight;
                 airlinesMap[p.compagnie].excessKg += excess;
+                airlinesMap[p.compagnie].totalUsd += (p.totalFactureUsd || 0);
             });
 
-            document.getElementById('kpi-vip-ratio').textContent = `${Math.round((vipCount/totalPax)*100)}% (${vipCount} pax)`;
-            document.getElementById('kpi-avg-excess').textContent = `${(totalExcessKg/totalPax).toFixed(2)} kg`;
+            document.getElementById('kpi-j3-ratio').textContent = `${Math.round((j3Count/totalPax)*100)}% (${j3Count} pax)`;
+            document.getElementById('kpi-j2-ratio').textContent = `${Math.round((j2Count/totalPax)*100)}% (${j2Count} pax)`;
+            document.getElementById('kpi-j1-ratio').textContent = `${Math.round((j1Count/totalPax)*100)}% (${j1Count} pax)`;
             document.getElementById('kpi-truck-fill').textContent = `${Math.min(100, Math.round((totalWeight/CAMION_CAPACITE_KG)*100))}% (${totalWeight.toFixed(1)} kg)`;
 
-            const channelsBox = document.getElementById('yield-channels-box');
-            channelsBox.innerHTML = `
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
-                    <div><span class="font-bold text-slate-200">🏢 Dépôt Agence Hub</span><span class="block text-[10px] text-slate-500 font-mono">${agencyCount} passagers</span></div>
-                    <span class="font-mono font-bold text-indigo-400">${Math.round((agencyCount/totalPax)*100)}%</span>
+            const paliersBox = document.getElementById('yield-paliers-box');
+            paliersBox.innerHTML = `
+                <div class="bg-slate-950 p-3 rounded-xl border border-emerald-500/30 flex justify-between items-center text-xs">
+                    <div><span class="font-bold text-emerald-400">🟢 Dépôt Éco-Anticipé (J-3 ou +)</span><span class="block text-[10px] text-slate-500 font-mono">${j3Count} passagers • Moins cher</span></div>
+                    <span class="font-mono font-bold text-emerald-300">${Math.round((j3Count/totalPax)*100)}%</span>
                 </div>
                 <div class="bg-slate-950 p-3 rounded-xl border border-amber-500/30 flex justify-between items-center text-xs">
-                    <div><span class="font-bold text-amber-300">🚐 Collecte VIP Domicile</span><span class="block text-[10px] text-slate-500 font-mono">${vipCount} passagers</span></div>
-                    <span class="font-mono font-bold text-amber-400">${Math.round((vipCount/totalPax)*100)}%</span>
+                    <div><span class="font-bold text-amber-300">🟡 Dépôt Standard (J-2)</span><span class="block text-[10px] text-slate-500 font-mono">${j2Count} passagers • Assez cher</span></div>
+                    <span class="font-mono font-bold text-amber-400">${Math.round((j2Count/totalPax)*100)}%</span>
+                </div>
+                <div class="bg-slate-950 p-3 rounded-xl border border-rose-500/30 flex justify-between items-center text-xs">
+                    <div><span class="font-bold text-rose-400">🔴 Dernière Minute (J-1 ou J-0)</span><span class="block text-[10px] text-slate-500 font-mono">${j1Count} passagers • Cher</span></div>
+                    <span class="font-mono font-bold text-rose-400">${Math.round((j1Count/totalPax)*100)}%</span>
                 </div>
             `;
 
@@ -1118,55 +1334,108 @@
                 airlinesBox.innerHTML += `
                     <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 text-xs font-mono">
                         <div class="flex justify-between"><strong class="text-sky-400">${cie}</strong><span>${data.weight.toFixed(1)} kg</span></div>
-                        <div class="flex justify-between text-[10px] text-slate-400"><span>${data.count} billet(s)</span><span class="text-rose-400">Excédent : +${data.excessKg.toFixed(1)} kg</span></div>
+                        <div class="flex justify-between text-[10px] text-slate-400"><span>${data.count} dossier(s)</span><span class="text-emerald-400">Facturé : ${data.totalUsd.toFixed(1)} $</span></div>
                     </div>
                 `;
             });
         }
 
         function exporterYieldCsv() {
-            let csv = "\uFEFFPassager,Canal,Compagnie,PNR,Colis,Poids_Total_Kg,Franchise_Kg,Excedent_Kg,Surtaxe_CDF\n";
+            let csv = "\uFEFFPassager,Canal,Compagnie,PNR,Date_Vol,Jours_Anticipation,Palier,Colis,Poids_Total_Kg,Franchise_Kg,Excedent_Kg,Total_USD,Total_CDF\n";
             PAX_DATABASE.forEach(p => {
-                const excess = Math.max(0, (p.measuredWeight || 0) - (p.allowedWeight || 23)).toFixed(1);
-                csv += `"${p.nom} ${p.prenom}","${p.channel || 'AGENCY'}","${p.compagnie}","${p.pnr}","${p.pieces ? p.pieces.length : 1}","${p.measuredWeight || 0}","${p.allowedWeight || 23}","${excess}","${p.excessFee || 0}"\n`;
+                const jours = p.joursAnticipation !== undefined ? p.joursAnticipation : calculerJoursAnticipation(p.date);
+                const palier = getPalierPourJours(jours);
+                csv += `"${p.nom} ${p.prenom}","${p.channel || 'AGENCY'}","${p.compagnie}","${p.pnr}","${p.date}","${jours}","${palier.libelle}","${p.pieces ? p.pieces.length : 1}","${p.measuredWeight || 0}","${p.allowedWeight || 23}","${p.poidsExcedentKg || 0}","${p.totalFactureUsd || 0}","${p.totalFactureCdf || p.excessFee || 0}"\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = `EasyFly_Franchise_Poids_${new Date().toISOString().slice(0, 10)}.csv`;
+            link.download = `EasyFly_Yield_Anticipation_${new Date().toISOString().slice(0, 10)}.csv`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        /* --- CONFIGURATION --- */
-        function chargerFormulaireConfig() {
-            document.getElementById('fee-agency-nat').value = gtsConfig.serviceRates.AGENCY.NAT;
-            document.getElementById('fee-agency-int').value = gtsConfig.serviceRates.AGENCY.INT;
-            document.getElementById('fee-vip-nat').value = gtsConfig.serviceRates.VIP_HOME.NAT;
-            document.getElementById('fee-vip-int').value = gtsConfig.serviceRates.VIP_HOME.INT;
-            document.getElementById('legal-text').value = gtsConfig.legalText;
+        /* --- CONFIGURATION DYNAMIQUE DES PALIERS --- */
+        function chargerFormulaireConfigUI() {
+            const j3 = TARIFS_CONFIG.find(t => t.id === 'J3_PLUS') || { forfait_base_usd: 15, prix_kg_excedent_usd: 2.0 };
+            const j2 = TARIFS_CONFIG.find(t => t.id === 'J2') || { forfait_base_usd: 25, prix_kg_excedent_usd: 3.5 };
+            const j1 = TARIFS_CONFIG.find(t => t.id === 'J1') || { forfait_base_usd: 40, prix_kg_excedent_usd: 5.0 };
+            const taux = (TARIFS_CONFIG[0] && TARIFS_CONFIG[0].taux_echange_cdf) || 2850;
+
+            document.getElementById('cfg-j3-forfait').value = j3.forfait_base_usd;
+            document.getElementById('cfg-j3-excedent').value = j3.prix_kg_excedent_usd;
+            document.getElementById('cfg-j2-forfait').value = j2.forfait_base_usd;
+            document.getElementById('cfg-j2-excedent').value = j2.prix_kg_excedent_usd;
+            document.getElementById('cfg-j1-forfait').value = j1.forfait_base_usd;
+            document.getElementById('cfg-j1-excedent').value = j1.prix_kg_excedent_usd;
+            document.getElementById('cfg-taux-cdf').value = taux;
         }
 
-        function sauvegarderConfig() {
-            gtsConfig.serviceRates.AGENCY.NAT = parseFloat(document.getElementById('fee-agency-nat').value) || 0;
-            gtsConfig.serviceRates.AGENCY.INT = parseFloat(document.getElementById('fee-agency-int').value) || 0;
-            gtsConfig.serviceRates.VIP_HOME.NAT = parseFloat(document.getElementById('fee-vip-nat').value) || 0;
-            gtsConfig.serviceRates.VIP_HOME.INT = parseFloat(document.getElementById('fee-vip-int').value) || 0;
-            gtsConfig.legalText = document.getElementById('legal-text').value;
+        async function sauvegarderTarifsCloud() {
+            const btn = document.getElementById('btn-save-tarifs');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Enregistrement Cloud...`;
+            btn.disabled = true;
 
-            localStorage.setItem('gtsAdminConfig', JSON.stringify(gtsConfig));
-            alert("✅ Tarifs mis à jour par rapport à la franchise globale du billet.");
+            const taux = parseFloat(document.getElementById('cfg-taux-cdf').value) || 2850;
+
+            const majJ3 = {
+                id: 'J3_PLUS',
+                libelle: 'Dépôt éco-anticipé (≥ 3 jours)',
+                jours_min: 3,
+                forfait_base_usd: parseFloat(document.getElementById('cfg-j3-forfait').value) || 15,
+                prix_kg_excedent_usd: parseFloat(document.getElementById('cfg-j3-excedent').value) || 2.0,
+                taux_echange_cdf: taux,
+                actif: true
+            };
+
+            const majJ2 = {
+                id: 'J2',
+                libelle: 'Dépôt standard (2 jours)',
+                jours_min: 2,
+                forfait_base_usd: parseFloat(document.getElementById('cfg-j2-forfait').value) || 25,
+                prix_kg_excedent_usd: parseFloat(document.getElementById('cfg-j2-excedent').value) || 3.5,
+                taux_echange_cdf: taux,
+                actif: true
+            };
+
+            const majJ1 = {
+                id: 'J1',
+                libelle: 'Dépôt dernière minute (≤ 1 jour)',
+                jours_min: 0,
+                forfait_base_usd: parseFloat(document.getElementById('cfg-j1-forfait').value) || 40,
+                prix_kg_excedent_usd: parseFloat(document.getElementById('cfg-j1-excedent').value) || 5.0,
+                taux_echange_cdf: taux,
+                actif: true
+            };
+
+            try {
+                // Upsert direct dans ef_tarifs_config
+                await supabaseClient.from('ef_tarifs_config').upsert([majJ3, majJ2, majJ1]);
+                TARIFS_CONFIG = [majJ3, majJ2, majJ1];
+                localStorage.setItem('ef_tarifs_cache', JSON.stringify(TARIFS_CONFIG));
+                alert("✅ Grille tarifaire mise à jour dans le Cloud Supabase !");
+            } catch(e) {
+                console.error("Erreur sauvegarde tarifs :", e);
+                alert("Erreur lors de la sauvegarde dans le Cloud.");
+            }
+
+            btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Enregistrer dans le Cloud`;
+            btn.disabled = false;
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            chargerDossiersDepuisCloud();
+        /* --- INITIALISATION DE L'APPLICATION --- */
+        window.addEventListener('DOMContentLoaded', async () => {
+            await chargerDossiersDepuisCloud();
 
-            // Canal Realtime Cloud pour EasyFly
+            // Écoute temps réel des changements dans ef_voyageurs et ef_tarifs_config
             supabaseClient
                 .channel('ef_realtime_stream')
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'ef_voyageurs' }, () => {
                     chargerDossiersDepuisCloud();
+                })
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'ef_tarifs_config' }, () => {
+                    chargerTarifsDepuisCloud();
                 })
                 .subscribe();
         });
