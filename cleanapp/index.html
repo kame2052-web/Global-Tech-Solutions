@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr" class="h-full">
 <head>
-    <!-- Déclaration PWA -->
-    <link rel="manifest" href="./manifest.json">
+    <!-- DÉCLARATION PWA & FAVICON RACINE -->
+    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0a192f">
-    <link rel="apple-touch-icon" href="./icon-192x192.png">
+    <link rel="icon" type="image/png" href="/cleanapp.png">
+    <link rel="apple-touch-icon" href="/cleanapp.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Clean'App">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -31,11 +36,11 @@
             content: "";
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-image: url('matt.jpg');
+            background-image: url('/cleanapp.png');
             background-repeat: no-repeat;
             background-position: center;
             background-attachment: fixed;
-            background-size: 35%;
+            background-size: 30%;
             opacity: 0.03;
             z-index: -1;
             pointer-events: none;
@@ -52,7 +57,7 @@
     <header class="bg-navy-800/95 border-b border-aqua/30 px-4 py-3 md:px-8 flex justify-between items-center sticky top-0 z-40 backdrop-blur-md shadow-lg w-full">
         <div class="flex items-center gap-2.5 cursor-pointer" onclick="showView('view-gateway')">
             <div class="w-11 h-11 bg-white rounded-2xl shadow-md border border-aqua/30 p-1 flex items-center justify-center flex-shrink-0">
-                <img src="cleanapp.jpg" alt="Logo" class="w-full h-full object-contain" onerror="this.src='cleanapp.png'">
+                <img src="/cleanapp.png" alt="Logo MATT Clean'App" class="w-full h-full object-contain">
             </div>
             <div class="flex flex-col">
                 <span class="text-lg md:text-xl font-black text-white leading-tight tracking-wide">MATT Clean'App</span>
@@ -61,7 +66,6 @@
         </div>
 
         <div class="flex items-center gap-2">
-            <!-- Bouton d'installation PWA intégré dans l'en-tête -->
             <button id="btn-install-pwa" class="hidden px-3 py-1.5 rounded-xl bg-aqua hover:bg-sky-400 text-navy-900 text-xs font-black transition shadow flex items-center gap-1.5">
                 📲 Installer
             </button>
@@ -78,8 +82,8 @@
 
         <div id="view-gateway" class="w-full max-w-4xl mx-auto space-y-8 animate-fade-in my-auto py-8">
             <div class="text-center space-y-4">
-                <div class="inline-block w-28 h-28 md:w-32 md:h-32 bg-white rounded-3xl p-2 shadow-2xl border-2 border-aqua/40">
-                    <img src="cleanapp.jpg" alt="Logo Clean'App" class="w-full h-full object-contain" onerror="this.src='cleanapp.png'">
+                <div class="inline-flex items-center justify-center w-28 h-28 md:w-32 md:h-32 bg-white rounded-3xl p-2 shadow-2xl border-2 border-aqua/40 mx-auto">
+                    <img src="/cleanapp.png" alt="Logo Clean'App" class="w-full h-full object-contain">
                 </div>
                 <div class="space-y-2 max-w-md mx-auto">
                     <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">
@@ -450,8 +454,8 @@
                             ← Retour aux options
                         </button>
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-white rounded-xl border p-1 flex-shrink-0">
-                                <img src="matt.jpg" alt="MATT" class="w-full h-full object-cover">
+                            <div class="w-10 h-10 bg-white rounded-xl border p-1 flex-shrink-0 flex items-center justify-center">
+                                <img src="/cleanapp.png" alt="MATT" class="w-full h-full object-contain">
                             </div>
                             <div>
                                 <h3 class="font-black text-navy-800 text-sm">MASTER TOUCH TRADING (MATT SARL)</h3>
@@ -2186,7 +2190,7 @@
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
+                navigator.serviceWorker.register('/sw.js')
                     .catch(err => console.error('Erreur Service Worker', err));
             });
         }
