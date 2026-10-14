@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TransVision Protect — Sécurité & Télématique Antivol</title>
+    <title>TransVision Protect — Sécurité, Télématique & Citernes Hydrocarbures</title>
     
     <!-- LIAISON LOGO & PWA RACINE -->
     <link rel="icon" type="image/png" href="/VISION.png">
@@ -43,6 +43,15 @@
 
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) hue-rotate(120deg); cursor: pointer; }
 
+        @keyframes waveAnimation {
+            0% { transform: translateX(0) translateZ(0) scaleY(1); }
+            50% { transform: translateX(-25%) translateZ(0) scaleY(0.85); }
+            100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
+        }
+        .liquid-wave {
+            animation: waveAnimation 4s infinite linear;
+        }
+
         @media print {
             body { background: white !important; color: black !important; }
             .no-print { display: none !important; }
@@ -81,7 +90,7 @@
                     </div>
                     <h2 class="text-xl font-black tracking-wide">TransVision Protect</h2>
                     <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">by Global Tech Solutions</p>
-                    <p class="text-[9px] text-slate-300 mt-0.5 italic">Suivi Satellite, Antivol & Flotte Commerciale</p>
+                    <p class="text-[9px] text-slate-300 mt-0.5 italic">Suivi Satellite, Citernes & Flottes Pétrolières</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-1 bg-slate-950/80 backdrop-blur p-1 rounded-xl border border-slate-800">
@@ -107,14 +116,15 @@
                 <!-- FORMULAIRE INSCRIPTION -->
                 <div id="form-inscription" class="bg-slate-950/85 backdrop-blur p-4 rounded-2xl border border-slate-800/80 space-y-3 shadow-xl hidden">
                     <div>
-                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Nom Complet</label>
-                        <input type="text" id="ins-nom" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200" placeholder="Ex: Jean Mukendi">
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Nom Complet / Entreprise</label>
+                        <input type="text" id="ins-nom" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200" placeholder="Ex: SEP CONGO / Jean Mukendi">
                     </div>
                     <div>
-                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Type d'Usage / Contrat</label>
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Type d'Usage / Flotte</label>
                         <select id="ins-type-contrat" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-emerald-400 font-bold outline-none">
+                            <option value="commercial">🛢️ Pétrolier / Camions-Citernes & Poids-Lourds</option>
+                            <option value="commercial">🚌 Transport Commercial (Bus, Taxi, Ligne)</option>
                             <option value="personnel">🚗 Particulier / Antivol Personnel</option>
-                            <option value="commercial">🚌 Commercial (Minibus 207, Ligne, Taxi)</option>
                         </select>
                     </div>
                     <div>
@@ -124,11 +134,11 @@
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Commune</label>
-                            <input type="text" id="ins-commune" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:border-emerald-500 outline-none" placeholder="Ex: Ngaliema">
+                            <input type="text" id="ins-commune" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:border-emerald-500 outline-none" placeholder="Ex: Gombe">
                         </div>
                         <div>
                             <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Quartier</label>
-                            <input type="text" id="ins-quartier" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:border-emerald-500 outline-none" placeholder="Ex: Ma Campagne">
+                            <input type="text" id="ins-quartier" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:border-emerald-500 outline-none" placeholder="Ex: Gare Centrale">
                         </div>
                     </div>
                     <div>
@@ -139,7 +149,7 @@
                 </div>
             </div>
             <div class="text-center py-2 text-[9px] font-mono text-slate-400 border-t border-slate-800/80">
-                TransVision v34.0 — Télématique Sécurisée GTS
+                TransVision v35.0 — Télématique Carburant & GPS GTS
             </div>
         </div>
 
@@ -150,7 +160,7 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <h1 id="lbl-nom-partenaire" class="text-sm font-black text-slate-100">Chargement...</h1>
-                            <span id="badge-mode-contrat" class="text-[9px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold">PROTÉGÉ</span>
+                            <span id="badge-mode-contrat" class="text-[9px] bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded font-mono font-bold">FLOTTE CITERNES</span>
                         </div>
                         <p class="text-[8px] text-slate-400 font-mono truncate max-w-[220px]" id="lbl-adresse-partenaire">Kinshasa, RDC</p>
                     </div>
@@ -173,38 +183,38 @@
                 </div>
             </header>
 
-            <!-- ONGLET 1 : GPS LIVE & TABLEAU DE BORD D'EXPLOITATION -->
+            <!-- ONGLET 1 : GPS LIVE & TABLEAU DE BORD -->
             <div id="onglet-flotte" class="p-2 flex-1 flex flex-col blur-transition class-onglet no-print min-h-[calc(100vh-170px)] space-y-2">
                 
-                <!-- BLOC EXCLUSIF : EXPLOITATION COMMERCIALE (Ligne, Rotations, Recettes) -->
+                <!-- BLOC EXPLOITATION COMMERCIALE -->
                 <div id="bloc-widgets-commercial" class="bg-gradient-to-br from-indigo-950/80 to-slate-900/90 border border-indigo-500/30 rounded-2xl p-3 space-y-2 shadow-2xl backdrop-blur hidden">
                     <div class="flex justify-between items-center text-xs border-b border-indigo-500/20 pb-2">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-route text-indigo-400"></i>
                             <span class="text-[10px] font-black text-slate-300 uppercase">Ligne Affectée :</span>
-                            <span id="hud-commercial-ligne" class="font-bold text-emerald-400 font-mono">BRIKIN ➔ GARE CENTRALE</span>
+                            <span id="hud-commercial-ligne" class="font-bold text-emerald-400 font-mono">DEPOT MATADI ➔ KINSHASA</span>
                         </div>
-                        <span class="text-[9px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded font-black uppercase">Service Ligne</span>
+                        <span class="text-[9px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded font-black uppercase">Corridor Pétrolier</span>
                     </div>
 
                     <div class="grid grid-cols-2 gap-2 text-center text-[10px] font-mono">
                         <div class="bg-slate-950/80 p-2 rounded-xl border border-slate-800">
-                            <span class="text-[8px] text-slate-400 block uppercase font-bold">Rotations Effectuées</span>
+                            <span class="text-[8px] text-slate-400 block uppercase font-bold">Rotations / Convois</span>
                             <span class="font-black text-indigo-300 text-sm" id="hud-commercial-rotations">0 Course(s)</span>
                         </div>
                         <div class="bg-slate-950/80 p-2 rounded-xl border border-slate-800">
-                            <span class="text-[8px] text-slate-400 block uppercase font-bold">Recette Brute Estimée</span>
-                            <span class="font-black text-emerald-400 text-sm" id="hud-commercial-recette">0 CDF</span>
+                            <span class="text-[8px] text-slate-400 block uppercase font-bold">Valeur Transportée Est.</span>
+                            <span class="font-black text-amber-400 text-sm" id="hud-commercial-recette">0 USD</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- BLOC STANDARD / PERSONNEL (Vitesse, Avenue, État coupe-circuit) -->
+                <!-- BLOC HUD LIVE -->
                 <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-3 space-y-2 shadow-2xl backdrop-blur">
                     <div class="flex justify-between items-center text-xs">
                         <div class="flex items-center gap-2 truncate max-w-[240px]">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span id="hud-avenue-live" class="truncate font-sans font-black text-slate-100">Localisation de l'avenue...</span>
+                            <span id="hud-avenue-live" class="truncate font-sans font-black text-slate-100">Localisation en cours...</span>
                         </div>
                         <div class="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded-xl border border-slate-800">
                             <i class="fa-solid fa-gauge-high text-sky-400 text-xs"></i>
@@ -214,7 +224,7 @@
 
                     <div class="grid grid-cols-2 gap-2 text-center text-[10px] font-mono border-t border-slate-800/80 pt-2">
                         <div class="bg-slate-950/80 p-2 rounded-xl border border-slate-800">
-                            <span class="text-[8px] text-slate-400 block uppercase font-bold">Roulé Aujourd'hui</span>
+                            <span class="text-[8px] text-slate-400 block uppercase font-bold">Parcouru Aujourd'hui</span>
                             <span class="font-black text-slate-100 text-xs" id="hud-km-jour">0.0 km</span>
                         </div>
                         <div class="bg-slate-950/80 p-2 rounded-xl border border-slate-800">
@@ -228,7 +238,7 @@
                 <div class="bg-slate-950 p-2 rounded-2xl border border-slate-800 flex-1 flex flex-col space-y-2 shadow-md">
                     <div class="flex justify-between items-center px-1">
                         <h2 class="text-[10px] font-bold text-slate-300 uppercase tracking-widest flex items-center gap-1.5">
-                            <i class="fa-solid fa-satellite-dish text-sky-400"></i> Carte en Direct
+                            <i class="fa-solid fa-satellite-dish text-sky-400"></i> Carte Satellite
                         </h2>
                         <div class="flex gap-2 items-center">
                             <button onclick="remettreCompteurZeroManuel()" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 px-2 py-1 rounded-lg text-[9px] font-bold uppercase transition-all shadow-sm">
@@ -241,7 +251,110 @@
                 </div>
             </div>
 
-            <!-- ONGLET 2 : HISTORIQUE DES TRAJETS -->
+            <!-- NOUVEL ONGLET : SUIVI CITERNES & HYDROCARBURES -->
+            <div id="onglet-citernes" class="p-3 space-y-4 class-onglet hidden no-print pb-32">
+                
+                <div class="bg-slate-950/90 backdrop-blur p-4 rounded-2xl border border-amber-500/30 shadow-xl space-y-3">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+                        <div>
+                            <span class="text-[9px] font-black uppercase text-amber-400 tracking-wider flex items-center gap-1.5">
+                                <i class="fa-solid fa-truck-droplet text-amber-400"></i> Jaugeage Volumétrique Temps Réel
+                            </span>
+                            <h3 class="text-xs font-black text-slate-100 mt-0.5" id="citerne-plaque-active">Sélectionnez une citerne</h3>
+                        </div>
+                        <select id="select-citerne-active" onchange="changerCiterneActive(this.value)" class="bg-slate-900 border border-slate-700 rounded-lg text-[10px] text-amber-400 font-bold px-2.5 py-1 outline-none"></select>
+                    </div>
+
+                    <!-- Jauge visuelle et Volume -->
+                    <div class="grid grid-cols-3 gap-3 items-center py-2">
+                        <!-- Jauge de citerne animée -->
+                        <div class="relative w-16 h-40 bg-slate-900 border-2 border-slate-700 rounded-2xl overflow-hidden mx-auto flex flex-col justify-end p-1 shadow-inner">
+                            <div class="absolute inset-x-0 top-1 text-center z-10">
+                                <span class="text-[7.5px] font-mono text-slate-400 font-bold">100%</span>
+                            </div>
+                            <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center z-10">
+                                <span class="text-[7.5px] font-mono text-slate-400 font-bold">50%</span>
+                            </div>
+                            <div id="citerne-niveau-liquide" class="w-full bg-gradient-to-t from-amber-600 via-amber-500 to-amber-300 rounded-xl transition-all duration-700 relative flex items-center justify-center overflow-hidden" style="height: 0%;">
+                                <div class="absolute inset-0 bg-white/20 liquid-wave w-[200%] h-full pointer-events-none"></div>
+                                <span id="citerne-pct-badge" class="text-[10px] font-black text-slate-950 font-mono relative z-10">0%</span>
+                            </div>
+                        </div>
+
+                        <!-- Métriques détaillées du carburant -->
+                        <div class="col-span-2 space-y-2">
+                            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                                <span class="text-[8px] text-slate-400 uppercase font-bold block">Volume Carburant Détecté</span>
+                                <span class="text-2xl font-black text-amber-400 font-mono tracking-tight" id="citerne-litres-val">0 L</span>
+                                <span class="text-[9px] text-slate-400 block font-mono mt-0.5" id="citerne-capacite-max">Capacité max : 0 L</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+                                <div class="bg-slate-900/90 p-2 rounded-xl border border-slate-800">
+                                    <span class="text-[8px] text-slate-400 uppercase block font-bold">Vanne de Vidange</span>
+                                    <span class="font-black text-emerald-400 text-[9px] block mt-0.5" id="citerne-vanne-statut">Fermée (Verrouillée)</span>
+                                </div>
+                                <div class="bg-slate-900/90 p-2 rounded-xl border border-slate-800">
+                                    <span class="text-[8px] text-slate-400 uppercase block font-bold">Temp. Cuve</span>
+                                    <span class="font-black text-sky-400 text-xs block mt-0.5" id="citerne-temperature">28.0 °C</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alerte intelligente anti-siphonnage -->
+                    <div id="alerte-siphonnage-box" class="p-3 rounded-xl border flex items-center gap-3 bg-emerald-500/10 border-emerald-500/30 text-emerald-400 transition-all">
+                        <i class="fa-solid fa-shield-check text-xl flex-shrink-0" id="alerte-siphonnage-icon"></i>
+                        <div>
+                            <p class="text-[10px] font-black uppercase" id="alerte-siphonnage-titre">Niveau Régulier</p>
+                            <p class="text-[9px] text-slate-300" id="alerte-siphonnage-desc">Volume sous surveillance continue. Aucune anomalie de débit.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paramétrage et calibrage de la cuve -->
+                <div class="bg-slate-950/85 backdrop-blur p-4 rounded-2xl border border-slate-800 space-y-3 shadow-xl">
+                    <h4 class="text-[10px] font-black uppercase text-amber-400 tracking-wider border-b border-slate-800 pb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-sliders"></i> Calibrage de la Cuve & Sonde Numérique
+                    </h4>
+                    
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Capacité Totale (Litres)</label>
+                            <input type="number" id="cfg-capacite-citerne" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-amber-400 font-mono font-bold outline-none" placeholder="Ex: 35000">
+                        </div>
+                        <div>
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Type d'Hydrocarbure</label>
+                            <select id="cfg-type-hydrocarbure" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 font-bold outline-none">
+                                <option value="gazoil">Gasoil / Diesel (d=0.84)</option>
+                                <option value="essence">Essence Super (d=0.74)</option>
+                                <option value="jet-a1">Kérosène / Jet A-1 (d=0.80)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Seuil Alerte Vol (Litres)</label>
+                            <input type="number" id="cfg-seuil-vol" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-rose-400 font-mono font-bold outline-none" placeholder="Ex: 150">
+                        </div>
+                        <div>
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Protocole Capteur</label>
+                            <select id="cfg-protocole-sonde" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 outline-none">
+                                <option value="rs485">Sonde RS485 Capacitive</option>
+                                <option value="ble">Capteur Ultrason Bluetooth</option>
+                                <option value="analogique">Entrée Analogique (0-5V)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="enregistrerCalibrageCiterne()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3 rounded-xl text-xs uppercase shadow transition-all">
+                        Enregistrer la Configuration Citerne
+                    </button>
+                </div>
+            </div>
+
+            <!-- ONGLET 3 : HISTORIQUE DES TRAJETS -->
             <div id="onglet-historique" class="p-3 space-y-3 class-onglet hidden no-print pb-32">
                 <div class="bg-slate-950/90 backdrop-blur p-4 rounded-2xl border border-slate-800 space-y-3 shadow-xl">
                     <div class="border-b border-slate-800 pb-2">
@@ -286,7 +399,7 @@
                 </div>
             </div>
 
-            <!-- ONGLET 3 : FUSION ANTIVOL & ENTRETIEN -->
+            <!-- ONGLET 4 : ANTIVOL & ENTRETIEN -->
             <div id="onglet-controle-entretien" class="p-4 space-y-4 class-onglet hidden no-print pb-32">
                 <div class="border-b border-slate-800 pb-2">
                     <h2 class="text-xs font-black text-slate-100 uppercase tracking-widest flex items-center gap-2">
@@ -298,31 +411,36 @@
                 <div id="combo-vehicules-list" class="space-y-4"></div>
             </div>
 
-            <!-- ONGLET 4 : GESTION DE LA FLOTTE -->
+            <!-- ONGLET 5 : GESTION DE LA FLOTTE -->
             <div id="onglet-flotte-gestion" class="p-4 space-y-4 class-onglet hidden no-print pb-32">
                 <div class="border-b border-slate-800 pb-2">
                     <h2 class="text-xs font-black text-slate-100 uppercase tracking-widest flex items-center gap-2">
                         <i class="fa-solid fa-car-tunnel text-indigo-400"></i> Gestion de la Flotte
                     </h2>
-                    <p class="text-[9px] text-slate-400 mt-0.5">Associez vos traceurs SinoTrack ST-901L et gérez vos véhicules.</p>
+                    <p class="text-[9px] text-slate-400 mt-0.5">Associez vos traceurs SinoTrack et vos camions-citernes.</p>
                 </div>
 
                 <div class="bg-slate-950/85 backdrop-blur p-4 rounded-2xl border border-slate-800 space-y-3 shadow-xl">
                     <h3 class="text-xs font-black text-indigo-400 uppercase tracking-wider flex items-center gap-2 border-b border-slate-850 pb-2">
-                        <i class="fa-solid fa-plus-circle"></i> Ajouter un Véhicule
+                        <i class="fa-solid fa-plus-circle"></i> Ajouter un Véhicule / Citerne
                     </h3>
                     <div>
                         <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Plaque d'immatriculation</label>
-                        <input type="text" id="add-plaque" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 font-mono outline-none focus:border-indigo-500" placeholder="Ex: KIN 4082AE">
+                        <input type="text" id="add-plaque" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 font-mono outline-none focus:border-indigo-500" placeholder="Ex: KIN 9920BC">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Modèle</label>
-                            <input type="text" id="add-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 outline-none focus:border-indigo-500" placeholder="Ex: Minibus 207 / Toyota">
+                            <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Catégorie</label>
+                            <select id="add-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 font-bold outline-none focus:border-indigo-500">
+                                <option value="Camion-Citerne Pétrolier">🛢️ Camion-Citerne Pétrolier</option>
+                                <option value="Poids-Lourd / Tracteur">🚛 Tracteur Routier</option>
+                                <option value="Minibus 207 Commercial">🚌 Minibus 207 Commercial</option>
+                                <option value="Véhicule Particulier">🚗 Véhicule Particulier</option>
+                            </select>
                         </div>
                         <div>
                             <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Kilométrage Compteur</label>
-                            <input type="number" id="add-km-odometre" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 font-mono outline-none focus:border-indigo-500" placeholder="Ex: 125000">
+                            <input type="number" id="add-km-odometre" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 font-mono outline-none focus:border-indigo-500" placeholder="Ex: 145000">
                         </div>
                     </div>
                     <div>
@@ -340,7 +458,7 @@
                 </div>
             </div>
 
-            <!-- ONGLET 5 : PROFIL & COMPTE -->
+            <!-- ONGLET 6 : PROFIL & COMPTE -->
             <div id="onglet-profil" class="p-4 space-y-4 class-onglet hidden no-print pb-32">
                 <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Informations du Compte</h2>
 
@@ -350,13 +468,13 @@
                             <i class="fa-solid fa-address-card"></i> Coordonnées & Sécurité
                         </h3>
                         <select id="select-bascule-mode" onchange="changerModeAffichageManuel(this.value)" class="bg-slate-900 border border-slate-700 text-[10px] text-slate-300 font-bold px-2 py-1 rounded-lg">
+                            <option value="commercial">Mode Commercial / Pétrolier</option>
                             <option value="personnel">Mode Personnel</option>
-                            <option value="commercial">Mode Commercial</option>
                         </select>
                     </div>
                     
                     <div>
-                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Nom Complet</label>
+                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Nom / Société</label>
                         <input type="text" id="prof-nom" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 outline-none focus:border-indigo-500" placeholder="Nom Complet">
                     </div>
 
@@ -390,7 +508,7 @@
 
                 <div class="bg-slate-950/80 backdrop-blur p-4 rounded-2xl border border-slate-800 space-y-3 shadow-md">
                     <a href="#" id="lien-whatsapp-support" target="_blank" class="w-full bg-green-500/10 border border-green-500/30 hover:bg-green-500/20 text-green-400 font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition-colors">
-                        <i class="fa-brands fa-whatsapp text-lg"></i> Support Technique d'Urgence
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Support Technique Télématique
                     </a>
                     <button onclick="declencherDeconnexion()" class="w-full bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 text-rose-400 font-black py-3 rounded-xl text-xs uppercase flex items-center justify-center gap-2 transition-colors">
                         <i class="fa-solid fa-power-off"></i> Se Déconnecter
@@ -398,19 +516,20 @@
                 </div>
             </div>
 
-            <!-- BARRE DE NAVIGATION (5 ONGLETS) -->
-            <nav class="fixed bottom-0 max-w-md w-full inset-x-0 mx-auto bg-slate-950/95 backdrop-blur border-t border-slate-800 h-16 flex justify-around items-center z-40 no-print px-1">
-                <button onclick="changerOnglet('onglet-flotte', this)" class="flex flex-col items-center justify-center gap-1 text-emerald-400 btn-nav flex-1"><i class="fa-solid fa-location-crosshairs text-sm"></i><span class="text-[8px] font-bold">Live</span></button>
-                <button onclick="changerOnglet('onglet-historique', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-clock-rotate-left text-sm"></i><span class="text-[8px] font-bold">Trajets</span></button>
-                <button onclick="changerOnglet('onglet-controle-entretien', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-wrench text-sm"></i><span class="text-[8px] font-bold">Contrôle</span></button>
-                <button onclick="changerOnglet('onglet-flotte-gestion', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-car text-sm"></i><span class="text-[8px] font-bold">Flotte</span></button>
-                <button onclick="changerOnglet('onglet-profil', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-user text-sm"></i><span class="text-[8px] font-bold">Compte</span></button>
+            <!-- BARRE DE NAVIGATION INFÉRIEURE COMPLÈTE (6 ONGLETS) -->
+            <nav class="fixed bottom-0 max-w-md w-full inset-x-0 mx-auto bg-slate-950/95 backdrop-blur border-t border-slate-800 h-16 flex justify-around items-center z-40 no-print px-0.5">
+                <button onclick="changerOnglet('onglet-flotte', this)" class="flex flex-col items-center justify-center gap-1 text-emerald-400 btn-nav flex-1"><i class="fa-solid fa-location-crosshairs text-sm"></i><span class="text-[7.5px] font-bold">Live</span></button>
+                <button onclick="changerOnglet('onglet-citernes', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-truck-droplet text-sm"></i><span class="text-[7.5px] font-bold">Citernes</span></button>
+                <button onclick="changerOnglet('onglet-historique', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-clock-rotate-left text-sm"></i><span class="text-[7.5px] font-bold">Trajets</span></button>
+                <button onclick="changerOnglet('onglet-controle-entretien', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-wrench text-sm"></i><span class="text-[7.5px] font-bold">Contrôle</span></button>
+                <button onclick="changerOnglet('onglet-flotte-gestion', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-car text-sm"></i><span class="text-[7.5px] font-bold">Flotte</span></button>
+                <button onclick="changerOnglet('onglet-profil', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-user text-sm"></i><span class="text-[7.5px] font-bold">Compte</span></button>
             </nav>
         </div>
     </div>
 
     <script>
-        // GESTION SERVICE WORKER & INSTALLATION PWA
+        // SERVICE WORKER & GESTIONNAIRE PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
@@ -455,7 +574,7 @@
         const syncChannel = supabaseClient.channel('tv_sync_channel');
 
         let partenaireProfil = null; 
-        let client = { nom: "Chargement...", tel: "", commune: "", quartier: "", type_contrat: "personnel", vehicules: [] };
+        let client = { nom: "Chargement...", tel: "", commune: "", quartier: "", type_contrat: "commercial", vehicules: [] };
         let map = null; 
         let busMarker = null;
         let polylineTrace = null;
@@ -469,8 +588,9 @@
 
         let dernierGeocodageTs = 0;
         let cacheAdresse = "";
+        let citerneSelectionneeImei = null;
 
-        // BASCULE DE MODE (PERSONNEL vs COMMERCIAL)
+        // BASCULE DE MODE (COMMERCIAL / CITERNE vs PERSONNEL)
         function adapterInterfaceSelonMode(typeContrat) {
             const estCommercial = (typeContrat || '').toLowerCase() === 'commercial';
             const blocCommercial = document.getElementById('bloc-widgets-commercial');
@@ -482,8 +602,8 @@
             
             if (badgeContrat) {
                 if (estCommercial) {
-                    badgeContrat.textContent = "FLOTTE COMMERCIALE";
-                    badgeContrat.className = "text-[9px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-1.5 py-0.5 rounded font-mono font-bold";
+                    badgeContrat.textContent = "FLOTTE CITERNES & CORRIDOR";
+                    badgeContrat.className = "text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded font-mono font-bold";
                 } else {
                     badgeContrat.textContent = "PROTÉGÉ";
                     badgeContrat.className = "text-[9px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold";
@@ -511,7 +631,7 @@
                     const data = await resp.json();
                     dernierGeocodageTs = now;
                     const addr = data.address || {};
-                    const voie = addr.road || addr.pedestrian || addr.street || addr.neighbourhood || "Avenue de circulation";
+                    const voie = addr.road || addr.pedestrian || addr.street || addr.neighbourhood || "Route / Axe";
                     const quartier = addr.suburb || addr.quarter || "";
                     const commune = addr.city_district || addr.county || "Kinshasa";
                     
@@ -577,12 +697,11 @@
                     <div class="tv-car-wrapper">
                         <div class="tv-pulse-halo"></div>
                         <div class="tv-car-body" style="transform: rotate(${cap}deg);">
-                            <svg viewBox="0 0 40 40" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg viewBox="0 0 40 40" width="34" height="34" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <ellipse cx="20" cy="21" rx="11" ry="16" fill="rgba(0,0,0,0.3)"/>
-                                <rect x="11" y="6" width="18" height="28" rx="6" fill="#0284c7" stroke="#38bdf8" stroke-width="1.5"/>
+                                <rect x="11" y="6" width="18" height="28" rx="6" fill="#d97706" stroke="#fbbf24" stroke-width="1.5"/>
                                 <rect x="13" y="12" width="14" height="15" rx="3" fill="#0f172a"/>
-                                <path d="M13 13 C15 9, 25 9, 27 13 Z" fill="#38bdf8" opacity="0.9"/>
-                                <path d="M14 26 C16 28, 24 28, 26 26 Z" fill="#38bdf8" opacity="0.7"/>
+                                <circle cx="20" cy="19.5" r="3.5" fill="#f59e0b"/>
                                 <circle cx="13.5" cy="7" r="1.5" fill="#fef08a"/>
                                 <circle cx="26.5" cy="7" r="1.5" fill="#fef08a"/>
                                 <rect x="12" y="32" width="3" height="1.5" rx="0.5" fill="#f43f5e"/>
@@ -623,8 +742,8 @@
                     moteurCoupe: v.moteurCoupe,
                     tronconsValides: v.tronconsValides || 0,
                     recetteBruteReelle: v.recetteBruteReelle || 0,
-                    origine: v.origine || "BRIKIN",
-                    destination: v.destination || "GARE CENTRALE"
+                    origine: v.origine || "MATADI",
+                    destination: v.destination || "KINSHASA"
                 }
             });
         }
@@ -663,7 +782,11 @@
                             lat: parseFloat(row.latitude),
                             lng: parseFloat(row.longitude),
                             vitesse: parseFloat(row.speed || row.vitesse || 0),
-                            timestamp: new Date(row.created_at || Date.now()).getTime()
+                            timestamp: new Date(row.created_at || Date.now()).getTime(),
+                            volumeCarburant: row.volume_carburant_litres ? parseFloat(row.volume_carburant_litres) : null,
+                            alerteSiphonnage: row.alerte_siphonnage || false,
+                            tempCuve: row.temperature_cuve || null,
+                            statutVanne: row.statut_vanne || false
                         });
                     }
                 })
@@ -704,6 +827,7 @@
                     if (busMarker && map) map.removeLayer(busMarker);
                     if (polylineTrace && map) map.removeLayer(polylineTrace);
                     majSelecteursVehicules();
+                    majSelecteurCiternes();
                     genererToutesLesVues();
                     txtStatut.textContent = "Aucun véhicule assigné. Rendez-vous dans Flotte.";
                     document.getElementById('hud-avenue-live').textContent = "Aucun véhicule";
@@ -715,8 +839,8 @@
                 for (let imeiClean of clesVehicules) {
                     let cfg = customConfig[imeiClean] || {};
                     let v = {
-                        plaque: cfg.plaque || `ST901-${imeiClean.slice(-4)}`, 
-                        type: cfg.type || "Véhicule Personnel", 
+                        plaque: cfg.plaque || `CITERNE-${imeiClean.slice(-4)}`, 
+                        type: cfg.type || "Camion-Citerne Pétrolier", 
                         imei: imeiClean,
                         lat: -4.3215, 
                         lng: 15.3115, 
@@ -726,9 +850,9 @@
                         kmJour: 0,
                         kmOdometre: parseInt(cfg.kmOdometre) || 120000,
                         dernierCap: 0,
-                        origine: cfg.origine || "BRIKIN",
-                        destination: cfg.destination || "GARE CENTRALE",
-                        tarif: parseFloat(cfg.tarif) || 2500,
+                        origine: cfg.origine || "MATADI",
+                        destination: cfg.destination || "KINSHASA",
+                        tarif: parseFloat(cfg.tarif) || 1500,
                         tronconsValides: parseInt(cfg.tronconsValides) || 0,
                         recetteBruteReelle: parseFloat(cfg.recetteBruteReelle) || 0
                     };
@@ -772,7 +896,7 @@
                     
                     v.kmJour = totalRouléAujourdhui;
                     if (v.kmJour > 0 && v.tronconsValides === 0) {
-                        v.tronconsValides = Math.floor(v.kmJour / 12);
+                        v.tronconsValides = Math.floor(v.kmJour / 350);
                         v.recetteBruteReelle = v.tronconsValides * v.tarif;
                     }
 
@@ -789,6 +913,7 @@
                 }
 
                 majSelecteursVehicules();
+                majSelecteurCiternes();
                 initMapEtCentrer(0);
                 genererToutesLesVues();
             } catch (err) {
@@ -815,12 +940,6 @@
             if (distDelta > 0.020 || (distDelta > 0.005 && data.vitesse > 3)) {
                 v.kmJour += distDelta;
                 v.kmOdometre += distDelta;
-
-                const rotationsEstimees = Math.floor(v.kmJour / 12);
-                if (rotationsEstimees !== v.tronconsValides) {
-                    v.tronconsValides = rotationsEstimees;
-                    v.recetteBruteReelle = v.tronconsValides * (v.tarif || 2500);
-                }
 
                 const nouveauCap = calculerCap(v.lat, v.lng, data.lat, data.lng);
                 const ancienCap = v.dernierCap || 0;
@@ -861,16 +980,12 @@
                 document.getElementById('hud-moteur-statut').textContent = v.moteurCoupe ? "🔴 Moteur Coupé" : "🟢 Autorisé";
                 document.getElementById('hud-moteur-statut').className = v.moteurCoupe ? "font-black text-rose-400 text-xs" : "font-black text-emerald-400 text-xs";
 
-                document.getElementById('hud-commercial-ligne').textContent = `${v.origine || 'BRIKIN'} ➔ ${v.destination || 'GARE CENTRALE'}`;
-                document.getElementById('hud-commercial-rotations').textContent = `${v.tronconsValides || 0} Course(s)`;
-                document.getElementById('hud-commercial-recette').textContent = `${(v.recetteBruteReelle || 0).toLocaleString()} CDF`;
-
                 if (map) {
                     if (busMarker) {
                         busMarker.getPopup().setContent(`
                             <b>${v.plaque}</b> (${v.type})<br>
                             Statut : <b>${vitTxt}</b><br>
-                            Roulé aujourd'hui : <b>${v.kmJour.toFixed(1)} km</b><br>
+                            Roulé : <b>${v.kmJour.toFixed(1)} km</b><br>
                             Relais : <b>${v.moteurCoupe ? '<span style="color:#f43f5e;">Coupé</span>' : '<span style="color:#10b981;">Autorisé</span>'}</b>
                         `);
                     } else {
@@ -878,6 +993,10 @@
                     }
                     map.panTo([data.lat, data.lng], { animate: true, duration: 1.0 });
                 }
+            }
+
+            if (citerneSelectionneeImei === imeiClean) {
+                actualiserVueCiterne();
             }
 
             genererVueControleEntretien();
@@ -902,13 +1021,146 @@
                             lat: parseFloat(latest.latitude),
                             lng: parseFloat(latest.longitude),
                             vitesse: parseFloat(latest.speed || latest.vitesse || 0),
-                            timestamp: new Date(latest.created_at || Date.now()).getTime()
+                            timestamp: new Date(latest.created_at || Date.now()).getTime(),
+                            volumeCarburant: latest.volume_carburant_litres ? parseFloat(latest.volume_carburant_litres) : null,
+                            alerteSiphonnage: latest.alerte_siphonnage || false,
+                            tempCuve: latest.temperature_cuve || null,
+                            statutVanne: latest.statut_vanne || false
                         });
                     }
                 }
             } catch(e) {}
         }
         setInterval(sonderPositionsCloudEnContinu, 3000);
+
+        // MODULE GESTION DES CITERNES
+        function majSelecteurCiternes() {
+            const sel = document.getElementById('select-citerne-active');
+            if (!sel) return;
+            sel.innerHTML = "";
+            
+            if (client.vehicules.length === 0) {
+                sel.innerHTML = `<option value="">Aucune citerne</option>`;
+                document.getElementById('citerne-plaque-active').textContent = "Aucun véhicule";
+                return;
+            }
+
+            client.vehicules.forEach((v) => {
+                sel.insertAdjacentHTML('beforeend', `<option value="${v.imei}">${v.plaque}</option>`);
+            });
+
+            if (!citerneSelectionneeImei && client.vehicules.length > 0) {
+                citerneSelectionneeImei = client.vehicules[0].imei;
+            }
+            actualiserVueCiterne();
+        }
+
+        function changerCiterneActive(imei) {
+            citerneSelectionneeImei = imei;
+            actualiserVueCiterne();
+        }
+
+        async function actualiserVueCiterne() {
+            if (!citerneSelectionneeImei) return;
+
+            const v = client.vehicules.find(item => item.imei === citerneSelectionneeImei);
+            if (!v) return;
+
+            document.getElementById('citerne-plaque-active').textContent = `${v.plaque} (${v.type})`;
+
+            const configCuve = JSON.parse(localStorage.getItem(`tv_citerne_${citerneSelectionneeImei}`) || JSON.stringify({
+                capacite: 35000,
+                typeHydro: "gazoil",
+                seuilVol: 150,
+                protocole: "rs485"
+            }));
+
+            document.getElementById('cfg-capacite-citerne').value = configCuve.capacite;
+            document.getElementById('cfg-type-hydrocarbure').value = configCuve.typeHydro || "gazoil";
+            document.getElementById('cfg-seuil-vol').value = configCuve.seuilVol || 150;
+            document.getElementById('cfg-protocole-sonde').value = configCuve.protocole || "rs485";
+
+            let volumeLitres = configCuve.capacite * 0.78; 
+            let capaciteMax = configCuve.capacite;
+            let tempCuve = 28.5;
+            let siphonnageDetecte = false;
+            let vanneOuverte = false;
+
+            try {
+                if (window.supabase) {
+                    const { data } = await supabaseClient
+                        .from('transvision_positions_gps')
+                        .select('*')
+                        .eq('imei', citerneSelectionneeImei)
+                        .order('created_at', { ascending: false })
+                        .limit(2);
+
+                    if (data && data.length > 0) {
+                        const pt = data[0];
+                        if (pt.capacite_totale_litres) capaciteMax = parseFloat(pt.capacite_totale_litres);
+                        if (pt.volume_carburant_litres !== null && pt.volume_carburant_litres !== undefined) {
+                            volumeLitres = parseFloat(pt.volume_carburant_litres);
+                        }
+                        if (pt.temperature_cuve) tempCuve = parseFloat(pt.temperature_cuve);
+                        if (pt.statut_vanne !== undefined) vanneOuverte = pt.statut_vanne;
+                        if (pt.alerte_siphonnage !== undefined) siphonnageDetecte = pt.alerte_siphonnage;
+
+                        if (data.length > 1 && !siphonnageDetecte && data[1].volume_carburant_litres) {
+                            const perte = parseFloat(data[1].volume_carburant_litres) - volumeLitres;
+                            const vit = parseFloat(pt.speed || 0);
+                            if (perte >= (configCuve.seuilVol || 150) && vit < 3) {
+                                siphonnageDetecte = true;
+                            }
+                        }
+                    }
+                }
+            } catch(e) {}
+
+            const pct = Math.min(100, Math.max(0, Math.round((volumeLitres / capaciteMax) * 100)));
+
+            document.getElementById('citerne-niveau-liquide').style.height = `${pct}%`;
+            document.getElementById('citerne-pct-badge').textContent = `${pct}%`;
+            document.getElementById('citerne-litres-val').textContent = `${Math.round(volumeLitres).toLocaleString('fr-FR')} L`;
+            document.getElementById('citerne-capacite-max').textContent = `Capacité max : ${Math.round(capaciteMax).toLocaleString('fr-FR')} L`;
+            document.getElementById('citerne-temperature').textContent = `${tempCuve.toFixed(1)} °C`;
+            
+            const elVanne = document.getElementById('citerne-vanne-statut');
+            if (elVanne) {
+                elVanne.textContent = vanneOuverte ? "Ouverte (Dépotage)" : "Fermée (Verrouillée)";
+                elVanne.className = vanneOuverte ? "font-black text-amber-400 text-[9px] block mt-0.5" : "font-black text-emerald-400 text-[9px] block mt-0.5";
+            }
+
+            const boxAlerte = document.getElementById('alerte-siphonnage-box');
+            const iconAlerte = document.getElementById('alerte-siphonnage-icon');
+            const titreAlerte = document.getElementById('alerte-siphonnage-titre');
+            const descAlerte = document.getElementById('alerte-siphonnage-desc');
+
+            if (siphonnageDetecte) {
+                boxAlerte.className = "p-3 rounded-xl border flex items-center gap-3 bg-rose-500/20 border-rose-500/40 text-rose-400 animate-pulse";
+                iconAlerte.className = "fa-solid fa-triangle-exclamation text-xl text-rose-400";
+                titreAlerte.textContent = "ALERTE VOL / CHUTE BRUTALE DE NIVEAU";
+                descAlerte.textContent = "Chute anormale du volume détectée à l'arrêt hors station agréée !";
+            } else {
+                boxAlerte.className = "p-3 rounded-xl border flex items-center gap-3 bg-emerald-500/10 border-emerald-500/30 text-emerald-400";
+                iconAlerte.className = "fa-solid fa-shield-check text-xl text-emerald-400";
+                titreAlerte.textContent = "NIVEAU RÉGULIER";
+                descAlerte.textContent = "Volume sous surveillance continue. Aucune anomalie de débit.";
+            }
+        }
+
+        function enregistrerCalibrageCiterne() {
+            if (!citerneSelectionneeImei) { alert("Aucune citerne sélectionnée."); return; }
+            const cap = parseFloat(document.getElementById('cfg-capacite-citerne').value) || 35000;
+            const typeH = document.getElementById('cfg-type-hydrocarbure').value;
+            const seuil = parseFloat(document.getElementById('cfg-seuil-vol').value) || 150;
+            const proto = document.getElementById('cfg-protocole-sonde').value;
+
+            const conf = { capacite: cap, typeHydro: typeH, seuilVol: seuil, protocole: proto };
+            localStorage.setItem(`tv_citerne_${citerneSelectionneeImei}`, JSON.stringify(conf));
+
+            alert(`✅ Calibrage enregistré pour la citerne.`);
+            actualiserVueCiterne();
+        }
 
         function majSelecteursVehicules() {
             const selMap = document.getElementById('select-vehicule-map');
@@ -935,7 +1187,7 @@
             const telActuel = (partenaireProfil && partenaireProfil.tel) ? partenaireProfil.tel : (localStorage.getItem('tv_partenaire_tel') || client.tel);
             const com = (partenaireProfil && partenaireProfil.commune) ? partenaireProfil.commune : (localStorage.getItem('tv_partenaire_commune') || "Kinshasa");
             const qtr = (partenaireProfil && partenaireProfil.quartier) ? partenaireProfil.quartier : (localStorage.getItem('tv_partenaire_quartier') || "RDC");
-            const typeContratActuel = (partenaireProfil && partenaireProfil.type_contrat) ? partenaireProfil.type_contrat : (localStorage.getItem('tv_partenaire_type_contrat') || "personnel");
+            const typeContratActuel = (partenaireProfil && partenaireProfil.type_contrat) ? partenaireProfil.type_contrat : (localStorage.getItem('tv_partenaire_type_contrat') || "commercial");
 
             document.getElementById('lbl-nom-partenaire').textContent = nomActuel;
             document.getElementById('lbl-adresse-partenaire').textContent = `${com} • ${qtr}`;
@@ -948,6 +1200,7 @@
             adapterInterfaceSelonMode(typeContratActuel);
 
             majSelecteursVehicules();
+            majSelecteurCiternes();
             genererVueControleEntretien();
             genererVueFlotte();
         }
@@ -963,6 +1216,8 @@
                     const sel = document.getElementById('select-vehicule-map');
                     initMapEtCentrer(sel && sel.value !== "none" ? parseInt(sel.value) : 0);
                     if (map) map.invalidateSize();
+                } else if (idOnglet === 'onglet-citernes') {
+                    majSelecteurCiternes();
                 } else if (idOnglet === 'onglet-historique') {
                     initMapHistorique();
                     if (mapHistory) mapHistory.invalidateSize();
@@ -997,9 +1252,9 @@
                 document.getElementById('hud-moteur-statut').textContent = v.moteurCoupe ? "🔴 Moteur Coupé" : "🟢 Autorisé";
                 document.getElementById('hud-moteur-statut').className = v.moteurCoupe ? "font-black text-rose-400 text-xs" : "font-black text-emerald-400 text-xs";
 
-                document.getElementById('hud-commercial-ligne').textContent = `${v.origine || 'BRIKIN'} ➔ ${v.destination || 'GARE CENTRALE'}`;
-                document.getElementById('hud-commercial-rotations').textContent = `${v.tronconsValides || 0} Course(s)`;
-                document.getElementById('hud-commercial-recette').textContent = `${(v.recetteBruteReelle || 0).toLocaleString()} CDF`;
+                document.getElementById('hud-commercial-ligne').textContent = `${v.origine || 'MATADI'} ➔ ${v.destination || 'KINSHASA'}`;
+                document.getElementById('hud-commercial-rotations').textContent = `${v.tronconsValides || 0} Convois`;
+                document.getElementById('hud-commercial-recette').textContent = `${((v.tronconsValides || 1) * 2400).toLocaleString()} USD`;
             }
             
             if(!map) {
@@ -1028,7 +1283,7 @@
             if (polylineTrace) map.removeLayer(polylineTrace);
             if(tracePositions.length > 1) {
                 polylineTrace = L.polyline(tracePositions, { 
-                    color: '#1a73e8', 
+                    color: '#f59e0b', 
                     weight: 6, 
                     opacity: 0.9, 
                     lineJoin: 'round' 
@@ -1121,7 +1376,7 @@
                 markersHistory = [];
 
                 polylineHistory = L.polyline(points, {
-                    color: '#0284c7',
+                    color: '#f59e0b',
                     weight: 5,
                     opacity: 0.85,
                     lineJoin: 'round'
@@ -1159,27 +1414,27 @@
             client.vehicules.forEach((v, index) => {
                 const configEntretien = JSON.parse(localStorage.getItem(`tv_maint_${v.imei}`) || JSON.stringify({
                     kmVidangeDerniere: v.kmOdometre - 3200,
-                    intervalleVidange: 5000,
+                    intervalleVidange: 10000,
                     kmFreinsDerniers: v.kmOdometre - 11000,
-                    intervalleFreins: 15000,
+                    intervalleFreins: 25000,
                     kmFiltresDerniers: v.kmOdometre - 6000,
-                    intervalleFiltres: 10000
+                    intervalleFiltres: 15000
                 }));
 
                 const kmParcourusVidange = v.kmOdometre - configEntretien.kmVidangeDerniere;
                 const kmRestantVidange = configEntretien.intervalleVidange - kmParcourusVidange;
                 const pctVidange = Math.max(0, Math.min(100, Math.round((kmRestantVidange / configEntretien.intervalleVidange) * 100)));
-                const couleurVidange = kmRestantVidange <= 0 ? 'bg-rose-500' : (kmRestantVidange <= 800 ? 'bg-amber-400' : 'bg-emerald-500');
+                const couleurVidange = kmRestantVidange <= 0 ? 'bg-rose-500' : (kmRestantVidange <= 1500 ? 'bg-amber-400' : 'bg-emerald-500');
 
                 const kmParcourusFreins = v.kmOdometre - configEntretien.kmFreinsDerniers;
                 const kmRestantFreins = configEntretien.intervalleFreins - kmParcourusFreins;
                 const pctFreins = Math.max(0, Math.min(100, Math.round((kmRestantFreins / configEntretien.intervalleFreins) * 100)));
-                const couleurFreins = kmRestantFreins <= 0 ? 'bg-rose-500' : (kmRestantFreins <= 1500 ? 'bg-amber-400' : 'bg-emerald-500');
+                const couleurFreins = kmRestantFreins <= 0 ? 'bg-rose-500' : (kmRestantFreins <= 2000 ? 'bg-amber-400' : 'bg-emerald-500');
 
                 const kmParcourusFiltres = v.kmOdometre - configEntretien.kmFiltresDerniers;
                 const kmRestantFiltres = configEntretien.intervalleFiltres - kmParcourusFiltres;
                 const pctFiltres = Math.max(0, Math.min(100, Math.round((kmRestantFiltres / configEntretien.intervalleFiltres) * 100)));
-                const couleurFiltres = kmRestantFiltres <= 0 ? 'bg-rose-500' : (kmRestantFiltres <= 1000 ? 'bg-amber-400' : 'bg-emerald-500');
+                const couleurFiltres = kmRestantFiltres <= 0 ? 'bg-rose-500' : (kmRestantFiltres <= 1200 ? 'bg-amber-400' : 'bg-emerald-500');
 
                 const carteHTML = `
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
@@ -1224,9 +1479,9 @@
                             <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-850 space-y-1">
                                 <div class="flex justify-between text-xs font-bold">
                                     <span class="flex items-center gap-1.5 text-slate-200">
-                                        <i class="fa-solid fa-oil-can text-amber-400"></i> Vidange Moteur
+                                        <i class="fa-solid fa-oil-can text-amber-400"></i> Vidange Moteur & Pont
                                     </span>
-                                    <span class="${kmRestantVidange <= 0 ? 'text-rose-400 animate-pulse font-black' : (kmRestantVidange <= 800 ? 'text-amber-400' : 'text-emerald-400')} font-mono text-[10px]">
+                                    <span class="${kmRestantVidange <= 0 ? 'text-rose-400 animate-pulse font-black' : (kmRestantVidange <= 1500 ? 'text-amber-400' : 'text-emerald-400')} font-mono text-[10px]">
                                         ${kmRestantVidange <= 0 ? 'DÉPASSÉE !' : `reste ${kmRestantVidange.toLocaleString()} km`}
                                     </span>
                                 </div>
@@ -1242,9 +1497,9 @@
                             <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-850 space-y-1">
                                 <div class="flex justify-between text-xs font-bold">
                                     <span class="flex items-center gap-1.5 text-slate-200">
-                                        <i class="fa-solid fa-compact-disc text-rose-400"></i> Plaquettes de Frein
+                                        <i class="fa-solid fa-compact-disc text-rose-400"></i> Plaquettes & Garnitures de Frein
                                     </span>
-                                    <span class="${kmRestantFreins <= 0 ? 'text-rose-400 animate-pulse font-black' : (kmRestantFreins <= 1500 ? 'text-amber-400' : 'text-emerald-400')} font-mono text-[10px]">
+                                    <span class="${kmRestantFreins <= 0 ? 'text-rose-400 animate-pulse font-black' : (kmRestantFreins <= 2000 ? 'text-amber-400' : 'text-emerald-400')} font-mono text-[10px]">
                                         ${kmRestantFreins <= 0 ? 'À REMPLACER !' : `reste ${kmRestantFreins.toLocaleString()} km`}
                                     </span>
                                 </div>
@@ -1260,9 +1515,9 @@
                             <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-850 space-y-1">
                                 <div class="flex justify-between text-xs font-bold">
                                     <span class="flex items-center gap-1.5 text-slate-200">
-                                        <i class="fa-solid fa-filter text-sky-400"></i> Filtres Air & Carburant
+                                        <i class="fa-solid fa-filter text-sky-400"></i> Filtres Air, Huile & Séparateur Eau
                                     </span>
-                                    <span class="${kmRestantFiltres <= 0 ? 'text-rose-400 animate-pulse font-black' : (kmRestantFiltres <= 1000 ? 'text-amber-400' : 'text-emerald-400')} font-mono text-[10px]">
+                                    <span class="${kmRestantFiltres <= 0 ? 'text-rose-400 animate-pulse font-black' : (kmRestantFiltres <= 1200 ? 'text-amber-400' : 'text-emerald-400')} font-mono text-[10px]">
                                         ${kmRestantFiltres <= 0 ? 'À CHANGER !' : `reste ${kmRestantFiltres.toLocaleString()} km`}
                                     </span>
                                 </div>
@@ -1350,7 +1605,7 @@
                     <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex justify-between items-center shadow-md">
                         <div>
                             <h4 class="font-black text-slate-100 text-xs">${v.plaque}</h4>
-                            <p class="text-[9px] text-slate-400">${v.type}</p>
+                            <p class="text-[9px] text-amber-400 font-bold">${v.type}</p>
                             <p class="text-[9px] font-mono text-emerald-400">IMEI: ${v.imei}</p>
                         </div>
                         <div class="text-right space-y-1">
@@ -1367,7 +1622,7 @@
         function enregistrerVehiculeSaisi() {
             const plaque = document.getElementById('add-plaque').value.trim();
             const imei = document.getElementById('add-imei').value.trim();
-            const type = document.getElementById('add-type').value.trim() || "Véhicule Personnel";
+            const type = document.getElementById('add-type').value;
             const odo = parseInt(document.getElementById('add-km-odometre').value) || 120000;
 
             if (!plaque || !imei) { alert("Veuillez renseigner la plaque et le numéro IMEI."); return; }
@@ -1382,11 +1637,11 @@
 
             localStorage.setItem(`tv_maint_${imeiClean}`, JSON.stringify({
                 kmVidangeDerniere: odo,
-                intervalleVidange: 5000,
+                intervalleVidange: 10000,
                 kmFreinsDerniers: odo,
-                intervalleFreins: 15000,
+                intervalleFreins: 25000,
                 kmFiltresDerniers: odo,
-                intervalleFiltres: 10000
+                intervalleFiltres: 15000
             }));
 
             let vehiculeExistant = client.vehicules.find(v => v.imei === imeiClean);
@@ -1398,7 +1653,7 @@
                 const nv = { 
                     plaque: plaque, type: type, imei: imeiClean, 
                     lat: -4.32, lng: 15.31, vitesse: 0, moteurCoupe: false, kmJour: 0, kmOdometre: odo, dernierCap: 0,
-                    origine: "BRIKIN", destination: "GARE CENTRALE", tarif: 2500, tronconsValides: 0, recetteBruteReelle: 0
+                    origine: "MATADI", destination: "KINSHASA", tarif: 1500, tronconsValides: 0, recetteBruteReelle: 0
                 };
                 client.vehicules.push(nv);
             }
@@ -1414,11 +1669,11 @@
 
             document.getElementById('add-plaque').value = ""; 
             document.getElementById('add-imei').value = ""; 
-            document.getElementById('add-type').value = "";
             document.getElementById('add-km-odometre').value = "";
             
             alert(`✅ Véhicule ${plaque} ajouté à la flotte.`);
             majSelecteursVehicules();
+            majSelecteurCiternes();
             genererVueFlotte();
             genererVueControleEntretien();
         }
@@ -1431,6 +1686,7 @@
 
                 client.vehicules = client.vehicules.filter(v => v.imei !== imeiClean);
                 majSelecteursVehicules();
+                majSelecteurCiternes();
                 genererVueFlotte();
                 genererVueControleEntretien();
             }
@@ -1461,7 +1717,7 @@
             const newCommune = document.getElementById('prof-commune').value.trim();
             const newQuartier = document.getElementById('prof-quartier').value.trim();
             const newPin = document.getElementById('prof-pin-new').value.trim();
-            const newMode = document.getElementById('select-bascule-mode')?.value || 'personnel';
+            const newMode = document.getElementById('select-bascule-mode')?.value || 'commercial';
 
             if (!ancienTel) {
                 afficherFeedbackCompte('error', "❌ Session expirée. Veuillez vous reconnecter.");
