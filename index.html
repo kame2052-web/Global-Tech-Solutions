@@ -3,343 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Tech Solutions — Hub Central & Synergies</title>
+    <title>Global Tech Solutions (GTS) — Hub Technologique & Innovations</title>
     <link rel="icon" type="image/png" href="GLOBAL.png">
+    
+    <!-- CONFIGURATION PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#020617">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GTS Hub">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: { extend: { colors: { gtsdark: '#020617', gtscard: '#0f172a' } } }
+            theme: {
+                extend: {
+                    colors: {
+                        gtsdark: '#020617',
+                        gtscard: '#0f172a',
+                    }
+                }
+            }
         }
     </script>
     <style>
-        .view-pane { display: none; }
-        .view-pane.active { display: block; animation: fadeIn 0.25s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        #kinshasa-map { height: 500px; width: 100%; border-radius: 1.5rem; z-index: 10; }
-        .leaflet-popup-content-wrapper { background-color: #0f172a !important; color: #f8fafc !important; border: 1px solid #334155; }
-        .leaflet-popup-tip { background-color: #0f172a !important; }
+        .page-fade { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .glow-card:hover { box-shadow: 0 0 25px rgba(14, 165, 233, 0.15); border-color: rgba(56, 189, 248, 0.4); }
     </style>
 </head>
-<body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+<body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-slate-950">
 
-    <!-- EN-TÊTE CENTRAL -->
-    <header class="bg-slate-900/90 border-b border-slate-800 p-4 sticky top-0 z-50 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-3">
-                <div class="h-11 w-11 rounded-xl overflow-hidden bg-white flex items-center justify-center p-1 shadow-sm flex-shrink-0">
-                    <img src="GLOBAL.png" alt="GTS" class="w-full h-full object-contain">
+    <!-- EN-TÊTE CORPORATE -->
+    <header class="w-full border-b border-slate-800 bg-slate-900/85 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12 rounded-xl overflow-hidden bg-white flex items-center justify-center p-1 flex-shrink-0 shadow-sm">
+                    <img src="GLOBAL.png" alt="Global Tech Solutions" class="w-full h-full object-contain scale-105" onerror="this.parentElement.style.display='none'">
                 </div>
                 <div>
-                    <div class="flex items-center gap-2">
-                        <span class="bg-gradient-to-r from-indigo-500 to-sky-500 text-white font-black px-2.5 py-0.5 rounded text-xs tracking-wider">GTS CORE</span>
-                        <h1 class="text-sm font-bold text-slate-100 uppercase">Supervision & Intelligence Commerciale</h1>
-                    </div>
-                    <p class="text-[10px] text-slate-400 font-mono">Cockpit Analytique • Kinshasa, RDC</p>
+                    <h1 class="text-sm md:text-base font-black tracking-wider uppercase text-slate-100">Global Tech Solutions</h1>
+                    <p class="text-[9px] md:text-[10px] font-mono text-sky-400 tracking-widest uppercase font-bold">SARL • Hub Technologique (Kinshasa)</p>
                 </div>
             </div>
-            <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-black uppercase transition-all border border-slate-700 flex items-center gap-1.5">
-                <i class="fa-solid fa-arrow-left"></i> Portail Public
-            </a>
+            <div class="hidden md:flex items-center gap-6 text-xs font-bold text-slate-400">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-microchip text-sky-400"></i> Solutions Numériques</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-rose-400"></i> Kinshasa, RDC</span>
+                <a href="#projets" class="bg-sky-500 hover:bg-sky-600 text-slate-950 px-4 py-2 rounded-xl font-black uppercase transition-all shadow-md">Explorer les Pôles</a>
+            </div>
         </div>
     </header>
 
-    <!-- BARRE DE NAVIGATION -->
-    <nav class="w-full border-b border-slate-800 bg-slate-950/70 sticky top-[73px] z-40 backdrop-blur-sm">
-        <div class="max-w-7xl mx-auto px-4 md:px-6 flex items-center gap-2 overflow-x-auto py-2.5">
-            <button onclick="navigateCentral('analytics')" id="btn-tab-analytics" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md">
-                <i class="fa-solid fa-fire text-amber-300"></i> <span>Densité & Carte</span>
-            </button>
-            <button onclick="navigateCentral('synergies')" id="btn-tab-synergies" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
-                <i class="fa-solid fa-diagram-project text-fuchsia-400"></i> <span>Synergies & CRM Global</span>
-            </button>
-            <button onclick="navigateCentral('filiales')" id="btn-tab-filiales" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
-                <i class="fa-solid fa-network-wired text-sky-400"></i> <span>Passerelles Admins</span>
-            </button>
+    <!-- SECTION HERO -->
+    <main class="flex-1 max-w-7xl mx-auto px-6 py-12 space-y-16 page-fade w-full">
+        <div class="text-center max-w-3xl mx-auto space-y-6">
+            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono font-bold">
+                <i class="fa-solid fa-bolt"></i> Transformer les frictions du quotidien en écosystèmes numériques
+            </span>
+            <h2 class="text-4xl md:text-5xl font-black tracking-tight text-slate-100 leading-tight">
+                L'Excellence Technologique <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-indigo-400 to-emerald-400">Made in RDC</span>
+            </h2>
+            <p class="text-sm md:text-base text-slate-400 leading-relaxed">
+                Découvrez nos plateformes innovantes de mobilité, de logistique aéroportuaire, d'assainissement et de commerce de proximité conçues pour optimiser les activités urbaines.
+            </p>
         </div>
-    </nav>
 
-    <!-- ZONE DE CONTENU -->
-    <main class="max-w-7xl mx-auto p-4 md:p-6 flex-1 w-full space-y-6">
-
-        <!-- 1. VUE ANALYTIQUE DE DENSITÉ -->
-        <section id="pane-analytics" class="view-pane active space-y-6">
-            <div class="border-b border-slate-800 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h2 class="text-xl font-black text-slate-100">Densité Territoriale & Sollicitation</h2>
-                    <p class="text-xs text-slate-400">Identification des bassins de demande urbains.</p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <select id="map-filter-pole" onchange="changerFiltrePole(this.value)" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-amber-300 font-bold outline-none">
-                        <option value="ALL">🌐 Tous les Pôles Réunis</option>
-                        <option value="easyfly">✈️ EasyFly Transit</option>
-                        <option value="transvision">📡 TransVision Protect</option>
-                        <option value="cleanapp">✨ Matt Clean'App</option>
-                        <option value="eyanomarket">🛍️ EyanoMarket</option>
-                    </select>
-                </div>
-            </div>
+        <!-- GRILLE DES 4 PÔLES -->
+        <div id="projets" class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
             
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-5 shadow-2xl space-y-4">
-                <div id="kinshasa-map" class="border border-slate-800 shadow-inner"></div>
-            </div>
-        </section>
-
-        <!-- 2. NOUVELLE VUE : SYNERGIES & CRM GTS -->
-        <section id="pane-synergies" class="view-pane space-y-6">
-            <div class="border-b border-slate-800 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Synergies GTS & Intelligence Commerciale</h2>
-                    <p class="text-xs text-slate-400">Analyse de l'engagement client basée sur l'identifiant unique (Numéro de Téléphone).</p>
-                </div>
-                <button onclick="exporterCRM()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-lg flex items-center gap-2">
-                    <i class="fa-solid fa-file-excel"></i> Extraire Opportunités
-                </button>
-            </div>
-
-            <!-- KPIs CRM -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-fuchsia-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Total Clients Uniques (GTS ID)</span>
-                    <h3 id="crm-total-clients" class="text-3xl font-black text-slate-100 mt-2">0</h3>
-                    <span class="text-[10px] text-fuchsia-400 font-mono">Comptes identifiés</span>
-                </div>
-                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-sky-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Taux de Croisement (Cross-Sell)</span>
-                    <h3 id="crm-taux-croisement" class="text-3xl font-black text-slate-100 mt-2">0%</h3>
-                    <span class="text-[10px] text-sky-400 font-mono">Utilisent 2+ services GTS</span>
-                </div>
-                <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 border-t-4 border-t-emerald-500 shadow-xl">
-                    <span class="text-xs font-mono text-slate-400 uppercase">Valeur Écosystème (LTV)</span>
-                    <h3 id="crm-total-value" class="text-3xl font-black text-emerald-400 mt-2">0 CDF</h3>
-                    <span class="text-[10px] text-slate-400 font-mono">Générée par les profils multi-pôles</span>
-                </div>
-            </div>
-
-            <!-- MOTEUR DE VENTES CROISÉES -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                    <h4 class="text-sm font-black uppercase tracking-wider text-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-bullseye text-rose-400"></i> Radar d'Opportunités d'Acquisition
-                    </h4>
-                    <span class="text-[10px] font-mono text-slate-400 bg-slate-900 px-2 py-1 rounded">Basé sur les manques par profil</span>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs text-slate-300">
-                        <thead class="bg-slate-900 text-[10px] font-mono uppercase text-slate-400 border-b border-slate-800">
-                            <tr>
-                                <th class="py-3 px-4">GTS ID (Téléphone)</th>
-                                <th class="py-3 px-4">Nom Profil</th>
-                                <th class="py-3 px-4">Services Actifs</th>
-                                <th class="py-3 px-4">Valeur Compte</th>
-                                <th class="py-3 px-4 text-right">🎯 Action Recommandée (Cross-Selling)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="crm-table-body" class="divide-y divide-slate-800/60 font-medium">
-                            <!-- Injecté par JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. PASSERELLES ADMIN -->
-        <section id="pane-filiales" class="view-pane space-y-6">
-            <div class="border-b border-slate-800 pb-3">
-                <h2 class="text-xl md:text-2xl font-black text-slate-100">Postes d'Administration par Filiale</h2>
-                <p class="text-xs text-slate-400">Accès direct aux guichets de gestion sans authentification.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
-                    <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm"><img src="EASYFLY TRANSIT.jpg" alt="EasyFly" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'"></div>
-                        <div><h3 class="text-sm font-black text-slate-100 uppercase">Admin EasyFly</h3><p class="text-[10px] text-slate-400 font-mono">Poste Logistique</p></div>
+            <!-- PÔLE 1 : TRANSVISION -->
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
+                            <img src="VISION.png" alt="TransVision" class="w-full h-full object-contain scale-110" onerror="this.style.display='none'">
+                        </div>
+                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-sky-400 font-bold uppercase">Pôle 1 • Télématique</span>
                     </div>
-                    <a href="easyflytransit/admin.html" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase">Ouvrir</a>
-                </div>
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
-                    <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm"><img src="VISION.png" alt="TransVision" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'"></div>
-                        <div><h3 class="text-sm font-black text-slate-100 uppercase">Admin TransVision</h3><p class="text-[10px] text-slate-400 font-mono">Télématique</p></div>
+                    <div>
+                        <h3 class="text-xl font-black text-slate-100">TransVision</h3>
+                        <p class="text-xs font-mono text-sky-400 italic mt-0.5">« La clarté sur vos recettes »</p>
                     </div>
-                    <a href="transvision/admin.html" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase">Ouvrir</a>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Système exclusif de géolocalisation et de contrôle des recettes pour flottes commerciales, intégrant une technologie furtive de neutralisation à distance pour les particuliers.
+                    </p>
                 </div>
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
-                    <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm"><img src="cleanapp.png" alt="CleanApp" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'"></div>
-                        <div><h3 class="text-sm font-black text-slate-100 uppercase">Admin Clean'App</h3><p class="text-[10px] text-slate-400 font-mono">Salubrité</p></div>
-                    </div>
-                    <a href="cleanapp/admin.html" class="bg-teal-600 hover:bg-teal-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase">Ouvrir</a>
-                </div>
-                <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
-                    <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm"><img src="logo.png" alt="Eyano" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'"></div>
-                        <div><h3 class="text-sm font-black text-slate-100 uppercase">Admin EyanoMarket</h3><p class="text-[10px] text-slate-400 font-mono">Marketplace</p></div>
-                    </div>
-                    <a href="eyanomarket/admin.html" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase">Ouvrir</a>
+                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                    <span class="text-[10px] text-slate-500 font-bold uppercase">Mobilité & Audit Financier</span>
+                    <a href="transvision/index.html" class="inline-flex items-center gap-2 bg-sky-500/10 hover:bg-sky-500 hover:text-slate-950 text-sky-400 border border-sky-500/30 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all">
+                        Accéder <i class="fa-solid fa-arrow-right"></i>
+                    </a>
                 </div>
             </div>
-        </section>
 
+            <!-- PÔLE 2 : EASYFLY TRANSIT -->
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
+                            <img src="EASYFLY%20TRANSIT.jpg" alt="EasyFly Transit" class="w-full h-full object-contain scale-110" onerror="this.style.display='none'">
+                        </div>
+                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-indigo-400 font-bold uppercase">Pôle 2 • Logistique Aéro</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-slate-100">EasyFly Transit</h3>
+                        <p class="text-xs font-mono text-indigo-400 italic mt-0.5">« Voyagez léger, votre check-in est déjà fait. »</p>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Préenregistrement aéroportuaire déporté en ville 48h avant le vol. Collecte sécurisée des bagages et traitement agrégé en bloc (Batch) pour contourner la saturation de N'djili.
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                    <span class="text-[10px] text-slate-500 font-bold uppercase">Sûreté & Transit</span>
+                    <a href="easyflytransit/index.html" class="inline-flex items-center gap-2 bg-indigo-500/10 hover:bg-indigo-500 hover:text-slate-950 text-indigo-400 border border-indigo-500/30 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all">
+                        Accéder <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- PÔLE 3 : MATT CLEAN'APP -->
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
+                            <img src="cleanapp.png" alt="Matt Clean'App" class="w-full h-full object-contain scale-110" onerror="this.style.display='none'">
+                        </div>
+                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-emerald-400 font-bold uppercase">Pôle 3 • Salubrité</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-slate-100">Matt Clean'App</h3>
+                        <p class="text-xs font-mono text-emerald-400 italic mt-0.5">« Solution de propreté à portée de main »</p>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Plateforme de mise en relation « Zéro Friction » pour l'entretien et l'assainissement (véhicules et habitats). Arbitrage qualité automatisé par preuves visuelles « Avant/Après ».
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                    <span class="text-[10px] text-slate-500 font-bold uppercase">Services à la Demande</span>
+                    <a href="cleanapp/index.html" class="inline-flex items-center gap-2 bg-emerald-500/10 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all">
+                        Accéder <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- PÔLE 4 : EYANOMARKET -->
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
+                            <img src="eyano.png" alt="Eyanomarket" class="w-full h-full object-contain scale-110" onerror="this.style.display='none'">
+                        </div>
+                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-amber-400 font-bold uppercase">Pôle 4 • Commerce Essentiel</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-slate-100">Eyanomarket</h3>
+                        <p class="text-xs font-mono text-amber-400 italic mt-0.5">« L'essentiel à proximité immédiate »</p>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Centrale numérique multisectorielle de mise en relation géolocalisée en temps réel pour l'approvisionnement urgent (gaz, eau, pharmacie, hébergements de passage).
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                    <span class="text-[10px] text-slate-500 font-bold uppercase">Marketplace de Proximité</span>
+                    <a href="eyanomarket/index.html" class="inline-flex items-center gap-2 bg-amber-500/10 hover:bg-amber-500 hover:text-slate-950 text-amber-400 border border-amber-500/30 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all">
+                        Accéder <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
     </main>
 
-    <!-- PIED DE PAGE ADMINISTRATION GLOBAL TECH SOLUTIONS -->
-    <footer class="w-full border-t border-slate-800/80 bg-slate-950/95 py-5 px-6 text-slate-400 text-xs mt-auto backdrop-blur-md">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
-            <div>
-                <div class="flex items-center justify-center sm:justify-start gap-2">
-                    <span class="font-black text-slate-200 tracking-wide">Global Tech Solutions SARL</span>
-                    <span class="text-slate-600">|</span>
-                    <span class="text-[10px] font-mono text-slate-400">Hub d'Administration Centrale</span>
+    <!-- PIED DE PAGE CORPORATE GLOBAL TECH SOLUTIONS -->
+    <footer class="w-full border-t border-slate-800 bg-slate-950/90 backdrop-blur-md py-8 text-slate-400 text-xs mt-16">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+            <div class="space-y-1">
+                <div class="flex items-center justify-center md:justify-start gap-2">
+                    <span class="font-black text-slate-100 text-sm tracking-wide">GLOBAL TECH SOLUTIONS SARL</span>
+                    <span class="text-[9px] bg-sky-500/10 text-sky-400 border border-sky-500/20 px-2 py-0.5 rounded-full font-mono font-bold">RDC</span>
                 </div>
-                <p class="text-[11px] font-mono text-slate-400 mt-1">
-                    RCCM : <b class="text-sky-400">24-B-04106</b> &nbsp;•&nbsp; 
-                    NIF : <b class="text-sky-400">A2441433N</b>
+                <p class="text-[11px] text-slate-400 font-mono">
+                    RCCM : <span class="text-sky-400 font-bold">24-B-04106</span> &nbsp;|&nbsp; 
+                    NIF : <span class="text-sky-400 font-bold">A2441433N</span>
                 </p>
+                <p class="text-[10px] text-slate-500">Siège social : Kinshasa, République Démocratique du Congo</p>
             </div>
 
-            <div class="flex flex-col sm:items-end gap-1.5 text-[11px]">
-                <a href="mailto:infos.glotechs@gmail.com" class="hover:text-sky-400 flex items-center justify-center sm:justify-end gap-1.5 text-slate-300 transition-colors">
+            <div class="flex flex-col md:items-end gap-2 text-[11px]">
+                <a href="mailto:infos.glotechs@gmail.com" class="text-slate-300 hover:text-sky-400 font-medium flex items-center justify-center md:justify-end gap-2 transition-colors">
                     <i class="fa-solid fa-envelope text-sky-400"></i> infos.glotechs@gmail.com
                 </a>
-                <div class="flex items-center justify-center sm:justify-end gap-3">
-                    <a href="tel:+243980000338" class="hover:text-emerald-300 flex items-center gap-1.5 text-emerald-400 font-mono font-bold transition-colors">
+                <div class="flex items-center justify-center md:justify-end gap-3">
+                    <a href="tel:+243980000338" class="text-emerald-400 hover:text-emerald-300 font-mono font-bold flex items-center gap-1.5 transition-colors">
                         <i class="fa-solid fa-phone"></i> +243 980 000 338
                     </a>
                     <span class="text-slate-600">•</span>
-                    <a href="https://wa.me/243980000338" target="_blank" class="hover:text-green-300 flex items-center gap-1 text-green-400 font-bold transition-colors">
-                        <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp Support
+                    <a href="https://wa.me/243980000338" target="_blank" class="text-green-400 hover:text-green-300 font-bold flex items-center gap-1 transition-colors">
+                        <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp Direct
                     </a>
                 </div>
+                <span class="text-[9px] text-slate-600 mt-0.5">© 2026 Global Tech Solutions SARL. Tous droits réservés.</span>
             </div>
         </div>
     </footer>
 
+    <!-- BANDEAU D'INSTALLATION AUTOMATIQUE PWA (SMARTPHONE & PC) -->
+    <div id="pwa-install-banner" class="hidden fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md bg-slate-900/95 border-2 border-sky-500/40 backdrop-blur-md p-4 rounded-2xl shadow-2xl z-50 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+            <div class="h-11 w-11 rounded-xl overflow-hidden bg-white p-1 flex-shrink-0 flex items-center justify-center shadow-sm">
+                <img src="GLOBAL.png" alt="GTS" class="w-full h-full object-contain">
+            </div>
+            <div>
+                <h4 class="text-xs font-black uppercase text-white">Installer Global Tech Solutions</h4>
+                <p class="text-[10px] text-slate-300">Ajouter l'application sur votre écran d'accueil</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button type="button" onclick="document.getElementById('pwa-install-banner').classList.add('hidden')" class="text-slate-400 hover:text-white p-1 text-xs">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <button type="button" id="btn-pwa-install" class="bg-sky-500 hover:bg-sky-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs uppercase shadow-md transition-all">
+                Installer
+            </button>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE GESTION SERVICE WORKER & DÉTECTION PWA -->
     <script>
-        let mapInstance = null;
-        let mapLayersGroup = null;
+        let deferredPrompt;
 
-        // 1. GESTION DES ONGLETS
-        function navigateCentral(tabName) {
-            document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(btn => {
-                btn.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60";
-            });
-            document.getElementById('pane-' + tabName).classList.add('active');
-            
-            const btnActive = document.getElementById('btn-tab-' + tabName);
-            if (tabName === 'analytics') btnActive.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
-            if (tabName === 'synergies') btnActive.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-fuchsia-600 text-white shadow-md";
-            
-            if(tabName === 'analytics' && mapInstance) setTimeout(() => { mapInstance.invalidateSize(); }, 200);
-        }
-
-        // 2. SIMULATION BASE DE DONNÉES UNIFIÉE (GTS ID = Téléphone)
-        const GTS_CRM_DATA = [
-            { phone: "+243813271112", name: "Direction KAM", apps: ["easyfly", "transvision", "cleanapp", "eyanomarket"], revenue: 2800000 },
-            { phone: "+243825556633", name: "Jean Mukendi", apps: ["transvision", "cleanapp"], revenue: 145000 },
-            { phone: "+243998877665", name: "Paul", apps: ["easyfly"], revenue: 95000 },
-            { phone: "+243812345678", name: "Aline", apps: ["cleanapp", "eyanomarket"], revenue: 62000 },
-            { phone: "+243845556677", name: "Société ABC", apps: ["transvision", "eyanomarket"], revenue: 520000 },
-            { phone: "+243890001122", name: "Marc Ilunga", apps: ["transvision"], revenue: 84000 }
-        ];
-
-        const APP_BADGES = {
-            'easyfly': '<span class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded text-[9px] uppercase">EasyFly</span>',
-            'transvision': '<span class="bg-sky-500/20 text-sky-300 border border-sky-500/30 px-2 py-0.5 rounded text-[9px] uppercase">TransVision</span>',
-            'cleanapp': '<span class="bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2 py-0.5 rounded text-[9px] uppercase">CleanApp</span>',
-            'eyanomarket': '<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-[9px] uppercase">Eyano</span>'
-        };
-
-        function renderCRM() {
-            const tbody = document.getElementById('crm-table-body');
-            tbody.innerHTML = '';
-            
-            let multiAppCount = 0;
-            let multiAppValue = 0;
-
-            GTS_CRM_DATA.sort((a, b) => b.revenue - a.revenue).forEach(client => {
-                const isMulti = client.apps.length > 1;
-                if (isMulti) {
-                    multiAppCount++;
-                    multiAppValue += client.revenue;
-                }
-
-                // Logique de Recommandation Croisée (L'Intelligence Artificielle de votre CRM)
-                let recommendation = "";
-                let btnColor = "";
-                if (client.apps.includes('transvision') && !client.apps.includes('cleanapp')) {
-                    recommendation = "Proposer abonnement lavage de flotte (Clean'App)";
-                    btnColor = "bg-teal-600 hover:bg-teal-500";
-                } else if (client.apps.includes('cleanapp') && !client.apps.includes('eyanomarket')) {
-                    recommendation = "Envoyer promo livraison courses (EyanoMarket)";
-                    btnColor = "bg-amber-600 hover:bg-amber-500";
-                } else if (client.apps.includes('easyfly') && !client.apps.includes('transvision')) {
-                    recommendation = "Vendre tracker GPS pour véhicule (TransVision)";
-                    btnColor = "bg-sky-600 hover:bg-sky-500";
-                } else if (client.apps.length === 4) {
-                    recommendation = "⭐ Client VIP Écosystème Total";
-                    btnColor = "bg-slate-700 cursor-default";
-                } else {
-                    recommendation = "Proposer pré-enregistrement aéroport (EasyFly)";
-                    btnColor = "bg-indigo-600 hover:bg-indigo-500";
-                }
-
-                const badges = client.apps.map(app => APP_BADGES[app]).join(' ');
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/40 transition-colors">
-                        <td class="py-3 px-4 font-mono font-bold text-sky-400">${client.phone}</td>
-                        <td class="py-3 px-4 font-bold text-slate-200">${client.name}</td>
-                        <td class="py-3 px-4 flex flex-wrap gap-1">${badges}</td>
-                        <td class="py-3 px-4 font-mono font-black text-emerald-400">${client.revenue.toLocaleString('fr-FR')} CDF</td>
-                        <td class="py-3 px-4 text-right">
-                            <button class="${btnColor} text-white px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all shadow">
-                                ${recommendation}
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            const totalClients = GTS_CRM_DATA.length;
-            const crossRate = Math.round((multiAppCount / totalClients) * 100);
-
-            document.getElementById('crm-total-clients').textContent = totalClients;
-            document.getElementById('crm-taux-croisement').textContent = crossRate + "%";
-            document.getElementById('crm-total-value').textContent = multiAppValue.toLocaleString('fr-FR') + " CDF";
-        }
-
-        // INIT CARTE DENSITÉ (Maintien de l'existant)
-        const TERRITORIAL_DATA = [
-            { commune: "Gombe", lat: -4.3032, lng: 15.3056, users: 70 },
-            { commune: "Limete", lat: -4.3547, lng: 15.3408, users: 32 },
-            { commune: "Ngaliema", lat: -4.3411, lng: 15.2530, users: 28 }
-        ];
-
-        function initKinshasaMap() {
-            mapInstance = L.map('kinshasa-map').setView([-4.3350, 15.3100], 12);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mapInstance);
-            mapLayersGroup = L.layerGroup().addTo(mapInstance);
-            
-            TERRITORIAL_DATA.forEach(zone => {
-                const circle = L.circleMarker([zone.lat, zone.lng], { radius: 25, fillColor: "#f43f5e", color: "#ffffff", weight: 2, opacity: 0.9, fillOpacity: 0.65 });
-                circle.bindPopup(`<strong style="color:#f43f5e">${zone.commune}</strong><br>👥 ${zone.users} usagers`);
-                mapLayersGroup.addLayer(circle);
+        // Enregistrement du Service Worker à la racine
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('Service Worker GTS actif :', reg.scope))
+                    .catch(err => console.warn('Erreur Service Worker :', err));
             });
         }
 
-        document.addEventListener('DOMContentLoaded', () => { 
-            initKinshasaMap(); 
-            renderCRM();
+        // Interception de l'événement d'installation Android/Chrome/Edge
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const banner = document.getElementById('pwa-install-banner');
+            if (banner) banner.classList.remove('hidden');
+        });
+
+        // Déclencheur du bouton d'installation
+        document.getElementById('btn-pwa-install')?.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                const banner = document.getElementById('pwa-install-banner');
+                if (banner) banner.classList.add('hidden');
+            }
+            deferredPrompt = null;
+        });
+
+        // Masquage une fois installée
+        window.addEventListener('appinstalled', () => {
+            const banner = document.getElementById('pwa-install-banner');
+            if (banner) banner.classList.add('hidden');
         });
     </script>
 </body>
