@@ -433,6 +433,8 @@
         function toggleRoleFields() {
             const role = document.getElementById('reg-role').value;
             const partnerFields = document.getElementById('partner-fields');
+            
+            // On s'assure que le contenu du partenaire est masqué ou affiché
             if (role === 'commercial') {
                 partnerFields.classList.remove('hidden');
             } else {
@@ -484,6 +486,7 @@
                 return;
             }
 
+            // SIMULATION TEMPORAIRE : On considère que si le numéro commence par 9, c'est un partenaire Transvision (pour test)
             const estPartenaire = tel.startsWith("09") || tel.startsWith("9");
             
             const mockUser = {
