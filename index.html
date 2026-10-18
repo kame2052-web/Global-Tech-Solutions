@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Tech Solutions (GTS) — Hub Technologique & Innovations</title>
+    <title>Global Tech Solutions (GTS) — Hub & Single Sign-On</title>
     <link rel="icon" type="image/png" href="GLOBAL.png">
     
     <!-- CONFIGURATION PWA -->
@@ -34,152 +34,199 @@
         .page-fade { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .glow-card:hover { box-shadow: 0 0 25px rgba(14, 165, 233, 0.15); border-color: rgba(56, 189, 248, 0.4); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     </style>
 </head>
 <body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-slate-950">
 
     <!-- EN-TÊTE CORPORATE -->
-    <header class="w-full border-b border-slate-800 bg-slate-900/85 backdrop-blur-md sticky top-0 z-50">
+    <header class="w-full border-b border-slate-800 bg-slate-900/85 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="h-12 w-12 rounded-xl overflow-hidden bg-white flex items-center justify-center p-1 flex-shrink-0 shadow-sm">
-                    <img src="GLOBAL.png" alt="Global Tech Solutions" class="w-full h-full object-contain scale-105" onerror="this.parentElement.style.display='none'">
+                    <img src="GLOBAL.png" alt="Global Tech Solutions" class="w-full h-full object-contain scale-105" onerror="this.style.display='none'">
                 </div>
                 <div>
                     <h1 class="text-sm md:text-base font-black tracking-wider uppercase text-slate-100">Global Tech Solutions</h1>
-                    <p class="text-[9px] md:text-[10px] font-mono text-sky-400 tracking-widest uppercase font-bold">SARL • Hub Technologique (Kinshasa)</p>
+                    <p class="text-[9px] md:text-[10px] font-mono text-sky-400 tracking-widest uppercase font-bold">Compte Unique (SSO) • RDC</p>
                 </div>
             </div>
-            <div class="hidden md:flex items-center gap-6 text-xs font-bold text-slate-400">
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-microchip text-sky-400"></i> Solutions Numériques</span>
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-rose-400"></i> Kinshasa, RDC</span>
-                <a href="#projets" class="bg-sky-500 hover:bg-sky-600 text-slate-950 px-4 py-2 rounded-xl font-black uppercase transition-all shadow-md">Explorer les Pôles</a>
+            
+            <div id="header-user-info" class="hidden items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <p id="lbl-user-name" class="text-xs font-black text-white">Utilisateur</p>
+                    <p id="lbl-user-phone" class="text-[9px] text-sky-400 font-mono">0000</p>
+                </div>
+                <button onclick="deconnexionGlobale()" class="bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-xl text-xs font-black uppercase transition-all shadow-md">
+                    Déconnexion
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- SECTION HERO -->
-    <main class="flex-1 max-w-7xl mx-auto px-6 py-12 space-y-16 page-fade w-full">
+    <!-- SECTION AUTHENTIFICATION (SSO) -->
+    <main id="auth-portal" class="flex-1 max-w-md w-full mx-auto px-6 py-12 flex flex-col justify-center page-fade">
+        <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-sky-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div class="text-center space-y-2">
+                <h2 class="text-2xl font-black text-white">Portail Unifié</h2>
+                <p class="text-xs text-slate-400">Connectez-vous pour accéder à l'écosystème GTS (TransVision, EasyFly, Clean'App, Eyano).</p>
+            </div>
+
+            <!-- TABS -->
+            <div class="flex bg-slate-900 border border-slate-800 p-1 rounded-xl">
+                <button id="tab-login" onclick="switchAuthMode('login')" class="flex-1 py-2 text-xs font-black bg-sky-500 text-slate-950 rounded-lg transition-all shadow-sm">Connexion</button>
+                <button id="tab-register" onclick="switchAuthMode('register')" class="flex-1 py-2 text-xs font-bold text-slate-400 hover:text-white rounded-lg transition-all">S'inscrire</button>
+            </div>
+
+            <!-- FORMULAIRE CONNEXION -->
+            <div id="form-login" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Téléphone</label>
+                    <input type="tel" id="login-phone" placeholder="Ex: 0812345678" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-white outline-none font-mono">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Code PIN / Mot de passe</label>
+                    <input type="password" id="login-pass" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-white outline-none font-mono">
+                </div>
+                <button onclick="executerConnexionGlobale()" class="w-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-black py-3.5 rounded-xl text-xs uppercase shadow-lg shadow-sky-500/20 transition-all mt-2">
+                    Ouvrir ma session
+                </button>
+            </div>
+
+            <!-- FORMULAIRE INSCRIPTION -->
+            <div id="form-register" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nom Complet / Etablissement</label>
+                    <input type="text" id="reg-name" placeholder="Votre nom" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-white outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Téléphone</label>
+                    <input type="tel" id="reg-phone" placeholder="Ex: 0812345678" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-white outline-none font-mono">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Profil Utilisateur</label>
+                    <select id="reg-role" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-sky-400 font-bold outline-none">
+                        <option value="client">👤 Client Standard (Achats, Prestations, Passager)</option>
+                        <option value="commercial">🏬 Partenaire / Opérateur Commercial (Vendeur, Flotte)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Créer un mot de passe</label>
+                    <input type="password" id="reg-pass" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-white outline-none font-mono">
+                </div>
+                
+                <div class="flex items-start gap-2 bg-slate-900 p-3 rounded-xl border border-slate-800">
+                    <input type="checkbox" id="chk-cgu" class="mt-0.5 accent-sky-500 w-4 h-4 cursor-pointer">
+                    <label for="chk-cgu" class="text-[10px] text-slate-400 leading-tight cursor-pointer">
+                        J'ai lu et j'accepte sans réserve les <span onclick="ouvrirCgu()" class="text-sky-400 font-bold underline">Conditions Générales d'Utilisation (CGU)</span> de la plateforme GTS.
+                    </label>
+                </div>
+
+                <button onclick="executerInscriptionGlobale()" class="w-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-black py-3.5 rounded-xl text-xs uppercase shadow-lg shadow-sky-500/20 transition-all">
+                    Créer mon compte unique
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- SECTION DASHBOARD APPS (Cachée si non connecté) -->
+    <main id="apps-dashboard" class="flex-1 max-w-7xl mx-auto px-6 py-12 space-y-12 page-fade w-full hidden">
         <div class="text-center max-w-3xl mx-auto space-y-6">
             <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono font-bold">
-                <i class="fa-solid fa-bolt"></i> Transformer les frictions du quotidien en écosystèmes numériques
+                <i class="fa-solid fa-bolt"></i> Écosystème Connecté
             </span>
-            <h2 class="text-4xl md:text-5xl font-black tracking-tight text-slate-100 leading-tight">
-                L'Excellence Technologique <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-indigo-400 to-emerald-400">Made in RDC</span>
+            <h2 class="text-3xl md:text-5xl font-black tracking-tight text-slate-100 leading-tight">
+                Choisissez votre application
             </h2>
-            <p class="text-sm md:text-base text-slate-400 leading-relaxed">
-                Découvrez nos plateformes innovantes de mobilité, de logistique aéroportuaire, d'assainissement et de commerce de proximité conçues pour optimiser les activités urbaines.
-            </p>
         </div>
 
-        <!-- GRILLE DES 4 PÔLES -->
-        <div id="projets" class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             <!-- PÔLE 1 : TRANSVISION -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='transvision/index.html'">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
                         <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
                             <img src="VISION.png" alt="TransVision" class="w-full h-full object-contain scale-110" onerror="this.style.display='none'">
                         </div>
-                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-sky-400 font-bold uppercase">Pôle 1 • Télématique</span>
+                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-sky-400 font-bold uppercase">Télématique</span>
                     </div>
                     <div>
-                        <h3 class="text-xl font-black text-slate-100">TransVision</h3>
-                        <p class="text-xs font-mono text-sky-400 italic mt-0.5">« La clarté sur vos recettes »</p>
+                        <h3 class="text-xl font-black text-slate-100">TransVision Protect</h3>
+                        <p class="text-xs text-slate-400 mt-1">Audit de flotte, géolocalisation et sécurisation hydrocarbures.</p>
                     </div>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Système exclusif de géolocalisation et de contrôle des recettes pour flottes commerciales, intégrant une technologie furtive de neutralisation à distance pour les particuliers.
-                    </p>
                 </div>
                 <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                    <span class="text-[10px] text-slate-500 font-bold uppercase">Mobilité & Audit Financier</span>
-                    <a href="transvision/index.html" class="inline-flex items-center gap-2 bg-sky-500/10 hover:bg-sky-500 hover:text-slate-950 text-sky-400 border border-sky-500/30 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all">
-                        Accéder <i class="fa-solid fa-arrow-right"></i>
-                    </a>
+                    <span class="text-xs text-sky-400 font-black uppercase">Accéder <i class="fa-solid fa-arrow-right ml-1"></i></span>
                 </div>
             </div>
 
             <!-- PÔLE 2 : EASYFLY TRANSIT -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='easyflytransit/index.html'">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
                         <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
                             <img src="EASYFLY%20TRANSIT.jpg" alt="EasyFly Transit" class="w-full h-full object-contain scale-110" onerror="this.style.display='none'">
                         </div>
-                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-indigo-400 font-bold uppercase">Pôle 2 • Logistique Aéro</span>
+                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-indigo-400 font-bold uppercase">Logistique Aéro</span>
                     </div>
                     <div>
                         <h3 class="text-xl font-black text-slate-100">EasyFly Transit</h3>
-                        <p class="text-xs font-mono text-indigo-400 italic mt-0.5">« Voyagez léger, votre check-in est déjà fait. »</p>
+                        <p class="text-xs text-slate-400 mt-1">Préenregistrement aéroportuaire déporté et logistique bagages.</p>
                     </div>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Préenregistrement aéroportuaire déporté en ville 48h avant le vol. Collecte sécurisée des bagages et traitement agrégé en bloc (Batch) pour contourner la saturation de N'djili.
-                    </p>
                 </div>
                 <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                    <span class="text-[10px] text-slate-500 font-bold uppercase">Sûreté & Transit</span>
-                    <a href="easyflytransit/index.html" class="inline-flex items-center gap-2 bg-indigo-500/10 hover:bg-indigo-500 hover:text-slate-950 text-indigo-400 border border-indigo-500/30 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all">
-                        Accéder <i class="fa-solid fa-arrow-right"></i>
-                    </a>
+                    <span class="text-xs text-indigo-400 font-black uppercase">Accéder <i class="fa-solid fa-arrow-right ml-1"></i></span>
                 </div>
             </div>
 
             <!-- PÔLE 3 : MATT CLEAN'APP -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='cleanapp/index.html'">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
                         <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
                             <img src="cleanapp.png" alt="Matt Clean'App" class="w-full h-full object-contain scale-110" onerror="this.style.display='none'">
                         </div>
-                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-emerald-400 font-bold uppercase">Pôle 3 • Salubrité</span>
+                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-emerald-400 font-bold uppercase">Salubrité</span>
                     </div>
                     <div>
                         <h3 class="text-xl font-black text-slate-100">Matt Clean'App</h3>
-                        <p class="text-xs font-mono text-emerald-400 italic mt-0.5">« Solution de propreté à portée de main »</p>
+                        <p class="text-xs text-slate-400 mt-1">Assainissement, nettoyage pro (véhicules et habitats) et vidanges.</p>
                     </div>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Plateforme de mise en relation « Zéro Friction » pour l'entretien et l'assainissement (véhicules et habitats). Arbitrage qualité automatisé par preuves visuelles « Avant/Après ».
-                    </p>
                 </div>
                 <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                    <span class="text-[10px] text-slate-500 font-bold uppercase">Services à la Demande</span>
-                    <a href="cleanapp/index.html" class="inline-flex items-center gap-2 bg-emerald-500/10 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all">
-                        Accéder <i class="fa-solid fa-arrow-right"></i>
-                    </a>
+                    <span class="text-xs text-emerald-400 font-black uppercase">Accéder <i class="fa-solid fa-arrow-right ml-1"></i></span>
                 </div>
             </div>
 
             <!-- PÔLE 4 : EYANOMARKET -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6">
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='eyanomarket/index.html'">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
                         <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
                             <img src="eyano.png" alt="Eyanomarket" class="w-full h-full object-contain scale-110" onerror="this.style.display='none'">
                         </div>
-                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-amber-400 font-bold uppercase">Pôle 4 • Commerce Essentiel</span>
+                        <span class="text-[10px] font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-full text-amber-400 font-bold uppercase">E-Commerce</span>
                     </div>
                     <div>
                         <h3 class="text-xl font-black text-slate-100">Eyanomarket</h3>
-                        <p class="text-xs font-mono text-amber-400 italic mt-0.5">« L'essentiel à proximité immédiate »</p>
+                        <p class="text-xs text-slate-400 mt-1">Livraison urgente : Gaz, Eau, Pharmacie et Vivres frais.</p>
                     </div>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Centrale numérique multisectorielle de mise en relation géolocalisée en temps réel pour l'approvisionnement urgent (gaz, eau, pharmacie, hébergements de passage).
-                    </p>
                 </div>
                 <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                    <span class="text-[10px] text-slate-500 font-bold uppercase">Marketplace de Proximité</span>
-                    <a href="eyanomarket/index.html" class="inline-flex items-center gap-2 bg-amber-500/10 hover:bg-amber-500 hover:text-slate-950 text-amber-400 border border-amber-500/30 px-4 py-2 rounded-xl text-xs font-black uppercase transition-all">
-                        Accéder <i class="fa-solid fa-arrow-right"></i>
-                    </a>
+                    <span class="text-xs text-amber-400 font-black uppercase">Accéder <i class="fa-solid fa-arrow-right ml-1"></i></span>
                 </div>
             </div>
 
         </div>
     </main>
 
-    <!-- PIED DE PAGE CORPORATE GLOBAL TECH SOLUTIONS -->
-    <footer class="w-full border-t border-slate-800 bg-slate-950/90 backdrop-blur-md py-8 text-slate-400 text-xs mt-16">
+    <!-- PIED DE PAGE CORPORATE -->
+    <footer class="w-full border-t border-slate-800 bg-slate-950/90 backdrop-blur-md py-8 text-slate-400 text-xs mt-auto">
         <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
             <div class="space-y-1">
                 <div class="flex items-center justify-center md:justify-start gap-2">
@@ -187,10 +234,9 @@
                     <span class="text-[9px] bg-sky-500/10 text-sky-400 border border-sky-500/20 px-2 py-0.5 rounded-full font-mono font-bold">RDC</span>
                 </div>
                 <p class="text-[11px] text-slate-400 font-mono">
-                    RCCM : <span class="text-sky-400 font-bold">24-B-04106</span> &nbsp;|&nbsp; 
-                    NIF : <span class="text-sky-400 font-bold">A2441433N</span>
+                    RCCM : <span class="text-sky-400 font-bold">CD/KIN/RCCM/24-B-04106</span> &nbsp;|&nbsp; NIF : <span class="text-sky-400 font-bold">A2441433N</span>
                 </p>
-                <p class="text-[10px] text-slate-500">Siège social : Kinshasa, République Démocratique du Congo</p>
+                <button onclick="ouvrirCgu()" class="text-[10px] text-sky-400 hover:underline pt-2 block font-bold">Lire les Conditions Générales d'Utilisation</button>
             </div>
 
             <div class="flex flex-col md:items-end gap-2 text-[11px]">
@@ -201,74 +247,175 @@
                     <a href="tel:+243980000338" class="text-emerald-400 hover:text-emerald-300 font-mono font-bold flex items-center gap-1.5 transition-colors">
                         <i class="fa-solid fa-phone"></i> +243 980 000 338
                     </a>
-                    <span class="text-slate-600">•</span>
-                    <a href="https://wa.me/243980000338" target="_blank" class="text-green-400 hover:text-green-300 font-bold flex items-center gap-1 transition-colors">
-                        <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp Direct
-                    </a>
                 </div>
                 <span class="text-[9px] text-slate-600 mt-0.5">© 2026 Global Tech Solutions SARL. Tous droits réservés.</span>
             </div>
         </div>
     </footer>
 
-    <!-- BANDEAU D'INSTALLATION AUTOMATIQUE PWA (SMARTPHONE & PC) -->
-    <div id="pwa-install-banner" class="hidden fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md bg-slate-900/95 border-2 border-sky-500/40 backdrop-blur-md p-4 rounded-2xl shadow-2xl z-50 flex items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-            <div class="h-11 w-11 rounded-xl overflow-hidden bg-white p-1 flex-shrink-0 flex items-center justify-center shadow-sm">
-                <img src="GLOBAL.png" alt="GTS" class="w-full h-full object-contain">
+    <!-- MODALE SUPER-CGU -->
+    <div id="modal-cgu" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-gtscard border border-slate-700 rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl">
+            <div class="p-5 border-b border-slate-800 flex justify-between items-center">
+                <div>
+                    <h3 class="font-black text-white text-lg">Conditions Générales d'Utilisation</h3>
+                    <span class="text-[10px] text-sky-400 font-mono">Plateforme Unifiée GTS</span>
+                </div>
+                <button onclick="fermerCgu()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-colors">✕</button>
             </div>
-            <div>
-                <h4 class="text-xs font-black uppercase text-white">Installer Global Tech Solutions</h4>
-                <p class="text-[10px] text-slate-300">Ajouter l'application sur votre écran d'accueil</p>
+            
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 text-[11px] sm:text-xs text-slate-300 space-y-4 leading-relaxed font-sans text-justify">
+                
+                <h4 class="font-black text-white text-sm">PRÉAMBULE</h4>
+                <p>La plateforme numérique unifiée, désignée ci-après « L'Application » ou le « Hub GTS », est éditée et exploitée par la société <b>GLOBAL TECH SOLUTIONS S.A.R.L. (GTS)</b>, immatriculée au RCCM sous le numéro CD/KIN/RCCM/24-B-04106 et NIF A2441433N, dont le siège social est situé à Kinshasa, RDC.</p>
+                <p>En accédant au Hub GTS, en créant un compte unique, ou en utilisant l'un des services intégrés (qui sont des marques commerciales exclusives de GTS : TransVision, EasyFly Transit, MATT Clean'App, Eyano Market), l'Utilisateur accepte sans réserve les présentes CGU.</p>
+
+                <hr class="border-slate-800 my-4">
+
+                <h4 class="font-black text-white text-sm">PARTIE 1 : TRONC COMMUN</h4>
+                <p><b class="text-sky-400">Art 1 : Architecture Centralisée (SSO)</b><br>La création d'un compte s'effectue exclusivement au niveau de la plateforme faîtière. Les applications individuelles ne disposent d'aucun module de création de compte autonome. Ce profil centralisé donne accès à l'ensemble des services.</p>
+                
+                <p><b class="text-sky-400">Art 2 : Protection des Données et Code du Numérique</b><br>Conformément à l'Ordonnance-loi n° 23/010 : GTS collecte les données strictement nécessaires (identité, GPS). Les données sont stockées sur des serveurs Cloud sécurisés. GTS s'engage à ne jamais revendre ces données. La géolocalisation requiert l'activation du signal expressément consentie par l'Utilisateur.</p>
+
+                <p><b class="text-sky-400">Art 3 : Rôle d'Intermédiaire Technologique</b><br>GTS agit strictement en tant qu'éditeur logiciel facilitant la mise en relation entre Clients et Partenaires. Les réclamations liées à la qualité intrinsèque du produit ou de la prestation incombent exclusivement au Partenaire concerné.</p>
+
+                <p><b class="text-sky-400">Art 4 : Dispositions relatives aux Partenaires</b><br>Tout Partenaire doit fournir des documents justificatifs valides (Pièce d'identité, Patente, RCCM). GTS se réserve le droit de suspendre tout compte Partenaire en cas de fraude ou manquement aux règles.</p>
+
+                <hr class="border-slate-800 my-4">
+
+                <h4 class="font-black text-white text-sm">PARTIE 2 : CONDITIONS SPÉCIFIQUES (MARQUES)</h4>
+                
+                <p><b class="text-indigo-400">MODULE A : TRANSVISION (Télématique & IoT)</b><br>
+                Service d'audit financier et gestion de flotte. La captation des données s'appuie sur une architecture technologique IoT exclusive, déployée de manière autonome par GTS. Les estimations financières reflètent uniquement une projection algorithmique basée sur les rotations validées par le matériel embarqué, et ne fournissent pas la précision exacte du nombre de passagers physiques. Le sabotage physique des équipements entraîne l'annulation de la garantie.</p>
+
+                <p><b class="text-indigo-400">MODULE B : EASYFLY TRANSIT (Logistique Aéro)</b><br>
+                Service de pré-enregistrement déporté. Le Client certifie ne placer aucune matière dangereuse ou prohibée dans ses bagages. La responsabilité logistique de GTS s'arrête à la remise contradictoire aux services et compagnies aériennes pour le check-in final sur le tarmac.</p>
+
+                <p><b class="text-indigo-400">MODULE C : EYANO MARKET (Marketplace)</b><br>
+                GTS ne dispose d'aucun livreur en propre. Le choix du livreur incombe exclusivement au Partenaire marchand. Toute commande de médicaments exige que le Client téléverse une photographie de son ordonnance. GTS décline toute responsabilité médicale quant à la posologie ou la conformité des produits livrés.</p>
+
+                <p><b class="text-indigo-400">MODULE D : MATT CLEAN'APP (Assainissement)</b><br>
+                Les prestations sont réalisées par des Partenaires indépendants. En cas de dommage matériel causé au domicile ou sur le véhicule, GTS interviendra uniquement comme médiateur pour mobiliser la responsabilité civile du Partenaire. Les devis volumétriques (m², m³) sont contractuels sous réserve que les mesures déclarées correspondent à la réalité sur site.</p>
+
             </div>
-        </div>
-        <div class="flex items-center gap-2">
-            <button type="button" onclick="document.getElementById('pwa-install-banner').classList.add('hidden')" class="text-slate-400 hover:text-white p-1 text-xs">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <button type="button" id="btn-pwa-install" class="bg-sky-500 hover:bg-sky-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs uppercase shadow-md transition-all">
-                Installer
-            </button>
+            <div class="p-5 border-t border-slate-800">
+                <button onclick="fermerCgu()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-black py-3 rounded-xl text-xs uppercase transition-all shadow-md">Fermer le document</button>
+            </div>
         </div>
     </div>
 
-    <!-- SCRIPT DE GESTION SERVICE WORKER & DÉTECTION PWA -->
     <script>
-        let deferredPrompt;
+        // Gestion de l'affichage SSO / Dashboard
+        function verifierSession() {
+            const sessionData = localStorage.getItem('gts_global_session');
+            const authPortal = document.getElementById('auth-portal');
+            const appsDashboard = document.getElementById('apps-dashboard');
+            const headerUserInfo = document.getElementById('header-user-info');
 
-        // Enregistrement du Service Worker à la racine
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(reg => console.log('Service Worker GTS actif :', reg.scope))
-                    .catch(err => console.warn('Erreur Service Worker :', err));
-            });
+            if (sessionData) {
+                // Connecté
+                try {
+                    const user = JSON.parse(sessionData);
+                    document.getElementById('lbl-user-name').textContent = user.nom || 'Utilisateur';
+                    document.getElementById('lbl-user-phone').textContent = user.tel || '';
+                    
+                    authPortal.classList.add('hidden');
+                    appsDashboard.classList.remove('hidden');
+                    headerUserInfo.classList.replace('hidden', 'flex');
+                } catch(e) {
+                    localStorage.removeItem('gts_global_session');
+                    verifierSession();
+                }
+            } else {
+                // Déconnecté
+                authPortal.classList.remove('hidden');
+                appsDashboard.classList.add('hidden');
+                headerUserInfo.classList.replace('flex', 'hidden');
+            }
         }
 
-        // Interception de l'événement d'installation Android/Chrome/Edge
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const banner = document.getElementById('pwa-install-banner');
-            if (banner) banner.classList.remove('hidden');
-        });
+        // Bascule entre Connexion et Inscription
+        function switchAuthMode(mode) {
+            const formLogin = document.getElementById('form-login');
+            const formRegister = document.getElementById('form-register');
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
 
-        // Déclencheur du bouton d'installation
-        document.getElementById('btn-pwa-install')?.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                const banner = document.getElementById('pwa-install-banner');
-                if (banner) banner.classList.add('hidden');
+            if (mode === 'login') {
+                formLogin.classList.remove('hidden');
+                formRegister.classList.add('hidden');
+                tabLogin.className = "flex-1 py-2 text-xs font-black bg-sky-500 text-slate-950 rounded-lg transition-all shadow-sm";
+                tabRegister.className = "flex-1 py-2 text-xs font-bold text-slate-400 hover:text-white rounded-lg transition-all";
+            } else {
+                formLogin.classList.add('hidden');
+                formRegister.classList.remove('hidden');
+                tabRegister.className = "flex-1 py-2 text-xs font-black bg-sky-500 text-slate-950 rounded-lg transition-all shadow-sm";
+                tabLogin.className = "flex-1 py-2 text-xs font-bold text-slate-400 hover:text-white rounded-lg transition-all";
             }
-            deferredPrompt = null;
-        });
+        }
 
-        // Masquage une fois installée
-        window.addEventListener('appinstalled', () => {
-            const banner = document.getElementById('pwa-install-banner');
-            if (banner) banner.classList.add('hidden');
+        // Modale CGU
+        function ouvrirCgu() { document.getElementById('modal-cgu').classList.remove('hidden'); }
+        function fermerCgu() { document.getElementById('modal-cgu').classList.add('hidden'); }
+
+        // Simulations d'Authentification (À relier à votre base Supabase si nécessaire)
+        function executerConnexionGlobale() {
+            const tel = document.getElementById('login-phone').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+
+            if (!tel || !pass) {
+                alert("Veuillez saisir votre numéro de téléphone et votre mot de passe.");
+                return;
+            }
+
+            // Mock connexion réussie
+            const mockUser = {
+                tel: tel,
+                nom: "Utilisateur " + tel.slice(-4),
+                type_contrat: "client" // ou "commercial" en BDD
+            };
+
+            localStorage.setItem('gts_global_session', JSON.stringify(mockUser));
+            verifierSession();
+        }
+
+        function executerInscriptionGlobale() {
+            const nom = document.getElementById('reg-name').value.trim();
+            const tel = document.getElementById('reg-phone').value.trim();
+            const role = document.getElementById('reg-role').value;
+            const pass = document.getElementById('reg-pass').value.trim();
+            const cgu = document.getElementById('chk-cgu').checked;
+
+            if (!nom || !tel || !pass) {
+                alert("Veuillez remplir tous les champs du formulaire.");
+                return;
+            }
+            if (!cgu) {
+                alert("Vous devez accepter les Conditions Générales d'Utilisation pour créer un compte.");
+                return;
+            }
+
+            // Mock inscription réussie
+            const newUser = {
+                tel: tel,
+                nom: nom,
+                type_contrat: role
+            };
+
+            localStorage.setItem('gts_global_session', JSON.stringify(newUser));
+            verifierSession();
+        }
+
+        function deconnexionGlobale() {
+            localStorage.removeItem('gts_global_session');
+            document.getElementById('login-phone').value = '';
+            document.getElementById('login-pass').value = '';
+            verifierSession();
+        }
+
+        // Initialisation
+        window.addEventListener('DOMContentLoaded', () => {
+            verifierSession();
         });
     </script>
 </body>
