@@ -155,142 +155,6 @@
         </div>
     </div>
 
-    <!-- PORTAIL CENTRAL MULTI-RÔLES -->
-    <div id="master-auth-portal" class="fixed inset-0 bg-slate-950 z-[10000] flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm shadow-2xl text-center relative z-20">
-            
-            <div id="auth-role-selection-view" class="space-y-4">
-                <img src="logo.png" alt="Eyano Market" class="w-20 h-auto mx-auto mb-2 bg-white p-2 rounded-2xl shadow-md" onerror="this.style.display='none'">
-                <h2 class="text-xl font-black text-white tracking-tight">EYANO MARKET</h2>
-                <p class="text-xs text-slate-400">Sélectionnez votre espace d'accès pour continuer</p>
-                
-                <div class="space-y-3 pt-2">
-                    <button type="button" onclick="afficherFormulaireConnexionRole('client')" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs py-3.5 rounded-2xl shadow-lg transition flex items-center justify-center space-x-3 cursor-pointer">
-                        <span class="text-lg">🛒</span>
-                        <span>Espace Client (Acheteur)</span>
-                    </button>
-
-                    <button type="button" onclick="afficherFormulaireConnexionRole('partner')" class="w-full bg-slate-950 hover:bg-slate-800 text-emerald-400 border border-emerald-500/40 font-black text-xs py-3.5 rounded-2xl shadow-lg transition flex items-center justify-center space-x-3 cursor-pointer">
-                        <span class="text-lg">🏬</span>
-                        <span>Espace Partenaire (Vendeur)</span>
-                    </button>
-                </div>
-                
-                <div class="pt-4 border-t border-slate-800/80">
-                    <span class="text-[10px] text-slate-500 font-medium block">Global Tech Solutions (GTS) • RDC</span>
-                </div>
-            </div>
-
-            <!-- CONNEXION CLIENT -->
-            <div id="auth-client-login-view" class="hidden space-y-4">
-                <div class="flex items-center space-x-2 text-slate-400 font-bold text-xs cursor-pointer pb-2 border-b border-slate-800" onclick="retourChoixRoleCentral()">
-                    <span>← Changer d'espace</span>
-                </div>
-                <div class="text-center">
-                    <span class="text-3xl block mb-1">🛒</span>
-                    <h3 class="text-base font-black text-white">Connexion Client</h3>
-                    <p class="text-xs text-slate-400">Entrez votre numéro pour accéder au marché</p>
-                </div>
-                <input type="tel" id="login-client-phone" placeholder="Numéro de téléphone (Ex: 812345678)" class="w-full text-xs border border-slate-700 rounded-xl p-3 bg-slate-950 text-white outline-none font-bold text-center focus:ring-2 focus:ring-emerald-500">
-                <button type="button" onclick="executerAuthentificationClient()" class="w-full bg-emerald-500 text-white font-black text-xs py-3 rounded-xl shadow-md hover:bg-emerald-600 transition cursor-pointer">Accéder au Marché</button>
-                <p class="text-xs text-slate-400">Nouveau sur Eyano ? <span onclick="basculerSousVueClient('auth-client-register-view')" class="text-emerald-400 font-bold underline cursor-pointer">Créer un compte</span></p>
-            </div>
-
-            <!-- INSCRIPTION CLIENT -->
-            <div id="auth-client-register-view" class="hidden space-y-3">
-                <div class="flex items-center space-x-2 text-slate-400 font-bold text-xs cursor-pointer pb-2 border-b border-slate-800" onclick="basculerSousVueClient('auth-client-login-view')">
-                    <span>← Retour à la connexion</span>
-                </div>
-                <h3 class="text-base font-black text-white">Inscription Client</h3>
-                <p class="text-[11px] text-slate-400">Remplissez vos coordonnées de livraison</p>
-                
-                <input type="text" id="reg-client-name" placeholder="Nom complet" class="w-full text-xs border border-slate-700 rounded-xl p-2.5 bg-slate-950 text-white outline-none focus:border-emerald-500">
-                <input type="tel" id="reg-client-phone" placeholder="Téléphone (Ex: 812345678)" class="w-full text-xs border border-slate-700 rounded-xl p-2.5 bg-slate-950 text-white outline-none focus:border-emerald-500">
-                
-                <div class="grid grid-cols-3 gap-2">
-                    <input type="text" id="reg-client-avenue" placeholder="Avenue" class="col-span-2 text-xs border border-slate-700 rounded-xl p-2.5 bg-slate-950 text-white outline-none focus:border-emerald-500">
-                    <input type="text" id="reg-client-numero" placeholder="N°" class="col-span-1 text-xs border border-slate-700 rounded-xl p-2.5 bg-slate-950 text-white outline-none focus:border-emerald-500 font-bold text-center">
-                </div>
-
-                <button type="button" onclick="executerInscriptionClient()" class="w-full bg-emerald-600 text-white font-black text-xs py-3 rounded-xl shadow-md hover:bg-emerald-500 transition cursor-pointer">Valider l'inscription</button>
-            </div>
-
-            <!-- CONNEXION PARTENAIRE -->
-            <div id="auth-partner-login-view" class="hidden space-y-4">
-                <div class="flex items-center space-x-2 text-slate-400 font-bold text-xs cursor-pointer pb-2 border-b border-slate-800" onclick="retourChoixRoleCentral()">
-                    <span>← Changer d'espace</span>
-                </div>
-                <div class="text-center">
-                    <span class="text-3xl block mb-1">🏬</span>
-                    <h3 class="text-base font-black text-emerald-400">Espace Partenaire</h3>
-                    <p class="text-xs text-slate-400">Console d'exploitation commerciale</p>
-                </div>
-                <input type="text" id="partenaire-auth-user" placeholder="Identifiant unique" class="partner-input-field text-center">
-                <input type="password" id="partenaire-auth-pass" placeholder="Code secret" class="partner-input-field text-center">
-                <button type="button" onclick="executerAuthentificationPartenaireGts()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs w-full py-3 rounded-xl shadow-md transition cursor-pointer">Ouvrir la session commerciale</button>
-                <p class="text-center text-xs text-slate-400">Nouvel établissement ? <span onclick="basculerSousVuePartner('auth-partner-register-view')" class="text-emerald-500 font-bold cursor-pointer underline">Créer un compte</span></p>
-            </div>
-
-            <!-- INSCRIPTION PARTENAIRE -->
-            <div id="auth-partner-register-view" class="hidden space-y-3 text-left">
-                <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-                    <span class="text-slate-400 font-bold text-xs cursor-pointer" onclick="basculerSousVuePartner('auth-partner-login-view')">← Retour à la connexion</span>
-                    <span class="text-slate-500 font-bold text-xs cursor-pointer" onclick="retourChoixRoleCentral()">Changer d'espace ✕</span>
-                </div>
-                <h3 class="text-emerald-500 font-black text-center text-sm mb-2">ENRÔLEMENT PARTENAIRE</h3>
-                
-                <input type="text" id="reg-name" placeholder="Nom officiel du commerce *" class="partner-input-field">
-                
-                <select id="register-sektor" class="partner-input-field font-bold">
-                    <option value="Gaz Domestique">🔥 Gaz Domestique</option>
-                    <option value="Eau">💧 Eau en Gros</option>
-                    <option value="Chambre Froide">🥩 Chambre Froide</option>
-                    <option value="Pharmacie">💊 Pharmacie & Santé</option>
-                </select>
-
-                <div>
-                    <label class="text-[10px] text-emerald-400 uppercase font-bold block mb-1">Marque(s) représentée(s) / Enseigne :</label>
-                    <input type="text" id="reg-brand-free" placeholder="Ex: COETE GAZ, SOGAZ, SWISSTA, RAMAF..." class="partner-input-field">
-                </div>
-
-                <input type="text" id="reg-identifiant" placeholder="Créer votre identifiant unique *" class="partner-input-field">
-                <div class="flex gap-2 mb-2.5">
-                    <span class="bg-slate-950 border border-slate-800 px-3 rounded-lg text-xs font-bold text-slate-400 flex items-center justify-center select-none">🇨🇩 +243</span>
-                    <input type="tel" id="reg-tel" placeholder="Ex: 812345678" class="partner-input-field mb-0 flex-1">
-                </div>
-                <input type="text" id="reg-adresse" placeholder="Commune d'exploitation" class="partner-input-field">
-                <input type="text" id="reg-quartier" placeholder="Quartier d'exploitation" class="partner-input-field">
-                
-                <div class="grid grid-cols-3 gap-2">
-                    <input type="text" id="reg-avenue" placeholder="Avenue" class="partner-input-field col-span-2">
-                    <input type="text" id="reg-numero" placeholder="N°" class="partner-input-field col-span-1 text-center font-bold">
-                </div>
-
-                <div class="border-2 border-dashed border-slate-700 bg-slate-950/40 rounded-xl p-2.5 text-center cursor-pointer mb-2" onclick="document.getElementById('legal-doc-file').click()">
-                    <span class="text-lg block">📁</span>
-                    <span class="text-[10px] font-bold text-emerald-400 block" id="legal-file-label">Joindre document officiel (RCCM, Patente...)</span>
-                    <input type="file" id="legal-doc-file" class="hidden" accept="image/*,application/pdf" onchange="detecterDocumentLegalPartenaire(this)">
-                </div>
-                <input type="password" id="reg-pass" placeholder="Créer un mot de passe d'accès *" class="partner-input-field">
-                
-                <div class="p-2.5 bg-emerald-950/40 border border-emerald-800 rounded-xl mb-2">
-                    <span class="text-[10px] font-bold text-emerald-400 block mb-1">🔐 Clé de Sécurité</span>
-                    <select id="reg-question" class="w-full p-1.5 text-xs border border-slate-700 rounded mb-1 bg-slate-900 text-white outline-none"></select>
-                    <input type="text" id="reg-reponse" placeholder="Votre réponse secrète" class="w-full p-2 text-xs border border-slate-700 bg-slate-900 rounded text-white outline-none font-bold">
-                </div>
-
-                <div class="flex items-start text-xs mb-3 text-slate-300 bg-slate-950/40 p-2.5 rounded-xl border border-slate-800">
-                    <input type="checkbox" id="chk-cgu-partenaire" class="mt-0.5 mr-2 h-4 w-4 rounded text-emerald-600 focus:ring-0 cursor-pointer">
-                    <label for="chk-cgu-partenaire" class="leading-snug text-[11px] cursor-pointer">
-                        J'accepte sans réserve les <span onclick="ouvrirModalCgu()" class="text-emerald-400 font-bold underline cursor-pointer">CGU</span> d'Eyano Market.
-                    </label>
-                </div>
-
-                <button type="button" onclick="executerInscriptionPartenaireSupabase()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs w-full py-3 rounded-xl shadow-md transition cursor-pointer">Soumettre l'enrôlement</button>
-            </div>
-        </div>
-    </div>
-
     <!-- ========================================================================= -->
     <!--                               ESPACE CLIENT                               -->
     <!-- ========================================================================= -->
@@ -439,15 +303,12 @@
                             <span class="font-black block">📍 Adresse de retrait :</span>
                             <p>Présentez-vous directement au dépôt partenaire muni de votre code PIN.</p>
                         </div>
-                        <div class="p-3 bg-gray-50 rounded-xl flex items-start space-x-2">
-                            <input type="checkbox" id="chk-cgu" onchange="toggleOrderValidationButton()" class="mt-0.5">
-                            <label for="chk-cgu" class="text-[11px] text-gray-600">J'accepte sans réserve les <span onclick="ouvrirModalCgu()" class="text-emerald-600 font-bold underline cursor-pointer">CGU</span> d'Eyano Market.</label>
-                        </div>
-                        <button id="btn-final-order-submit" disabled onclick="submitFinalAlgorithmicOrder()" class="w-full bg-emerald-600 disabled:bg-gray-300 text-white font-bold text-sm py-3 rounded-xl shadow-md cursor-pointer">🚀 Confirmer &amp; Envoyer la Commande</button>
+                        
+                        <button id="btn-final-order-submit" onclick="submitFinalAlgorithmicOrder()" class="w-full bg-emerald-600 text-white font-bold text-sm py-3 rounded-xl shadow-md cursor-pointer mt-2">🚀 Confirmer &amp; Envoyer la Commande</button>
                     </div>
                 </div>
 
-                <!-- SUIVI CLIENT AVEC BOUTON NETTOYER HISTORIQUE -->
+                <!-- SUIVI CLIENT -->
                 <div id="panel-suivi-commandes" class="sub-panel space-y-4">
                     <div class="flex justify-between items-center border-b border-gray-100 pb-2">
                         <h3 class="text-sm font-black text-gray-800">📦 Mes Commandes</h3>
@@ -469,7 +330,7 @@
                             <p id="profil-lbl-tel" class="text-xs font-mono text-gray-400">Non connecté</p>
                         </div>
                         <div class="pt-2 border-t border-gray-100">
-                            <button onclick="executerDeconnexionClient()" class="w-full bg-red-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-md transition hover:bg-red-600 cursor-pointer">🔌 Déconnexion</button>
+                            <button onclick="executerDeconnexionClient()" class="w-full bg-red-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-md transition hover:bg-red-600 cursor-pointer">🔌 Se Déconnecter</button>
                         </div>
                     </div>
                 </div>
@@ -543,7 +404,7 @@
                             <div id="container-commandes-partenaire-liste" class="space-y-3"></div>
                         </div>
 
-                        <!-- SOUS-PAGE CATALOGUE (TAUX PAR DÉFAUT : 2300 FC) -->
+                        <!-- SOUS-PAGE CATALOGUE -->
                         <div id="sub-catalogue-partner" class="sub-partner-panel hidden space-y-3">
                             <div class="flex items-center space-x-2 text-slate-400 font-bold text-xs pb-2 border-b border-slate-800 cursor-pointer" onclick="retourAccueilGrillePartner()"><span>← Retour aux modules</span></div>
                             <div class="flex justify-between items-center bg-slate-900 p-2.5 rounded-xl border border-slate-800 text-xs gap-3">
@@ -594,11 +455,10 @@
                             </div>
                         </div>
 
-                        <!-- SOUS-PAGE ANALYSE (AVEC FILTRE DE DATES DU CA) -->
+                        <!-- SOUS-PAGE ANALYSE -->
                         <div id="sub-analyses-partner" class="sub-partner-panel hidden space-y-3">
                             <div class="flex items-center space-x-2 text-slate-400 font-bold text-xs pb-2 border-b border-slate-800 cursor-pointer" onclick="retourAccueilGrillePartner()"><span>← Retour aux modules</span></div>
                             
-                            <!-- MODULE FILTRAGE PAR INTERVALLE DE DATES -->
                             <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl space-y-2">
                                 <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">📅 Période de Consultation du CA</span>
                                 <div class="grid grid-cols-2 gap-2">
@@ -719,8 +579,8 @@
         let currentSector = 'Gaz Domestique', medicationList = [], globalSubtotal = 0, formattedDetailsArticles = "";
         let selectedBrand = ''; 
         let tauxFrancCongolais = parseFloat(localStorage.getItem('eyano_taux_change') || 2300); 
-        let clientConnecteTelephone = localStorage.getItem('eyano_client_phone') || '';
-        let clientConnecteNom = localStorage.getItem('eyano_client_nom') || '';
+        let clientConnecteTelephone = '';
+        let clientConnecteNom = '';
         let selectedQuantities = {};
         let selectedUnits = {};
         let grilleFraisCommunes = {};
@@ -752,25 +612,33 @@
         document.addEventListener("DOMContentLoaded", function() {
             chargerSelecteurCommunes();
             chargerPublicitesDynamiques();
-            alimenterQuestionsSecretesEnrolementPartenaire();
 
-            const activeMode = localStorage.getItem('eyano_active_mode');
-            const partnerSession = localStorage.getItem('eyano_partner_session_data');
-
-            if (activeMode === 'partner' && partnerSession) {
-                document.getElementById('master-auth-portal').style.display = 'none';
-                basculerVersModePartenaire();
-                chargerSessionPartenaireDirecte(JSON.parse(partnerSession));
-            } else if (activeMode === 'client' && clientConnecteTelephone) {
-                document.getElementById('master-auth-portal').style.display = 'none';
-                basculerVersModeClient();
-                document.getElementById('lbl-client-session-name').innerText = `SESSION : ${clientConnecteTelephone}`;
-                document.getElementById('profil-lbl-nom').innerText = clientConnecteNom;
-                document.getElementById('profil-lbl-tel').innerText = clientConnecteTelephone;
-                syncHistoriqueCommandesClient();
-                brancherEcouteurTempsReelClient();
+            // VÉRIFICATION DE LA SESSION GLOBALE GTS (SSO)
+            const globalSessionStr = localStorage.getItem('gts_global_session');
+            if (globalSessionStr) {
+                try {
+                    const session = JSON.parse(globalSessionStr);
+                    if (session.type_contrat && session.type_contrat === 'commercial') {
+                        // Profil Partenaire identifié par son contrat
+                        basculerVersModePartenaire();
+                        chargerSessionPartenaireDirecte(session);
+                    } else {
+                        // Profil Client standard
+                        basculerVersModeClient();
+                        clientConnecteTelephone = session.tel || '';
+                        clientConnecteNom = session.nom || 'Client GTS';
+                        document.getElementById('lbl-client-session-name').innerText = `SESSION : ${clientConnecteTelephone}`;
+                        document.getElementById('profil-lbl-nom').innerText = clientConnecteNom;
+                        document.getElementById('profil-lbl-tel').innerText = clientConnecteTelephone;
+                        syncHistoriqueCommandesClient();
+                        brancherEcouteurTempsReelClient();
+                    }
+                } catch(e) {
+                    window.location.href = '../index.html'; // Retour au hub en cas d'erreur de session
+                }
             } else {
-                retourChoixRoleCentral();
+                // Aucune session trouvée, redirection vers le Hub GTS
+                window.location.href = '../index.html';
             }
         });
 
@@ -798,11 +666,7 @@
                 </div>`;
 
             try {
-                const { data: pubs, error } = await _supabase
-                    .from('campagnes_pub')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
+                const { data: pubs, error } = await _supabase.from('campagnes_pub').select('*').order('created_at', { ascending: false });
                 const activePubs = (pubs || []).filter(p => (p.statut || '').toLowerCase() === 'actif');
 
                 container.innerHTML = slideEyanoPermanent;
@@ -819,12 +683,7 @@
                     container.innerHTML += `
                         <div class="client-pub-slide bg-slate-900 w-full h-full flex flex-col justify-center items-center p-2 relative overflow-hidden">
                             <div class="w-full h-full bg-white rounded-xl flex items-center justify-center p-2 relative shadow-inner">
-                                <img src="${safeImageUrl}" 
-                                     alt="${nomSafe}" 
-                                     class="max-w-full max-h-full object-contain cursor-pointer" 
-                                     onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" 
-                                     ${lien}>
-                                
+                                <img src="${safeImageUrl}" alt="${nomSafe}" class="max-w-full max-h-full object-contain cursor-pointer" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" ${lien}>
                                 <div class="hidden flex-col items-center justify-center text-center p-4">
                                     <span class="text-3xl mb-1">📢</span>
                                     <span class="text-xs font-black text-slate-900 uppercase block">${nomSafe}</span>
@@ -859,7 +718,6 @@
                     }, 4000);
                 }
             } catch (e) {
-                console.warn("Erreur chargement pubs :", e);
                 container.innerHTML = slideEyanoPermanent;
             }
         }
@@ -873,50 +731,25 @@
             });
         }
 
-        /* 2. AUTHENTIFICATION & NAVIGATION */
-        function retourChoixRoleCentral() {
-            document.getElementById('master-auth-portal').style.display = 'flex';
-            document.getElementById('auth-role-selection-view').classList.remove('hidden');
-            document.getElementById('auth-client-login-view').classList.add('hidden');
-            document.getElementById('auth-client-register-view').classList.add('hidden');
-            document.getElementById('auth-partner-login-view').classList.add('hidden');
-            document.getElementById('auth-partner-register-view').classList.add('hidden');
-        }
-
-        function afficherFormulaireConnexionRole(role) {
-            document.getElementById('auth-role-selection-view').classList.add('hidden');
-            document.getElementById('auth-client-login-view').classList.add('hidden');
-            document.getElementById('auth-client-register-view').classList.add('hidden');
-            document.getElementById('auth-partner-login-view').classList.add('hidden');
-            document.getElementById('auth-partner-register-view').classList.add('hidden');
-
-            if (role === 'client') {
-                document.getElementById('auth-client-login-view').classList.remove('hidden');
-            } else if (role === 'partner') {
-                document.getElementById('auth-partner-login-view').classList.remove('hidden');
-            }
-        }
-
-        function basculerSousVueClient(vueId) {
-            document.getElementById('auth-client-login-view').classList.toggle('hidden', vueId !== 'auth-client-login-view');
-            document.getElementById('auth-client-register-view').classList.toggle('hidden', vueId !== 'auth-client-register-view');
-        }
-
-        function basculerSousVuePartner(vueId) {
-            document.getElementById('auth-partner-login-view').classList.toggle('hidden', vueId !== 'auth-partner-login-view');
-            document.getElementById('auth-partner-register-view').classList.toggle('hidden', vueId !== 'auth-partner-register-view');
-        }
-
+        /* 2. GESTION DE MODE & DÉCONNEXION (SSO) */
         function basculerVersModePartenaire() {
-            localStorage.setItem('eyano_active_mode', 'partner');
             document.getElementById('root-client-view').style.display = 'none';
             document.getElementById('root-partner-view').style.display = 'flex';
         }
 
         function basculerVersModeClient() {
-            localStorage.setItem('eyano_active_mode', 'client');
             document.getElementById('root-partner-view').style.display = 'none';
             document.getElementById('root-client-view').style.display = 'flex';
+        }
+
+        function executerDeconnexionClient() { 
+            localStorage.removeItem('gts_global_session'); 
+            window.location.href = '../index.html'; 
+        }
+
+        function executerDeconnexionPartenaire() { 
+            localStorage.removeItem('gts_global_session'); 
+            window.location.href = '../index.html'; 
         }
 
         function nettoyerTel(tel) {
@@ -925,50 +758,6 @@
             if (clean.startsWith('243')) clean = clean.substring(3);
             if (clean.startsWith('0')) clean = clean.substring(1);
             return clean;
-        }
-
-        function executerAuthentificationClient() {
-            let tel = document.getElementById('login-client-phone').value.trim(); 
-            if(!tel) { alert("Veuillez saisir un numéro de téléphone."); return; }
-            if(tel.startsWith('0')) tel = tel.substring(1); 
-            clientConnecteTelephone = "+243" + tel;
-            clientConnecteNom = "Client " + tel;
-            localStorage.setItem('eyano_client_phone', clientConnecteTelephone);
-            localStorage.setItem('eyano_client_nom', clientConnecteNom);
-            localStorage.setItem('eyano_active_mode', 'client');
-            
-            document.getElementById('master-auth-portal').style.display = 'none';
-            basculerVersModeClient();
-            document.getElementById('lbl-client-session-name').innerText = `SESSION : ${clientConnecteTelephone}`;
-            document.getElementById('profil-lbl-nom').innerText = clientConnecteNom;
-            document.getElementById('profil-lbl-tel').innerText = clientConnecteTelephone;
-            syncHistoriqueCommandesClient();
-            brancherEcouteurTempsReelClient();
-        }
-
-        async function executerInscriptionClient() {
-            const nom = document.getElementById('reg-client-name').value.trim(); 
-            let tel = document.getElementById('reg-client-phone').value.trim();
-            if(!nom || !tel) { alert("Remplissez tous les champs obligatoires."); return; }
-            if(tel.startsWith('0')) tel = tel.substring(1); 
-            clientConnecteTelephone = "+243" + tel; 
-            clientConnecteNom = nom;
-
-            const { error } = await _supabase.from('clients').insert([{ nom_complet: nom, telephone: clientConnecteTelephone }]);
-            if(!error) {
-                localStorage.setItem('eyano_client_phone', clientConnecteTelephone);
-                localStorage.setItem('eyano_client_nom', clientConnecteNom);
-                localStorage.setItem('eyano_active_mode', 'client');
-                document.getElementById('master-auth-portal').style.display = 'none';
-                basculerVersModeClient();
-                document.getElementById('lbl-client-session-name').innerText = `SESSION : ${clientConnecteTelephone}`;
-                document.getElementById('profil-lbl-nom').innerText = clientConnecteNom;
-                document.getElementById('profil-lbl-tel').innerText = clientConnecteTelephone;
-                syncHistoriqueCommandesClient();
-                brancherEcouteurTempsReelClient();
-            } else {
-                alert("Erreur d'inscription : " + error.message);
-            }
         }
 
         /* 3. SYNCHRONISATION DES FRAIS DE LIVRAISON DEPUIS LE CLOUD */
@@ -1154,10 +943,6 @@
         function goToCheckoutAddress() { 
             document.querySelectorAll('#root-client-view .sub-panel').forEach(p => p.classList.remove('active')); 
             document.getElementById('sector-checkout-address').classList.add('active'); 
-        }
-
-        function toggleOrderValidationButton() { 
-            document.getElementById('btn-final-order-submit').disabled = !document.getElementById('chk-cgu').checked; 
         }
 
         function basculerModeReception(mode) {
@@ -1393,114 +1178,28 @@
         }
 
         /* 6. PARTENAIRE LOGIQUE : COMMANDES, CLÔTURE PIN & ANALYSES */
-        function alimenterQuestionsSecretesEnrolementPartenaire() {
-            const selectRegister = document.getElementById('reg-question');
-            const questions = ["Nom de jeune fille de votre mère ?", "Nom de votre premier animal de compagnie ?", "Ville de naissance de votre père ?", "Votre plat kinois préféré ?"];
-            if(selectRegister) {
-                selectRegister.innerHTML = '';
-                questions.forEach(q => selectRegister.innerHTML += `<option value="${q}">${q}</option>`);
-            }
-        }
-
-        function detecterDocumentLegalPartenaire(input) { 
-            if (input.files && input.files[0]) document.getElementById('legal-file-label').innerText = "✅ Joint : " + input.files[0].name.substring(0, 15); 
-        }
-
-        async function executerInscriptionPartenaireSupabase() {
-            if(!document.getElementById('chk-cgu-partenaire').checked) { 
-                alert("Veuillez accepter les CGU d'Eyano Market pour valider votre inscription."); 
-                return; 
-            }
-            
-            const name = document.getElementById('reg-name').value.trim();
-            const sektor = document.getElementById('register-sektor').value;
-            const brandFree = document.getElementById('reg-brand-free')?.value.trim() || '';
-            const id = document.getElementById('reg-identifiant').value.trim();
-            const tel = "+243" + document.getElementById('reg-tel').value.trim();
-            const commune = document.getElementById('reg-adresse')?.value.trim() || 'Kinshasa';
-            const quartier = document.getElementById('reg-quartier')?.value.trim() || '';
-            const avenue = document.getElementById('reg-avenue')?.value.trim() || '';
-            const numero = document.getElementById('reg-numero')?.value.trim() || '';
-            const pass = document.getElementById('reg-pass').value.trim();
-            const question = document.getElementById('reg-question')?.value || '';
-            const reponse = document.getElementById('reg-reponse')?.value.trim() || '';
-
-            if(!name || !id || !pass || !tel) { 
-                alert("⚠️ Veuillez remplir tous les champs obligatoires (Nom, Identifiant, Téléphone, Mot de passe)."); 
-                return; 
-            }
-
-            const payloadPartenaire = {
-                nom_etablissement: name, 
-                secteur: sektor, 
-                marque_representee: brandFree,
-                identifiant: id, 
-                telephone: tel,
-                commune_exploitation: commune,
-                quartier: quartier,
-                avenue: avenue,
-                numero: numero,
-                mot_de_passe: pass, 
-                question_secrete: question, 
-                reponse_secrete: reponse, 
-                solde_caution_usd: 25.00, 
-                taux_change: 2300,
-                statut: 'Actif'
-            };
-
-            const { data, error } = await _supabase
-                .from('partenaires')
-                .insert([payloadPartenaire])
-                .select();
-
-            if(!error && data && data.length > 0) {
-                alert("🎉 Compte partenaire créé avec succès (Forfait d'essai de 25.00 $ activé) !");
-                basculerVersModePartenaire();
-                document.getElementById('master-auth-portal').style.display = 'none';
-                chargerSessionPartenaireDirecte(data[0]);
-            } else {
-                alert("Erreur enrôlement : " + (error ? error.message : "Inconnue"));
-            }
-        }
-
-        async function executerAuthentificationPartenaireGts() {
-            const user = document.getElementById('partenaire-auth-user').value.trim();
-            const pass = document.getElementById('partenaire-auth-pass').value.trim();
-            const { data, error } = await _supabase.from('partenaires').select('*').eq('identifiant', user).single();
-            if(error || !data || data.mot_de_passe !== pass) { alert("Identifiants incorrects."); return; }
-            basculerVersModePartenaire();
-            document.getElementById('master-auth-portal').style.display = 'none';
-            chargerSessionPartenaireDirecte(data);
-        }
-
         function chargerSessionPartenaireDirecte(data) {
             monIdPartenaireSession = String(data.id_partenaire || data.identifiant || '');
-            monNomEtablissement = data.nom_etablissement || 'Partenaire';
+            monNomEtablissement = data.nom || data.nom_etablissement || 'Partenaire GTS';
             monSecteurSession = data.secteur || "Gaz Domestique";
-            monIdentifiantSession = data.identifiant || '';
-            mdpAttenduSession = data.mot_de_passe || '';
+            monIdentifiantSession = data.identifiant || data.tel || '';
+            mdpAttenduSession = data.mot_de_passe || data.pin || '';
 
-            const tauxEnregistre = parseFloat(data.taux_change) || 
-                                   parseFloat(localStorage.getItem('eyano_taux_' + monIdentifiantSession)) || 
-                                   parseFloat(localStorage.getItem('eyano_taux_change')) || 
-                                   2300;
-
+            const tauxEnregistre = parseFloat(data.taux_change) || parseFloat(localStorage.getItem('eyano_taux_change')) || 2300;
             tauxFrancCongolais = tauxEnregistre;
             localStorage.setItem('eyano_taux_change', tauxEnregistre);
-            localStorage.setItem('eyano_taux_' + monIdentifiantSession, tauxEnregistre);
 
             const inputTaux = document.getElementById('taux');
             if (inputTaux) inputTaux.value = tauxEnregistre;
 
-            localStorage.setItem('eyano_partner_session_data', JSON.stringify(data));
             document.getElementById('lbl-merchant-name').innerText = monNomEtablissement;
             document.getElementById('mobile-merchant-id-lbl').innerText = "ID : " + monIdentifiantSession;
             document.getElementById('wallet-usd-label').innerText = (parseFloat(data.solde_caution_usd) || 25.00).toFixed(2) + " $";
             document.getElementById('wallet-caution-label-top').innerText = (parseFloat(data.solde_caution_usd) || 25.00).toFixed(2) + " $";
 
             if(document.getElementById('update-identifiant')) document.getElementById('update-identifiant').value = monIdentifiantSession;
-            if(document.getElementById('update-responsable-nom')) document.getElementById('update-responsable-nom').value = data.responsable_nom || '';
-            if(document.getElementById('update-responsable-tel')) document.getElementById('update-responsable-tel').value = data.telephone || '';
+            if(document.getElementById('update-responsable-nom')) document.getElementById('update-responsable-nom').value = monNomEtablissement;
+            if(document.getElementById('update-responsable-tel')) document.getElementById('update-responsable-tel').value = data.tel || '';
 
             _supabase.channel('flux-partenaire').on('postgres_changes', { event: '*', schema: 'public', table: 'commandes' }, () => {
                 chargerDerniereCommandeCommune();
@@ -1544,18 +1243,8 @@
             const boxAucune = document.getElementById('box-aucune-commande');
             if(!container) return;
 
-            let pStored = JSON.parse(localStorage.getItem('eyano_partner_session_data') || '{}');
-            const userIdentifiant = monIdentifiantSession || pStored.identifiant;
-            
-            if (userIdentifiant) {
-                let { data: pData } = await _supabase.from('partenaires').select('*').eq('identifiant', userIdentifiant).maybeSingle();
-                if (pData) {
-                    pStored = pData;
-                    localStorage.setItem('eyano_partner_session_data', JSON.stringify(pData));
-                    if(document.getElementById('wallet-usd-label')) document.getElementById('wallet-usd-label').innerText = (parseFloat(pData.solde_caution_usd) || 0).toFixed(2) + " $";
-                    if(document.getElementById('wallet-caution-label-top')) document.getElementById('wallet-caution-label-top').innerText = (parseFloat(pData.solde_caution_usd) || 0).toFixed(2) + " $";
-                }
-            }
+            let pStored = JSON.parse(localStorage.getItem('gts_global_session') || '{}');
+            const userIdentifiant = monIdentifiantSession || pStored.tel;
 
             const { data: commandes, error } = await _supabase.from('commandes').select('*').order('created_at', { ascending: false }).limit(30);
 
@@ -1599,7 +1288,7 @@
 
             const dateExp = pStored.date_expiration_forfait ? new Date(pStored.date_expiration_forfait) : null;
             const passActif = (pStored.type_forfait === 'journalier' || pStored.type_forfait === 'mensuel') && dateExp && dateExp > new Date();
-            const soldePartenaire = parseFloat(pStored.solde_caution_usd || 0);
+            const soldePartenaire = parseFloat(pStored.solde_caution_usd || 25); // Par défaut 25$ de forfait essai
 
             commandesFiltrees.forEach(c => {
                 const estAcceptee = normaliser(c.statut_commande).includes('accept');
@@ -1639,7 +1328,7 @@
                             <p class="text-xs font-black p-3 bg-slate-950 border border-slate-800 rounded-xl text-white shadow-inner">${c.details_articles || 'Commande'}</p>
                         </div>
 
-                        <!-- FINANCES (TOUJOURS VISIBLES) -->
+                        <!-- FINANCES -->
                         <div class="partner-black-box bg-slate-950 p-3 text-xs space-y-1 rounded-xl">
                             <span class="text-[9px] text-slate-400 uppercase font-bold block border-b border-slate-800/60 pb-1 mb-1">💰 Finances :</span>
                             <div class="flex justify-between"><span>Montant total :</span><span class="text-white font-mono font-bold">${montantCourse.toFixed(2)} $</span></div>
@@ -1647,7 +1336,7 @@
                             <div class="flex justify-between text-emerald-400 font-black border-t border-slate-800/60 pt-1 mt-0.5"><span>Gain Net :</span><span class="font-mono">${(montantCourse - commissionGts).toFixed(2)} $</span></div>
                         </div>
 
-                        <!-- DESTINATION (COMMUNE, QUARTIER ET REPÈRE TOUJOURS VISIBLES / AVENUE MASQUÉE) -->
+                        <!-- DESTINATION -->
                         <div class="partner-black-box bg-slate-950 p-3 text-xs space-y-1 rounded-xl">
                             <span class="text-[9px] text-slate-400 uppercase font-bold block border-b border-slate-800/60 pb-1 mb-1">📍 Destination :</span>
                             <div class="flex justify-between"><span>Commune :</span><span class="text-white font-bold">${c.commune_livraison || 'Kinshasa'}</span></div>
@@ -1686,97 +1375,46 @@
             });
         }
 
-       /* ACCEPTATION DE LA MISSION AVEC DÉBIT SÉCURISÉ */
-async function tenterAcceptationMission(idCmd, commissionGts) {
-    let pStored = JSON.parse(localStorage.getItem('eyano_partner_session_data') || '{}');
-    const userIdentifiant = monIdentifiantSession || pStored.identifiant;
+        async function tenterAcceptationMission(idCmd, commissionGts) {
+            let pStored = JSON.parse(localStorage.getItem('gts_global_session') || '{}');
+            const userIdentifiant = monIdentifiantSession || pStored.tel;
 
-    if (!userIdentifiant) {
-        alert("Erreur : session partenaire introuvable. Veuillez vous reconnecter.");
-        return;
-    }
+            if (!userIdentifiant) {
+                alert("Erreur : session partenaire introuvable. Veuillez vous reconnecter au Hub GTS.");
+                return;
+            }
 
-    // 1. Recherche directe par identifiant textuel unique
-    let { data: pData, error: errFetch } = await _supabase
-        .from('partenaires')
-        .select('*')
-        .eq('identifiant', userIdentifiant)
-        .maybeSingle();
+            const solde = parseFloat(pStored.solde_caution_usd || 25);
+            let comMontant = parseFloat(commissionGts) || 0;
 
-    // 2. Recherche de secours par ID numérique si nécessaire
-    if (!pData && pStored.id_partenaire && !isNaN(Number(pStored.id_partenaire))) {
-        const res = await _supabase
-            .from('partenaires')
-            .select('*')
-            .eq('id_partenaire', Number(pStored.id_partenaire))
-            .maybeSingle();
-        pData = res.data;
-    }
+            if (solde < comMontant) {
+                alert(`⛔ Impossible d'accepter cette mission : votre solde (${solde.toFixed(2)} $) est inférieur à la commission requise (${comMontant.toFixed(2)} $).`);
+                return;
+            }
 
-    if (!pData) { 
-        alert("⚠️ Session expirée ou compte introuvable.\n\nVeuillez cliquer sur « Déconnexion » en haut à droite et vous reconnecter."); 
-        return; 
-    }
+            let nouveauSolde = Math.max(0, solde - comMontant);
+            pStored.solde_caution_usd = nouveauSolde;
+            localStorage.setItem('gts_global_session', JSON.stringify(pStored));
+            
+            if (document.getElementById('wallet-usd-label')) document.getElementById('wallet-usd-label').innerText = nouveauSolde.toFixed(2) + " $";
+            if (document.getElementById('wallet-caution-label-top')) document.getElementById('wallet-caution-label-top').innerText = nouveauSolde.toFixed(2) + " $";
 
-    const dateExp = pData.date_expiration_forfait ? new Date(pData.date_expiration_forfait) : null;
-    const passActif = (pData.type_forfait === 'journalier' || pData.type_forfait === 'mensuel') && dateExp && dateExp > new Date();
-    const solde = parseFloat(pData.solde_caution_usd || 0);
+            const nomMarchand = monNomEtablissement || pStored.nom || 'Partenaire GTS';
 
-    let comMontant = parseFloat(commissionGts);
-    if (isNaN(comMontant) || comMontant < 0) {
-        comMontant = 0;
-    }
+            const { error: cmdError } = await _supabase.from('commandes').update({
+                statut_commande: 'Acceptée',
+                id_partenaire: userIdentifiant,
+                nom_partenaire: nomMarchand
+            }).eq('id_commande', idCmd);
 
-    if (!passActif && solde < comMontant) {
-        alert(`⛔ Impossible d'accepter cette mission : votre solde (${solde.toFixed(2)} $) est inférieur à la commission requise (${comMontant.toFixed(2)} $).\n\nVeuillez recharger votre portefeuille ou souscrire un Pass.`);
-        chargerDerniereCommandeCommune();
-        return;
-    }
-
-    let nouveauSolde = solde;
-    if (!passActif && comMontant > 0) {
-        nouveauSolde = Math.max(0, solde - comMontant);
-        const { error: debitError } = await _supabase
-            .from('partenaires')
-            .update({ solde_caution_usd: nouveauSolde })
-            .eq('identifiant', pData.identifiant);
-
-        if (debitError) {
-            alert("Erreur lors du débit de la commission : " + debitError.message);
-            return;
+            if (!cmdError) {
+                alert(`✅ Mission #${idCmd} acceptée !\nL'adresse exacte et le contact client sont déverrouillés.\n\n💰 Commission prélevée : -${comMontant.toFixed(2)} $\n💳 Nouveau solde : ${nouveauSolde.toFixed(2)} $`);
+                chargerDerniereCommandeCommune();
+            } else {
+                alert("Erreur lors de l'acceptation : " + cmdError.message);
+            }
         }
 
-        pData.solde_caution_usd = nouveauSolde;
-        localStorage.setItem('eyano_partner_session_data', JSON.stringify(pData));
-        if (document.getElementById('wallet-usd-label')) {
-            document.getElementById('wallet-usd-label').innerText = nouveauSolde.toFixed(2) + " $";
-        }
-        if (document.getElementById('wallet-caution-label-top')) {
-            document.getElementById('wallet-caution-label-top').innerText = nouveauSolde.toFixed(2) + " $";
-        }
-    }
-
-    const nomMarchand = monNomEtablissement || pData.nom_etablissement || 'Partenaire';
-    const partnerIdToSave = String(pData.identifiant || userIdentifiant);
-
-    const { error: cmdError } = await _supabase.from('commandes').update({
-        statut_commande: 'Acceptée',
-        id_partenaire: partnerIdToSave,
-        nom_partenaire: nomMarchand
-    }).eq('id_commande', idCmd);
-
-    if (!cmdError) {
-        let messageConfirmation = `✅ Mission #${idCmd} acceptée !\nL'adresse exacte (Avenue) et le contact client sont déverrouillés.`;
-        if (!passActif && comMontant > 0) {
-            messageConfirmation += `\n\n💰 Commission prélevée : -${comMontant.toFixed(2)} $\n💳 Nouveau solde : ${nouveauSolde.toFixed(2)} $`;
-        }
-        alert(messageConfirmation);
-        chargerDerniereCommandeCommune();
-    } else {
-        alert("Erreur lors de l'acceptation : " + cmdError.message);
-    }
-}
-        /* CONFIRMATION DE LIVRAISON PAR CODE PIN */
         async function executerClotureLivraisonPartenaireGlobal() {
             const inputPin = document.getElementById('input-delivery-verification-code')?.value.trim();
             if (!inputPin || inputPin.length !== 4) {
@@ -1784,11 +1422,7 @@ async function tenterAcceptationMission(idCmd, commissionGts) {
                 return;
             }
 
-            const { data: cmdMatch, error: fetchErr } = await _supabase
-                .from('commandes')
-                .select('*')
-                .eq('code_validation', inputPin)
-                .limit(1);
+            const { data: cmdMatch, error: fetchErr } = await _supabase.from('commandes').select('*').eq('code_validation', inputPin).limit(1);
 
             if (fetchErr || !cmdMatch || cmdMatch.length === 0) { 
                 alert("❌ Code PIN introuvable. Vérifiez le code avec le client."); 
@@ -1803,14 +1437,13 @@ async function tenterAcceptationMission(idCmd, commissionGts) {
                 return;
             }
 
-            let pStored = JSON.parse(localStorage.getItem('eyano_partner_session_data') || '{}');
-            const userIdentifiant = monIdentifiantSession || pStored.identifiant || commandeValidee.id_partenaire || '';
-            const nomMarchand = monNomEtablissement || pStored.nom_etablissement || commandeValidee.nom_partenaire || 'Partenaire';
-            const idPartenaireFinal = String(pStored.id_partenaire || userIdentifiant || commandeValidee.id_partenaire || '');
+            let pStored = JSON.parse(localStorage.getItem('gts_global_session') || '{}');
+            const userIdentifiant = monIdentifiantSession || pStored.tel;
+            const nomMarchand = monNomEtablissement || pStored.nom || 'Partenaire GTS';
 
             const { error: updateCmdErr } = await _supabase.from('commandes').update({
                 statut_commande: 'Livrée',
-                id_partenaire: idPartenaireFinal,
+                id_partenaire: userIdentifiant,
                 nom_partenaire: nomMarchand
             }).eq('id_commande', commandeValidee.id_commande);
 
@@ -1827,7 +1460,6 @@ async function tenterAcceptationMission(idCmd, commissionGts) {
             chargerAnalysesPartenaire();
         }
 
-        /* ANALYSES PARTENAIRE & HISTORIQUE DES LIVRAISONS PAR INTERVALLE DE DATES */
         function reinitialiserFiltresDatesAnalyses() {
             if(document.getElementById('partner-date-start')) document.getElementById('partner-date-start').value = '';
             if(document.getElementById('partner-date-end')) document.getElementById('partner-date-end').value = '';
@@ -1848,27 +1480,19 @@ async function tenterAcceptationMission(idCmd, commissionGts) {
             const container = document.getElementById('container-historique-analyse-partenaire');
             if(!container) return;
 
-            let pStored = JSON.parse(localStorage.getItem('eyano_partner_session_data') || '{}');
-            const userIdentifiant = monIdentifiantSession || pStored.identifiant;
-            const myNom = (monNomEtablissement || pStored.nom_etablissement || '').toLowerCase().trim();
-            const myIdPart = String(pStored.id_partenaire || userIdentifiant || '').trim();
+            let pStored = JSON.parse(localStorage.getItem('gts_global_session') || '{}');
+            const userIdentifiant = monIdentifiantSession || pStored.tel;
+            const myNom = (monNomEtablissement || pStored.nom || '').toLowerCase().trim();
 
             const dateStartVal = document.getElementById('partner-date-start')?.value;
             const dateEndVal = document.getElementById('partner-date-end')?.value;
-
             const dateDebut = dateStartVal ? new Date(dateStartVal + 'T00:00:00') : null;
             const dateFin = dateEndVal ? new Date(dateEndVal + 'T23:59:59') : null;
 
-            const { data: commandes, error } = await _supabase
-                .from('commandes')
-                .select('*')
-                .order('created_at', { ascending: false });
+            const { data: commandes, error } = await _supabase.from('commandes').select('*').order('created_at', { ascending: false });
 
             if(error || !commandes || commandes.length === 0) {
                 container.innerHTML = `<div class="text-xs text-slate-500 italic text-center py-4">Aucune commande livrée pour le moment.</div>`;
-                if(document.getElementById('impact-volume-count')) document.getElementById('impact-volume-count').innerText = "0";
-                if(document.getElementById('impact-ca-total')) document.getElementById('impact-ca-total').innerText = "0.00 $";
-                if(document.getElementById('wallet-ca-label-top')) document.getElementById('wallet-ca-label-top').innerText = "0.00 $";
                 return;
             }
 
@@ -1879,7 +1503,7 @@ async function tenterAcceptationMission(idCmd, commissionGts) {
                 const cId = String(c.id_partenaire || '').trim();
                 const cNom = (c.nom_partenaire || '').toLowerCase().trim();
 
-                const matchId = (myIdPart && cId && myIdPart === cId) || (userIdentifiant && cId && userIdentifiant === cId);
+                const matchId = (userIdentifiant && cId && userIdentifiant === cId);
                 const matchNom = (myNom && cNom && (cNom.includes(myNom) || myNom.includes(cNom)));
                 if (!matchId && !matchNom) return false;
 
@@ -1888,15 +1512,11 @@ async function tenterAcceptationMission(idCmd, commissionGts) {
                     if (dateDebut && cDate < dateDebut) return false;
                     if (dateFin && cDate > dateFin) return false;
                 }
-
                 return true;
             });
 
             if (mesLivraisons.length === 0) {
                 container.innerHTML = `<div class="text-xs text-slate-500 italic text-center py-4">Aucune commande sur cette période.</div>`;
-                if(document.getElementById('impact-volume-count')) document.getElementById('impact-volume-count').innerText = "0";
-                if(document.getElementById('impact-ca-total')) document.getElementById('impact-ca-total').innerText = "0.00 $";
-                if(document.getElementById('wallet-ca-label-top')) document.getElementById('wallet-ca-label-top').innerText = "0.00 $";
                 return;
             }
 
@@ -1944,7 +1564,6 @@ async function tenterAcceptationMission(idCmd, commissionGts) {
             }
         }
 
-        /* 7. SUPPORT TECHNIQUE WHATSAPP */
         async function ouvrirWhatsAppSupportTechnique() {
             let numWa = "+243813271112";
             try {
@@ -1952,7 +1571,7 @@ async function tenterAcceptationMission(idCmd, commissionGts) {
                 if(data && data.num_whatsapp) numWa = data.num_whatsapp;
             } catch(e){}
             const cleanWa = numWa.replace(/\D/g, '');
-            const msg = encodeURIComponent(`Bonjour l'équipe technique GTS, je suis le partenaire ${monNomEtablissement || ''} (ID: ${monIdentifiantSession || monIdPartenaireSession || ''}). J'ai besoin d'assistance.`);
+            const msg = encodeURIComponent(`Bonjour l'équipe technique GTS, je suis le partenaire ${monNomEtablissement || ''} (ID: ${monIdentifiantSession || ''}). J'ai besoin d'assistance.`);
             window.open(`https://wa.me/${cleanWa}?text=${msg}`, '_blank');
         }
 
@@ -1988,13 +1607,6 @@ async function tenterAcceptationMission(idCmd, commissionGts) {
             
             tauxFrancCongolais = tx;
             localStorage.setItem('eyano_taux_change', tx);
-            if (monIdentifiantSession) {
-                localStorage.setItem('eyano_taux_' + monIdentifiantSession, tx);
-                
-                try {
-                    await _supabase.from('partenaires').update({ taux_change: tx }).eq('identifiant', monIdentifiantSession);
-                } catch(e) {}
-            }
 
             const table = document.getElementById('product-table-rows');
             if (table) {
@@ -2007,7 +1619,6 @@ async function tenterAcceptationMission(idCmd, commissionGts) {
                     </tr>`;
                 });
             }
-            
             if (afficherSucces) alert(`✅ Taux mémorisé : 1 $ = ${tx} FC`);
         }
 
@@ -2038,40 +1649,18 @@ async function tenterAcceptationMission(idCmd, commissionGts) {
             const respNom = document.getElementById('update-responsable-nom')?.value.trim();
             const respTel = document.getElementById('update-responsable-tel')?.value.trim();
             const newId = document.getElementById('update-identifiant')?.value.trim();
-            const newPass = document.getElementById('update-password')?.value.trim();
-            const oldPass = document.getElementById('update-old-password')?.value.trim();
 
-            if(!oldPass || oldPass !== mdpAttenduSession) { alert("Mot de passe actuel incorrect."); return; }
+            let globalSession = JSON.parse(localStorage.getItem('gts_global_session') || '{}');
+            if(respNom) globalSession.nom = respNom;
+            if(newId || respTel) globalSession.tel = newId || respTel;
+            localStorage.setItem('gts_global_session', JSON.stringify(globalSession));
 
-            const payload = { responsable_nom: respNom, telephone: respTel };
-            if(newId) payload.identifiant = newId;
-            if(newPass) payload.mot_de_passe = newPass;
-
-            const pStored = JSON.parse(localStorage.getItem('eyano_partner_session_data') || '{}');
-            const targetUser = monIdentifiantSession || pStored.identifiant;
-
-            const { error } = await _supabase.from('partenaires').update(payload).eq('identifiant', targetUser);
-            if(!error) {
-                alert("✅ Profil mis à jour !");
-                if(payload.mot_de_passe) mdpAttenduSession = payload.mot_de_passe;
-                if(newId) monIdentifiantSession = newId;
-                document.getElementById('update-old-password').value = '';
-                document.getElementById('update-password').value = '';
-            } else {
-                alert("Erreur : " + error.message);
-            }
+            alert("✅ Profil mis à jour localement !");
         }
-
-        function executerDeconnexionClient() { localStorage.clear(); retourChoixRoleCentral(); }
-        function executerDeconnexionPartenaire() { localStorage.clear(); retourChoixRoleCentral(); }
 
         /* CGU & GTS MODALES */
         function fermerModalCgu() { document.getElementById('modal-cgu-view').classList.add('hidden'); }
-        async function ouvrirModalCgu() { 
-            document.getElementById('modal-cgu-view').classList.remove('hidden');
-            const { data } = await _supabase.from('configuration').select('cgu').limit(1).single();
-            document.getElementById('cgu-info-content-body').innerText = data?.cgu || "Conditions Générales d'Utilisation Eyano Market (GTS RDC).";
-        }
+        function ouvrirModalCgu() { document.getElementById('modal-cgu-view').classList.remove('hidden'); }
         function fermerModalGtsInfo() { document.getElementById('modal-gts-info').classList.add('hidden'); }
         async function ouvrirModalGtsInfo() { 
             document.getElementById('modal-gts-info').classList.remove('hidden');
@@ -2086,10 +1675,7 @@ async function tenterAcceptationMission(idCmd, commissionGts) {
             const format = document.getElementById('select-med-format').value;
             const qty = document.getElementById('input-med-qty').value;
             
-            if(!nom) { 
-                alert("Veuillez saisir le nom du médicament."); 
-                return; 
-            }
+            if(!nom) { alert("Veuillez saisir le nom du médicament."); return; }
             
             const dosageTexte = dosage ? ` [${dosage}]` : '';
             medicationList.push(`${qty}x ${nom}${dosageTexte} (${format})`);
