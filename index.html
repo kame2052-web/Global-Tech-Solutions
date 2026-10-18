@@ -76,7 +76,7 @@
                 <p class="text-xs text-slate-400">Connectez-vous pour accéder à l'écosystème GTS.</p>
             </div>
 
-            <!-- TABS -->
+            <!-- ONGLETS -->
             <div class="flex bg-slate-900 border border-slate-800 p-1 rounded-xl">
                 <button id="tab-login" onclick="switchAuthMode('login')" class="flex-1 py-2 text-xs font-black bg-sky-500 text-slate-950 rounded-lg transition-all shadow-sm">Connexion</button>
                 <button id="tab-register" onclick="switchAuthMode('register')" class="flex-1 py-2 text-xs font-bold text-slate-400 hover:text-white rounded-lg transition-all">S'inscrire</button>
@@ -100,7 +100,7 @@
             <!-- FORMULAIRE INSCRIPTION -->
             <div id="form-register" class="space-y-4 hidden max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nom Complet / Etablissement *</label>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nom Complet / Établissement *</label>
                     <input type="text" id="reg-name" placeholder="Votre nom" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-white outline-none">
                 </div>
                 <div>
@@ -109,27 +109,27 @@
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Profil Utilisateur *</label>
-                    <select id="reg-role" onchange="toggleRoleFields()" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-sky-400 font-bold outline-none">
+                    <select id="reg-role" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-sky-400 font-bold outline-none cursor-pointer">
                         <option value="client">👤 Client Standard (Achats, Prestations, Passager)</option>
                         <option value="commercial">🏬 Partenaire / Opérateur Commercial</option>
                     </select>
                 </div>
 
-                <!-- CHAMPS DYNAMIQUES PARTENAIRES -->
-                <div id="partner-fields" class="hidden space-y-4 p-3 bg-slate-900 border border-slate-800 rounded-xl">
+                <!-- BLOC PARTENAIRE DYNAMIQUE -->
+                <div id="partner-fields" class="hidden space-y-4 p-3.5 bg-slate-900 border-2 border-sky-500/30 rounded-2xl">
                     <div>
                         <label class="block text-[10px] font-bold text-amber-400 uppercase tracking-wider mb-1">Pôle d'activité souhaité *</label>
-                        <select id="reg-pole" onchange="togglePoleOptions()" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-lg p-2.5 text-xs text-white outline-none">
+                        <select id="reg-pole" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-lg p-2.5 text-xs text-white outline-none cursor-pointer">
                             <option value="">-- Choisir un pôle GTS --</option>
-                            <option value="eyanomarket">🛍️ Eyano Market (Vendeur/Marchand)</option>
-                            <option value="cleanapp">✨ MATT Clean'App (Prestataire)</option>
-                            <option value="transvision">📡 TransVision (Flotte/Citerne)</option>
-                            <option value="easyfly">✈️ EasyFly Transit (Agence partenaire)</option>
+                            <option value="eyanomarket">🛍️ Eyano Market (Vendeur / Marchand)</option>
+                            <option value="cleanapp">✨ MATT Clean'App (Prestataire Lavage / Entretien)</option>
+                            <option value="transvision">📡 TransVision (Propriétaire Flotte / Citernes)</option>
+                            <option value="easyfly">✈️ EasyFly Transit (Partenaire Sûreté / Bagages)</option>
                         </select>
                     </div>
 
                     <!-- SOUS-MENU EYANO MARKET -->
-                    <div id="eyano-specialty-container" class="hidden bg-slate-950/50 p-3 rounded-lg border border-slate-700/50">
+                    <div id="eyano-specialty-container" class="hidden bg-slate-950/70 p-3 rounded-xl border border-amber-500/30 space-y-1">
                         <label class="block text-[10px] font-bold text-amber-400 uppercase tracking-wider mb-1">Secteur Eyano Market *</label>
                         <select id="reg-eyano-specialty" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-500 rounded-lg p-2 text-xs text-white outline-none">
                             <option value="Gaz">🔥 Gaz Domestique</option>
@@ -140,8 +140,8 @@
                     </div>
 
                     <!-- SOUS-MENU MATT CLEAN'APP -->
-                    <div id="matt-specialty-container" class="hidden bg-slate-950/50 p-3 rounded-lg border border-slate-700/50">
-                        <label class="block text-[10px] font-bold text-emerald-400 uppercase tracking-wider mb-1">Axe MATT Clean'App *</label>
+                    <div id="matt-specialty-container" class="hidden bg-slate-950/70 p-3 rounded-xl border border-emerald-500/30 space-y-1">
+                        <label class="block text-[10px] font-bold text-emerald-400 uppercase tracking-wider mb-1">Axe d'intervention Clean'App *</label>
                         <select id="reg-matt-specialty" class="w-full bg-slate-900 border border-slate-700 focus:border-emerald-500 rounded-lg p-2 text-xs text-white outline-none">
                             <option value="Auto">🚗 Automobile uniquement</option>
                             <option value="Maison">🏡 Maison uniquement (Surfaces, Canapés)</option>
@@ -153,10 +153,10 @@
                         </select>
                     </div>
 
-                    <!-- UPLOAD DOCUMENT LEGAL -->
+                    <!-- UPLOAD DOCUMENT LÉGAL -->
                     <div class="border border-dashed border-slate-600 p-3 rounded-xl bg-slate-950/50">
-                        <label class="block text-[10px] font-bold text-sky-400 uppercase tracking-wider mb-1">📁 Document Officiel (RCCM, Patente, ID) *</label>
-                        <p class="text-[9px] text-slate-500 mb-2">Requis pour valider votre agrément partenaire.</p>
+                        <label class="block text-[10px] font-bold text-sky-400 uppercase tracking-wider mb-1">📁 Justificatif Officiel (RCCM, Patente, ID) *</label>
+                        <p class="text-[9px] text-slate-500 mb-2">Requis pour l'agrément sur la plateforme.</p>
                         <input type="file" id="reg-doc" accept="image/*,application/pdf" class="w-full text-[10px] text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-black file:bg-sky-500/20 file:text-sky-400 hover:file:bg-sky-500/30 cursor-pointer outline-none">
                     </div>
                 </div>
@@ -167,20 +167,20 @@
                 </div>
                 
                 <div class="flex items-start gap-2 bg-slate-900 p-3 rounded-xl border border-slate-800">
-                    <input type="checkbox" id="chk-cgu" onchange="toggleSubmitButton()" class="mt-0.5 accent-sky-500 w-4 h-4 cursor-pointer">
+                    <input type="checkbox" id="chk-cgu" class="mt-0.5 accent-sky-500 w-4 h-4 cursor-pointer">
                     <label for="chk-cgu" class="text-[10px] text-slate-400 leading-tight cursor-pointer">
                         J'ai lu et j'accepte sans réserve les <span onclick="ouvrirCgu()" class="text-sky-400 font-bold underline">Conditions Générales d'Utilisation (CGU)</span> de la plateforme GTS.
                     </label>
                 </div>
 
-                <button id="btn-submit-reg" disabled onclick="executerInscriptionGlobale()" class="w-full bg-slate-800 text-slate-500 font-black py-3.5 rounded-xl text-xs uppercase transition-all cursor-not-allowed">
-                    Créer mon compte
+                <button id="btn-submit-reg" disabled class="w-full bg-slate-800 text-slate-500 font-black py-3.5 rounded-xl text-xs uppercase transition-all cursor-not-allowed">
+                    Créer mon compte unique
                 </button>
             </div>
         </div>
     </main>
 
-    <!-- SECTION DASHBOARD APPS (Cachée si non connecté) -->
+    <!-- SECTION DASHBOARD APPS (Affichée une fois connecté) -->
     <main id="apps-dashboard" class="flex-1 max-w-7xl mx-auto px-6 py-12 space-y-12 page-fade w-full hidden">
         <div class="text-center max-w-3xl mx-auto space-y-6">
             <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono font-bold">
@@ -191,9 +191,7 @@
             </h2>
         </div>
 
-        <!-- GRILLE DYNAMIQUE : MASQUE LES APPS NON PERTINENTES POUR LES PARTENAIRES -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="apps-grid">
-            
             <!-- PÔLE 1 : TRANSVISION -->
             <div id="card-app-transvision" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='transvision/index.html'">
                 <div class="space-y-4">
@@ -269,7 +267,6 @@
                     <span class="text-xs text-amber-400 font-black uppercase">Accéder <i class="fa-solid fa-arrow-right ml-1"></i></span>
                 </div>
             </div>
-
         </div>
     </main>
 
@@ -315,34 +312,34 @@
             <div class="p-6 overflow-y-auto custom-scrollbar flex-1 text-[11px] sm:text-xs text-slate-300 space-y-4 leading-relaxed font-sans text-justify">
                 <h4 class="font-black text-white text-sm">PRÉAMBULE</h4>
                 <p>La plateforme numérique unifiée, désignée ci-après « L'Application » ou le « Hub GTS », est éditée et exploitée par la société <b>GLOBAL TECH SOLUTIONS S.A.R.L. (GTS)</b>, immatriculée au RCCM sous le numéro CD/KIN/RCCM/24-B-04106 et NIF A2441433N, dont le siège social est situé à Kinshasa, RDC.</p>
-                <p>En accédant au Hub GTS, en créant un compte unique, ou en utilisant l'un des services intégrés (qui sont des marques commerciales exclusives de GTS : TransVision, EasyFly Transit, MATT Clean'App, Eyano Market), l'Utilisateur accepte sans réserve les présentes CGU.</p>
+                <p>En accédant au Hub GTS, en créant un compte unique, ou en utilisant l'un des services intégrés (marques commerciales exclusives de GTS : TransVision, EasyFly Transit, MATT Clean'App, Eyano Market), l'Utilisateur accepte sans réserve les présentes CGU.</p>
 
                 <hr class="border-slate-800 my-4">
 
                 <h4 class="font-black text-white text-sm">PARTIE 1 : TRONC COMMUN</h4>
-                <p><b class="text-sky-400">Art 1 : Architecture Centralisée (SSO)</b><br>La création d'un compte s'effectue exclusivement au niveau de la plateforme faîtière. Les applications individuelles ne disposent d'aucun module de création de compte autonome. Ce profil centralisé donne accès à l'ensemble des services.</p>
+                <p><b class="text-sky-400">Art 1 : Architecture Centralisée (SSO)</b><br>La création d'un compte s'effectue exclusivement au niveau de la plateforme faîtière. Les applications individuelles ne disposent d'aucun module de création de compte autonome.</p>
                 
-                <p><b class="text-sky-400">Art 2 : Protection des Données et Code du Numérique</b><br>Conformément à l'Ordonnance-loi n° 23/010 : GTS collecte les données strictement nécessaires (identité, GPS). Les données sont stockées sur des serveurs Cloud sécurisés. GTS s'engage à ne jamais revendre ces données. La géolocalisation requiert l'activation du signal expressément consentie par l'Utilisateur.</p>
+                <p><b class="text-sky-400">Art 2 : Protection des Données et Code du Numérique</b><br>Conformément à l'Ordonnance-loi n° 23/010 : GTS collecte les données strictement nécessaires (identité, GPS). Les données sont stockées sur des serveurs Cloud sécurisés. GTS s'engage à ne jamais revendre ces données.</p>
 
-                <p><b class="text-sky-400">Art 3 : Rôle d'Intermédiaire Technologique</b><br>GTS agit strictement en tant qu'éditeur logiciel facilitant la mise en relation entre Clients et Partenaires. Les réclamations liées à la qualité intrinsèque du produit ou de la prestation incombent exclusivement au Partenaire concerné.</p>
+                <p><b class="text-sky-400">Art 3 : Rôle d'Intermédiaire Technologique</b><br>GTS agit strictement en tant qu'éditeur logiciel facilitant la mise en relation entre Clients et Partenaires.</p>
 
-                <p><b class="text-sky-400">Art 4 : Dispositions relatives aux Partenaires</b><br>Tout Partenaire doit fournir des documents justificatifs valides (Pièce d'identité, Patente, RCCM). GTS se réserve le droit de suspendre tout compte Partenaire en cas de fraude ou manquement aux règles.</p>
+                <p><b class="text-sky-400">Art 4 : Dispositions relatives aux Partenaires</b><br>Tout Partenaire doit fournir des documents justificatifs valides (Pièce d'identité, Patente, RCCM).</p>
 
                 <hr class="border-slate-800 my-4">
 
                 <h4 class="font-black text-white text-sm">PARTIE 2 : CONDITIONS SPÉCIFIQUES (MARQUES)</h4>
                 
                 <p><b class="text-indigo-400">MODULE A : TRANSVISION (Télématique & IoT)</b><br>
-                Service d'audit financier et gestion de flotte. La captation des données s'appuie sur une architecture technologique IoT exclusive, déployée de manière autonome par GTS. Les estimations financières reflètent uniquement une projection algorithmique basée sur les rotations validées par le matériel embarqué, et ne fournissent pas la précision exacte du nombre de passagers physiques. Le sabotage physique des équipements entraîne l'annulation de la garantie.</p>
+                Service d'audit financier et gestion de flotte. La captation des données s'appuie sur une architecture technologique IoT exclusive, déployée de manière autonome par GTS. Les estimations financières reflètent uniquement une projection algorithmique basée sur les rotations validées par le matériel embarqué, et ne fournissent pas la précision exacte du nombre de passagers physiques.</p>
 
                 <p><b class="text-indigo-400">MODULE B : EASYFLY TRANSIT (Logistique Aéro)</b><br>
-                Service de pré-enregistrement déporté. Le Client certifie ne placer aucune matière dangereuse ou prohibée dans ses bagages. La responsabilité logistique de GTS s'arrête à la remise contradictoire aux services et compagnies aériennes pour le check-in final sur le tarmac.</p>
+                Service de pré-enregistrement déporté. La responsabilité logistique de GTS s'arrête à la remise contradictoire aux services et compagnies aériennes pour le check-in final sur le tarmac.</p>
 
                 <p><b class="text-indigo-400">MODULE C : EYANO MARKET (Marketplace)</b><br>
-                GTS ne dispose d'aucun livreur en propre. Le choix du livreur incombe exclusivement au Partenaire marchand. Toute commande de médicaments exige que le Client téléverse une photographie de son ordonnance. GTS décline toute responsabilité médicale quant à la posologie ou la conformité des produits livrés.</p>
+                GTS ne dispose d'aucun livreur en propre. Le choix du livreur incombe exclusivement au Partenaire marchand. Toute commande de médicaments exige que le Client téléverse une photographie de son ordonnance.</p>
 
                 <p><b class="text-indigo-400">MODULE D : MATT CLEAN'APP (Assainissement)</b><br>
-                Les prestations sont réalisées par des Partenaires indépendants. En cas de dommage matériel causé au domicile ou sur le véhicule, GTS interviendra uniquement comme médiateur pour mobiliser la responsabilité civile du Partenaire. Les devis volumétriques (m², m³) sont contractuels sous réserve que les mesures déclarées correspondent à la réalité sur site.</p>
+                Les prestations sont réalisées par des Partenaires indépendants. En cas de dommage matériel, GTS interviendra uniquement comme médiateur pour mobiliser la responsabilité civile du Partenaire.</p>
             </div>
             <div class="p-5 border-t border-slate-800">
                 <button onclick="fermerCgu()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-black py-3 rounded-xl text-xs uppercase transition-all shadow-md">Fermer le document</button>
@@ -350,8 +347,8 @@
         </div>
     </div>
 
+    <!-- SCRIPT APPLICATION -->
     <script>
-        // Gestion de l'affichage SSO / Dashboard
         function verifierSession() {
             const sessionData = localStorage.getItem('gts_global_session');
             const authPortal = document.getElementById('auth-portal');
@@ -374,42 +371,35 @@
                     appsDashboard.classList.remove('hidden');
                     headerUserInfo.classList.replace('hidden', 'flex');
 
-                    // AFFICHAGE CIBLÉ SELON LE PROFIL (CLIENT VS PARTENAIRE)
                     if (user.type_contrat === 'commercial') {
                         dashboardTitle.textContent = "Votre Espace Partenaire";
-                        // Masque tout
                         cardTransvision.classList.add('hidden');
                         cardEasyfly.classList.add('hidden');
                         cardCleanapp.classList.add('hidden');
                         cardEyanomarket.classList.add('hidden');
                         
-                        // Affiche uniquement le pôle choisi
                         if (user.pole === 'transvision') cardTransvision.classList.remove('hidden');
                         if (user.pole === 'easyfly') cardEasyfly.classList.remove('hidden');
                         if (user.pole === 'cleanapp') cardCleanapp.classList.remove('hidden');
                         if (user.pole === 'eyanomarket') cardEyanomarket.classList.remove('hidden');
                     } else {
                         dashboardTitle.textContent = "Choisissez votre application";
-                        // Client = Voie tout
                         cardTransvision.classList.remove('hidden');
                         cardEasyfly.classList.remove('hidden');
                         cardCleanapp.classList.remove('hidden');
                         cardEyanomarket.classList.remove('hidden');
                     }
-
                 } catch(e) {
                     localStorage.removeItem('gts_global_session');
                     verifierSession();
                 }
             } else {
-                // Déconnecté
                 authPortal.classList.remove('hidden');
                 appsDashboard.classList.add('hidden');
                 headerUserInfo.classList.replace('flex', 'hidden');
             }
         }
 
-        // Bascule entre Connexion et Inscription
         function switchAuthMode(mode) {
             const formLogin = document.getElementById('form-login');
             const formRegister = document.getElementById('form-register');
@@ -426,57 +416,58 @@
                 formRegister.classList.remove('hidden');
                 tabRegister.className = "flex-1 py-2 text-xs font-black bg-sky-500 text-slate-950 rounded-lg transition-all shadow-sm";
                 tabLogin.className = "flex-1 py-2 text-xs font-bold text-slate-400 hover:text-white rounded-lg transition-all";
+                toggleRoleFields();
+                toggleSubmitButton();
             }
         }
 
-        // Affichage dynamique des champs selon le rôle
         function toggleRoleFields() {
-            const role = document.getElementById('reg-role').value;
+            const roleEl = document.getElementById('reg-role');
             const partnerFields = document.getElementById('partner-fields');
-            
-            // On s'assure que le contenu du partenaire est masqué ou affiché
-            if (role === 'commercial') {
-                partnerFields.classList.remove('hidden');
-            } else {
-                partnerFields.classList.add('hidden');
+            if (roleEl && partnerFields) {
+                if (roleEl.value === 'commercial') {
+                    partnerFields.classList.remove('hidden');
+                } else {
+                    partnerFields.classList.add('hidden');
+                }
             }
         }
 
-        // Affichage dynamique des spécialités selon le Pôle choisi
         function togglePoleOptions() {
-            const pole = document.getElementById('reg-pole').value;
+            const poleEl = document.getElementById('reg-pole');
             const mattContainer = document.getElementById('matt-specialty-container');
             const eyanoContainer = document.getElementById('eyano-specialty-container');
             
-            // Masquer par défaut
-            mattContainer.classList.add('hidden');
-            eyanoContainer.classList.add('hidden');
+            if (!poleEl) return;
+            const pole = poleEl.value;
 
-            if (pole === 'cleanapp') {
+            if (mattContainer) mattContainer.classList.add('hidden');
+            if (eyanoContainer) eyanoContainer.classList.add('hidden');
+
+            if (pole === 'cleanapp' && mattContainer) {
                 mattContainer.classList.remove('hidden');
-            } else if (pole === 'eyanomarket') {
+            } else if (pole === 'eyanomarket' && eyanoContainer) {
                 eyanoContainer.classList.remove('hidden');
             }
         }
 
-        // Activation du bouton de soumission lié aux CGU
         function toggleSubmitButton() {
-            const chk = document.getElementById('chk-cgu').checked;
+            const chk = document.getElementById('chk-cgu');
             const btn = document.getElementById('btn-submit-reg');
-            if (chk) {
-                btn.disabled = false;
-                btn.className = "w-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-black py-3.5 rounded-xl text-xs uppercase shadow-lg shadow-sky-500/20 transition-all";
-            } else {
-                btn.disabled = true;
-                btn.className = "w-full bg-slate-800 text-slate-500 font-black py-3.5 rounded-xl text-xs uppercase transition-all cursor-not-allowed";
+            if (chk && btn) {
+                if (chk.checked) {
+                    btn.disabled = false;
+                    btn.className = "w-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-black py-3.5 rounded-xl text-xs uppercase shadow-lg shadow-sky-500/20 transition-all cursor-pointer";
+                } else {
+                    btn.disabled = true;
+                    btn.className = "w-full bg-slate-800 text-slate-500 font-black py-3.5 rounded-xl text-xs uppercase transition-all cursor-not-allowed";
+                }
             }
         }
 
-        // Modale CGU
-        function ouvrirCgu() { document.getElementById('modal-cgu').classList.remove('hidden'); }
-        function fermerCgu() { document.getElementById('modal-cgu').classList.add('hidden'); }
+        function ouvrirCgu() { document.getElementById('modal-cgu')?.classList.remove('hidden'); }
+        function fermerCgu() { document.getElementById('modal-cgu')?.classList.add('hidden'); }
 
-        // Simulations d'Authentification 
         function executerConnexionGlobale() {
             const tel = document.getElementById('login-phone').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
@@ -486,9 +477,7 @@
                 return;
             }
 
-            // SIMULATION TEMPORAIRE : On considère que si le numéro commence par 9, c'est un partenaire Transvision (pour test)
             const estPartenaire = tel.startsWith("09") || tel.startsWith("9");
-            
             const mockUser = {
                 tel: tel,
                 nom: (estPartenaire ? "Partenaire " : "Client ") + tel.slice(-4),
@@ -528,7 +517,6 @@
                     return;
                 }
 
-                // Capturer la spécialité en fonction du pôle
                 if (poleChoisi === 'cleanapp') {
                     specialiteChoisie = document.getElementById('reg-matt-specialty').value;
                 } else if (poleChoisi === 'eyanomarket') {
@@ -550,14 +538,23 @@
 
         function deconnexionGlobale() {
             localStorage.removeItem('gts_global_session');
-            document.getElementById('login-phone').value = '';
-            document.getElementById('login-pass').value = '';
+            const p = document.getElementById('login-phone');
+            const pw = document.getElementById('login-pass');
+            if (p) p.value = '';
+            if (pw) pw.value = '';
             verifierSession();
         }
 
-        // Initialisation
         window.addEventListener('DOMContentLoaded', () => {
+            // Écouteurs robustes
+            document.getElementById('reg-role')?.addEventListener('change', toggleRoleFields);
+            document.getElementById('reg-pole')?.addEventListener('change', togglePoleOptions);
+            document.getElementById('chk-cgu')?.addEventListener('change', toggleSubmitButton);
+            document.getElementById('btn-submit-reg')?.addEventListener('click', executerInscriptionGlobale);
+
             verifierSession();
+            toggleRoleFields();
+            toggleSubmitButton();
         });
     </script>
 </body>
