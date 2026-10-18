@@ -11,6 +11,9 @@
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    
+    <!-- Ajout Supabase pour la modification en direct des CGU -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
         tailwind.config = {
@@ -25,9 +28,14 @@
         #kinshasa-map { height: 500px; width: 100%; border-radius: 1.5rem; z-index: 10; }
         .leaflet-popup-content-wrapper { background-color: #0f172a !important; color: #f8fafc !important; border: 1px solid #334155; }
         .leaflet-popup-tip { background-color: #0f172a !important; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     </style>
 </head>
 <body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <div id="toast-container" class="fixed top-4 inset-x-4 z-[9999] flex flex-col gap-2 max-w-sm mx-auto pointer-events-none"></div>
 
     <!-- EN-TÊTE CENTRAL -->
     <header class="bg-slate-900/90 border-b border-slate-800 p-4 sticky top-0 z-50 backdrop-blur-md">
@@ -52,15 +60,18 @@
 
     <!-- BARRE DE NAVIGATION -->
     <nav class="w-full border-b border-slate-800 bg-slate-950/70 sticky top-[73px] z-40 backdrop-blur-sm">
-        <div class="max-w-7xl mx-auto px-4 md:px-6 flex items-center gap-2 overflow-x-auto py-2.5">
-            <button onclick="navigateCentral('analytics')" id="btn-tab-analytics" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 flex items-center gap-2 overflow-x-auto py-2.5 custom-scrollbar">
+            <button onclick="navigateCentral('analytics')" id="btn-tab-analytics" class="nav-tab whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md">
                 <i class="fa-solid fa-fire text-amber-300"></i> <span>Densité & Carte</span>
             </button>
-            <button onclick="navigateCentral('synergies')" id="btn-tab-synergies" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+            <button onclick="navigateCentral('synergies')" id="btn-tab-synergies" class="nav-tab whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
                 <i class="fa-solid fa-diagram-project text-fuchsia-400"></i> <span>Synergies & CRM Global</span>
             </button>
-            <button onclick="navigateCentral('filiales')" id="btn-tab-filiales" class="nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+            <button onclick="navigateCentral('filiales')" id="btn-tab-filiales" class="nav-tab whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
                 <i class="fa-solid fa-network-wired text-sky-400"></i> <span>Passerelles Admins</span>
+            </button>
+            <button onclick="navigateCentral('legal')" id="btn-tab-legal" class="nav-tab whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60">
+                <i class="fa-solid fa-scale-balanced text-emerald-400"></i> <span>Gouvernance & CGU</span>
             </button>
         </div>
     </nav>
@@ -76,7 +87,7 @@
                     <p class="text-xs text-slate-400">Identification des bassins de demande urbains.</p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <select id="map-filter-pole" onchange="changerFiltrePole(this.value)" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-amber-300 font-bold outline-none">
+                    <select id="map-filter-pole" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-amber-300 font-bold outline-none">
                         <option value="ALL">🌐 Tous les Pôles Réunis</option>
                         <option value="easyfly">✈️ EasyFly Transit</option>
                         <option value="transvision">📡 TransVision Protect</option>
@@ -91,14 +102,14 @@
             </div>
         </section>
 
-        <!-- 2. NOUVELLE VUE : SYNERGIES & CRM GTS -->
+        <!-- 2. VUE : SYNERGIES & CRM GTS -->
         <section id="pane-synergies" class="view-pane space-y-6">
             <div class="border-b border-slate-800 pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h2 class="text-xl md:text-2xl font-black text-slate-100">Synergies GTS & Intelligence Commerciale</h2>
                     <p class="text-xs text-slate-400">Analyse de l'engagement client basée sur l'identifiant unique (Numéro de Téléphone).</p>
                 </div>
-                <button onclick="exporterCRM()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-lg flex items-center gap-2">
+                <button class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-lg flex items-center gap-2">
                     <i class="fa-solid fa-file-excel"></i> Extraire Opportunités
                 </button>
             </div>
@@ -139,7 +150,7 @@
                                 <th class="py-3 px-4">Nom Profil</th>
                                 <th class="py-3 px-4">Services Actifs</th>
                                 <th class="py-3 px-4">Valeur Compte</th>
-                                <th class="py-3 px-4 text-right">🎯 Action Recommandée (Cross-Selling)</th>
+                                <th class="py-3 px-4 text-right">🎯 Action Recommandée</th>
                             </tr>
                         </thead>
                         <tbody id="crm-table-body" class="divide-y divide-slate-800/60 font-medium">
@@ -163,35 +174,67 @@
                         <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm"><img src="EASYFLY TRANSIT.jpg" alt="EasyFly" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'"></div>
                         <div><h3 class="text-sm font-black text-slate-100 uppercase">Admin EasyFly</h3><p class="text-[10px] text-slate-400 font-mono">Poste Logistique</p></div>
                     </div>
-                    <a href="easyflytransit/admin.html" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase">Ouvrir</a>
+                    <a href="easyflytransit/admin.html" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase shadow-md transition-all">Ouvrir</a>
                 </div>
                 <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
                     <div class="flex items-center gap-4">
                         <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm"><img src="VISION.png" alt="TransVision" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'"></div>
                         <div><h3 class="text-sm font-black text-slate-100 uppercase">Admin TransVision</h3><p class="text-[10px] text-slate-400 font-mono">Télématique</p></div>
                     </div>
-                    <a href="transvision/admin.html" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase">Ouvrir</a>
+                    <a href="transvision/admin.html" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase shadow-md transition-all">Ouvrir</a>
                 </div>
                 <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
                     <div class="flex items-center gap-4">
                         <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm"><img src="cleanapp.png" alt="CleanApp" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'"></div>
                         <div><h3 class="text-sm font-black text-slate-100 uppercase">Admin Clean'App</h3><p class="text-[10px] text-slate-400 font-mono">Salubrité</p></div>
                     </div>
-                    <a href="cleanapp/admin.html" class="bg-teal-600 hover:bg-teal-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase">Ouvrir</a>
+                    <a href="cleanapp/admin.html" class="bg-teal-600 hover:bg-teal-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase shadow-md transition-all">Ouvrir</a>
                 </div>
                 <div class="bg-gtscard border border-slate-800 p-6 rounded-3xl flex items-center justify-between shadow-xl">
                     <div class="flex items-center gap-4">
-                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm"><img src="logo.png" alt="Eyano" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'"></div>
+                        <div class="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-1 shadow-sm"><img src="eyano.png" alt="Eyano" class="w-full h-full object-contain" onerror="this.src='GLOBAL.png'"></div>
                         <div><h3 class="text-sm font-black text-slate-100 uppercase">Admin EyanoMarket</h3><p class="text-[10px] text-slate-400 font-mono">Marketplace</p></div>
                     </div>
-                    <a href="eyanomarket/admin.html" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase">Ouvrir</a>
+                    <a href="eyanomarket/admin.html" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase shadow-md transition-all">Ouvrir</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. NOUVELLE VUE : GOUVERNANCE & CGU GLOBALE -->
+        <section id="pane-legal" class="view-pane space-y-6">
+            <div class="border-b border-slate-800 pb-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-black text-slate-100">Gouvernance Légale & Édition des CGU</h2>
+                    <p class="text-xs text-slate-400">Modification dynamique des Conditions Générales d'Utilisation répercutée sur toutes les applications du Hub.</p>
+                </div>
+                <button onclick="sauvegarderCguGlobales()" id="btn-save-cgu" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase shadow-lg transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> <span>Publier la mise à jour</span>
+                </button>
+            </div>
+
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-1 shadow-2xl flex flex-col">
+                <div class="bg-slate-900 border-b border-slate-800 p-3 rounded-t-3xl flex items-center justify-between">
+                    <span class="text-[10px] font-mono text-slate-400 uppercase font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-code"></i> Éditeur de texte brut (Prend en charge les sauts de ligne)
+                    </span>
+                    <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" title="Synchronisé avec Supabase"></span>
+                </div>
+                
+                <textarea id="admin-cgu-editor" class="w-full bg-gtscard text-slate-300 text-xs font-sans p-6 outline-none resize-y min-h-[500px] rounded-b-3xl custom-scrollbar leading-relaxed" placeholder="Chargement du texte juridique depuis les serveurs GTS..."></textarea>
+            </div>
+            
+            <div class="bg-sky-500/10 border border-sky-500/30 p-4 rounded-xl flex items-start gap-3">
+                <i class="fa-solid fa-circle-info text-sky-400 text-lg mt-0.5"></i>
+                <div class="space-y-1">
+                    <h4 class="text-sm font-black text-sky-400 uppercase">Impact Immédiat</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">Toute modification enregistrée ici mettra instantanément à jour le texte affiché dans la fenêtre d'inscription du Hub (SSO), ainsi que dans les fenêtres CGU de MATT Clean'App et Eyano Market. Assurez-vous de la justesse juridique des termes avant de publier.</p>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- PIED DE PAGE ADMINISTRATION GLOBAL TECH SOLUTIONS -->
+    <!-- PIED DE PAGE -->
     <footer class="w-full border-t border-slate-800/80 bg-slate-950/95 py-5 px-6 text-slate-400 text-xs mt-auto backdrop-blur-md">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
             <div>
@@ -201,48 +244,123 @@
                     <span class="text-[10px] font-mono text-slate-400">Hub d'Administration Centrale</span>
                 </div>
                 <p class="text-[11px] font-mono text-slate-400 mt-1">
-                    RCCM : <b class="text-sky-400">24-B-04106</b> &nbsp;•&nbsp; 
-                    NIF : <b class="text-sky-400">A2441433N</b>
+                    RCCM : <b class="text-sky-400">CD/KIN/RCCM/24-B-04106</b> &nbsp;•&nbsp; NIF : <b class="text-sky-400">A2441433N</b>
                 </p>
             </div>
-
             <div class="flex flex-col sm:items-end gap-1.5 text-[11px]">
                 <a href="mailto:infos.glotechs@gmail.com" class="hover:text-sky-400 flex items-center justify-center sm:justify-end gap-1.5 text-slate-300 transition-colors">
                     <i class="fa-solid fa-envelope text-sky-400"></i> infos.glotechs@gmail.com
                 </a>
-                <div class="flex items-center justify-center sm:justify-end gap-3">
-                    <a href="tel:+243980000338" class="hover:text-emerald-300 flex items-center gap-1.5 text-emerald-400 font-mono font-bold transition-colors">
-                        <i class="fa-solid fa-phone"></i> +243 980 000 338
-                    </a>
-                    <span class="text-slate-600">•</span>
-                    <a href="https://wa.me/243980000338" target="_blank" class="hover:text-green-300 flex items-center gap-1 text-green-400 font-bold transition-colors">
-                        <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp Support
-                    </a>
-                </div>
             </div>
         </div>
     </footer>
 
+    <!-- SUPABASE INIT & GESTION DES CGU -->
     <script>
-        let mapInstance = null;
-        let mapLayersGroup = null;
+        const SUPABASE_URL = "https://vbriworyscymnmtzzdny.supabase.co"; // À remplacer par votre URL exacte
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZicml3b3J5c2N5bW5tdHp6ZG55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNzQwNTEsImV4cCI6MjEwMzk1MDA1MX0.VBZupVKj0srae0NT5BNZ0OeaIv9pAl2bl5L-Rd8ocJk"; // À remplacer par votre clé
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // 1. GESTION DES ONGLETS
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            let bg = type === "error" ? "bg-red-600" : "bg-emerald-600";
+            toast.className = `${bg} text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center justify-between gap-3 text-xs font-bold pointer-events-auto transition-all`;
+            toast.innerHTML = `<span>${message}</span><button onclick="this.parentElement.remove()" class="text-white font-black">✕</button>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        async function chargerCguGlobales() {
+            try {
+                const { data, error } = await db.from('system_settings').select('value').eq('key', 'cgu_content').single();
+                if (error && error.code !== 'PGRST116') throw error; // PGRST116 = 0 row
+                
+                const editor = document.getElementById('admin-cgu-editor');
+                if (data && data.value) {
+                    editor.value = data.value;
+                } else {
+                    editor.value = "/* Collez ici le texte des CGU. Le système créera l'entrée automatiquement lors de la première sauvegarde. */";
+                }
+            } catch(e) {
+                showToast("Erreur de connexion à la base de données.", "error");
+            }
+        }
+
+        async function sauvegarderCguGlobales() {
+            const btn = document.getElementById('btn-save-cgu');
+            const editor = document.getElementById('admin-cgu-editor');
+            const newContent = editor.value.trim();
+
+            if (!newContent) {
+                showToast("Le texte des CGU ne peut pas être vide.", "error");
+                return;
+            }
+
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Publication...</span>`;
+            btn.disabled = true;
+
+            try {
+                // Upsert permet de créer la ligne si elle n'existe pas, ou de la mettre à jour
+                const { error } = await db.from('system_settings').upsert({ 
+                    key: 'cgu_content', 
+                    value: newContent 
+                }, { onConflict: 'key' });
+
+                if (error) throw error;
+                
+                showToast("✅ Conditions Générales d'Utilisation publiées sur tout le réseau avec succès !");
+            } catch(e) {
+                showToast("❌ Échec de la sauvegarde : " + e.message, "error");
+            } finally {
+                btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> <span>Publier la mise à jour</span>`;
+                btn.disabled = false;
+            }
+        }
+
+        // NAVIGATION CENTRALE
         function navigateCentral(tabName) {
             document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(btn => {
-                btn.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60";
+                btn.className = "nav-tab whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60";
             });
             document.getElementById('pane-' + tabName).classList.add('active');
             
             const btnActive = document.getElementById('btn-tab-' + tabName);
-            if (tabName === 'analytics') btnActive.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
-            if (tabName === 'synergies') btnActive.className = "nav-tab px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-fuchsia-600 text-white shadow-md";
+            if (tabName === 'analytics') btnActive.className = "nav-tab whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
+            if (tabName === 'synergies') btnActive.className = "nav-tab whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-fuchsia-600 text-white shadow-md";
+            if (tabName === 'filiales') btnActive.className = "nav-tab whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-sky-600 text-white shadow-md";
+            if (tabName === 'legal') {
+                btnActive.className = "nav-tab whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black uppercase transition-all flex items-center gap-2 bg-emerald-600 text-white shadow-md";
+                chargerCguGlobales(); // Recharge les datas à l'ouverture de l'onglet
+            }
             
             if(tabName === 'analytics' && mapInstance) setTimeout(() => { mapInstance.invalidateSize(); }, 200);
         }
 
-        // 2. SIMULATION BASE DE DONNÉES UNIFIÉE (GTS ID = Téléphone)
+        // INIT CARTE DENSITÉ
+        let mapInstance = null;
+        let mapLayersGroup = null;
+        const TERRITORIAL_DATA = [
+            { commune: "Gombe", lat: -4.3032, lng: 15.3056, users: 70 },
+            { commune: "Limete", lat: -4.3547, lng: 15.3408, users: 32 },
+            { commune: "Ngaliema", lat: -4.3411, lng: 15.2530, users: 28 }
+        ];
+
+        function initKinshasaMap() {
+            mapInstance = L.map('kinshasa-map').setView([-4.3350, 15.3100], 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mapInstance);
+            mapLayersGroup = L.layerGroup().addTo(mapInstance);
+            
+            TERRITORIAL_DATA.forEach(zone => {
+                const circle = L.circleMarker([zone.lat, zone.lng], { radius: 25, fillColor: "#f43f5e", color: "#ffffff", weight: 2, opacity: 0.9, fillOpacity: 0.65 });
+                circle.bindPopup(`<strong style="color:#f43f5e">${zone.commune}</strong><br>👥 ${zone.users} usagers`);
+                mapLayersGroup.addLayer(circle);
+            });
+        }
+
+        // SIMULATION CRM
         const GTS_CRM_DATA = [
             { phone: "+243813271112", name: "Direction KAM", apps: ["easyfly", "transvision", "cleanapp", "eyanomarket"], revenue: 2800000 },
             { phone: "+243825556633", name: "Jean Mukendi", apps: ["transvision", "cleanapp"], revenue: 145000 },
@@ -273,7 +391,6 @@
                     multiAppValue += client.revenue;
                 }
 
-                // Logique de Recommandation Croisée (L'Intelligence Artificielle de votre CRM)
                 let recommendation = "";
                 let btnColor = "";
                 if (client.apps.includes('transvision') && !client.apps.includes('cleanapp')) {
@@ -310,31 +427,9 @@
                 `;
             });
 
-            const totalClients = GTS_CRM_DATA.length;
-            const crossRate = Math.round((multiAppCount / totalClients) * 100);
-
-            document.getElementById('crm-total-clients').textContent = totalClients;
-            document.getElementById('crm-taux-croisement').textContent = crossRate + "%";
+            document.getElementById('crm-total-clients').textContent = GTS_CRM_DATA.length;
+            document.getElementById('crm-taux-croisement').textContent = Math.round((multiAppCount / GTS_CRM_DATA.length) * 100) + "%";
             document.getElementById('crm-total-value').textContent = multiAppValue.toLocaleString('fr-FR') + " CDF";
-        }
-
-        // INIT CARTE DENSITÉ (Maintien de l'existant)
-        const TERRITORIAL_DATA = [
-            { commune: "Gombe", lat: -4.3032, lng: 15.3056, users: 70 },
-            { commune: "Limete", lat: -4.3547, lng: 15.3408, users: 32 },
-            { commune: "Ngaliema", lat: -4.3411, lng: 15.2530, users: 28 }
-        ];
-
-        function initKinshasaMap() {
-            mapInstance = L.map('kinshasa-map').setView([-4.3350, 15.3100], 12);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mapInstance);
-            mapLayersGroup = L.layerGroup().addTo(mapInstance);
-            
-            TERRITORIAL_DATA.forEach(zone => {
-                const circle = L.circleMarker([zone.lat, zone.lng], { radius: 25, fillColor: "#f43f5e", color: "#ffffff", weight: 2, opacity: 0.9, fillOpacity: 0.65 });
-                circle.bindPopup(`<strong style="color:#f43f5e">${zone.commune}</strong><br>👥 ${zone.users} usagers`);
-                mapLayersGroup.addLayer(circle);
-            });
         }
 
         document.addEventListener('DOMContentLoaded', () => { 
