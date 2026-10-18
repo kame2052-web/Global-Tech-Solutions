@@ -98,35 +98,69 @@
             </div>
 
             <!-- FORMULAIRE INSCRIPTION -->
-            <div id="form-register" class="space-y-4 hidden">
+            <div id="form-register" class="space-y-4 hidden max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nom Complet / Etablissement</label>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nom Complet / Etablissement *</label>
                     <input type="text" id="reg-name" placeholder="Votre nom" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-white outline-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Téléphone</label>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Téléphone *</label>
                     <input type="tel" id="reg-phone" placeholder="Ex: 0812345678" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-white outline-none font-mono">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Profil Utilisateur</label>
-                    <select id="reg-role" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-sky-400 font-bold outline-none">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Profil Utilisateur *</label>
+                    <select id="reg-role" onchange="toggleRoleFields()" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-sky-400 font-bold outline-none">
                         <option value="client">👤 Client Standard (Achats, Prestations, Passager)</option>
-                        <option value="commercial">🏬 Partenaire / Opérateur Commercial (Vendeur, Flotte)</option>
+                        <option value="commercial">🏬 Partenaire / Opérateur Commercial</option>
                     </select>
                 </div>
+
+                <!-- CHAMPS DYNAMIQUES PARTENAIRES -->
+                <div id="partner-fields" class="hidden space-y-4 p-3 bg-slate-900 border border-slate-800 rounded-xl">
+                    <div>
+                        <label class="block text-[10px] font-bold text-amber-400 uppercase tracking-wider mb-1">Pôle d'activité souhaité *</label>
+                        <select id="reg-pole" onchange="togglePoleOptions()" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-lg p-2.5 text-xs text-white outline-none">
+                            <option value="">-- Choisir un pôle GTS --</option>
+                            <option value="eyanomarket">🛍️ Eyano Market (Vendeur/Marchand)</option>
+                            <option value="cleanapp">✨ MATT Clean'App (Prestataire)</option>
+                            <option value="transvision">📡 TransVision (Flotte/Citerne)</option>
+                        </select>
+                    </div>
+
+                    <!-- SOUS-MENU MATT CLEAN'APP -->
+                    <div id="matt-specialty-container" class="hidden">
+                        <label class="block text-[10px] font-bold text-emerald-400 uppercase tracking-wider mb-1">Spécialité MATT Clean'App *</label>
+                        <select id="reg-matt-specialty" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-lg p-2.5 text-xs text-white outline-none">
+                            <option value="Multiservices Complet">Multiservices Complet (Toutes prestations)</option>
+                            <option value="Polyvalent Auto et Maison">Polyvalent (Auto et Maison)</option>
+                            <option value="Lavage auto & Engins">Lavage auto & Engins</option>
+                            <option value="Maison">Maison (Canapés, Vitres, Tapis)</option>
+                            <option value="Assainissement & 3D">Assainissement & Traitement 3D</option>
+                            <option value="Vidange">Vidange fosse septique & Immondices</option>
+                        </select>
+                    </div>
+
+                    <!-- UPLOAD DOCUMENT LEGAL -->
+                    <div class="border border-dashed border-slate-600 p-3 rounded-xl bg-slate-950/50">
+                        <label class="block text-[10px] font-bold text-sky-400 uppercase tracking-wider mb-1">📁 Document Officiel (RCCM, Patente, ID) *</label>
+                        <p class="text-[9px] text-slate-500 mb-2">Requis pour valider votre agrément partenaire.</p>
+                        <input type="file" id="reg-doc" accept="image/*,application/pdf" class="w-full text-[10px] text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-black file:bg-sky-500/20 file:text-sky-400 hover:file:bg-sky-500/30 cursor-pointer outline-none">
+                    </div>
+                </div>
+
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Créer un mot de passe</label>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Créer un mot de passe *</label>
                     <input type="password" id="reg-pass" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl p-3 text-xs text-white outline-none font-mono">
                 </div>
                 
                 <div class="flex items-start gap-2 bg-slate-900 p-3 rounded-xl border border-slate-800">
-                    <input type="checkbox" id="chk-cgu" class="mt-0.5 accent-sky-500 w-4 h-4 cursor-pointer">
+                    <input type="checkbox" id="chk-cgu" onchange="toggleSubmitButton()" class="mt-0.5 accent-sky-500 w-4 h-4 cursor-pointer">
                     <label for="chk-cgu" class="text-[10px] text-slate-400 leading-tight cursor-pointer">
                         J'ai lu et j'accepte sans réserve les <span onclick="ouvrirCgu()" class="text-sky-400 font-bold underline">Conditions Générales d'Utilisation (CGU)</span> de la plateforme GTS.
                     </label>
                 </div>
 
-                <button onclick="executerInscriptionGlobale()" class="w-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-black py-3.5 rounded-xl text-xs uppercase shadow-lg shadow-sky-500/20 transition-all">
+                <button id="btn-submit-reg" disabled onclick="executerInscriptionGlobale()" class="w-full bg-slate-800 text-slate-500 font-black py-3.5 rounded-xl text-xs uppercase transition-all cursor-not-allowed">
                     Créer mon compte unique
                 </button>
             </div>
@@ -354,6 +388,41 @@
             }
         }
 
+        // Affichage dynamique des champs selon le rôle
+        function toggleRoleFields() {
+            const role = document.getElementById('reg-role').value;
+            const partnerFields = document.getElementById('partner-fields');
+            if (role === 'commercial') {
+                partnerFields.classList.remove('hidden');
+            } else {
+                partnerFields.classList.add('hidden');
+            }
+        }
+
+        // Affichage dynamique des spécialités MATT
+        function togglePoleOptions() {
+            const pole = document.getElementById('reg-pole').value;
+            const mattContainer = document.getElementById('matt-specialty-container');
+            if (pole === 'cleanapp') {
+                mattContainer.classList.remove('hidden');
+            } else {
+                mattContainer.classList.add('hidden');
+            }
+        }
+
+        // Activation du bouton de soumission lié aux CGU
+        function toggleSubmitButton() {
+            const chk = document.getElementById('chk-cgu').checked;
+            const btn = document.getElementById('btn-submit-reg');
+            if (chk) {
+                btn.disabled = false;
+                btn.className = "w-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-black py-3.5 rounded-xl text-xs uppercase shadow-lg shadow-sky-500/20 transition-all";
+            } else {
+                btn.disabled = true;
+                btn.className = "w-full bg-slate-800 text-slate-500 font-black py-3.5 rounded-xl text-xs uppercase transition-all cursor-not-allowed";
+            }
+        }
+
         // Modale CGU
         function ouvrirCgu() { document.getElementById('modal-cgu').classList.remove('hidden'); }
         function fermerCgu() { document.getElementById('modal-cgu').classList.add('hidden'); }
@@ -384,15 +453,25 @@
             const tel = document.getElementById('reg-phone').value.trim();
             const role = document.getElementById('reg-role').value;
             const pass = document.getElementById('reg-pass').value.trim();
-            const cgu = document.getElementById('chk-cgu').checked;
-
+            
+            // Validation de base
             if (!nom || !tel || !pass) {
-                alert("Veuillez remplir tous les champs du formulaire.");
+                alert("Veuillez remplir tous les champs obligatoires (*).");
                 return;
             }
-            if (!cgu) {
-                alert("Vous devez accepter les Conditions Générales d'Utilisation pour créer un compte.");
-                return;
+
+            // Validation spécifique si Partenaire
+            if (role === 'commercial') {
+                const pole = document.getElementById('reg-pole').value;
+                const doc = document.getElementById('reg-doc').files.length;
+                if (!pole) {
+                    alert("Veuillez sélectionner le Pôle d'activité souhaité.");
+                    return;
+                }
+                if (doc === 0) {
+                    alert("Vous devez joindre un document officiel (RCCM, Patente ou Pièce d'identité) pour valider votre statut de partenaire.");
+                    return;
+                }
             }
 
             // Mock inscription réussie
