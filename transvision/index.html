@@ -5,15 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TransVision Protect — Sécurité, Télématique & Citernes Hydrocarbures</title>
     
-    <!-- LIAISON LOGO & PWA RACINE -->
     <link rel="icon" type="image/png" href="/VISION.png">
     <link rel="apple-touch-icon" href="/VISION.png">
-    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#020617">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="TransVision">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -40,18 +36,13 @@
             position: relative; width: 32px; height: 32px; transform-origin: center center;
             transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
         }
-
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) hue-rotate(120deg); cursor: pointer; }
-
         @keyframes waveAnimation {
             0% { transform: translateX(0) translateZ(0) scaleY(1); }
             50% { transform: translateX(-25%) translateZ(0) scaleY(0.85); }
             100% { transform: translateX(-50%) translateZ(0) scaleY(1); }
         }
-        .liquid-wave {
-            animation: waveAnimation 4s infinite linear;
-        }
-
+        .liquid-wave { animation: waveAnimation 4s infinite linear; }
         @media print {
             body { background: white !important; color: black !important; }
             .no-print { display: none !important; }
@@ -66,94 +57,9 @@
         <div class="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/70 to-slate-950/90"></div>
     </div>
 
-    <!-- BANNIÈRE PWA -->
-    <div id="pwa-install-banner" class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-slate-900/95 backdrop-blur border border-emerald-500/50 text-slate-100 p-3 rounded-2xl shadow-2xl flex items-center gap-3 z-[100] w-[90%] max-w-sm hidden no-print">
-        <div class="w-10 h-10 rounded-xl overflow-hidden shadow-md flex items-center justify-center bg-white p-1 flex-shrink-0">
-            <img src="/VISION.png" alt="Logo" class="w-full h-full object-contain scale-105" onerror="this.style.display='none'">
-        </div>
-        <div class="flex-1">
-            <p class="text-[11px] font-black text-emerald-400">Installer TransVision Protect</p>
-            <p class="text-[9px] text-slate-400">by Global Tech Solutions</p>
-        </div>
-        <button id="btn-install-pwa" class="bg-emerald-500 text-slate-950 font-black text-[10px] px-3 py-2 rounded-xl">Installer</button>
-        <button onclick="document.getElementById('pwa-install-banner').classList.add('hidden')" class="text-slate-500 px-2"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-
     <div class="relative z-10 max-w-md mx-auto min-h-screen shadow-2xl overflow-hidden flex flex-col border-x border-slate-800/70 pb-20 bg-slate-900/70 backdrop-blur-xl" id="zone-flotte">
-        
-        <!-- 1. AUTHENTIFICATION -->
-        <div id="page-auth" class="p-6 space-y-5 flex-1 flex flex-col justify-between no-print overflow-y-auto">
-            <div class="space-y-4 mt-1">
-                <div class="text-center">
-                    <div class="w-20 h-20 mx-auto mb-3 rounded-2xl overflow-hidden shadow-2xl shadow-emerald-500/25 flex items-center justify-center bg-white p-2 border border-emerald-500/30">
-                        <img src="/VISION.png" alt="Logo TransVision" class="w-full h-full object-contain scale-105" onerror="this.style.display='none'">
-                    </div>
-                    <h2 class="text-xl font-black tracking-wide">TransVision Protect</h2>
-                    <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">by Global Tech Solutions</p>
-                    <p class="text-[9px] text-slate-300 mt-0.5 italic">Suivi Satellite, Citernes & Flottes Pétrolières</p>
-                </div>
 
-                <div class="grid grid-cols-2 gap-1 bg-slate-950/80 backdrop-blur p-1 rounded-xl border border-slate-800">
-                    <button id="tab-btn-login" onclick="basculerVueAuth('login')" class="py-2 text-xs font-black rounded-lg transition-all bg-emerald-500 text-slate-950">Connexion</button>
-                    <button id="tab-btn-register" onclick="basculerVueAuth('register')" class="py-2 text-xs font-black rounded-lg transition-all text-slate-400 hover:text-slate-200">Nouveau Compte</button>
-                </div>
-
-                <!-- FORMULAIRE CONNEXION -->
-                <div id="form-connexion" class="bg-slate-950/85 backdrop-blur p-5 rounded-2xl border border-slate-800/80 space-y-4 shadow-xl">
-                    <div>
-                        <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Téléphone Enregistré</label>
-                        <input type="tel" id="login-tel" class="w-full bg-slate-900 border border-slate-800 focus:border-emerald-500 focus:outline-none rounded-xl p-3 text-xs text-slate-200 font-mono font-bold" placeholder="0810000000">
-                    </div>
-                    <div>
-                        <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Code PIN Sécurité</label>
-                        <input type="password" id="login-pin" class="w-full bg-slate-900 border border-slate-800 focus:border-emerald-500 focus:outline-none rounded-xl p-3 text-xs text-slate-200 font-mono" placeholder="4 chiffres">
-                    </div>
-                    <button onclick="executerConnexionPartenaire()" id="btn-login-text" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3 rounded-xl text-xs uppercase shadow-lg shadow-emerald-500/10 transition-colors">
-                        Accéder à mes Véhicules
-                    </button>
-                </div>
-
-                <!-- FORMULAIRE INSCRIPTION -->
-                <div id="form-inscription" class="bg-slate-950/85 backdrop-blur p-4 rounded-2xl border border-slate-800/80 space-y-3 shadow-xl hidden">
-                    <div>
-                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Nom Complet / Entreprise</label>
-                        <input type="text" id="ins-nom" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200" placeholder="Ex: SEP CONGO / Jean Mukendi">
-                    </div>
-                    <div>
-                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Type d'Usage / Flotte</label>
-                        <select id="ins-type-contrat" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-emerald-400 font-bold outline-none">
-                            <option value="commercial">🛢️ Pétrolier / Camions-Citernes & Poids-Lourds</option>
-                            <option value="commercial">🚌 Transport Commercial (Bus, Taxi, Ligne)</option>
-                            <option value="personnel">🚗 Particulier / Antivol Personnel</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Téléphone RDC</label>
-                        <input type="tel" id="ins-tel" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 font-mono" placeholder="Ex: 0812345678">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Commune</label>
-                            <input type="text" id="ins-commune" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:border-emerald-500 outline-none" placeholder="Ex: Gombe">
-                        </div>
-                        <div>
-                            <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Quartier</label>
-                            <input type="text" id="ins-quartier" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:border-emerald-500 outline-none" placeholder="Ex: Gare Centrale">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Créer un Code PIN</label>
-                        <input type="password" id="ins-pin" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 font-mono" placeholder="4 chiffres secrets">
-                    </div>
-                    <button onclick="inscrireNouveauPartenaire()" class="w-full bg-emerald-500 text-slate-950 font-black py-3 rounded-xl text-xs uppercase mt-3 shadow-lg">Créer Mon Compte</button>
-                </div>
-            </div>
-            <div class="text-center py-2 text-[9px] font-mono text-slate-400 border-t border-slate-800/80">
-                TransVision v35.0 — Télématique Carburant & GPS GTS
-            </div>
-        </div>
-
-        <!-- 2. APPLICATION PRINCIPALE -->
+        <!-- APPLICATION PRINCIPALE -->
         <div id="app-proprietaire" class="flex-1 flex flex-col hidden relative">
             <header class="p-4 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur sticky top-0 z-30 no-print">
                 <div class="flex justify-between items-center mb-3">
@@ -185,7 +91,6 @@
 
             <!-- ONGLET 1 : GPS LIVE & TABLEAU DE BORD -->
             <div id="onglet-flotte" class="p-2 flex-1 flex flex-col blur-transition class-onglet no-print min-h-[calc(100vh-170px)] space-y-2">
-                
                 <!-- BLOC EXPLOITATION COMMERCIALE -->
                 <div id="bloc-widgets-commercial" class="bg-gradient-to-br from-indigo-950/80 to-slate-900/90 border border-indigo-500/30 rounded-2xl p-3 space-y-2 shadow-2xl backdrop-blur hidden">
                     <div class="flex justify-between items-center text-xs border-b border-indigo-500/20 pb-2">
@@ -251,9 +156,8 @@
                 </div>
             </div>
 
-            <!-- NOUVEL ONGLET : SUIVI CITERNES & HYDROCARBURES -->
+            <!-- ONGLET 2 : SUIVI CITERNES & HYDROCARBURES -->
             <div id="onglet-citernes" class="p-3 space-y-4 class-onglet hidden no-print pb-32">
-                
                 <div class="bg-slate-950/90 backdrop-blur p-4 rounded-2xl border border-amber-500/30 shadow-xl space-y-3">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
                         <div>
@@ -265,30 +169,21 @@
                         <select id="select-citerne-active" onchange="changerCiterneActive(this.value)" class="bg-slate-900 border border-slate-700 rounded-lg text-[10px] text-amber-400 font-bold px-2.5 py-1 outline-none"></select>
                     </div>
 
-                    <!-- Jauge visuelle et Volume -->
                     <div class="grid grid-cols-3 gap-3 items-center py-2">
-                        <!-- Jauge de citerne animée -->
                         <div class="relative w-16 h-40 bg-slate-900 border-2 border-slate-700 rounded-2xl overflow-hidden mx-auto flex flex-col justify-end p-1 shadow-inner">
-                            <div class="absolute inset-x-0 top-1 text-center z-10">
-                                <span class="text-[7.5px] font-mono text-slate-400 font-bold">100%</span>
-                            </div>
-                            <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center z-10">
-                                <span class="text-[7.5px] font-mono text-slate-400 font-bold">50%</span>
-                            </div>
+                            <div class="absolute inset-x-0 top-1 text-center z-10"><span class="text-[7.5px] font-mono text-slate-400 font-bold">100%</span></div>
+                            <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center z-10"><span class="text-[7.5px] font-mono text-slate-400 font-bold">50%</span></div>
                             <div id="citerne-niveau-liquide" class="w-full bg-gradient-to-t from-amber-600 via-amber-500 to-amber-300 rounded-xl transition-all duration-700 relative flex items-center justify-center overflow-hidden" style="height: 0%;">
                                 <div class="absolute inset-0 bg-white/20 liquid-wave w-[200%] h-full pointer-events-none"></div>
                                 <span id="citerne-pct-badge" class="text-[10px] font-black text-slate-950 font-mono relative z-10">0%</span>
                             </div>
                         </div>
-
-                        <!-- Métriques détaillées du carburant -->
                         <div class="col-span-2 space-y-2">
                             <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
                                 <span class="text-[8px] text-slate-400 uppercase font-bold block">Volume Carburant Détecté</span>
                                 <span class="text-2xl font-black text-amber-400 font-mono tracking-tight" id="citerne-litres-val">0 L</span>
                                 <span class="text-[9px] text-slate-400 block font-mono mt-0.5" id="citerne-capacite-max">Capacité max : 0 L</span>
                             </div>
-
                             <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
                                 <div class="bg-slate-900/90 p-2 rounded-xl border border-slate-800">
                                     <span class="text-[8px] text-slate-400 uppercase block font-bold">Vanne de Vidange</span>
@@ -302,7 +197,6 @@
                         </div>
                     </div>
 
-                    <!-- Alerte intelligente anti-siphonnage -->
                     <div id="alerte-siphonnage-box" class="p-3 rounded-xl border flex items-center gap-3 bg-emerald-500/10 border-emerald-500/30 text-emerald-400 transition-all">
                         <i class="fa-solid fa-shield-check text-xl flex-shrink-0" id="alerte-siphonnage-icon"></i>
                         <div>
@@ -312,12 +206,10 @@
                     </div>
                 </div>
 
-                <!-- Paramétrage et calibrage de la cuve -->
                 <div class="bg-slate-950/85 backdrop-blur p-4 rounded-2xl border border-slate-800 space-y-3 shadow-xl">
                     <h4 class="text-[10px] font-black uppercase text-amber-400 tracking-wider border-b border-slate-800 pb-2 flex items-center gap-1.5">
                         <i class="fa-solid fa-sliders"></i> Calibrage de la Cuve & Sonde Numérique
                     </h4>
-                    
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Capacité Totale (Litres)</label>
@@ -332,7 +224,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Seuil Alerte Vol (Litres)</label>
@@ -347,7 +238,6 @@
                             </select>
                         </div>
                     </div>
-
                     <button onclick="enregistrerCalibrageCiterne()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3 rounded-xl text-xs uppercase shadow transition-all">
                         Enregistrer la Configuration Citerne
                     </button>
@@ -362,7 +252,6 @@
                             <i class="fa-solid fa-clock-rotate-left text-sky-400"></i> Historique des Déplacements
                         </h3>
                     </div>
-
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Véhicule Cible</label>
@@ -373,7 +262,6 @@
                             <input type="date" id="hist-date-picker" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-1.5 text-xs text-slate-200 outline-none">
                         </div>
                     </div>
-
                     <button onclick="chargerHistoriqueDate()" class="w-full bg-sky-500 hover:bg-sky-600 text-slate-950 font-black py-2.5 rounded-xl text-xs uppercase shadow-md transition-colors flex items-center justify-center gap-2">
                         <i class="fa-solid fa-magnifying-glass"></i> Afficher le Trajet
                     </button>
@@ -407,7 +295,6 @@
                     </h2>
                     <p class="text-[9px] text-slate-400 mt-0.5">Commandes coupe-circuit et suivi kilométrique des pièces d'usure.</p>
                 </div>
-
                 <div id="combo-vehicules-list" class="space-y-4"></div>
             </div>
 
@@ -494,11 +381,6 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-[8px] font-bold text-slate-400 uppercase mb-1">Nouveau Code PIN</label>
-                        <input type="password" id="prof-pin-new" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs text-slate-200 font-mono outline-none focus:border-indigo-500" placeholder="Laisser vide si inchangé">
-                    </div>
-
                     <div id="prof-msg-feedback" class="hidden p-3 rounded-xl text-center text-xs font-bold transition-all"></div>
 
                     <button id="btn-maj-profil" onclick="majIdentifiantsEtAdresse()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-black py-2.5 rounded-xl text-xs uppercase transition-colors">
@@ -516,7 +398,7 @@
                 </div>
             </div>
 
-            <!-- BARRE DE NAVIGATION INFÉRIEURE COMPLÈTE (6 ONGLETS) -->
+            <!-- BARRE DE NAVIGATION INFÉRIEURE -->
             <nav class="fixed bottom-0 max-w-md w-full inset-x-0 mx-auto bg-slate-950/95 backdrop-blur border-t border-slate-800 h-16 flex justify-around items-center z-40 no-print px-0.5">
                 <button onclick="changerOnglet('onglet-flotte', this)" class="flex flex-col items-center justify-center gap-1 text-emerald-400 btn-nav flex-1"><i class="fa-solid fa-location-crosshairs text-sm"></i><span class="text-[7.5px] font-bold">Live</span></button>
                 <button onclick="changerOnglet('onglet-citernes', this)" class="flex flex-col items-center justify-center gap-1 text-slate-500 btn-nav flex-1"><i class="fa-solid fa-truck-droplet text-sm"></i><span class="text-[7.5px] font-bold">Citernes</span></button>
@@ -529,46 +411,13 @@
     </div>
 
     <script>
-        // SERVICE WORKER & GESTIONNAIRE PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(reg => console.log('SW TransVision actif :', reg.scope))
-                    .catch(err => console.warn('SW err:', err));
-            });
-        }
-        let tvDeferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            tvDeferredPrompt = e;
-            const banner = document.getElementById('pwa-install-banner');
-            if (banner) banner.classList.remove('hidden');
-        });
-        document.getElementById('btn-install-pwa')?.addEventListener('click', async () => {
-            if (!tvDeferredPrompt) return;
-            tvDeferredPrompt.prompt();
-            const { outcome } = await tvDeferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                document.getElementById('pwa-install-banner')?.classList.add('hidden');
-            }
-            tvDeferredPrompt = null;
-        });
-
-        function chargerConfigurationsAdmin() {
-            const numWhatsApp = localStorage.getItem('tv_whatsapp') || "243810000000";
-            const lienWa = document.getElementById('lien-whatsapp-support');
-            if(lienWa) lienWa.href = `https://wa.me/${numWhatsApp.replace(/[^0-9]/g, '')}`;
-        }
-
         const supabaseUrl = 'https://vbriworyscymnmtzzdny.supabase.co';
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZicml3b3J5c2N5bW5tdHp6ZG55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNzQwNTEsImV4cCI6MjEwMzk1MDA1MX0.VBZupVKj0srae0NT5BNZ0OeaIv9pAl2bl5L-Rd8ocJk';
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
         let socket = { emit: () => {}, on: () => {} };
         if (window.location.protocol === 'http:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            try {
-                socket = io("http://134.209.116.89:3000", { transports: ['websocket', 'polling'], reconnection: true });
-            } catch(e) {}
+            try { socket = io("http://134.209.116.89:3000", { transports: ['websocket', 'polling'], reconnection: true }); } catch(e) {}
         }
 
         const syncChannel = supabaseClient.channel('tv_sync_channel');
@@ -590,7 +439,12 @@
         let cacheAdresse = "";
         let citerneSelectionneeImei = null;
 
-        // BASCULE DE MODE (COMMERCIAL / CITERNE vs PERSONNEL)
+        function chargerConfigurationsAdmin() {
+            const numWhatsApp = localStorage.getItem('tv_whatsapp') || "243810000000";
+            const lienWa = document.getElementById('lien-whatsapp-support');
+            if(lienWa) lienWa.href = `https://wa.me/${numWhatsApp.replace(/[^0-9]/g, '')}`;
+        }
+
         function adapterInterfaceSelonMode(typeContrat) {
             const estCommercial = (typeContrat || '').toLowerCase() === 'commercial';
             const blocCommercial = document.getElementById('bloc-widgets-commercial');
@@ -620,13 +474,9 @@
 
         async function detecterNomAvenue(lat, lng) {
             const now = Date.now();
-            if (now - dernierGeocodageTs < 12000 && cacheAdresse) {
-                return cacheAdresse;
-            }
+            if (now - dernierGeocodageTs < 12000 && cacheAdresse) return cacheAdresse;
             try {
-                const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
-                    headers: { 'Accept-Language': 'fr' }
-                });
+                const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, { headers: { 'Accept-Language': 'fr' } });
                 if (resp.ok) {
                     const data = await resp.json();
                     dernierGeocodageTs = now;
@@ -656,8 +506,7 @@
 
         function calculerCap(lat1, lon1, lat2, lon2) {
             const y = Math.sin((lon2 - lon1) * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180);
-            const x = Math.cos(lat1 * Math.PI / 180) * Math.sin(lat2 * Math.PI / 180) -
-                      Math.sin(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.cos((lon2 - lon1) * Math.PI / 180);
+            const x = Math.cos(lat1 * Math.PI / 180) * Math.sin(lat2 * Math.PI / 180) - Math.sin(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.cos((lon2 - lon1) * Math.PI / 180);
             return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
         }
 
@@ -751,13 +600,12 @@
         function activerSynchronisationCloud() {
             if (!window.supabase) return;
             syncChannel.on('broadcast', { event: 'compte_supprime' }, ({ payload }) => {
-                const telSauve = localStorage.getItem('tv_partenaire_tel');
+                const telSauve = partenaireProfil ? partenaireProfil.tel : '';
                 if (payload.tel === telSauve) {
                     alert("⚠️ Votre compte a été suspendu par l'Administrateur.");
                     declencherDeconnexion();
                 }
-            })
-            .on('broadcast', { event: 'maj_ligne_vehicule' }, ({ payload }) => {
+            }).on('broadcast', { event: 'maj_ligne_vehicule' }, ({ payload }) => {
                 let v = client.vehicules.find(item => item.imei === payload.imei);
                 if (v) {
                     v.origine = payload.origine;
@@ -765,14 +613,12 @@
                     v.tarif = payload.tarif;
                     document.getElementById('hud-commercial-ligne').textContent = `${v.origine} ➔ ${v.destination}`;
                 }
-            })
-            .subscribe();
+            }).subscribe();
         }
 
         function activerFluxRealtimePush() {
             if (!window.supabase) return;
-            supabaseClient
-                .channel('tv_gps_realtime_channel')
+            supabaseClient.channel('tv_gps_realtime_channel')
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'transvision_positions_gps' }, (payload) => {
                     const row = payload.new;
                     if (row) {
@@ -789,8 +635,7 @@
                             statutVanne: row.statut_vanne || false
                         });
                     }
-                })
-                .subscribe();
+                }).subscribe();
         }
 
         function remettreCompteurZeroManuel() {
@@ -815,7 +660,6 @@
             try {
                 const txtStatut = document.getElementById('last-update-text');
                 txtStatut.textContent = "Interrogation des coordonnées...";
-                
                 if (!window.supabase) return;
 
                 const customConfig = JSON.parse(localStorage.getItem('tv_vehicules_custom') || '{}');
@@ -835,7 +679,6 @@
                 }
 
                 client.vehicules = [];
-
                 for (let imeiClean of clesVehicules) {
                     let cfg = customConfig[imeiClean] || {};
                     let v = {
@@ -857,12 +700,8 @@
                         recetteBruteReelle: parseFloat(cfg.recetteBruteReelle) || 0
                     };
 
-                    const { data: latestData } = await supabaseClient
-                        .from('transvision_positions_gps')
-                        .select('*')
-                        .eq('imei', imeiClean)
-                        .order('created_at', { ascending: false })
-                        .limit(1);
+                    const { data: latestData } = await supabaseClient.from('transvision_positions_gps')
+                        .select('*').eq('imei', imeiClean).order('created_at', { ascending: false }).limit(1);
 
                     if (latestData && latestData.length > 0) {
                         v.lat = parseFloat(latestData[0].latitude);
@@ -873,9 +712,7 @@
 
                     const debutAujourdhui = new Date();
                     debutAujourdhui.setHours(0, 0, 0, 0);
-
-                    const { data: pointsAujourdhui } = await supabaseClient
-                        .from('transvision_positions_gps')
+                    const { data: pointsAujourdhui } = await supabaseClient.from('transvision_positions_gps')
                         .select('latitude, longitude, speed, created_at')
                         .eq('imei', imeiClean)
                         .gte('created_at', debutAujourdhui.toISOString())
@@ -888,9 +725,7 @@
                                 parseFloat(pointsAujourdhui[i-1].latitude), parseFloat(pointsAujourdhui[i-1].longitude),
                                 parseFloat(pointsAujourdhui[i].latitude), parseFloat(pointsAujourdhui[i].longitude)
                             );
-                            if (d > 0.015) {
-                                totalRouléAujourdhui += d;
-                            }
+                            if (d > 0.015) totalRouléAujourdhui += d;
                         }
                     }
                     
@@ -906,7 +741,6 @@
                 if (client.vehicules.length > 0) {
                     const premier = client.vehicules[0];
                     tracePositions = [[premier.lat, premier.lng]];
-                    
                     const timeTxt = premier.dateDernierPoint ? new Date(premier.dateDernierPoint).toLocaleTimeString() : 'En attente';
                     txtStatut.textContent = `Dernier relevé satellite : ${timeTxt}`;
                     marquerServeurEnLigne();
@@ -916,9 +750,7 @@
                 majSelecteurCiternes();
                 initMapEtCentrer(0);
                 genererToutesLesVues();
-            } catch (err) {
-                console.error("Erreur chargement:", err);
-            }
+            } catch (err) {}
         }
 
         function traiterNouvellePosition(data) {
@@ -940,7 +772,6 @@
             if (distDelta > 0.020 || (distDelta > 0.005 && data.vitesse > 3)) {
                 v.kmJour += distDelta;
                 v.kmOdometre += distDelta;
-
                 const nouveauCap = calculerCap(v.lat, v.lng, data.lat, data.lng);
                 const ancienCap = v.dernierCap || 0;
                 v.dernierCap = nouveauCap;
@@ -995,21 +826,14 @@
                 }
             }
 
-            if (citerneSelectionneeImei === imeiClean) {
-                actualiserVueCiterne();
-            }
-
+            if (citerneSelectionneeImei === imeiClean) actualiserVueCiterne();
             genererVueControleEntretien();
         }
 
         async function sonderPositionsCloudEnContinu() {
             try {
                 if (!window.supabase) return;
-                const { data } = await supabaseClient
-                    .from('transvision_positions_gps')
-                    .select('*')
-                    .order('created_at', { ascending: false })
-                    .limit(1);
+                const { data } = await supabaseClient.from('transvision_positions_gps').select('*').order('created_at', { ascending: false }).limit(1);
 
                 if (data && data.length > 0) {
                     const latest = data[0];
@@ -1033,7 +857,6 @@
         }
         setInterval(sonderPositionsCloudEnContinu, 3000);
 
-        // MODULE GESTION DES CITERNES
         function majSelecteurCiternes() {
             const sel = document.getElementById('select-citerne-active');
             if (!sel) return;
@@ -1062,17 +885,12 @@
 
         async function actualiserVueCiterne() {
             if (!citerneSelectionneeImei) return;
-
             const v = client.vehicules.find(item => item.imei === citerneSelectionneeImei);
             if (!v) return;
 
             document.getElementById('citerne-plaque-active').textContent = `${v.plaque} (${v.type})`;
-
             const configCuve = JSON.parse(localStorage.getItem(`tv_citerne_${citerneSelectionneeImei}`) || JSON.stringify({
-                capacite: 35000,
-                typeHydro: "gazoil",
-                seuilVol: 150,
-                protocole: "rs485"
+                capacite: 35000, typeHydro: "gazoil", seuilVol: 150, protocole: "rs485"
             }));
 
             document.getElementById('cfg-capacite-citerne').value = configCuve.capacite;
@@ -1088,19 +906,11 @@
 
             try {
                 if (window.supabase) {
-                    const { data } = await supabaseClient
-                        .from('transvision_positions_gps')
-                        .select('*')
-                        .eq('imei', citerneSelectionneeImei)
-                        .order('created_at', { ascending: false })
-                        .limit(2);
-
+                    const { data } = await supabaseClient.from('transvision_positions_gps').select('*').eq('imei', citerneSelectionneeImei).order('created_at', { ascending: false }).limit(2);
                     if (data && data.length > 0) {
                         const pt = data[0];
                         if (pt.capacite_totale_litres) capaciteMax = parseFloat(pt.capacite_totale_litres);
-                        if (pt.volume_carburant_litres !== null && pt.volume_carburant_litres !== undefined) {
-                            volumeLitres = parseFloat(pt.volume_carburant_litres);
-                        }
+                        if (pt.volume_carburant_litres !== null && pt.volume_carburant_litres !== undefined) volumeLitres = parseFloat(pt.volume_carburant_litres);
                         if (pt.temperature_cuve) tempCuve = parseFloat(pt.temperature_cuve);
                         if (pt.statut_vanne !== undefined) vanneOuverte = pt.statut_vanne;
                         if (pt.alerte_siphonnage !== undefined) siphonnageDetecte = pt.alerte_siphonnage;
@@ -1108,9 +918,7 @@
                         if (data.length > 1 && !siphonnageDetecte && data[1].volume_carburant_litres) {
                             const perte = parseFloat(data[1].volume_carburant_litres) - volumeLitres;
                             const vit = parseFloat(pt.speed || 0);
-                            if (perte >= (configCuve.seuilVol || 150) && vit < 3) {
-                                siphonnageDetecte = true;
-                            }
+                            if (perte >= (configCuve.seuilVol || 150) && vit < 3) siphonnageDetecte = true;
                         }
                     }
                 }
@@ -1183,11 +991,11 @@
         }
 
         function genererToutesLesVues() {
-            const nomActuel = (partenaireProfil && partenaireProfil.nom) ? partenaireProfil.nom : (localStorage.getItem('tv_partenaire_nom') || client.nom);
-            const telActuel = (partenaireProfil && partenaireProfil.tel) ? partenaireProfil.tel : (localStorage.getItem('tv_partenaire_tel') || client.tel);
-            const com = (partenaireProfil && partenaireProfil.commune) ? partenaireProfil.commune : (localStorage.getItem('tv_partenaire_commune') || "Kinshasa");
-            const qtr = (partenaireProfil && partenaireProfil.quartier) ? partenaireProfil.quartier : (localStorage.getItem('tv_partenaire_quartier') || "RDC");
-            const typeContratActuel = (partenaireProfil && partenaireProfil.type_contrat) ? partenaireProfil.type_contrat : (localStorage.getItem('tv_partenaire_type_contrat') || "commercial");
+            const nomActuel = (partenaireProfil && partenaireProfil.nom) ? partenaireProfil.nom : "Partenaire GTS";
+            const telActuel = (partenaireProfil && partenaireProfil.tel) ? partenaireProfil.tel : "";
+            const com = (partenaireProfil && partenaireProfil.commune) ? partenaireProfil.commune : "Kinshasa";
+            const qtr = (partenaireProfil && partenaireProfil.quartier) ? partenaireProfil.quartier : "RDC";
+            const typeContratActuel = (partenaireProfil && partenaireProfil.type_contrat) ? partenaireProfil.type_contrat : "commercial";
 
             document.getElementById('lbl-nom-partenaire').textContent = nomActuel;
             document.getElementById('lbl-adresse-partenaire').textContent = `${com} • ${qtr}`;
@@ -1198,7 +1006,6 @@
             document.getElementById('prof-quartier').value = qtr;
             
             adapterInterfaceSelonMode(typeContratActuel);
-
             majSelecteursVehicules();
             majSelecteurCiternes();
             genererVueControleEntretien();
@@ -1259,7 +1066,6 @@
             
             if(!map) {
                 map = L.map('map-container').setView([lat, lng], 17);
-                
                 L.tileLayer('https://{s}.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}', {
                     maxZoom: 20,
                     subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
@@ -1282,21 +1088,14 @@
             
             if (polylineTrace) map.removeLayer(polylineTrace);
             if(tracePositions.length > 1) {
-                polylineTrace = L.polyline(tracePositions, { 
-                    color: '#f59e0b', 
-                    weight: 6, 
-                    opacity: 0.9, 
-                    lineJoin: 'round' 
-                }).addTo(map);
+                polylineTrace = L.polyline(tracePositions, { color: '#f59e0b', weight: 6, opacity: 0.9, lineJoin: 'round' }).addTo(map);
             }
 
             map.setView([lat, lng], 17);
             setTimeout(() => { map.invalidateSize(); }, 200);
         }
         
-        function centrerSurVehicule(indexStr) { 
-            if (indexStr !== "none") initMapEtCentrer(parseInt(indexStr)); 
-        }
+        function centrerSurVehicule(indexStr) { if (indexStr !== "none") initMapEtCentrer(parseInt(indexStr)); }
 
         function initMapHistorique() {
             const histContainer = document.getElementById('map-history-container');
@@ -1305,9 +1104,7 @@
             if (!mapHistory) {
                 mapHistory = L.map('map-history-container').setView([-4.3215, 15.3115], 13);
                 L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-                    maxZoom: 19,
-                    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-                    attribution: '&copy; Google Maps'
+                    maxZoom: 19, subdomains: ['mt0', 'mt1', 'mt2', 'mt3'], attribution: '&copy; Google Maps'
                 }).addTo(mapHistory);
             }
         }
@@ -1329,12 +1126,8 @@
                 const debutJour = new Date(`${dateInput}T00:00:00.000Z`).toISOString();
                 const finJour = new Date(`${dateInput}T23:59:59.999Z`).toISOString();
 
-                const { data, error } = await supabaseClient
-                    .from('transvision_positions_gps')
-                    .select('*')
-                    .eq('imei', vehicule.imei)
-                    .gte('created_at', debutJour)
-                    .lte('created_at', finJour)
+                const { data, error } = await supabaseClient.from('transvision_positions_gps')
+                    .select('*').eq('imei', vehicule.imei).gte('created_at', debutJour).lte('created_at', finJour)
                     .order('created_at', { ascending: true });
 
                 if (error) throw error;
@@ -1358,10 +1151,7 @@
 
                     points.push([lat, lng]);
                     if (vit > maxSpeed) maxSpeed = vit;
-
-                    if (i > 0) {
-                        kmTotal += calculerDistanceGPS(points[i-1][0], points[i-1][1], lat, lng);
-                    }
+                    if (i > 0) kmTotal += calculerDistanceGPS(points[i-1][0], points[i-1][1], lat, lng);
                 }
 
                 document.getElementById('hist-total-km').textContent = `${kmTotal.toFixed(1)} km`;
@@ -1375,21 +1165,14 @@
                 markersHistory.forEach(m => mapHistory.removeLayer(m));
                 markersHistory = [];
 
-                polylineHistory = L.polyline(points, {
-                    color: '#f59e0b',
-                    weight: 5,
-                    opacity: 0.85,
-                    lineJoin: 'round'
-                }).addTo(mapHistory);
+                polylineHistory = L.polyline(points, { color: '#f59e0b', weight: 5, opacity: 0.85, lineJoin: 'round' }).addTo(mapHistory);
 
                 const startMarker = L.circleMarker(points[0], { radius: 7, fillColor: '#10b981', color: '#ffffff', weight: 2, fillOpacity: 1 })
-                    .addTo(mapHistory)
-                    .bindPopup(`<b>Départ :</b> ${new Date(data[0].created_at).toLocaleTimeString()}`);
+                    .addTo(mapHistory).bindPopup(`<b>Départ :</b> ${new Date(data[0].created_at).toLocaleTimeString()}`);
                 markersHistory.push(startMarker);
 
                 const endMarker = L.circleMarker(points[points.length - 1], { radius: 7, fillColor: '#f43f5e', color: '#ffffff', weight: 2, fillOpacity: 1 })
-                    .addTo(mapHistory)
-                    .bindPopup(`<b>Arrivée :</b> ${new Date(data[data.length - 1].created_at).toLocaleTimeString()}`);
+                    .addTo(mapHistory).bindPopup(`<b>Arrivée :</b> ${new Date(data[data.length - 1].created_at).toLocaleTimeString()}`);
                 markersHistory.push(endMarker);
 
                 mapHistory.fitBounds(polylineHistory.getBounds(), { padding: [30, 30] });
@@ -1413,12 +1196,9 @@
 
             client.vehicules.forEach((v, index) => {
                 const configEntretien = JSON.parse(localStorage.getItem(`tv_maint_${v.imei}`) || JSON.stringify({
-                    kmVidangeDerniere: v.kmOdometre - 3200,
-                    intervalleVidange: 10000,
-                    kmFreinsDerniers: v.kmOdometre - 11000,
-                    intervalleFreins: 25000,
-                    kmFiltresDerniers: v.kmOdometre - 6000,
-                    intervalleFiltres: 15000
+                    kmVidangeDerniere: v.kmOdometre - 3200, intervalleVidange: 10000,
+                    kmFreinsDerniers: v.kmOdometre - 11000, intervalleFreins: 25000,
+                    kmFiltresDerniers: v.kmOdometre - 6000, intervalleFiltres: 15000
                 }));
 
                 const kmParcourusVidange = v.kmOdometre - configEntretien.kmVidangeDerniere;
@@ -1463,7 +1243,6 @@
                                 <button onclick="actionnerMoteur(${index}, true)" class="w-full bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 font-black py-2.5 rounded-xl text-[10px] uppercase transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
                                     <i class="fa-solid fa-power-off"></i> Couper Moteur
                                 </button>
-                                
                                 <button onclick="actionnerMoteur(${index}, false)" class="w-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 font-black py-2.5 rounded-xl text-[10px] uppercase transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
                                     <i class="fa-solid fa-key"></i> Débloquer
                                 </button>
@@ -1478,9 +1257,7 @@
 
                             <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-850 space-y-1">
                                 <div class="flex justify-between text-xs font-bold">
-                                    <span class="flex items-center gap-1.5 text-slate-200">
-                                        <i class="fa-solid fa-oil-can text-amber-400"></i> Vidange Moteur & Pont
-                                    </span>
+                                    <span class="flex items-center gap-1.5 text-slate-200"><i class="fa-solid fa-oil-can text-amber-400"></i> Vidange Moteur & Pont</span>
                                     <span class="${kmRestantVidange <= 0 ? 'text-rose-400 animate-pulse font-black' : (kmRestantVidange <= 1500 ? 'text-amber-400' : 'text-emerald-400')} font-mono text-[10px]">
                                         ${kmRestantVidange <= 0 ? 'DÉPASSÉE !' : `reste ${kmRestantVidange.toLocaleString()} km`}
                                     </span>
@@ -1496,9 +1273,7 @@
 
                             <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-850 space-y-1">
                                 <div class="flex justify-between text-xs font-bold">
-                                    <span class="flex items-center gap-1.5 text-slate-200">
-                                        <i class="fa-solid fa-compact-disc text-rose-400"></i> Plaquettes & Garnitures de Frein
-                                    </span>
+                                    <span class="flex items-center gap-1.5 text-slate-200"><i class="fa-solid fa-compact-disc text-rose-400"></i> Plaquettes de Frein</span>
                                     <span class="${kmRestantFreins <= 0 ? 'text-rose-400 animate-pulse font-black' : (kmRestantFreins <= 2000 ? 'text-amber-400' : 'text-emerald-400')} font-mono text-[10px]">
                                         ${kmRestantFreins <= 0 ? 'À REMPLACER !' : `reste ${kmRestantFreins.toLocaleString()} km`}
                                     </span>
@@ -1514,9 +1289,7 @@
 
                             <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-850 space-y-1">
                                 <div class="flex justify-between text-xs font-bold">
-                                    <span class="flex items-center gap-1.5 text-slate-200">
-                                        <i class="fa-solid fa-filter text-sky-400"></i> Filtres Air, Huile & Séparateur Eau
-                                    </span>
+                                    <span class="flex items-center gap-1.5 text-slate-200"><i class="fa-solid fa-filter text-sky-400"></i> Filtres Air & Huile</span>
                                     <span class="${kmRestantFiltres <= 0 ? 'text-rose-400 animate-pulse font-black' : (kmRestantFiltres <= 1200 ? 'text-amber-400' : 'text-emerald-400')} font-mono text-[10px]">
                                         ${kmRestantFiltres <= 0 ? 'À CHANGER !' : `reste ${kmRestantFiltres.toLocaleString()} km`}
                                     </span>
@@ -1563,7 +1336,6 @@
 
             if (confirm(confirmMsg)) {
                 v.moteurCoupe = couper;
-
                 const customConfig = JSON.parse(localStorage.getItem('tv_vehicules_custom') || '{}');
                 if (!customConfig[v.imei]) customConfig[v.imei] = {};
                 customConfig[v.imei].moteurCoupe = couper;
@@ -1573,11 +1345,7 @@
 
                 try {
                     if (window.supabase) {
-                        supabaseClient.from('tv_vehicules').upsert({
-                            imei: v.imei,
-                            moteur_coupe: couper,
-                            updated_at: new Date().toISOString()
-                        }, { onConflict: 'imei' }).then();
+                        supabaseClient.from('tv_vehicules').upsert({ imei: v.imei, moteur_coupe: couper, updated_at: new Date().toISOString() }, { onConflict: 'imei' }).then();
                         diffuserEtatAdmin(v);
                     }
                 } catch(e) {}
@@ -1628,20 +1396,14 @@
             if (!plaque || !imei) { alert("Veuillez renseigner la plaque et le numéro IMEI."); return; }
             
             const imeiClean = String(imei).trim();
-
             const customConfig = JSON.parse(localStorage.getItem('tv_vehicules_custom') || '{}');
-            customConfig[imeiClean] = {
-                plaque: plaque, type: type, imei: imeiClean, kmOdometre: odo, moteurCoupe: false
-            };
+            customConfig[imeiClean] = { plaque: plaque, type: type, imei: imeiClean, kmOdometre: odo, moteurCoupe: false };
             localStorage.setItem('tv_vehicules_custom', JSON.stringify(customConfig));
 
             localStorage.setItem(`tv_maint_${imeiClean}`, JSON.stringify({
-                kmVidangeDerniere: odo,
-                intervalleVidange: 10000,
-                kmFreinsDerniers: odo,
-                intervalleFreins: 25000,
-                kmFiltresDerniers: odo,
-                intervalleFiltres: 15000
+                kmVidangeDerniere: odo, intervalleVidange: 10000,
+                kmFreinsDerniers: odo, intervalleFreins: 25000,
+                kmFiltresDerniers: odo, intervalleFiltres: 15000
             }));
 
             let vehiculeExistant = client.vehicules.find(v => v.imei === imeiClean);
@@ -1650,20 +1412,16 @@
                 vehiculeExistant.type = type;
                 vehiculeExistant.kmOdometre = odo;
             } else {
-                const nv = { 
+                client.vehicules.push({ 
                     plaque: plaque, type: type, imei: imeiClean, 
                     lat: -4.32, lng: 15.31, vitesse: 0, moteurCoupe: false, kmJour: 0, kmOdometre: odo, dernierCap: 0,
                     origine: "MATADI", destination: "KINSHASA", tarif: 1500, tronconsValides: 0, recetteBruteReelle: 0
-                };
-                client.vehicules.push(nv);
+                });
             }
             
             try {
                 if(window.supabase) {
-                    supabaseClient.from('tv_vehicules').upsert({
-                        imei: imeiClean, plaque: plaque,
-                        updated_at: new Date().toISOString()
-                    }, { onConflict: 'imei' }).then();
+                    supabaseClient.from('tv_vehicules').upsert({ imei: imeiClean, plaque: plaque, updated_at: new Date().toISOString() }, { onConflict: 'imei' }).then();
                 }
             } catch(e) {}
 
@@ -1703,212 +1461,48 @@
                 fb.className = "p-3 rounded-xl text-center text-xs font-bold transition-all bg-rose-500/20 text-rose-400 border border-rose-500/30";
             }
             fb.innerHTML = message;
-            
-            setTimeout(() => {
-                if (type === 'success') fb.classList.add('hidden');
-            }, 6000);
+            setTimeout(() => { if (type === 'success') fb.classList.add('hidden'); }, 6000);
         }
 
         async function majIdentifiantsEtAdresse() {
             const btn = document.getElementById('btn-maj-profil');
-            const ancienTel = (partenaireProfil && partenaireProfil.tel) || localStorage.getItem('tv_partenaire_tel');
             const newNom = document.getElementById('prof-nom').value.trim();
             const newTel = document.getElementById('prof-tel').value.trim();
             const newCommune = document.getElementById('prof-commune').value.trim();
             const newQuartier = document.getElementById('prof-quartier').value.trim();
-            const newPin = document.getElementById('prof-pin-new').value.trim();
-            const newMode = document.getElementById('select-bascule-mode')?.value || 'commercial';
 
-            if (!ancienTel) {
-                afficherFeedbackCompte('error', "❌ Session expirée. Veuillez vous reconnecter.");
-                return;
-            }
-            if (!newNom) { afficherFeedbackCompte('error', "❌ Le nom ne peut pas être vide."); return; }
-            if (!newTel) { afficherFeedbackCompte('error', "❌ Le téléphone ne peut pas être vide."); return; }
+            if (!newNom || !newTel) { afficherFeedbackCompte('error', "❌ Le nom et le téléphone sont obligatoires."); return; }
 
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Enregistrement en cours...`;
             btn.disabled = true;
 
             const adresseComplete = `${newCommune || 'Kinshasa'} • ${newQuartier || 'RDC'}`;
 
-            localStorage.setItem('tv_partenaire_nom', newNom);
-            localStorage.setItem('tv_partenaire_tel', newTel);
-            localStorage.setItem('tv_partenaire_commune', newCommune);
-            localStorage.setItem('tv_partenaire_quartier', newQuartier);
-            localStorage.setItem('tv_partenaire_adresse', adresseComplete);
-            localStorage.setItem('tv_partenaire_type_contrat', newMode);
+            if (!partenaireProfil) partenaireProfil = {};
+            partenaireProfil.nom = newNom;
+            partenaireProfil.tel = newTel;
+            partenaireProfil.commune = newCommune;
+            partenaireProfil.quartier = newQuartier;
+            partenaireProfil.adresse = adresseComplete;
+            
+            // Mise à jour de la session globale GTS si on voulait synchroniser, mais on garde ici le cache local pour l'affichage
+            let globalSession = JSON.parse(localStorage.getItem('gts_global_session') || '{}');
+            globalSession.nom = newNom;
+            globalSession.tel = newTel;
+            localStorage.setItem('gts_global_session', JSON.stringify(globalSession));
 
-            let updates = {
-                nom: newNom,
-                tel: newTel,
-                adresse: adresseComplete,
-                commune: newCommune,
-                quartier: newQuartier,
-                type_contrat: newMode
-            };
+            document.getElementById('lbl-nom-partenaire').textContent = newNom;
+            document.getElementById('lbl-adresse-partenaire').textContent = adresseComplete;
 
-            if (newPin && newPin.length >= 4) {
-                updates.pin = newPin;
-            }
-
-            try {
-                if (window.supabase) {
-                    let { error } = await supabaseClient
-                        .from('tv_partenaires')
-                        .update(updates)
-                        .eq('tel', ancienTel);
-
-                    if (error) {
-                        let fallbackUpdates = {
-                            nom: newNom,
-                            tel: newTel,
-                            adresse: adresseComplete,
-                            type_contrat: newMode
-                        };
-                        if (newPin && newPin.length >= 4) fallbackUpdates.pin = newPin;
-
-                        const { error: errRepli } = await supabaseClient
-                            .from('tv_partenaires')
-                            .update(fallbackUpdates)
-                            .eq('tel', ancienTel);
-
-                        if (errRepli) throw errRepli;
-                    }
-                }
-
-                if (!partenaireProfil) partenaireProfil = {};
-                partenaireProfil.nom = newNom;
-                partenaireProfil.tel = newTel;
-                partenaireProfil.commune = newCommune;
-                partenaireProfil.quartier = newQuartier;
-                partenaireProfil.adresse = adresseComplete;
-                partenaireProfil.type_contrat = newMode;
-
-                document.getElementById('lbl-nom-partenaire').textContent = newNom;
-                document.getElementById('lbl-adresse-partenaire').textContent = adresseComplete;
-
-                adapterInterfaceSelonMode(newMode);
-
-                afficherFeedbackCompte('success', "✅ Informations mises à jour avec succès !");
-                document.getElementById('prof-pin-new').value = "";
-                genererToutesLesVues();
-            } catch(e) {
-                afficherFeedbackCompte('error', "❌ Erreur base de données : " + (e.message || "Vérifiez vos permissions."));
-            } finally {
-                btn.innerHTML = `Mettre à Jour mes Informations`;
-                btn.disabled = false;
-            }
+            afficherFeedbackCompte('success', "✅ Informations mises à jour avec succès !");
+            genererToutesLesVues();
+            btn.innerHTML = `Mettre à Jour mes Informations`;
+            btn.disabled = false;
         }
 
-        function basculerVueAuth(mode) {
-            if(mode === 'login') {
-                document.getElementById('form-connexion').classList.remove('hidden'); 
-                document.getElementById('form-inscription').classList.add('hidden');
-                document.getElementById('tab-btn-login').className = "py-2 text-xs font-black rounded-lg transition-all bg-emerald-500 text-slate-950";
-                document.getElementById('tab-btn-register').className = "py-2 text-xs font-black rounded-lg transition-all text-slate-400 hover:text-slate-200";
-            } else {
-                document.getElementById('form-connexion').classList.add('hidden'); 
-                document.getElementById('form-inscription').classList.remove('hidden');
-                document.getElementById('tab-btn-register').className = "py-2 text-xs font-black rounded-lg transition-all bg-emerald-500 text-slate-950";
-                document.getElementById('tab-btn-login').className = "py-2 text-xs font-black rounded-lg transition-all text-slate-400 hover:text-slate-200";
-            }
-        }
-        
-        function naviguerVers(id) { 
-            document.getElementById('page-auth').classList.add('hidden'); 
-            document.getElementById('app-proprietaire').classList.add('hidden'); 
-            document.getElementById(id).classList.remove('hidden'); 
-        }
-
-        async function inscrireNouveauPartenaire() {
-            const nom = document.getElementById('ins-nom').value.trim();
-            const tel = document.getElementById('ins-tel').value.trim();
-            const typeContrat = document.getElementById('ins-type-contrat').value;
-            const commune = document.getElementById('ins-commune').value.trim();
-            const quartier = document.getElementById('ins-quartier').value.trim();
-            const pin = document.getElementById('ins-pin').value.trim();
-
-            if(!nom || !tel || !commune || !quartier || !pin) { 
-                alert("Veuillez renseigner tous les champs requis."); 
-                return; 
-            }
-
-            try {
-                const dateExpiration = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
-
-                let { error } = await supabaseClient.from('tv_partenaires').insert([{
-                    nom: nom, 
-                    tel: tel, 
-                    commune: commune,
-                    quartier: quartier,
-                    adresse: `${commune} • ${quartier}`,
-                    pin: pin, 
-                    type_contrat: typeContrat, 
-                    date_expiration: dateExpiration.toISOString()
-                }]);
-
-                if (error) {
-                    const resFallback = await supabaseClient.from('tv_partenaires').insert([{
-                        nom: nom, 
-                        tel: tel, 
-                        adresse: `${commune} • ${quartier}`,
-                        pin: pin, 
-                        type_contrat: typeContrat, 
-                        date_expiration: dateExpiration.toISOString()
-                    }]);
-                    if (resFallback.error) throw resFallback.error;
-                }
-                
-                localStorage.setItem('tv_partenaire_nom', nom);
-                localStorage.setItem('tv_partenaire_commune', commune);
-                localStorage.setItem('tv_partenaire_quartier', quartier);
-                localStorage.setItem('tv_partenaire_type_contrat', typeContrat);
-
-                alert("✅ Inscription réussie. Connectez-vous avec votre numéro et votre PIN.");
-                document.getElementById('login-tel').value = tel;
-                document.getElementById('login-pin').value = pin;
-                basculerVueAuth('login');
-            } catch (err) {
-                alert("❌ Erreur lors de l'inscription : " + (err.message || "vérifiez vos accès."));
-            }
-        }
-
-        async function executerConnexionPartenaire() { 
-            const telInput = document.getElementById('login-tel').value.trim();
-            const pinInput = document.getElementById('login-pin').value.trim();
-            const btn = document.getElementById('btn-login-text');
-            btn.textContent = "Vérification...";
-
-            try {
-                const { data, error } = await supabaseClient.from('tv_partenaires').select('*').eq('tel', telInput).eq('pin', pinInput).single();
-                
-                if (data) {
-                    localStorage.setItem('tv_partenaire_tel', data.tel);
-                    if(data.nom) localStorage.setItem('tv_partenaire_nom', data.nom);
-                    if(data.commune) {
-                        localStorage.setItem('tv_partenaire_commune', data.commune);
-                    } else if (data.adresse && data.adresse.includes(' • ')) {
-                        const parts = data.adresse.split(' • ');
-                        localStorage.setItem('tv_partenaire_commune', parts[0] || 'Kinshasa');
-                        localStorage.setItem('tv_partenaire_quartier', parts[1] || 'RDC');
-                    }
-                    if(data.quartier) localStorage.setItem('tv_partenaire_quartier', data.quartier);
-                    if(data.type_contrat) localStorage.setItem('tv_partenaire_type_contrat', data.type_contrat);
-                    
-                    lancerEspaceFlotte(data);
-                } else {
-                    alert("❌ Téléphone ou Code PIN incorrect."); 
-                    btn.textContent = "Accéder à mes Véhicules"; 
-                }
-            } catch (err) { 
-                alert("❌ Téléphone ou Code PIN incorrect."); 
-                btn.textContent = "Accéder à mes Véhicules"; 
-            }
-        }
-
-        function lancerEspaceFlotte(donneesPartenaire) {
-            partenaireProfil = donneesPartenaire;
-            naviguerVers('app-proprietaire'); 
+        function lancerEspaceFlotte(donneesGlobales) {
+            partenaireProfil = donneesGlobales; // On utilise la session globale
+            document.getElementById('app-proprietaire').classList.remove('hidden');
             
             activerSynchronisationCloud();
             document.getElementById('hist-date-picker').value = getKinshasaDateStr();
@@ -1921,37 +1515,26 @@
         }
 
         function declencherDeconnexion() { 
-            localStorage.removeItem('tv_partenaire_tel');
+            localStorage.removeItem('gts_global_session');
             localStorage.removeItem('tv_vehicules_custom');
-            client.vehicules = [];
-            tracePositions = [];
-            partenaireProfil = null;
-            if (busMarker && map) map.removeLayer(busMarker);
-            if (polylineTrace && map) map.removeLayer(polylineTrace);
-            naviguerVers('page-auth'); 
-            document.getElementById('btn-login-text').textContent = "Accéder à mes Véhicules";
+            window.location.href = '../index.html'; // Redirection vers le Hub GTS
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
             chargerConfigurationsAdmin();
             
-            document.getElementById('login-tel').value = "";
-            document.getElementById('login-pin').value = "";
-            
-            const telSauve = localStorage.getItem('tv_partenaire_tel');
-            if (telSauve) {
+            // Vérification de la session globale GTS (SSO)
+            const globalSessionStr = localStorage.getItem('gts_global_session');
+            if (globalSessionStr) {
                 try {
-                    const { data, error } = await supabaseClient.from('tv_partenaires').select('*').eq('tel', telSauve).single();
-                    if (data) { 
-                        lancerEspaceFlotte(data); 
-                    } else { 
-                        declencherDeconnexion(); 
-                    }
-                } catch (err) { 
-                    declencherDeconnexion(); 
+                    const globalSession = JSON.parse(globalSessionStr);
+                    lancerEspaceFlotte(globalSession);
+                } catch (err) {
+                    window.location.href = '../index.html';
                 }
             } else {
-                naviguerVers('page-auth');
+                // Pas de session trouvée = Redirection vers le Hub
+                window.location.href = '../index.html';
             }
         });
     </script>
