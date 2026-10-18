@@ -73,7 +73,7 @@
             
             <div class="text-center space-y-2">
                 <h2 class="text-2xl font-black text-white">Portail Unifié</h2>
-                <p class="text-xs text-slate-400">Connectez-vous pour accéder à l'écosystème GTS (TransVision, EasyFly, Clean'App, Eyano).</p>
+                <p class="text-xs text-slate-400">Connectez-vous pour accéder à l'écosystème GTS.</p>
             </div>
 
             <!-- TABS -->
@@ -124,19 +124,32 @@
                             <option value="eyanomarket">🛍️ Eyano Market (Vendeur/Marchand)</option>
                             <option value="cleanapp">✨ MATT Clean'App (Prestataire)</option>
                             <option value="transvision">📡 TransVision (Flotte/Citerne)</option>
+                            <option value="easyfly">✈️ EasyFly Transit (Agence partenaire)</option>
+                        </select>
+                    </div>
+
+                    <!-- SOUS-MENU EYANO MARKET -->
+                    <div id="eyano-specialty-container" class="hidden bg-slate-950/50 p-3 rounded-lg border border-slate-700/50">
+                        <label class="block text-[10px] font-bold text-amber-400 uppercase tracking-wider mb-1">Secteur Eyano Market *</label>
+                        <select id="reg-eyano-specialty" class="w-full bg-slate-900 border border-slate-700 focus:border-amber-500 rounded-lg p-2 text-xs text-white outline-none">
+                            <option value="Gaz">🔥 Gaz Domestique</option>
+                            <option value="Pharmacie">💊 Pharmacie & Santé</option>
+                            <option value="Eau">💧 Eau en Gros</option>
+                            <option value="Chambre Froide">🥩 Chambre Froide / Vivres</option>
                         </select>
                     </div>
 
                     <!-- SOUS-MENU MATT CLEAN'APP -->
-                    <div id="matt-specialty-container" class="hidden">
-                        <label class="block text-[10px] font-bold text-emerald-400 uppercase tracking-wider mb-1">Spécialité MATT Clean'App *</label>
-                        <select id="reg-matt-specialty" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-lg p-2.5 text-xs text-white outline-none">
-                            <option value="Multiservices Complet">Multiservices Complet (Toutes prestations)</option>
-                            <option value="Polyvalent Auto et Maison">Polyvalent (Auto et Maison)</option>
-                            <option value="Lavage auto & Engins">Lavage auto & Engins</option>
-                            <option value="Maison">Maison (Canapés, Vitres, Tapis)</option>
-                            <option value="Assainissement & 3D">Assainissement & Traitement 3D</option>
-                            <option value="Vidange">Vidange fosse septique & Immondices</option>
+                    <div id="matt-specialty-container" class="hidden bg-slate-950/50 p-3 rounded-lg border border-slate-700/50">
+                        <label class="block text-[10px] font-bold text-emerald-400 uppercase tracking-wider mb-1">Axe MATT Clean'App *</label>
+                        <select id="reg-matt-specialty" class="w-full bg-slate-900 border border-slate-700 focus:border-emerald-500 rounded-lg p-2 text-xs text-white outline-none">
+                            <option value="Auto">🚗 Automobile uniquement</option>
+                            <option value="Maison">🏡 Maison uniquement (Surfaces, Canapés)</option>
+                            <option value="Polyvalent Auto et Maison">🔄 Polyvalent (Auto + Maison)</option>
+                            <option value="3D">🌱 3D (Désinfection, Dératisation, Désinsectisation)</option>
+                            <option value="Vidange">🪠 Vidange Fosse Septique & Immondices</option>
+                            <option value="Polyvalent 3D et Vidange">♻️ Polyvalent (3D + Vidange)</option>
+                            <option value="Multiservices Complet">⭐ Multiservices Complet (Toutes prestations)</option>
                         </select>
                     </div>
 
@@ -161,7 +174,7 @@
                 </div>
 
                 <button id="btn-submit-reg" disabled onclick="executerInscriptionGlobale()" class="w-full bg-slate-800 text-slate-500 font-black py-3.5 rounded-xl text-xs uppercase transition-all cursor-not-allowed">
-                    Créer mon compte unique
+                    Créer mon compte
                 </button>
             </div>
         </div>
@@ -173,15 +186,16 @@
             <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-mono font-bold">
                 <i class="fa-solid fa-bolt"></i> Écosystème Connecté
             </span>
-            <h2 class="text-3xl md:text-5xl font-black tracking-tight text-slate-100 leading-tight">
+            <h2 id="dashboard-title" class="text-3xl md:text-5xl font-black tracking-tight text-slate-100 leading-tight">
                 Choisissez votre application
             </h2>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- GRILLE DYNAMIQUE : MASQUE LES APPS NON PERTINENTES POUR LES PARTENAIRES -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="apps-grid">
             
             <!-- PÔLE 1 : TRANSVISION -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='transvision/index.html'">
+            <div id="card-app-transvision" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='transvision/index.html'">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
                         <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
@@ -200,7 +214,7 @@
             </div>
 
             <!-- PÔLE 2 : EASYFLY TRANSIT -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='easyflytransit/index.html'">
+            <div id="card-app-easyfly" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='easyflytransit/index.html'">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
                         <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
@@ -219,7 +233,7 @@
             </div>
 
             <!-- PÔLE 3 : MATT CLEAN'APP -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='cleanapp/index.html'">
+            <div id="card-app-cleanapp" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='cleanapp/index.html'">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
                         <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
@@ -238,7 +252,7 @@
             </div>
 
             <!-- PÔLE 4 : EYANOMARKET -->
-            <div class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='eyanomarket/index.html'">
+            <div id="card-app-eyanomarket" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='eyanomarket/index.html'">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
                         <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
@@ -299,7 +313,6 @@
             </div>
             
             <div class="p-6 overflow-y-auto custom-scrollbar flex-1 text-[11px] sm:text-xs text-slate-300 space-y-4 leading-relaxed font-sans text-justify">
-                
                 <h4 class="font-black text-white text-sm">PRÉAMBULE</h4>
                 <p>La plateforme numérique unifiée, désignée ci-après « L'Application » ou le « Hub GTS », est éditée et exploitée par la société <b>GLOBAL TECH SOLUTIONS S.A.R.L. (GTS)</b>, immatriculée au RCCM sous le numéro CD/KIN/RCCM/24-B-04106 et NIF A2441433N, dont le siège social est situé à Kinshasa, RDC.</p>
                 <p>En accédant au Hub GTS, en créant un compte unique, ou en utilisant l'un des services intégrés (qui sont des marques commerciales exclusives de GTS : TransVision, EasyFly Transit, MATT Clean'App, Eyano Market), l'Utilisateur accepte sans réserve les présentes CGU.</p>
@@ -330,7 +343,6 @@
 
                 <p><b class="text-indigo-400">MODULE D : MATT CLEAN'APP (Assainissement)</b><br>
                 Les prestations sont réalisées par des Partenaires indépendants. En cas de dommage matériel causé au domicile ou sur le véhicule, GTS interviendra uniquement comme médiateur pour mobiliser la responsabilité civile du Partenaire. Les devis volumétriques (m², m³) sont contractuels sous réserve que les mesures déclarées correspondent à la réalité sur site.</p>
-
             </div>
             <div class="p-5 border-t border-slate-800">
                 <button onclick="fermerCgu()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-black py-3 rounded-xl text-xs uppercase transition-all shadow-md">Fermer le document</button>
@@ -345,9 +357,14 @@
             const authPortal = document.getElementById('auth-portal');
             const appsDashboard = document.getElementById('apps-dashboard');
             const headerUserInfo = document.getElementById('header-user-info');
+            
+            const cardTransvision = document.getElementById('card-app-transvision');
+            const cardEasyfly = document.getElementById('card-app-easyfly');
+            const cardCleanapp = document.getElementById('card-app-cleanapp');
+            const cardEyanomarket = document.getElementById('card-app-eyanomarket');
+            const dashboardTitle = document.getElementById('dashboard-title');
 
             if (sessionData) {
-                // Connecté
                 try {
                     const user = JSON.parse(sessionData);
                     document.getElementById('lbl-user-name').textContent = user.nom || 'Utilisateur';
@@ -356,6 +373,30 @@
                     authPortal.classList.add('hidden');
                     appsDashboard.classList.remove('hidden');
                     headerUserInfo.classList.replace('hidden', 'flex');
+
+                    // AFFICHAGE CIBLÉ SELON LE PROFIL (CLIENT VS PARTENAIRE)
+                    if (user.type_contrat === 'commercial') {
+                        dashboardTitle.textContent = "Votre Espace Partenaire";
+                        // Masque tout
+                        cardTransvision.classList.add('hidden');
+                        cardEasyfly.classList.add('hidden');
+                        cardCleanapp.classList.add('hidden');
+                        cardEyanomarket.classList.add('hidden');
+                        
+                        // Affiche uniquement le pôle choisi
+                        if (user.pole === 'transvision') cardTransvision.classList.remove('hidden');
+                        if (user.pole === 'easyfly') cardEasyfly.classList.remove('hidden');
+                        if (user.pole === 'cleanapp') cardCleanapp.classList.remove('hidden');
+                        if (user.pole === 'eyanomarket') cardEyanomarket.classList.remove('hidden');
+                    } else {
+                        dashboardTitle.textContent = "Choisissez votre application";
+                        // Client = Voie tout
+                        cardTransvision.classList.remove('hidden');
+                        cardEasyfly.classList.remove('hidden');
+                        cardCleanapp.classList.remove('hidden');
+                        cardEyanomarket.classList.remove('hidden');
+                    }
+
                 } catch(e) {
                     localStorage.removeItem('gts_global_session');
                     verifierSession();
@@ -399,14 +440,20 @@
             }
         }
 
-        // Affichage dynamique des spécialités MATT
+        // Affichage dynamique des spécialités selon le Pôle choisi
         function togglePoleOptions() {
             const pole = document.getElementById('reg-pole').value;
             const mattContainer = document.getElementById('matt-specialty-container');
+            const eyanoContainer = document.getElementById('eyano-specialty-container');
+            
+            // Masquer par défaut
+            mattContainer.classList.add('hidden');
+            eyanoContainer.classList.add('hidden');
+
             if (pole === 'cleanapp') {
                 mattContainer.classList.remove('hidden');
-            } else {
-                mattContainer.classList.add('hidden');
+            } else if (pole === 'eyanomarket') {
+                eyanoContainer.classList.remove('hidden');
             }
         }
 
@@ -427,7 +474,7 @@
         function ouvrirCgu() { document.getElementById('modal-cgu').classList.remove('hidden'); }
         function fermerCgu() { document.getElementById('modal-cgu').classList.add('hidden'); }
 
-        // Simulations d'Authentification (À relier à votre base Supabase si nécessaire)
+        // Simulations d'Authentification 
         function executerConnexionGlobale() {
             const tel = document.getElementById('login-phone').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
@@ -437,11 +484,14 @@
                 return;
             }
 
-            // Mock connexion réussie
+            const estPartenaire = tel.startsWith("09") || tel.startsWith("9");
+            
             const mockUser = {
                 tel: tel,
-                nom: "Utilisateur " + tel.slice(-4),
-                type_contrat: "client" // ou "commercial" en BDD
+                nom: (estPartenaire ? "Partenaire " : "Client ") + tel.slice(-4),
+                type_contrat: estPartenaire ? "commercial" : "client",
+                pole: estPartenaire ? "transvision" : "all",
+                specialite: ""
             };
 
             localStorage.setItem('gts_global_session', JSON.stringify(mockUser));
@@ -454,17 +504,19 @@
             const role = document.getElementById('reg-role').value;
             const pass = document.getElementById('reg-pass').value.trim();
             
-            // Validation de base
             if (!nom || !tel || !pass) {
                 alert("Veuillez remplir tous les champs obligatoires (*).");
                 return;
             }
 
-            // Validation spécifique si Partenaire
+            let poleChoisi = 'all';
+            let specialiteChoisie = '';
+
             if (role === 'commercial') {
-                const pole = document.getElementById('reg-pole').value;
+                poleChoisi = document.getElementById('reg-pole').value;
                 const doc = document.getElementById('reg-doc').files.length;
-                if (!pole) {
+                
+                if (!poleChoisi) {
                     alert("Veuillez sélectionner le Pôle d'activité souhaité.");
                     return;
                 }
@@ -472,13 +524,21 @@
                     alert("Vous devez joindre un document officiel (RCCM, Patente ou Pièce d'identité) pour valider votre statut de partenaire.");
                     return;
                 }
+
+                // Capturer la spécialité en fonction du pôle
+                if (poleChoisi === 'cleanapp') {
+                    specialiteChoisie = document.getElementById('reg-matt-specialty').value;
+                } else if (poleChoisi === 'eyanomarket') {
+                    specialiteChoisie = document.getElementById('reg-eyano-specialty').value;
+                }
             }
 
-            // Mock inscription réussie
             const newUser = {
                 tel: tel,
                 nom: nom,
-                type_contrat: role
+                type_contrat: role,
+                pole: poleChoisi,
+                specialite: specialiteChoisie
             };
 
             localStorage.setItem('gts_global_session', JSON.stringify(newUser));
