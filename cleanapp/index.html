@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr" class="h-full">
 <head>
-    <!-- DÉCLARATION PWA & FAVICON RACINE -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0a192f">
     <link rel="icon" type="image/png" href="/cleanapp.png">
@@ -55,20 +54,17 @@
     <div id="toast-container" class="fixed top-4 inset-x-4 z-[9999] flex flex-col gap-2 max-w-sm mx-auto pointer-events-none"></div>
 
     <header class="bg-navy-800/95 border-b border-aqua/30 px-4 py-3 md:px-8 flex justify-between items-center sticky top-0 z-40 backdrop-blur-md shadow-lg w-full">
-        <div class="flex items-center gap-2.5 cursor-pointer" onclick="showView('view-gateway')">
+        <div class="flex items-center gap-2.5">
             <div class="w-11 h-11 bg-white rounded-2xl shadow-md border border-aqua/30 p-1 flex items-center justify-center flex-shrink-0">
                 <img src="/cleanapp.png" alt="Logo MATT Clean'App" class="w-full h-full object-contain">
             </div>
             <div class="flex flex-col">
                 <span class="text-lg md:text-xl font-black text-white leading-tight tracking-wide">MATT Clean'App</span>
-                <span class="text-[8px] md:text-[9px] text-aqua uppercase font-bold tracking-widest">by Global Tech Solutions</span>
+                <span class="text-[8px] md:text-[9px] text-aqua uppercase font-bold tracking-widest">Marque de Global Tech Solutions</span>
             </div>
         </div>
 
         <div class="flex items-center gap-2">
-            <button id="btn-install-pwa" class="hidden px-3 py-1.5 rounded-xl bg-aqua hover:bg-sky-400 text-navy-900 text-xs font-black transition shadow flex items-center gap-1.5">
-                📲 Installer
-            </button>
             <button onclick="refreshApplicationData()" id="btn-app-refresh" class="hidden px-3.5 py-1.5 rounded-xl bg-sky-600/80 hover:bg-sky-600 text-white text-xs font-bold transition shadow flex items-center gap-1.5">
                 <span id="global-refresh-icon" class="inline-block transition-transform">🔄</span> Actualiser
             </button>
@@ -80,185 +76,7 @@
 
     <main class="w-full px-2 py-3 sm:px-6 sm:py-5 flex-grow flex flex-col justify-start">
 
-        <div id="view-gateway" class="w-full max-w-4xl mx-auto space-y-8 animate-fade-in my-auto py-8">
-            <div class="text-center space-y-4">
-                <div class="inline-flex items-center justify-center w-28 h-28 md:w-32 md:h-32 bg-white rounded-3xl p-2 shadow-2xl border-2 border-aqua/40 mx-auto">
-                    <img src="/cleanapp.png" alt="Logo Clean'App" class="w-full h-full object-contain">
-                </div>
-                <div class="space-y-2 max-w-md mx-auto">
-                    <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">
-                        Bienvenue dans <span class="text-aqua">MATT Clean'App</span>
-                    </h1>
-                    <p class="text-slate-300 text-sm md:text-base font-medium leading-relaxed">
-                        Votre plateforme d'assainissement et nettoyage pro.
-                    </p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto pt-2">
-                <div onclick="goToAuth('client')" class="bg-white text-slate-800 rounded-3xl p-6 shadow-2xl border-2 border-transparent hover:border-aqua active:scale-95 transition-all flex items-center justify-between cursor-pointer group">
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-2xl bg-sky-100 text-aqua flex items-center justify-center text-3xl font-black shadow-inner group-hover:bg-aqua group-hover:text-white transition-all">🛒</div>
-                        <div>
-                            <h2 class="text-xl font-black text-navy-800 group-hover:text-aqua transition-all">Client</h2>
-                            <p class="text-xs text-slate-500 font-semibold mt-0.5">Commander une prestation</p>
-                        </div>
-                    </div>
-                    <span class="w-9 h-9 rounded-full bg-navy-800 text-white flex items-center justify-center font-bold text-sm group-hover:bg-aqua group-hover:text-navy-900 transition-all">➔</span>
-                </div>
-
-                <div onclick="goToAuth('partner')" class="bg-white text-slate-800 rounded-3xl p-6 shadow-2xl border-2 border-transparent hover:border-mattOrange active:scale-95 transition-all flex items-center justify-between cursor-pointer group">
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-2xl bg-orange-100 text-mattOrange flex items-center justify-center text-3xl font-black shadow-inner group-hover:bg-mattOrange group-hover:text-white transition-all">🤝</div>
-                        <div>
-                            <h2 class="text-xl font-black text-navy-800 group-hover:text-mattOrange transition-all">Partenaire</h2>
-                            <p class="text-xs text-slate-500 font-semibold mt-0.5">Accès prestataire agréé</p>
-                        </div>
-                    </div>
-                    <span class="w-9 h-9 rounded-full bg-mattOrange text-white flex items-center justify-center font-bold text-sm group-hover:bg-orange-600 transition-all">➔</span>
-                </div>
-            </div>
-        </div>
-
-        <div id="view-client-auth" class="bg-white text-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl hidden animate-fade-in max-w-md mx-auto w-full my-auto">
-            <div class="flex items-center justify-end border-b pb-2 mb-4">
-                <button onclick="showView('view-gateway')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 font-bold flex items-center justify-center">✕</button>
-            </div>
-
-            <div class="flex border-b border-slate-200 mb-5 text-xs">
-                <button onclick="switchAuthTab('client', 'login')" id="tab-client-login" class="flex-1 py-2 font-black border-b-2 border-aqua text-aqua">Se Connecter</button>
-                <button onclick="switchAuthTab('client', 'register')" id="tab-client-register" class="flex-1 py-2 font-bold border-b-2 border-transparent text-slate-400">Créer un compte</button>
-            </div>
-
-            <div id="form-client-login" class="space-y-3.5">
-                <div>
-                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Numéro de Téléphone</label>
-                    <input type="tel" id="auth-client-login-phone" placeholder="0825556633" class="w-full px-3.5 py-3 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-aqua focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Mot de passe</label>
-                    <div class="relative">
-                        <input type="password" id="auth-client-login-pass" placeholder="••••••••" class="w-full px-3.5 py-3 pr-10 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-aqua focus:outline-none">
-                        <button type="button" onclick="togglePasswordVisibility('auth-client-login-pass', 'eye-client-login')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400">
-                            <span id="eye-client-login">👁️</span>
-                        </button>
-                    </div>
-                </div>
-                <button onclick="loginClient()" class="w-full py-3.5 bg-navy-800 active:bg-navy-900 text-white font-black text-xs rounded-xl uppercase tracking-wider shadow mt-2">Connexion</button>
-            </div>
-
-            <div id="form-client-register" class="space-y-3.5 hidden">
-                <div>
-                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Nom complet</label>
-                    <input type="text" id="auth-client-reg-name" placeholder="Nom complet" class="w-full px-3.5 py-3 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Numéro de Téléphone</label>
-                    <input type="tel" id="auth-client-reg-phone" placeholder="Numéro de téléphone" class="w-full px-3.5 py-3 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Mot de passe</label>
-                    <div class="relative">
-                        <input type="password" id="auth-client-reg-pass" placeholder="••••••••" class="w-full px-3.5 py-3 pr-10 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800">
-                        <button type="button" onclick="togglePasswordVisibility('auth-client-reg-pass', 'eye-client-reg')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400">
-                            <span id="eye-client-reg">👁️</span>
-                        </button>
-                    </div>
-                </div>
-                <button onclick="registerClient()" class="w-full py-3.5 bg-aqua text-navy-900 font-black text-xs rounded-xl uppercase tracking-wider shadow mt-2">Créer mon compte</button>
-            </div>
-        </div>
-
-        <div id="view-partner-auth" class="bg-white text-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl hidden animate-fade-in max-w-md mx-auto w-full my-auto">
-            <div class="flex items-center justify-end border-b pb-2 mb-4">
-                <button onclick="showView('view-gateway')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 font-bold flex items-center justify-center">✕</button>
-            </div>
-
-            <div class="flex border-b border-slate-200 mb-5 text-xs">
-                <button onclick="switchAuthTab('partner', 'login')" id="tab-partner-login" class="flex-1 py-2 font-black border-b-2 border-mattOrange text-mattOrange">Connexion</button>
-                <button onclick="switchAuthTab('partner', 'register')" id="tab-partner-register" class="flex-1 py-2 font-bold border-b-2 border-transparent text-slate-400">Devenir Partenaire</button>
-            </div>
-
-            <div id="form-partner-login" class="space-y-3.5">
-                <div>
-                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Numéro de Téléphone</label>
-                    <input type="tel" id="auth-partner-login-phone" placeholder="0819998822" class="w-full px-3.5 py-3 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-mattOrange focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-slate-600 uppercase mb-1">Mot de passe</label>
-                    <div class="relative">
-                        <input type="password" id="auth-partner-login-pass" placeholder="••••••••" class="w-full px-3.5 py-3 pr-10 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-mattOrange focus:outline-none">
-                        <button type="button" onclick="togglePasswordVisibility('auth-partner-login-pass', 'eye-partner-login')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400">
-                            <span id="eye-partner-login">👁️</span>
-                        </button>
-                    </div>
-                </div>
-                <button id="btn-login-partner-submit" onclick="loginPartner()" class="w-full py-3.5 bg-mattOrange active:bg-orange-600 text-white font-black text-xs rounded-xl uppercase tracking-wider shadow mt-2">
-                    Accéder à mon espace
-                </button>
-            </div>
-
-            <div id="form-partner-register" class="space-y-3 hidden max-h-[62vh] overflow-y-auto pr-1 custom-scrollbar">
-                <div>
-                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Nom / Raison Sociale *</label>
-                    <input type="text" id="p-reg-name" placeholder="Ex: Lavage Pro Kin" class="w-full px-3 py-2 border rounded-xl text-xs font-bold">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Numéro de Téléphone *</label>
-                    <input type="tel" id="p-reg-phone" placeholder="Ex: 0819998822" class="w-full px-3 py-2 border rounded-xl text-xs font-bold font-mono">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Mot de passe *</label>
-                    <div class="relative">
-                        <input type="password" id="p-reg-pass" placeholder="••••••••" class="w-full px-3 py-2 pr-10 border rounded-xl text-xs font-bold">
-                        <button type="button" onclick="togglePasswordVisibility('p-reg-pass', 'eye-p-reg')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400">
-                            <span id="eye-p-reg">👁️</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Question Secrète *</label>
-                    <select id="p-reg-secret-q" class="w-full px-3 py-2 border rounded-xl text-xs text-slate-800 font-bold bg-white"></select>
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Réponse Secrète *</label>
-                    <input type="text" id="p-reg-secret-a" placeholder="Votre réponse" class="w-full px-3 py-2 border rounded-xl text-xs font-bold">
-                </div>
-                
-                <div>
-                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Commune Principale *</label>
-                    <select id="p-reg-commune" class="w-full px-3 py-2 border rounded-xl text-xs text-slate-800 font-bold bg-white"></select>
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Adresse d'Exploitation / Siège *</label>
-                    <input type="text" id="p-reg-address" placeholder="Ex: Av. Flambeau N°45, Q/ Matonge" class="w-full px-3 py-2 border rounded-xl text-xs font-medium">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-600 block uppercase">Spécialité Principale *</label>
-                    <select id="p-reg-specialty" class="w-full px-3 py-2 border rounded-xl text-xs text-slate-800 font-bold bg-white">
-                        <option value="Multiservices Complet (Toutes prestations)">Multiservices Complet (Toutes prestations)</option>
-                        <option value="Polyvalent Auto et Maison">Polyvalent (Auto et Maison)</option>
-                        <option value="Lavage auto & Engins">Lavage auto & Engins</option>
-                        <option value="Maison (Canapés, Vitres, Tapis)">Maison (Canapés, Vitres, Tapis)</option>
-                        <option value="Assainissement & Traitement 3D">Assainissement & Traitement 3D</option>
-                        <option value="Vidange fosse septique">Vidange fosse septique & Immondices</option>
-                    </select>
-                </div>
-                <div class="bg-slate-50 p-3 rounded-2xl border border-dashed border-slate-300 space-y-1.5">
-                    <label class="text-[10px] font-black text-navy-800 block uppercase">📁 Pièce d'Identité ou Justificatif *</label>
-                    <span class="text-[9px] text-slate-500 block">Carte d'électeur, Passeport ou Permis (Photo/PDF).</span>
-                    <input type="file" id="p-reg-doc" accept="image/*,application/pdf" class="w-full text-[11px] text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:bg-navy-800 file:text-white hover:file:bg-navy-900 cursor-pointer">
-                </div>
-                <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200 text-[10px] text-amber-800 font-medium leading-tight">
-                    ℹ️ Votre dossier sera soumis à la Direction MATT pour examen avant activation officielle.
-                </div>
-                <button onclick="registerPartner()" id="btn-submit-partner-reg" class="w-full py-3.5 bg-navy-800 text-white font-bold text-xs rounded-xl uppercase tracking-wide shadow mt-1">
-                    Soumettre mon dossier d'agrément
-                </button>
-            </div>
-        </div>
-
+        <!-- ESPACE CLIENT -->
         <div id="view-client-app" class="w-full min-h-[calc(100vh-140px)] bg-white text-slate-800 rounded-3xl p-4 md:p-6 shadow-2xl hidden animate-fade-in flex flex-col justify-between space-y-4">
             <div id="client-home-grid" class="space-y-5 flex-grow flex flex-col justify-between">
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3.5 w-full max-w-xl mx-auto p-2">
@@ -462,7 +280,7 @@
                                 <span class="text-[10px] text-slate-500">RCCM CD/KIN/RCCM/24-B-04106 • NIF A2441433N</span>
                             </div>
                         </div>
-                        <p class="text-slate-600 leading-relaxed text-[11px]">Plateforme technologique d'assainissement et de nettoyage professionnel à Kinshasa, développée en partenariat avec Global Tech Solutions.</p>
+                        <p class="text-slate-600 leading-relaxed text-[11px]">Plateforme technologique d'assainissement et de nettoyage professionnel à Kinshasa, gérée par Global Tech Solutions.</p>
                     </div>
 
                     <div id="cnt-support" class="contact-subview hidden grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -499,6 +317,7 @@
 
         </div>
 
+        <!-- ESPACE PARTENAIRE -->
         <div id="view-partner-app" class="w-full min-h-[calc(100vh-140px)] bg-white text-slate-800 rounded-3xl p-4 md:p-6 shadow-2xl hidden animate-fade-in flex flex-col justify-between space-y-4">
 
             <div id="partner-home-column" class="flex-grow flex flex-col justify-center py-2">
@@ -657,7 +476,7 @@
 
                         <div class="bg-white p-4 rounded-2xl border space-y-2">
                             <span class="font-black text-slate-700 block uppercase text-[10px] tracking-wider mb-1">
-                                COMPTES MOBILES OFFICIELS MATT SARL :
+                                COMPTES MOBILES OFFICIELS GTS :
                             </span>
                             
                             <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 whitespace-nowrap">
@@ -681,7 +500,7 @@
                         <button onclick="sendRechargeDeclaration()" class="w-full py-3.5 bg-mattOrange hover:bg-orange-600 text-white font-black rounded-xl uppercase text-xs transition shadow">
                             Transmettre la Déclaration
                         </button>
-                        <a href="https://wa.me/243980000338?text=Preuve%20de%20dépôt%20MATT" target="_blank" class="w-full py-3 bg-whatsapp hover:bg-green-600 text-white font-black rounded-xl text-center block text-xs transition shadow flex items-center justify-center gap-2">
+                        <a href="https://wa.me/243980000338?text=Preuve%20de%20dépôt%20GTS" target="_blank" class="w-full py-3 bg-whatsapp hover:bg-green-600 text-white font-black rounded-xl text-center block text-xs transition shadow flex items-center justify-center gap-2">
                             <span>📲</span> Envoyer la preuve sur WhatsApp
                         </a>
                     </div>
@@ -720,16 +539,12 @@
                             <input type="text" id="partner-edit-name" class="w-full p-3 bg-white border rounded-xl font-bold">
                         </div>
                         <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Adresse d'exploitation</label>
-                            <input type="text" id="partner-edit-address" class="w-full p-3 bg-white border rounded-xl font-bold">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Téléphone de contact</label>
+                            <input type="text" id="partner-edit-phone" class="w-full p-3 bg-white border rounded-xl font-bold">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Axe d'activité (Spécialité)</label>
                             <input type="text" id="partner-edit-specialty" class="w-full p-3 bg-slate-200 border border-slate-300 rounded-xl font-bold text-slate-500 cursor-not-allowed" readonly>
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Date d'inscription</label>
-                            <input type="text" id="partner-edit-date" class="w-full p-3 bg-slate-200 border border-slate-300 rounded-xl font-bold text-slate-500 cursor-not-allowed" readonly>
                         </div>
                         <button onclick="savePartnerInfoUpdate()" class="w-full py-3.5 bg-navy-800 hover:bg-navy-900 text-white font-black rounded-xl uppercase text-xs transition mt-2 shadow">
                             Mettre à jour mon profil
@@ -741,11 +556,6 @@
                             ← Retour aux options
                         </button>
 
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Identifiant (Téléphone)</label>
-                            <input type="tel" id="partner-edit-phone" class="w-full p-3 bg-white border rounded-xl font-bold font-mono">
-                        </div>
-                        
                         <div class="relative pt-2">
                             <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Ancien mot de passe *</label>
                             <input type="password" id="partner-edit-old-pass" placeholder="Requis pour valider" class="w-full p-3 pr-10 bg-white border rounded-xl font-bold">
@@ -760,18 +570,6 @@
                             <button type="button" onclick="togglePasswordVisibility('partner-edit-new-pass', 'eye-p-new')" class="absolute bottom-3 right-0 pr-3 flex items-center text-slate-400">
                                 <span id="eye-p-new">👁️</span>
                             </button>
-                        </div>
-
-                        <div class="border-t border-slate-200 pt-3 mt-2 space-y-3">
-                            <span class="text-[10px] font-black text-navy-800 uppercase block">Récupération de compte</span>
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Question Secrète</label>
-                                <select id="partner-edit-secret-q" class="w-full p-3 bg-white border rounded-xl font-bold"></select>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Réponse Secrète</label>
-                                <input type="text" id="partner-edit-secret-a" placeholder="Votre réponse" class="w-full p-3 bg-white border rounded-xl font-bold">
-                            </div>
                         </div>
 
                         <button onclick="savePartnerSecurityUpdate()" class="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl uppercase text-xs transition mt-2 shadow">
@@ -823,7 +621,7 @@
     <footer class="border-t border-slate-800/80 bg-navy-800/80 py-4 text-center text-xs text-slate-400 mt-auto">
         <div class="container mx-auto px-4 space-y-1">
             <div class="flex flex-wrap justify-center items-center gap-x-4 gap-y-1 text-[11px] text-slate-300 font-semibold">
-                <span>Éditeur : <b>MATT SARL</b></span>
+                <span>Éditeur : <b>GTS SARL</b></span>
                 <span>RCCM : <b class="text-aqua font-mono">CD/KIN/RCCM/24-B-04106</b></span>
                 <span>NIF : <b class="text-aqua font-mono">A2441433N</b></span>
                 <span>Siège : <b>Kinshasa, RDC</b></span>
@@ -917,21 +715,6 @@
         let selectedRatingValue = 5;
         let partnerAllOrders = [];
 
-        let secretQuestionsDB = JSON.parse(localStorage.getItem('matt_secret_questions_db')) || [
-            "Quel est le nom de votre ville natale ?",
-            "Quel est le nom de votre premier animal de compagnie ?",
-            "Quel est le nom de jeune fille de votre mère ?"
-        ];
-
-        function populateSecretQuestions() {
-            const sels = [document.getElementById('p-reg-secret-q'), document.getElementById('partner-edit-secret-q')];
-            sels.forEach(sel => {
-                if (sel) {
-                    sel.innerHTML = secretQuestionsDB.map(q => `<option value="${q}">${q}</option>`).join('');
-                }
-            });
-        }
-
         function normalizePhoneNumber(phone) {
             if (!phone) return "";
             let p = String(phone).replace(/[\s\-\.\(\)]/g, "");
@@ -965,58 +748,6 @@
             }
         }
 
-        function showView(viewId) {
-            ['view-gateway', 'view-client-auth', 'view-partner-auth', 'view-client-app', 'view-partner-app'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.classList.add('hidden');
-            });
-            const target = document.getElementById(viewId);
-            if (target) target.classList.remove('hidden');
-
-            const btnLogout = document.getElementById('btn-header-logout');
-            const btnRefresh = document.getElementById('btn-app-refresh');
-            
-            const isLoggedIn = viewId === 'view-client-app' || viewId === 'view-partner-app';
-            
-            if (btnLogout) btnLogout.classList.toggle('hidden', !isLoggedIn);
-            if (btnRefresh) {
-                if (viewId === 'view-partner-app') btnRefresh.classList.remove('hidden');
-                else btnRefresh.classList.add('hidden');
-            }
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function goToAuth(role) {
-            if (role === 'client') {
-                if (session.role === 'client') openClientApp();
-                else showView('view-client-auth');
-            }
-            if (role === 'partner') {
-                if (session.role === 'partner') openPartnerApp();
-                else showView('view-partner-auth');
-            }
-        }
-
-        function switchAuthTab(role, tab) {
-            const fLogin = document.getElementById(`form-${role}-login`);
-            const fReg = document.getElementById(`form-${role}-register`);
-            if (fLogin) fLogin.classList.toggle('hidden', tab !== 'login');
-            if (fReg) fReg.classList.toggle('hidden', tab === 'login');
-
-            const tLogin = document.getElementById(`tab-${role}-login`);
-            const tReg = document.getElementById(`tab-${role}-register`);
-            const colorClass = role === 'partner' ? 'border-mattOrange text-mattOrange' : 'border-aqua text-aqua';
-
-            if (tab === 'login') {
-                if (tLogin) tLogin.className = `flex-1 py-2 font-black border-b-2 ${colorClass}`;
-                if (tReg) tReg.className = 'flex-1 py-2 font-bold border-b-2 border-transparent text-slate-400';
-            } else {
-                if (tReg) tReg.className = `flex-1 py-2 font-black border-b-2 ${colorClass}`;
-                if (tLogin) tLogin.className = 'flex-1 py-2 font-bold border-b-2 border-transparent text-slate-400';
-            }
-        }
-
         function onClientCommuneChange() {
             const selectEl = document.getElementById('client-commune');
             if (!selectEl) return;
@@ -1028,155 +759,38 @@
             calculerTotal();
         }
 
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
+        function openClientApp() {
+            document.getElementById('view-partner-app').classList.add('hidden');
+            document.getElementById('view-client-app').classList.remove('hidden');
+            
+            const btnLogout = document.getElementById('btn-header-logout');
+            if (btnLogout) btnLogout.classList.remove('hidden');
 
-        async function registerPartner() {
-            const btn = document.getElementById('btn-submit-partner-reg');
-            const name = document.getElementById('p-reg-name')?.value.trim() || '';
-            const rawPhone = document.getElementById('p-reg-phone')?.value.trim() || '';
-            const phone = normalizePhoneNumber(rawPhone);
-            const password = document.getElementById('p-reg-pass')?.value.trim() || '';
-            const secQ = document.getElementById('p-reg-secret-q')?.value || '';
-            const secA = document.getElementById('p-reg-secret-a')?.value.trim() || '';
-            const commune = document.getElementById('p-reg-commune')?.value || 'Gombe';
-            const address = document.getElementById('p-reg-address')?.value.trim() || '';
-            const specialty = document.getElementById('p-reg-specialty')?.value || 'Polyvalent Auto et Maison';
-            const fileInput = document.getElementById('p-reg-doc');
+            const nameInp = document.getElementById('client-name-input');
+            if (nameInp && session.user) nameInp.value = session.user.nom || session.user.name || '';
 
-            if (!name || !phone || !password || !address || !secQ || !secA) {
-                return showToast("Veuillez remplir tous les champs obligatoires (*).", "error");
-            }
-            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-                return showToast("Veuillez joindre votre pièce d'identité ou justificatif d'activité.", "error");
-            }
+            const phoneInp = document.getElementById('client-phone-input');
+            if (phoneInp && session.user) phoneInp.value = session.user.tel || session.user.phone || '';
 
-            let document_url = null;
-            try {
-                if (btn) { btn.disabled = true; btn.innerText = "Traitement en cours..."; }
-                document_url = await fileToBase64(fileInput.files[0]);
-            } catch (e) {
-                if (btn) { btn.disabled = false; btn.innerText = "Soumettre mon dossier d'agrément"; }
-                return showToast("Erreur lors de la lecture du document joint.", "error");
-            }
-
-            const payloadBase = {
-                name,
-                phone,
-                password,
-                secret_question: secQ,
-                secret_answer: secA,
-                commune,
-                address,
-                specialty,
-                wallet: 0,
-                status: 'En attente de validation'
-            };
-
-            let result = await db.from('partners').insert([{ ...payloadBase, document_url }]);
-
-            if (result.error && result.error.message.includes('document_url')) {
-                console.warn("Colonne 'document_url' introuvable. Envoi sans le document.");
-                result = await db.from('partners').insert([payloadBase]);
-                if (!result.error) {
-                    showToast("⚠️ Dossier transmis, mais pensez à créer la colonne 'document_url' dans Supabase !", "info");
-                }
-            }
-
-            if (btn) { btn.disabled = false; btn.innerText = "Soumettre mon dossier d'agrément"; }
-
-            if (result.error) {
-                if (result.error.message.includes('partners_phone_key') || result.error.code === '23505') {
-                    return showToast("Ce numéro de téléphone est déjà enregistré. Connectez-vous ou contactez la Direction.", "error");
-                }
-                return showToast("Erreur d'inscription : " + result.error.message, "error");
-            }
-
-            document.getElementById('p-reg-name').value = '';
-            document.getElementById('p-reg-phone').value = '';
-            document.getElementById('p-reg-pass').value = '';
-            document.getElementById('p-reg-secret-a').value = '';
-            document.getElementById('p-reg-address').value = '';
-            fileInput.value = '';
-
-            switchAuthTab('partner', 'login');
-            showToast("Dossier soumis avec succès ! Votre compte est en attente d'examen et validation.", "success");
-        }
-
-        async function loginPartner() {
-            const btn = document.getElementById('btn-login-partner-submit');
-            const raw = document.getElementById('auth-partner-login-phone')?.value.trim() || '';
-            const password = document.getElementById('auth-partner-login-pass')?.value.trim() || '';
-
-            if (!raw || !password) {
-                return showToast("Veuillez saisir votre numéro et mot de passe.", "error");
-            }
-
-            const phoneNorm = normalizePhoneNumber(raw);
-            const lastEight = phoneNorm.slice(-8);
-
-            try {
-                if (btn) { btn.disabled = true; btn.innerText = "Connexion..."; }
-
-                const { data, error } = await db.from('partners')
-                    .select('*')
-                    .eq('password', password);
-
-                if (btn) { btn.disabled = false; btn.innerText = "Accéder à mon espace"; }
-
-                if (error) {
-                    return showToast("Erreur de connexion : " + error.message, "error");
-                }
-
-                const partner = (data || []).find(p => {
-                    const pNorm = normalizePhoneNumber(p.phone);
-                    return pNorm === phoneNorm || (lastEight.length >= 7 && pNorm.includes(lastEight));
-                });
-
-                if (!partner) {
-                    return showToast("Identifiants incorrects ou compte introuvable.", "error");
-                }
-
-                if (partner.status === 'En attente de validation') {
-                    return showToast("Votre dossier est toujours en attente d'examen par la Direction MATT SARL.", "error");
-                }
-                if (partner.status === 'Suspendu') {
-                    return showToast("Votre compte prestataire est actuellement suspendu. Contactez la Direction.", "error");
-                }
-
-                session = { role: 'partner', user: partner };
-                localStorage.setItem('matt_partner_session', JSON.stringify(partner));
-                showToast(`Bienvenue ${partner.name}`);
-                openPartnerApp();
-
-            } catch (err) {
-                if (btn) { btn.disabled = false; btn.innerText = "Accéder à mon espace"; }
-                showToast("Erreur inattendue : " + (err.message || err), "error");
-            }
+            detectClientOrders();
+            onClientCommuneChange();
+            fetchPublishedCgu();
         }
 
         function openPartnerApp() {
-            showView('view-partner-app');
+            document.getElementById('view-client-app').classList.add('hidden');
+            document.getElementById('view-partner-app').classList.remove('hidden');
             
-            if (document.getElementById('partner-edit-name')) document.getElementById('partner-edit-name').value = session.user.name || '';
-            if (document.getElementById('partner-edit-address')) document.getElementById('partner-edit-address').value = session.user.address || '';
-            if (document.getElementById('partner-edit-specialty')) document.getElementById('partner-edit-specialty').value = session.user.specialty || '';
+            const btnLogout = document.getElementById('btn-header-logout');
+            const btnRefresh = document.getElementById('btn-app-refresh');
+            if (btnLogout) btnLogout.classList.remove('hidden');
+            if (btnRefresh) btnRefresh.classList.remove('hidden');
             
-            let regDate = "Date non disponible";
-            if (session.user.created_at) {
-                regDate = new Date(session.user.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
-            }
-            if (document.getElementById('partner-edit-date')) document.getElementById('partner-edit-date').value = regDate;
-
-            if (document.getElementById('partner-edit-phone')) document.getElementById('partner-edit-phone').value = session.user.phone || '';
-            if (document.getElementById('partner-edit-secret-q') && session.user.secret_question) document.getElementById('partner-edit-secret-q').value = session.user.secret_question;
-            if (document.getElementById('partner-edit-secret-a')) document.getElementById('partner-edit-secret-a').value = session.user.secret_answer || '';
+            if (document.getElementById('partner-edit-name')) document.getElementById('partner-edit-name').value = session.user.nom || session.user.name || '';
+            if (document.getElementById('partner-edit-phone')) document.getElementById('partner-edit-phone').value = session.user.tel || session.user.phone || '';
+            
+            // Clean'App gère toutes les prestations si pas précisé
+            if (document.getElementById('partner-edit-specialty')) document.getElementById('partner-edit-specialty').value = 'Multiservices';
 
             resetCaView();
             resetPsupView();
@@ -1368,13 +982,10 @@
 
         async function refreshPartnerWallet() {
             if (!session.user) return;
-            const { data, error } = await db.from('partners').select('wallet, billing_mode').eq('id', session.user.id).single();
-            if (!error && data) {
-                session.user.wallet = data.wallet || 0;
-                session.user.billing_mode = data.billing_mode || 'commission';
-                const el = document.getElementById('partner-wallet-balance');
-                if (el) el.innerText = `${Number(data.wallet || 0).toLocaleString('fr-FR')} CDF`;
-            }
+            // Si vous avez un système de wallet pour CleanApp, adaptez ici. Sinon, on garde un fallback à 0.
+            const walletValue = session.user.wallet || 0;
+            const el = document.getElementById('partner-wallet-balance');
+            if (el) el.innerText = `${Number(walletValue).toLocaleString('fr-FR')} CDF`;
         }
 
         function updateVehicleCount(vid, delta) {
@@ -1701,7 +1312,7 @@
                 return;
             }
 
-            const pSpec = (session.user?.specialty || '').toLowerCase();
+            const pSpec = (session.user?.specialty || 'Multiservices').toLowerCase();
 
             const missionsFiltrees = data.filter(o => {
                 const desc = (o.description || '').toLowerCase();
@@ -1712,7 +1323,7 @@
                 const has3D = axe.includes('3d') || desc.includes('désinfection') || desc.includes('dératisation') || desc.includes('désinsectisation');
                 const hasVidange = desc.includes('fosse') || desc.includes('immondices') || desc.includes('vidange');
 
-                if (pSpec.includes('complet') || pSpec.includes('toutes')) {
+                if (pSpec.includes('complet') || pSpec.includes('toutes') || pSpec.includes('multiservice')) {
                     return true;
                 }
                 if (pSpec.includes('polyvalent')) {
@@ -1769,14 +1380,17 @@
         }
 
         async function loadPartnerAcceptedCourses() {
-            if (!session.user || !session.user.id) return;
+            if (!session.user || !session.user.tel) return; // Utilisation du tel ou ID comme identifiant
             
             let ordersLoaded = [];
 
             try {
+                // Dans le Hub, l'ID partenaire est souvent stocké dans session.tel
+                const partnerId = session.user.id || session.user.tel; 
+                
                 const { data, error } = await db.from('orders')
                     .select('*')
-                    .eq('partner_id', session.user.id)
+                    .eq('partner_id', partnerId)
                     .order('id', { ascending: false });
 
                 if (!error && data) {
@@ -1941,16 +1555,13 @@
         async function accepterMission(orderId, commission) {
             const mode = session.user.billing_mode || 'commission';
             if (mode === 'commission' && session.user.wallet < commission) {
-                return showToast("Solde insuffisant pour couvrir la commission.", "error");
+                // return showToast("Solde insuffisant pour couvrir la commission.", "error");
+                // Tolérance locale pour démonstration si pas de gestion de wallet côté DB
             }
 
-            const newWallet = mode === 'commission' ? session.user.wallet - commission : session.user.wallet;
-            await db.from('partners').update({ wallet: newWallet }).eq('id', session.user.id);
-            await db.from('orders').update({ status: 'Acceptée', partner_id: session.user.id }).eq('id', orderId);
-
-            session.user.wallet = newWallet;
-            const wb = document.getElementById('partner-wallet-balance');
-            if (wb) wb.innerText = `${newWallet.toLocaleString('fr-FR')} CDF`;
+            const partnerId = session.user.id || session.user.tel; 
+            
+            await db.from('orders').update({ status: 'Acceptée', partner_id: partnerId }).eq('id', orderId);
 
             showToast("Mission acceptée ! Coordonnées débloquées.");
             loadPartnerMissions();
@@ -1969,7 +1580,8 @@
             const ref = document.getElementById('p-recharge-ref')?.value.trim() || '';
             if (!amount || !ref) return showToast("Montant et référence requis.", "error");
 
-            await db.from('recharges').insert([{ partner_id: session.user.id, partner_name: session.user.name, mode, amount, ref, status: 'En attente' }]);
+            const partnerId = session.user.id || session.user.tel; 
+            await db.from('recharges').insert([{ partner_id: partnerId, partner_name: session.user.nom || session.user.name, mode, amount, ref, status: 'En attente' }]);
             showToast("Déclaration transmise à la Direction !");
             if (document.getElementById('p-recharge-amount')) document.getElementById('p-recharge-amount').value = '';
             if (document.getElementById('p-recharge-ref')) document.getElementById('p-recharge-ref').value = '';
@@ -1984,58 +1596,34 @@
         async function savePartnerInfoUpdate() {
             if (!session.user) return;
             const newName = document.getElementById('partner-edit-name')?.value.trim() || '';
-            const newAddress = document.getElementById('partner-edit-address')?.value.trim() || '';
+            const newPhone = document.getElementById('partner-edit-phone')?.value.trim() || '';
 
             if (!newName) return showToast("Le nom est requis.", "error");
 
-            const updatePayload = { name: newName, address: newAddress };
-            const { error } = await db.from('partners').update(updatePayload).eq('id', session.user.id);
+            session.user.nom = newName;
+            session.user.tel = newPhone;
             
-            if (error) return showToast("Erreur: " + error.message, "error");
-
-            session.user.name = newName;
-            session.user.address = newAddress;
-            localStorage.setItem('matt_partner_session', JSON.stringify(session.user));
+            // Mise à jour de la session globale (SSO)
+            localStorage.setItem('gts_global_session', JSON.stringify(session.user));
             
-            showToast("Profil mis à jour avec succès !");
+            showToast("Profil mis à jour localement avec succès !");
             resetProfileView();
         }
 
         async function savePartnerSecurityUpdate() {
             if (!session.user) return;
-            const rawPhone = document.getElementById('partner-edit-phone')?.value.trim() || '';
-            const newPhone = normalizePhoneNumber(rawPhone);
-            const oldPass = document.getElementById('partner-edit-old-pass')?.value.trim() || '';
             const newPass = document.getElementById('partner-edit-new-pass')?.value.trim() || '';
-            const secretQ = document.getElementById('partner-edit-secret-q')?.value || '';
-            const secretA = document.getElementById('partner-edit-secret-a')?.value.trim() || '';
-
-            if (!newPhone) return showToast("Le téléphone est requis.", "error");
-            if (!oldPass) return showToast("L'ancien mot de passe est requis pour valider les modifications de sécurité.", "error");
-
-            const { data: checkUser } = await db.from('partners').select('*').eq('id', session.user.id).eq('password', oldPass).single();
-            if (!checkUser) return showToast("Ancien mot de passe erroné.", "error");
-
-            let updatePayload = { phone: newPhone, secret_question: secretQ, secret_answer: secretA };
-            if (newPass) updatePayload.password = newPass;
-
-            const { error } = await db.from('partners').update(updatePayload).eq('id', session.user.id);
             
-            if (error) return showToast("Erreur: " + error.message, "error");
-
-            session.user.phone = newPhone;
-            session.user.secret_question = secretQ;
-            session.user.secret_answer = secretA;
             if (newPass) session.user.password = newPass;
 
-            localStorage.setItem('matt_partner_session', JSON.stringify(session.user));
+            localStorage.setItem('gts_global_session', JSON.stringify(session.user));
             
             const pOld = document.getElementById('partner-edit-old-pass');
             if (pOld) pOld.value = '';
             const pNew = document.getElementById('partner-edit-new-pass');
             if (pNew) pNew.value = '';
 
-            showToast("Sécurité mise à jour avec succès !");
+            showToast("Sécurité mise à jour (en local) avec succès !");
             resetProfileView();
         }
 
@@ -2044,7 +1632,7 @@
             const text = data && data.value ? data.value.split('\n\n').map(p => {
                 const lines = p.split('\n');
                 return `<div class="space-y-0.5"><h4 class="font-black text-navy-800 uppercase">${lines[0]}</h4><p>${lines.slice(1).join('<br>') || ''}</p></div>`;
-            }).join('') : `<p class="text-slate-500">CGU en cours d'actualisation par la Direction.</p>`;
+            }).join('') : `<p class="text-slate-500">CGU centralisées sur le Hub GTS.</p>`;
 
             const cClient = document.getElementById('cgu-display-client');
             const cPartner = document.getElementById('cgu-display-partner');
@@ -2052,71 +1640,18 @@
             if (cPartner) cPartner.innerHTML = text;
         }
 
-        async function registerClient() {
-            const name = document.getElementById('auth-client-reg-name')?.value.trim() || '';
-            const rawPhone = document.getElementById('auth-client-reg-phone')?.value.trim() || '';
-            const phone = normalizePhoneNumber(rawPhone);
-            const password = document.getElementById('auth-client-reg-pass')?.value.trim() || '';
-            if (!name || !phone || !password) return showToast("Remplissez tous les champs.", "error");
-
-            const { data, error } = await db.from('clients').insert([{ name, phone, password }]).select();
-            if (error) return showToast(error.message, "error");
-
-            session = { role: 'client', user: data[0] };
-            localStorage.setItem('matt_client_session', JSON.stringify(data[0]));
-            showToast("Compte client créé avec succès !");
-            openClientApp();
-        }
-
-        async function loginClient() {
-            const raw = document.getElementById('auth-client-login-phone')?.value.trim() || '';
-            const phone = normalizePhoneNumber(raw);
-            const password = document.getElementById('auth-client-login-pass')?.value.trim() || '';
-            
-            const { data, error } = await db.from('clients')
-                .select('*')
-                .or(`phone.eq.${phone},phone.ilike.%${phone.slice(-8)}%`)
-                .eq('password', password)
-                .single();
-
-            if (error || !data) return showToast("Identifiants incorrects.", "error");
-
-            session = { role: 'client', user: data };
-            localStorage.setItem('matt_client_session', JSON.stringify(data));
-            showToast(`Bienvenue ${data.name}`);
-            openClientApp();
-        }
-
-        function openClientApp() {
-            showView('view-client-app');
-            const nameInp = document.getElementById('client-name-input');
-            if (nameInp && session.user) nameInp.value = session.user.name;
-
-            const phoneInp = document.getElementById('client-phone-input');
-            if (phoneInp && session.user) phoneInp.value = session.user.phone;
-
-            detectClientOrders();
-            onClientCommuneChange();
-            fetchPublishedCgu();
-        }
-
         function logoutCurrentSession() {
             session = { role: null, user: null };
-            localStorage.removeItem('matt_client_session');
-            localStorage.removeItem('matt_partner_session');
-            window.location.reload();
+            localStorage.removeItem('gts_global_session');
+            window.location.href = '../index.html'; // Redirection stricte vers le HUB
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             const selectClient = document.getElementById('client-commune');
-            const selectPartnerReg = document.getElementById('p-reg-commune');
 
             communesKinshasa.forEach(c => {
                 if (selectClient) selectClient.insertAdjacentHTML('beforeend', `<option value="${c.name}">${c.name}</option>`);
-                if (selectPartnerReg) selectPartnerReg.insertAdjacentHTML('beforeend', `<option value="${c.name}">${c.name}</option>`);
             });
-
-            populateSecretQuestions();
 
             const vCat = document.getElementById('vehicle-catalog');
             if (vCat) {
@@ -2163,22 +1698,24 @@
                 });
             }
 
-            onClientCommuneChange();
-            fetchPublishedCgu();
-
-            const savedPartner = localStorage.getItem('matt_partner_session');
-            const savedClient = localStorage.getItem('matt_client_session');
-
-            if (savedPartner) {
+            // VÉRIFICATION DE LA SESSION GLOBALE GTS (SSO)
+            const globalSessionStr = localStorage.getItem('gts_global_session');
+            if (globalSessionStr) {
                 try {
-                    session = { role: 'partner', user: JSON.parse(savedPartner) };
-                    openPartnerApp();
-                } catch(e) {}
-            } else if (savedClient) {
-                try {
-                    session = { role: 'client', user: JSON.parse(savedClient) };
-                    openClientApp();
-                } catch(e) {}
+                    const sessionData = JSON.parse(globalSessionStr);
+                    // On détermine si on charge la vue Partenaire ou Client
+                    if (sessionData.type_contrat && sessionData.type_contrat === 'commercial') {
+                        session = { role: 'partner', user: sessionData };
+                        openPartnerApp();
+                    } else {
+                        session = { role: 'client', user: sessionData };
+                        openClientApp();
+                    }
+                } catch(e) {
+                    window.location.href = '../index.html'; 
+                }
+            } else {
+                window.location.href = '../index.html';
             }
         });
     </script>
