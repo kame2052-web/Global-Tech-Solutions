@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyFly Transit — Suivi Bagage & Enregistrement</title>
+    <title>EasyFly Transit — Suivi de Bagages & Collecte à Domicile</title>
     <link rel="icon" type="image/png" href="../GLOBAL.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -21,391 +23,357 @@
             }
         }
     </script>
-    <style>
-        .page-fade { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
 </head>
 <body class="bg-gtsdark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
-    <!-- EN-TÊTE ÉPURÉ -->
-    <header class="w-full border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-4xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='../index.html'">
-                <div class="h-11 w-11 rounded-xl overflow-hidden bg-white flex items-center justify-center p-1 shadow-sm flex-shrink-0">
-                    <img src="../EASYFLY%20TRANSIT.jpg" alt="EasyFly Transit" class="w-full h-full object-contain" onerror="this.style.display='none'">
+    <!-- EN-TÊTE CORPORATE AVEC BOUTON RETOUR GTS -->
+    <header class="w-full border-b border-slate-800 bg-slate-900/85 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="h-12 w-12 rounded-xl overflow-hidden bg-white flex items-center justify-center p-1 shadow-sm flex-shrink-0">
+                    <img src="../EASYFLY%20TRANSIT.jpg" alt="EasyFly Transit" class="w-full h-full object-contain">
                 </div>
                 <div>
-                    <h1 class="text-sm font-black tracking-wider uppercase text-slate-100">EasyFly Transit</h1>
-                    <p class="text-[9px] font-mono text-indigo-400 tracking-widest uppercase font-bold">GTS Logistics</p>
+                    <h1 class="text-sm md:text-base font-black tracking-wider uppercase text-slate-100">EasyFly Transit</h1>
+                    <p class="text-[9px] md:text-[10px] font-mono text-indigo-400 tracking-widest uppercase font-bold">Conglomérat Global Tech Solutions (GTS)</p>
                 </div>
             </div>
-
-            <button onclick="window.location.href='../index.html'" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
-                <i class="fa-solid fa-house"></i> <span class="hidden sm:inline">Hub GTS</span>
-            </button>
+            
+            <!-- BOUTON RETOUR À L'ACCUEIL GTS -->
+            <a href="../index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all flex items-center gap-2 shadow-md">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span class="hidden sm:inline">Accueil GTS Services</span>
+            </a>
         </div>
     </header>
 
     <!-- CONTENU PRINCIPAL ÉPURÉ -->
-    <main class="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8 page-fade">
-
-        <!-- MESSAGE SIMPLE ET CLAIR -->
-        <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 shadow-lg flex items-center justify-between gap-4">
-            <div>
-                <h2 class="text-lg font-black text-white">Prise en charge déportée de vos bagages</h2>
-                <p class="text-xs text-slate-400 mt-0.5">Déposez vos bagages dans un de nos centres (Ngaliema ou Limete) ou sollicitez une collecte à domicile.</p>
-            </div>
-            <div class="hidden sm:flex h-10 w-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 items-center justify-center text-lg flex-shrink-0">
-                <i class="fa-solid fa-plane"></i>
-            </div>
+    <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-12 space-y-12 w-full">
+        
+        <!-- HERO TITRE -->
+        <div class="text-center space-y-4">
+            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono font-bold">
+                <i class="fa-solid fa-plane-departure"></i> Logistique Aéroportuaire Déportée
+            </span>
+            <h2 class="text-3xl md:text-4xl font-black tracking-tight text-slate-100">
+                Suivez votre bagage ou planifiez <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-400 to-amber-300">votre collecte sécurisée.</span>
+            </h2>
+            <p class="text-xs md:text-sm text-slate-400 max-w-xl mx-auto">
+                Déposez vos valises dans l'un de nos centres (Ngaliema ou Limete) ou demandez l'enlèvement à domicile par nos équipes de sûreté.
+            </p>
         </div>
 
-        <!-- ONGLETS SIMPLES DE NAVIGATION -->
-        <div class="flex bg-slate-900 border border-slate-800 p-1.5 rounded-2xl">
-            <button id="tab-tracking" onclick="switchSection('tracking')" class="flex-1 py-3 text-xs font-black bg-indigo-600 text-white rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+        <!-- ONGLETS DE NAVIGATION PRINCIPALE CLIENT -->
+        <div class="flex bg-slate-900 border border-slate-800 p-1.5 rounded-2xl max-w-xl mx-auto">
+            <button type="button" id="tab-btn-tracking" onclick="switchClientTab('tracking')" class="flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-md">
                 <i class="fa-solid fa-route"></i> Suivi de Bagage
             </button>
-            <button id="tab-collecte" onclick="switchSection('collecte')" class="flex-1 py-3 text-xs font-bold text-slate-400 hover:text-white rounded-xl transition-all flex items-center justify-center gap-2">
-                <i class="fa-solid fa-truck-ramp-box"></i> Solliciter une Collecte à Domicile
+            <button type="button" id="tab-btn-collecte" onclick="switchClientTab('collecte')" class="flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-truck-ramp-box"></i> Collecte à Domicile
             </button>
         </div>
 
-        <!-- 1. SECTION : SUIVI DE BAGAGE (ECRAN PRINCIPAL) -->
-        <section id="sec-tracking" class="space-y-6">
-            
-            <!-- RECHERCHE RAPIDE -->
-            <div class="bg-gtscard border border-slate-800 rounded-2xl p-5 shadow-md space-y-3">
-                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Entrez votre N° de Billet ou Code PNR</label>
-                <div class="flex gap-2">
-                    <input type="text" id="track-input" placeholder="Ex: AF-29401 ou GTS-EF-89420" class="flex-1 bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-4 py-3 text-xs font-mono text-white outline-none">
-                    <button onclick="rechercherBagage()" id="btnSearchStatut" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black px-6 py-3 rounded-xl text-xs uppercase transition-all shadow-lg shadow-indigo-600/20">
-                        Suivre
+        <!-- SECTION 1 : SUIVI DE BAGAGE (TIMELINE ÉPURÉE) -->
+        <div id="section-tracking" class="space-y-6 max-w-2xl mx-auto">
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-5">
+                <h3 class="text-base font-black text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-qrcode text-indigo-400"></i> Suivi en Temps Réel de votre Bagage
+                </h3>
+                
+                <div id="searchFormBloc" class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" id="quickSearchInput" placeholder="N° Billet, PNR ou Réf (ex: EF-89420)" class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs md:text-sm text-slate-100 uppercase font-mono focus:outline-none focus:border-indigo-500">
+                    <button type="button" onclick="consulterStatutCloud()" id="btnSearchStatut" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl text-xs font-black uppercase transition-all shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass"></i> Suivre
+                    </button>
+                </div>
+
+                <div id="trackingResult" class="hidden mt-6 pt-6 border-t border-slate-800 space-y-6">
+                    <div class="flex justify-between items-center bg-slate-900 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs font-mono font-bold text-slate-300">Dossier : <span id="trackedNumber" class="text-indigo-400 uppercase text-sm ml-1"></span></span>
+                        <span id="trackedStatusBadge" class="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-satellite-dish"></i> En Traitement
+                        </span>
+                    </div>
+                    
+                    <!-- TIMELINE DES ÉTAPES CLIENT -->
+                    <div class="relative pl-6 border-l-2 border-slate-700 ml-4 space-y-8 text-xs font-mono">
+                        <div class="relative" id="step-reg">
+                            <span class="step-bullet absolute -left-[35px] top-0 bg-emerald-500 text-slate-950 rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black"><i class="fa-solid fa-check"></i></span>
+                            <h4 class="font-bold text-emerald-400 text-sm">Bagage déposé ou collecté & validé</h4>
+                            <p class="text-[10px] text-slate-400 mt-1" id="step-reg-desc">Enregistré et validé dans notre centre.</p>
+                        </div>
+                        <div class="relative" id="step-transit">
+                            <span class="step-bullet absolute -left-[35px] top-0 bg-slate-800 text-slate-400 rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black">2</span>
+                            <h4 class="font-bold text-slate-300 text-sm">Bagage en route</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">Acheminement sécurisé en cours vers l'aéroport.</p>
+                        </div>
+                        <div class="relative" id="step-airport">
+                            <span class="step-bullet absolute -left-[35px] top-0 bg-slate-800 text-slate-400 rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black">3</span>
+                            <h4 class="font-bold text-slate-300 text-sm">Arrivé à l'aéroport</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">Réception au terminal aéroportuaire GTS.</p>
+                        </div>
+                        <div class="relative" id="step-checkin">
+                            <span class="step-bullet absolute -left-[35px] top-0 bg-slate-800 text-slate-400 rounded-full w-6 h-6 flex items-center justify-center text-[10px] font-black">4</span>
+                            <h4 class="font-bold text-slate-300 text-sm">Check-in et validé</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">Enregistré et remis officiellement à la compagnie aérienne.</p>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="nouvelleRecherche()" class="w-full mt-4 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-3 rounded-xl text-xs font-bold uppercase transition-all flex items-center justify-center">
+                        <i class="fa-solid fa-rotate-left mr-2"></i> Nouvelle recherche
                     </button>
                 </div>
             </div>
+        </div>
 
-            <!-- CHRONOLOGIE DES ÉTAPES DU BAGAGE -->
-            <div id="tracking-result" class="bg-gtscard border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b border-slate-800 pb-4 gap-2">
-                    <div>
-                        <span class="text-[10px] font-mono text-indigo-400 uppercase font-bold">Référence Dossier</span>
-                        <h3 class="text-lg font-black text-white font-mono" id="lbl-track-id">AF-29401</h3>
-                    </div>
-                    <div class="text-left sm:text-right">
-                        <span class="text-[10px] font-mono text-slate-400 uppercase">Compagnie & Vol</span>
-                        <p class="text-xs font-bold text-slate-200" id="lbl-track-flight">Air France</p>
-                    </div>
+        <!-- SECTION 2 : DEMANDE DE COLLECTE À DOMICILE -->
+        <div id="section-collecte" class="hidden space-y-6 max-w-2xl mx-auto">
+            <div class="bg-gtscard border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+                <div class="border-b border-slate-800 pb-4">
+                    <h3 class="text-base font-black text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-truck-ramp-box text-amber-400"></i> Solliciter une Collecte à Domicile
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">Renseignez vos informations de vol et de localisation pour planifier l'enlèvement.</p>
                 </div>
 
-                <!-- PARCOURS CHRONOLOGIQUE -->
-                <div class="relative pl-6 border-l-2 border-slate-800 space-y-6 my-2">
-                    
-                    <!-- ÉTAPE 1 : DÉPÔT / VALIDATION -->
-                    <div class="relative" id="step-1">
-                        <div class="absolute -left-[31px] top-0 w-6 h-6 rounded-full bg-emerald-500 border-4 border-slate-900 flex items-center justify-center text-[10px] text-slate-950 font-black">
-                            ✓
-                        </div>
-                        <div class="space-y-0.5">
-                            <h4 class="text-xs font-black text-emerald-400">Bagage déposé et validé</h4>
-                            <p class="text-[11px] text-slate-400" id="step-1-desc">Pris en charge au centre GTS (Ngaliema / Limete) ou collecté à domicile.</p>
-                        </div>
-                    </div>
-
-                    <!-- ÉTAPE 2 : TRANSIT (SANS DÉTAILS DE LA FLOTTE INTERNE) -->
-                    <div class="relative" id="step-2">
-                        <div class="absolute -left-[31px] top-0 w-6 h-6 rounded-full bg-indigo-500 border-4 border-slate-900 flex items-center justify-center text-[10px] text-slate-950 font-black">
-                            <i class="fa-solid fa-truck-fast"></i>
-                        </div>
-                        <div class="space-y-0.5">
-                            <h4 class="text-xs font-black text-indigo-400">Bagage en route vers l'aéroport</h4>
-                            <p class="text-[11px] text-slate-400">Transfert sécurisé en cours vers la zone aéroportuaire de N'djili.</p>
-                        </div>
-                    </div>
-
-                    <!-- ÉTAPE 3 : ARRIVÉE AÉROPORT -->
-                    <div class="relative" id="step-3">
-                        <div class="absolute -left-[31px] top-0 w-6 h-6 rounded-full bg-slate-800 border-4 border-slate-900 flex items-center justify-center text-[10px] text-slate-400 font-bold">
-                            3
-                        </div>
-                        <div class="space-y-0.5">
-                            <h4 class="text-xs font-bold text-slate-500">Bagage arrivé à l'aéroport</h4>
-                            <p class="text-[11px] text-slate-500">Reçu et pris en charge au hub logistique de N'djili.</p>
-                        </div>
-                    </div>
-
-                    <!-- ÉTAPE 4 : CHECK-IN ET VALIDATION -->
-                    <div class="relative" id="step-4">
-                        <div class="absolute -left-[31px] top-0 w-6 h-6 rounded-full bg-slate-800 border-4 border-slate-900 flex items-center justify-center text-[10px] text-slate-400 font-bold">
-                            4
-                        </div>
-                        <div class="space-y-0.5">
-                            <h4 class="text-xs font-bold text-slate-500">Bagage checké et validé</h4>
-                            <p class="text-[11px] text-slate-500">Enregistré et prêt pour embarquement en soute par la compagnie.</p>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- 2. SECTION : DEMANDE DE COLLECTE À DOMICILE -->
-        <section id="sec-collecte" class="hidden bg-gtscard border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
-            <div class="border-b border-slate-800 pb-3">
-                <h3 class="text-base font-black text-white">Demande de Collecte à Domicile</h3>
-                <p class="text-xs text-slate-400 mt-0.5">Renseignez vos références pour que notre équipe vienne récupérer vos bagages.</p>
-            </div>
-
-            <form id="form-collecte" onsubmit="soumettreCollecte(event)" class="space-y-5">
-                
-                <!-- IDENTIFICATION & PASSEPORT BILLET -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Nom Complet *</label>
-                        <input type="text" required id="client-nom" placeholder="Ex: KABILA Jean-Luc" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-xs text-white outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Téléphone (WhatsApp) *</label>
-                        <input type="tel" required id="client-tel" placeholder="+243 81..." class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-xs font-mono text-white outline-none">
-                    </div>
-                </div>
-
-                <!-- RÉFÉRENCE DU BILLET D'AVION & DETECTION AUTO VOL -->
-                <div class="p-4 bg-slate-950 border border-indigo-500/30 rounded-xl space-y-4">
-                    <span class="text-[10px] font-mono font-bold text-indigo-400 uppercase tracking-wider block">🔒 Vérification de Sûreté du Billet</span>
-                    
+                <form id="formCollecte" onsubmit="event.preventDefault(); soumettreCollecteDomicile();" class="space-y-5">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Compagnie Aérienne *</label>
-                            <select required id="pnr-airline" onchange="detecterTypeVol()" class="w-full bg-slate-900 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-xs text-white outline-none">
-                                <option value="">-- Sélectionner la compagnie --</option>
-                                <optgroup label="Vols Internationaux">
-                                    <option value="Air France">Air France</option>
-                                    <option value="Brussels Airlines">Brussels Airlines</option>
-                                    <option value="Ethiopian Airlines">Ethiopian Airlines</option>
-                                    <option value="Turkish Airlines">Turkish Airlines</option>
-                                    <option value="Kenya Airways">Kenya Airways</option>
-                                </optgroup>
-                                <optgroup label="Vols Nationaux (RDC)">
-                                    <option value="Congo Airways">Congo Airways</option>
-                                    <option value="Compagnie Africaine d'Aviation (CAA)">Compagnie Africaine d'Aviation (CAA)</option>
-                                    <option value="Air Kasaï">Air Kasaï</option>
-                                </optgroup>
+                            <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Nom de famille *</label>
+                            <input type="text" id="colNom" required placeholder="ex: KABILA" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 uppercase focus:border-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Prénom *</label>
+                            <input type="text" id="colPrenom" required placeholder="ex: Jean-Luc" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 focus:border-indigo-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Téléphone (WhatsApp) *</label>
+                            <input type="tel" id="colTel" required placeholder="+243 81..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-100 focus:border-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Compagnie Aérienne *</label>
+                            <select id="colCompagnie" required onchange="detecterTypeTrafic()" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:border-indigo-500 focus:outline-none">
+                                <option value="">-- Choisir la compagnie --</option>
+                                <option value="Air France">Air France (International)</option>
+                                <option value="Brussels Airlines">Brussels Airlines (International)</option>
+                                <option value="Ethiopian Airlines">Ethiopian Airlines (International)</option>
+                                <option value="Turkish Airlines">Turkish Airlines (International)</option>
+                                <option value="Congo Airways">Congo Airways (Vol Local / National)</option>
+                                <option value="CAA">CAA (Vol Local / National)</option>
                             </select>
                         </div>
+                    </div>
 
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Référence Billet / PNR *</label>
-                            <input type="text" required id="pnr-ref" placeholder="Ex: AF-29401 ou PNR" class="w-full bg-slate-900 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-xs font-mono text-indigo-300 uppercase outline-none">
+                            <label class="block text-xs font-mono text-indigo-400 uppercase mb-2 font-bold">Référence Billet / PNR *</label>
+                            <input type="text" id="colPnr" required placeholder="ex: 6X9Y2Z" class="w-full bg-slate-900 border border-indigo-500/40 rounded-xl p-3 text-xs font-mono text-indigo-300 uppercase focus:border-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Type détecté par le système</label>
+                            <input type="text" id="colTypeVol" disabled value="En attente de compagnie..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-emerald-400 font-bold">
                         </div>
                     </div>
 
-                    <!-- DÉTECTION AUTOMATIQUE DU TRAFIC -->
-                    <div id="badge-vol-type" class="hidden flex items-center justify-between p-2.5 rounded-lg text-xs font-mono font-bold">
-                        <span id="lbl-vol-type-text"></span>
-                        <span id="lbl-vol-tarif-base" class="text-amber-400"></span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Date et Heure de Collecte Souhaitée *</label>
+                            <input type="datetime-local" id="colDateTime" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 font-mono focus:border-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Nombre de bagages *</label>
+                            <input type="number" id="colNbBagages" min="1" max="6" value="1" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-100 focus:border-indigo-500 focus:outline-none">
+                        </div>
                     </div>
-                </div>
 
-                <!-- CRÉNEAU & ADRESSE DE COLLECTE -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Date du Vol *</label>
-                        <input type="date" required id="flight-date" onchange="calculerDélaiEtPrix()" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-xs text-white outline-none">
+                        <label class="block text-xs font-mono text-slate-400 uppercase mb-2">Adresse de Collecte (Commune, Avenue, N°) *</label>
+                        <textarea id="colAdresse" required rows="2" placeholder="ex: Ngaliema, Av. de la Lukunga n°12" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-100 focus:border-indigo-500 focus:outline-none"></textarea>
                     </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Créneau de Collecte souhaité *</label>
-                        <input type="datetime-local" required id="collecte-slot" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-xs text-white outline-none">
-                    </div>
-                </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Commune *</label>
-                        <select required id="collecte-commune" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-xs text-white outline-none">
-                            <option value="Gombe">Gombe</option>
-                            <option value="Ngaliema">Ngaliema</option>
-                            <option value="Limete">Limete</option>
-                            <option value="Kintambo">Kintambo</option>
-                            <option value="Bandalungwa">Bandalungwa</option>
-                        </select>
+                    <!-- MESSAGE SÉCURITÉ VÉRIFICATION BILLET -->
+                    <div class="bg-amber-950/30 border border-amber-500/30 p-4 rounded-2xl text-xs font-mono text-amber-300 space-y-1">
+                        <p class="font-bold flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> Étape de Sécurité Obligatoire :</p>
+                        <p class="text-[11px] text-slate-400">Après validation, votre demande sera placée en statut <b>"En attente de vérification du billet"</b>. Nos équipes authentifieront le PNR auprès de la compagnie avant de vous envoyer une confirmation définitive et d'autoriser le déplacement de l'équipe.</p>
                     </div>
-                    <div class="sm:col-span-2">
-                        <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Avenue & Numéro *</label>
-                        <input type="text" required id="collecte-address" placeholder="Ex: Boulevard du 30 Juin, N°..." class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl p-3 text-xs text-white outline-none">
-                    </div>
-                </div>
 
-                <!-- ESTIMATION ET TARIF CALCULÉ SELON LE DÉLAI D'ANTICIPATION -->
-                <div id="box-tarif-collecte" class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-2 font-mono text-xs">
-                    <div class="flex justify-between text-slate-300">
-                        <span>Canal de prise en charge :</span>
-                        <strong class="text-amber-400">Collecte VIP à Domicile</strong>
-                    </div>
-                    <div class="flex justify-between text-slate-300">
-                        <span>Type de Vol détecté :</span>
-                        <strong id="summary-flight-type" class="text-indigo-400">En attente de la compagnie</strong>
-                    </div>
-                    <div class="flex justify-between text-slate-300">
-                        <span>Délai d'anticipation :</span>
-                        <strong id="summary-anticipation" class="text-emerald-400">-</strong>
-                    </div>
-                    <div class="border-t border-slate-800 pt-2 flex justify-between items-center text-sm">
-                        <span class="font-bold text-white uppercase">Tarif Collecte Estimé :</span>
-                        <span id="summary-total-price" class="font-black text-emerald-400 text-lg">0.00 USD</span>
-                    </div>
-                </div>
+                    <button type="submit" id="btnSubCollecte" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-4 px-6 rounded-xl shadow-xl transition-all text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-shield-halved"></i> Soumettre la Demande de Collecte
+                    </button>
+                </form>
 
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4 rounded-xl text-xs uppercase shadow-lg shadow-indigo-600/20 transition-all">
-                    Confirmer la Demande de Collecte
-                </button>
-            </form>
-        </section>
+                <!-- BLOC SUCCÈS APRÈS SOUMISSION -->
+                <div id="blocConfirmationCollecte" class="hidden mt-6 bg-slate-900 border border-emerald-500/40 p-6 rounded-2xl space-y-4 text-center">
+                    <div class="inline-flex p-3 bg-emerald-500/20 text-emerald-400 rounded-full text-2xl">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <h4 class="text-sm font-black text-white uppercase">Demande enregistrée avec succès !</h4>
+                    <p class="text-xs font-mono text-slate-300">
+                        Votre dossier <span id="resRefPnr" class="text-indigo-400 font-bold"></span> est actuellement :
+                    </p>
+                    <div class="inline-block px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono font-bold uppercase tracking-wider">
+                        ⏳ En attente de la vérification de la validité du billet
+                    </div>
+                    <p class="text-[11px] text-slate-400 leading-relaxed font-mono">
+                        Dès que notre équipe aura authentifié votre billet auprès de la compagnie, vous recevrez une confirmation officielle et l'équipe planifiera le déplacement à votre domicile.
+                    </p>
+                    <button type="button" onclick="reinitialiserFormulaireCollecte()" class="w-full mt-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-3 rounded-xl text-xs font-bold uppercase transition-all">
+                        <i class="fa-solid fa-arrow-left mr-2"></i> Faire une autre demande
+                    </button>
+                </div>
+            </div>
+        </div>
 
     </main>
 
-    <!-- PIED DE PAGE -->
-    <footer class="w-full border-t border-slate-800 bg-slate-950 py-5 text-slate-500 text-xs mt-auto">
-        <div class="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-2 text-center sm:text-left">
-            <div>
-                <p class="font-bold text-slate-400">EasyFly Transit — Centres Ngaliema & Limete</p>
-                <p class="text-[10px] font-mono text-slate-500">Global Tech Solutions SARL • Kinshasa, RDC</p>
-            </div>
-            <p class="text-[10px]">© 2026 GTS SARL. Tous droits réservés.</p>
-        </div>
+    <!-- FOOTER -->
+    <footer class="w-full border-t border-slate-800 bg-slate-900/50 py-6 text-center text-xs text-slate-500 space-y-1">
+        <p><b>EasyFly Transit</b> — Marque déposée de Global Tech Solutions (GTS).</p>
+        <p class="text-[10px] font-mono">Centres d'exploitation : Ngaliema & Limete • Kinshasa, RDC</p>
     </footer>
 
-    <!-- LOGIQUE SCRIPT ÉPURÉE -->
+    <!-- SCRIPT CLIENT -->
     <script>
-        const INT_AIRLINES = ["Air France", "Brussels Airlines", "Ethiopian Airlines", "Turkish Airlines", "Kenya Airways"];
+        const supabaseUrl = 'https://vbriworyscymnmtzzdny.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZicml3b3J5c2N5bW5tdHp6ZG55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgzNzQwNTEsImV4cCI6MjEwMzk1MDA1MX0.VBZupVKj0srae0NT5BNZ0OeaIv9pAl2bl5L-Rd8ocJk';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-        let isInternational = false;
-        let anticipationJours = 3;
+        function switchClientTab(tab) {
+            const secTracking = document.getElementById('section-tracking');
+            const secCollecte = document.getElementById('section-collecte');
+            const btnTrack = document.getElementById('tab-btn-tracking');
+            const btnCollecte = document.getElementById('tab-btn-collecte');
 
-        function switchSection(sec) {
-            const secTracking = document.getElementById('sec-tracking');
-            const secCollecte = document.getElementById('sec-collecte');
-            const tabTracking = document.getElementById('tab-tracking');
-            const tabCollecte = document.getElementById('tab-collecte');
-
-            if (sec === 'tracking') {
+            if (tab === 'tracking') {
                 secTracking.classList.remove('hidden');
                 secCollecte.classList.add('hidden');
-                tabTracking.className = "flex-1 py-3 text-xs font-black bg-indigo-600 text-white rounded-xl transition-all shadow-md flex items-center justify-center gap-2";
-                tabCollecte.className = "flex-1 py-3 text-xs font-bold text-slate-400 hover:text-white rounded-xl transition-all flex items-center justify-center gap-2";
+                btnTrack.className = "flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase transition-all flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-md";
+                btnCollecte.className = "flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white";
             } else {
                 secTracking.classList.add('hidden');
                 secCollecte.classList.remove('hidden');
-                tabCollecte.className = "flex-1 py-3 text-xs font-black bg-indigo-600 text-white rounded-xl transition-all shadow-md flex items-center justify-center gap-2";
-                tabTracking.className = "flex-1 py-3 text-xs font-bold text-slate-400 hover:text-white rounded-xl transition-all flex items-center justify-center gap-2";
+                btnCollecte.className = "flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase transition-all flex items-center justify-center gap-2 bg-amber-500 text-slate-950 shadow-md";
+                btnTrack.className = "flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase transition-all flex items-center justify-center gap-2 text-slate-400 hover:text-white";
             }
         }
 
-        // DÉTECTION AUTOMATIQUE DU TRAFIC INTERNATIONAL OU NATIONAL
-        function detecterTypeVol() {
-            const airline = document.getElementById('pnr-airline').value;
-            const badge = document.getElementById('badge-vol-type');
-            const lblText = document.getElementById('lbl-vol-type-text');
-            const summaryFlight = document.getElementById('summary-flight-type');
-
-            if (!airline) {
-                badge.classList.add('hidden');
-                summaryFlight.textContent = "En attente de la compagnie";
-                return;
-            }
-
-            isInternational = INT_AIRLINES.includes(airline);
-            badge.classList.remove('hidden');
-
-            if (isInternational) {
-                badge.className = "flex items-center justify-between p-2.5 rounded-lg text-xs font-mono font-bold bg-indigo-950/80 border border-indigo-500/30 text-indigo-300";
-                lblText.textContent = "🌍 Trafic Détecté : Vol International";
-                summaryFlight.textContent = "Vol International";
+        function detecterTypeTrafic() {
+            const cie = document.getElementById('colCompagnie').value;
+            const inputType = document.getElementById('colTypeVol');
+            if (cie.includes('Congo Airways') || cie.includes('CAA')) {
+                inputType.value = "🇨🇩 Vol Local / National (RDC)";
+                inputType.className = "w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-cyan-400 font-bold";
+            } else if (cie) {
+                inputType.value = "🌍 Vol International";
+                inputType.className = "w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-emerald-400 font-bold";
             } else {
-                badge.className = "flex items-center justify-between p-2.5 rounded-lg text-xs font-mono font-bold bg-sky-950/80 border border-sky-500/30 text-sky-300";
-                lblText.textContent = "🇨🇩 Trafic Détecté : Vol National (RDC)";
-                summaryFlight.textContent = "Vol National (RDC)";
+                inputType.value = "En attente de compagnie...";
             }
-
-            calculerDélaiEtPrix();
         }
 
-        // CALCUL DU PRIX SELON L'ANTICIPATION ET LE TYPE DE VOL
-        function calculerDélaiEtPrix() {
-            const flightDateStr = document.getElementById('flight-date').value;
-            const summaryAnticipation = document.getElementById('summary-anticipation');
-            const summaryTotal = document.getElementById('summary-total-price');
+        async function soumettreCollecteDomicile() {
+            const btn = document.getElementById('btnSubCollecte');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Transmission en cours...`;
+            btn.disabled = true;
 
-            if (!flightDateStr) {
-                summaryAnticipation.textContent = "Indiquez la date du vol";
-                summaryTotal.textContent = "0.00 USD";
-                return;
+            const nom = document.getElementById('colNom').value.trim().toUpperCase();
+            const prenom = document.getElementById('colPrenom').value.trim();
+            const tel = document.getElementById('colTel').value.trim();
+            const pnr = document.getElementById('colPnr').value.trim().toUpperCase();
+            const compagnie = document.getElementById('colCompagnie').value;
+            const adresse = document.getElementById('colAdresse').value.trim();
+            const datetime = document.getElementById('colDateTime').value;
+            const nbBagages = document.getElementById('colNbBagages').value;
+            const typeVol = compagnie.includes('Congo Airways') || compagnie.includes('CAA') ? 'NAT' : 'INT';
+            const newId = "COL-" + Date.now().toString().slice(-6);
+
+            try {
+                await supabaseClient.from('ef_voyageurs').insert([{
+                    id: newId,
+                    nom: nom,
+                    prenom: prenom,
+                    type_vol: typeVol,
+                    channel: 'VIP_HOME',
+                    pnr: pnr,
+                    compagnie: compagnie,
+                    date_vol: datetime.split('T')[0],
+                    heure_vol: datetime.split('T')[1] || '12:00',
+                    destination: typeVol === 'INT' ? 'International' : 'National RDC',
+                    xray_status: 'Pending_Ticket_Verification',
+                    allowed_weight: typeVol === 'INT' ? 23 : 20,
+                    total_facture_usd: 25.00
+                }]);
+            } catch (e) {
+                console.warn("Mode simulation local activé", e);
             }
 
-            const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const [y, m, d] = flightDateStr.split('-').map(Number);
-            const flightDate = new Date(y, m - 1, d);
-            const diffMs = flightDate - today;
-            anticipationJours = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+            document.getElementById('formCollecte').classList.add('hidden');
+            document.getElementById('blocConfirmationCollecte').classList.remove('hidden');
+            document.getElementById('resRefPnr').textContent = `${pnr} (${compagnie})`;
+        }
 
-            let prix = 25; // Base VIP
+        function reinitialiserFormulaireCollecte() {
+            document.getElementById('formCollecte').reset();
+            document.getElementById('formCollecte').classList.remove('hidden');
+            document.getElementById('blocConfirmationCollecte').classList.add('hidden');
+            document.getElementById('btnSubCollecte').innerHTML = `<i class="fa-solid fa-shield-halved"></i> Soumettre la Demande de Collecte`;
+            document.getElementById('btnSubCollecte').disabled = false;
+        }
 
-            if (isInternational) {
-                if (anticipationJours >= 3) {
-                    prix = 25;
-                    summaryAnticipation.textContent = `≥ 3 Jours avant le vol (Éco)`;
-                } else if (anticipationJours === 2) {
-                    prix = 40;
-                    summaryAnticipation.textContent = `2 Jours avant le vol (Standard)`;
-                } else {
-                    prix = 65;
-                    summaryAnticipation.textContent = `≤ 1 Jour avant le vol (Urgence)`;
+        async function consulterStatutCloud() {
+            const query = document.getElementById('quickSearchInput').value.trim().toUpperCase();
+            if (!query) return alert("Veuillez saisir votre référence PNR ou identifiant.");
+
+            const btn = document.getElementById('btnSearchStatut');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+            btn.disabled = true;
+
+            try {
+                const { data: paxList, error } = await supabaseClient
+                    .from('ef_voyageurs')
+                    .select('*')
+                    .or(`pnr.eq.${query},id.eq.${query}`)
+                    .limit(1);
+
+                if (error || !paxList || paxList.length === 0) {
+                    alert(`Aucun dossier trouvé pour "${query}".`);
+                    btn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Suivre`;
+                    btn.disabled = false;
+                    return;
                 }
-            } else {
-                if (anticipationJours >= 3) {
-                    prix = 15;
-                    summaryAnticipation.textContent = `≥ 3 Jours avant le vol (Éco)`;
-                } else if (anticipationJours === 2) {
-                    prix = 20;
-                    summaryAnticipation.textContent = `2 Jours avant le vol (Standard)`;
-                } else {
-                    prix = 30;
-                    summaryAnticipation.textContent = `≤ 1 Jour avant le vol (Urgence)`;
+
+                const pax = paxList[0];
+                document.getElementById('trackedNumber').textContent = `${pax.pnr} (${pax.nom} ${pax.prenom})`;
+                
+                const badge = document.getElementById('trackedStatusBadge');
+                if (pax.xray_status === 'Pending_Ticket_Verification') {
+                    badge.className = "px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5";
+                    badge.innerHTML = `<i class="fa-solid fa-clock"></i> En attente de vérification du billet`;
+                } else if (pax.xray_status === 'Approved') {
+                    badge.className = "px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5";
+                    badge.innerHTML = `<i class="fa-solid fa-check"></i> Billet validé & Collecte confirmée`;
                 }
+
+                document.getElementById('searchFormBloc').classList.add('hidden');
+                document.getElementById('trackingResult').classList.remove('hidden');
+
+            } catch (e) {
+                console.error(e);
             }
 
-            summaryTotal.textContent = `${prix.toFixed(2)} USD`;
+            btn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Suivre`;
+            btn.disabled = false;
         }
 
-        function rechercherBagage() {
-            const code = document.getElementById('track-input').value.trim();
-            if (!code) {
-                alert("Veuillez saisir votre numéro de billet ou code PNR.");
-                return;
-            }
-            document.getElementById('lbl-track-id').textContent = code.toUpperCase();
-            alert("Suivi mis à jour pour la référence : " + code.toUpperCase());
+        function nouvelleRecherche() {
+            document.getElementById('quickSearchInput').value = '';
+            document.getElementById('trackingResult').classList.add('hidden');
+            document.getElementById('searchFormBloc').classList.remove('hidden');
         }
-
-        function soumettreCollecte(e) {
-            e.preventDefault();
-            const pnr = document.getElementById('pnr-ref').value;
-            const airline = document.getElementById('pnr-airline').value;
-            const nom = document.getElementById('client-nom').value;
-
-            alert(`Demande transmise avec succès pour ${nom} !\n\nNous authentifions votre billet (${airline} - ${pnr}) auprès de la compagnie avant l'envoi de l'équipe de collecte.`);
-            
-            document.getElementById('form-collecte').reset();
-            switchSection('tracking');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const d = new Date();
-            d.setDate(d.getDate() + 3);
-            document.getElementById('flight-date').value = d.toISOString().split('T')[0];
-            calculerDélaiEtPrix();
-        });
     </script>
 </body>
 </html>
