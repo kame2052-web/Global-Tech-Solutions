@@ -193,7 +193,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="apps-grid">
             <!-- PÔLE 1 : TRANSVISION -->
-            <div id="card-app-transvision" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='transvision/index.html'">
+            <div id="card-app-transvision" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='./transvision/index.html'">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
                         <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
@@ -212,7 +212,7 @@
             </div>
 
             <!-- PÔLE 2 : EASYFLY TRANSIT -->
-            <div id="card-app-easyfly" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='easyflytransit/index.html'">
+            <div id="card-app-easyfly" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='./easyflytransit/index.html'">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
                         <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
@@ -231,7 +231,7 @@
             </div>
 
             <!-- PÔLE 3 : MATT CLEAN'APP -->
-            <div id="card-app-cleanapp" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='cleanapp/index.html'">
+            <div id="card-app-cleanapp" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='./cleanapp/index.html'">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
                         <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
@@ -250,7 +250,7 @@
             </div>
 
             <!-- PÔLE 4 : EYANOMARKET -->
-            <div id="card-app-eyanomarket" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='eyanomarket/index.html'">
+            <div id="card-app-eyanomarket" class="bg-gtscard border border-slate-800 rounded-3xl p-7 flex flex-col justify-between glow-card transition-all duration-300 space-y-6 cursor-pointer" onclick="window.location.href='./eyanomarket/index.html'">
                 <div class="space-y-4">
                     <div class="flex justify-between items-start">
                         <div class="h-16 w-16 rounded-2xl overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
@@ -546,7 +546,6 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Écouteurs robustes
             document.getElementById('reg-role')?.addEventListener('change', toggleRoleFields);
             document.getElementById('reg-pole')?.addEventListener('change', togglePoleOptions);
             document.getElementById('chk-cgu')?.addEventListener('change', toggleSubmitButton);
